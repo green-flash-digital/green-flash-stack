@@ -3,6 +3,17 @@
   "version": "0.3.1",
   "description": "A collection of TS configs that can be used and extended in any project",
   "type": "module",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/ts-configs"
+  },
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
   "keywords": [
     "typescript",
     "tsconfig",
@@ -31,17 +42,6 @@
     "extendable-tsconfig",
     "typed-config"
   ],
-  "author": "Drew DeCarme (drew@greenflash.digital)",
-  "license": "MIT",
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com:green-flash-digital/tsconfig-green-flash.git",
-    "directory": "packages/ts-configs"
-  },
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
   "exports": {
     ".": "./tsconfig.json",
     "./library": "./tsconfig.library.json"
@@ -50,6 +50,6 @@
     "access": "public"
   },
   "devDependencies": {
-    "typescript": "^5.8.2"
+    "typescript": "^5.9.3"
   }
 }

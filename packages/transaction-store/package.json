@@ -1,5 +1,5 @@
 {
-  "name": "@green-flash/ts-utils",
+  "name": "@green-flash/transaction-store",
   "version": "0.2.2",
   "description": "A collection of TypeScript tools, configs, and utilities that makes writing node, browser and isomorphic just a litttttttle bit easier",
   "type": "module",
@@ -9,21 +9,20 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/ts-utils"
+    "directory": "packages/transaction-store"
   },
   "bugs": {
     "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
   },
   "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
   "exports": {
-    "./*": "./dist/*/index.js"
+    "*": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public"
   },
   "files": [
-    "dist",
-    "tsconfigs"
+    "dist"
   ],
   "scripts": {
     "build": "yarn tsc --project tsconfig.build.json",
@@ -31,11 +30,15 @@
     "test": "vitest",
     "test:ci": "vitest run"
   },
+  "dependencies": {
+    "immer": "11.0.1",
+    "logarhythm": "workspace:*"
+  },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "^25.0.0",
+    "@types/node": "25.0.0",
     "@vitest/coverage-v8": "4.0.15",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "typescript": "5.9.3",
+    "vitest": "4.0.15"
   }
 }
