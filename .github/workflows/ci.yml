@@ -1,0 +1,37 @@
+name: CI - Test & Build
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  test-and-build:
+    name: CI - Test & Build Distribution
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Read Node.js Version
+        id: node_version
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+
+      - name: Enable Corepack # Ensures the correct version of yarn is used
+        run: corepack enable
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Install Dependencies
+        run: yarn install --immutable
+
+      - name: Run Tests
+        run: yarn test:ci
+
+      - name: Build Project
+        run: yarn build
