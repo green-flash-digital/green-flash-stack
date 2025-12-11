@@ -1,0 +1,63 @@
+import { ComponentType, lazy, type ReactNode, Suspense } from "react";
+
+import { ModalControllerProvider } from "./ModalController.provider.js";
+
+import { ModalEngine, ModalOptions, ModalState } from "@irida-ui/core";
+import { useModalContext } from "./modal-controller.utils.js";
+
+export class ModalController<
+  S extends ModalState | undefined = undefined
+> extends ModalEngine<S> {
+  #LazyModalContent: () => ReactNode;
+
+  constructor({
+    closeOnBackdropClick = false,
+    closeOnEscapePress = true,
+    load,
+  }: ModalOptions & {
+    /**
+     * Lazily loaded modal content via dynamic import.
+     * If provided, this takes precedence over CustomModalContent.
+     *
+     * Example:
+     *   load: () => import("./UserDetailsModalContent")
+     */
+    load: () => Promise<{ default: ComponentType<any> }>;
+  }) {
+    super({
+      closeOnBackdropClick,
+      closeOnEscapePress,
+    });
+
+    const LazyComp = lazy(load);
+    this.#LazyModalContent = () => (
+      <Suspense fallback={null}>
+        <LazyComp />
+      </Suspense>
+    );
+
+    this.launch = this.launch.bind(this);
+    this.Component = this.Component.bind(this);
+  }
+
+  Component() {
+    const CustomModalContent = this.#LazyModalContent;
+
+    return (
+      <ModalControllerProvider engine={this}>
+        <ModalControllerRoot>
+          {/* User defined component - follows all react conventions */}
+          <CustomModalContent />
+        </ModalControllerRoot>
+      </ModalControllerProvider>
+    );
+  }
+}
+
+function ModalControllerRoot({ children }: { children: ReactNode }) {
+  const { state } = useModalContext();
+
+  if (!state.isOpen) return null;
+
+  return children;
+}

@@ -1,7 +1,7 @@
 {
-  "name": "@green-flash/transaction-store",
-  "version": "0.2.2",
-  "description": "A collection of TypeScript tools, configs, and utilities that makes writing node, browser and isomorphic just a litttttttle bit easier",
+  "name": "@irida-ui/react",
+  "version": "0.1.0",
+  "description": "UI components and utilities for Irida",
   "type": "module",
   "sideEffects": false,
   "author": "Drew DeCarme (drew@greenflash.digital)",
@@ -9,14 +9,14 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/transaction-store"
+    "directory": "packages/irida-ui/react"
   },
   "bugs": {
     "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
   },
   "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
   "exports": {
-    ".": "./dist/TransactionStore.js"
+    "./*": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public"
@@ -28,17 +28,26 @@
     "build": "yarn tsc --project tsconfig.build.json",
     "dev": "yarn build --watch",
     "test": "vitest",
-    "test:ci": "vitest run"
-  },
-  "dependencies": {
-    "immer": "11.0.1",
-    "logarhythm": "workspace:*"
+    "test:ci": "vitest run",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "25.0.0",
+    "@storybook/react-vite": "^10.1.7",
+    "@types/node": "^25.0.0",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
     "@vitest/coverage-v8": "4.0.15",
-    "typescript": "5.9.3",
-    "vitest": "4.0.15"
+    "eslint-plugin-storybook": "^10.1.7",
+    "storybook": "^10.1.7",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  },
+  "dependencies": {
+    "@green-flash/transaction-store": "workspace:^",
+    "@irida-ui/core": "workspace:^",
+    "react": "^19.2.2",
+    "react-dom": "^19.2.2"
   }
 }
