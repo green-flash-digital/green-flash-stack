@@ -3,7 +3,7 @@ name: CD - Build and Deploy
 on:
   push:
     branches:
-      - main # Triggers when a PR is merged into main
+      - NOOP # Triggers when a PR is merged into main
 
 jobs:
   build-and-deploy:
