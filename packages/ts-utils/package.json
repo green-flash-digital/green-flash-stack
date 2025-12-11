@@ -1,35 +1,32 @@
 {
   "name": "@green-flash/ts-utils",
-  "description": "A collection of TypeScript tools, configs, and utilities that makes writing node, browser and isomorphic just a litttttttle bit easier",
   "version": "0.2.2",
-  "author": "Drew DeCarme (drew@greenflash.digital)",
-  "license": "Apache-2.0",
+  "description": "A collection of TypeScript tools, configs, and utilities that makes writing node, browser and isomorphic just a litttttttle bit easier",
   "type": "module",
   "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
-  },
-  "scripts": {
-    "build": "yarn tsc --project tsconfig.build.json",
-    "dev": "yarn build --watch",
-    "test": "vitest",
-    "test:ci": "vitest run",
-    "release": "npx changeset publish"
-  },
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "license": "Apache-2.0",
   "exports": {
     "./*": "./dist/*/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
   },
   "files": [
     "dist",
     "tsconfigs"
   ],
+  "scripts": {
+    "build": "yarn tsc --project tsconfig.build.json",
+    "dev": "yarn build --watch",
+    "test": "vitest",
+    "test:ci": "vitest run"
+  },
   "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
     "@types/node": "^25.0.0",
     "@vitest/coverage-v8": "4.0.15",
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"
-  },
-  "dependencies": {
-    "@changesets/cli": "^2.29.8"
   }
 }

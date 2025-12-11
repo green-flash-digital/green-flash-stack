@@ -2,6 +2,7 @@
   "name": "green-flash-stack",
   "version": "1.0.0",
   "description": "A modern, TypeScript-first technology stack of reusable tools, engines, and developer utilities—maintained in one cohesive monorepo and published as standalone packages",
+  "type": "module",
   "keywords": [
     "green-flash",
     "green-flash-stack",
@@ -24,21 +25,34 @@
     "modules",
     "toolchain"
   ],
-  "packageManager": "yarn@4.12.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "license": "ISC",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git"
   },
-  "author": "Drew DeCarme (drew@greenflash.digital)",
-  "license": "ISC",
   "bugs": {
     "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
   },
   "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
-  "type": "module",
   "workspaces": {
     "packages": [
       "packages/**"
     ]
+  },
+  "packageManager": "yarn@4.12.0",
+  "scripts": {
+    "build": "turbo run build",
+    "dev": "turbo run dev",
+    "test": "turbo run test",
+    "test:ci": "turbo run test:ci",
+    "lint": "turbo run lint",
+    "typecheck": "turbo run typecheck",
+    "clean": "turbo run clean",
+    "release": "yarn changeset publish"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.29.8",
+    "turbo": "^2.6.3"
   }
 }
