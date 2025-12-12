@@ -35,16 +35,19 @@
     "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@babel/core": "^7.28.5",
     "@babel/preset-react": "^7.28.5",
     "@babel/preset-typescript": "^7.28.5",
     "@green-flash/tsconfig": "workspace:*",
     "@linaria/core": "^6.3.0",
     "@storybook/react-vite": "^10.1.7",
+    "@types/babel__core": "^7",
     "@types/node": "^25.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "4.0.15",
     "@wyw-in-js/vite": "^0.8.0",
+    "eslint": "^9.39.1",
     "eslint-plugin-storybook": "^10.1.7",
     "storybook": "^10.1.7",
     "typescript": "^5.9.3",
@@ -52,7 +55,7 @@
     "vitest": "^4.0.15"
   },
   "dependencies": {
-    "@green-flash/transaction-store": "workspace:^",
+    "@green-flash/reactor": "workspace:^",
     "@stratum-ui/core": "workspace:^",
     "react": "^19.2.2",
     "react-dom": "^19.2.2"

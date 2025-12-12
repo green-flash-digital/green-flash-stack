@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { hashString } from "./util.node.hash-string";
+import { hashString } from "./util.node.hash-string.js";
 
 describe("hashString", () => {
   it("should return a consistent hash for the same input", () => {

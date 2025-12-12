@@ -1,6 +1,6 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
-import { Logarhythm } from "logarhythm";
+import { Logarhythm, LogarhythmLogLevel } from "logarhythm";
 
 export type TransactionStoreEnqueueOptionsStatic = {
   /**
@@ -52,9 +52,15 @@ export class TransactionStore<S> {
   #log: Logarhythm;
   #debounceTimers = new Map<string, NodeJS.Timeout>();
 
-  constructor(initialState: S) {
+  constructor(
+    initialState: S,
+    options?: {
+      logLevel?: LogarhythmLogLevel;
+    }
+  ) {
     this.#state = initialState;
     this.#log = new Logarhythm({
+      logLevel: options?.logLevel,
       name: "TransactionStore",
       pillColor: "#202020ff",
     });

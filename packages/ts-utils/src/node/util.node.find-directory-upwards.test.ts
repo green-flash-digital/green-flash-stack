@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { findDirectoryUpwards } from "./util.node.find-directory-upwards";
+import { findDirectoryUpwards } from "./util.node.find-directory-upwards.js";
 
 const TEST_DIR = path.join(process.cwd(), "temp_test");
 const TARGET_DIR = path.join(TEST_DIR, "node_modules");

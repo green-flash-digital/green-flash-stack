@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { kebabToPascalCase } from "./util.isomorphic.kebab-to-pascal-case";
+import { kebabToPascalCase } from "./util.isomorphic.kebab-to-pascal-case.js";
 
 describe("kebabToPascalCase", () => {
   it("should convert a simple kebab-case string to PascalCase", () => {

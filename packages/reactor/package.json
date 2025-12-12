@@ -1,7 +1,7 @@
 {
-  "name": "@green-flash/transaction-store",
+  "name": "@green-flash/reactor",
   "version": "0.2.2",
-  "description": "A collection of TypeScript tools, configs, and utilities that makes writing node, browser and isomorphic just a litttttttle bit easier",
+  "description": "A type-safe event emitter and transactional state store with optimistic updates for managing state mutations",
   "type": "module",
   "sideEffects": false,
   "author": "Drew DeCarme (drew@greenflash.digital)",
@@ -9,14 +9,14 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/transaction-store"
+    "directory": "packages/reactor"
   },
   "bugs": {
     "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
   },
   "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
   "exports": {
-    ".": "./dist/TransactionStore.js"
+    ".": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public"

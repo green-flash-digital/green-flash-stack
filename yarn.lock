@@ -30,7 +30,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@babel/core@npm:^7.23.5, @babel/core@npm:^7.24.4, @babel/core@npm:^7.28.0":
+"@babel/core@npm:^7.23.5, @babel/core@npm:^7.24.4, @babel/core@npm:^7.28.0, @babel/core@npm:^7.28.5":
   version: 7.28.5
   resolution: "@babel/core@npm:7.28.5"
   dependencies:
@@ -1119,9 +1119,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@green-flash/transaction-store@workspace:*, @green-flash/transaction-store@workspace:^, @green-flash/transaction-store@workspace:packages/transaction-store":
+"@green-flash/reactor@workspace:*, @green-flash/reactor@workspace:^, @green-flash/reactor@workspace:packages/reactor":
   version: 0.0.0-use.local
-  resolution: "@green-flash/transaction-store@workspace:packages/transaction-store"
+  resolution: "@green-flash/reactor@workspace:packages/reactor"
   dependencies:
     "@green-flash/tsconfig": "workspace:*"
     "@types/node": "npm:25.0.0"
@@ -1133,7 +1133,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@green-flash/ts-utils@workspace:*, @green-flash/ts-utils@workspace:packages/ts-utils":
+"@green-flash/ts-utils@workspace:*, @green-flash/ts-utils@workspace:^, @green-flash/ts-utils@workspace:packages/ts-utils":
   version: 0.0.0-use.local
   resolution: "@green-flash/ts-utils@workspace:packages/ts-utils"
   dependencies:
@@ -1696,7 +1696,7 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@stratum-ui/core@workspace:packages/stratum-ui"
   dependencies:
-    "@green-flash/transaction-store": "workspace:*"
+    "@green-flash/reactor": "workspace:*"
     "@green-flash/tsconfig": "workspace:*"
     "@types/node": "npm:^25.0.0"
     "@vitest/coverage-v8": "npm:4.0.15"
@@ -1709,18 +1709,21 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "@stratum-ui/react@workspace:packages/stratum-ui-react"
   dependencies:
+    "@babel/core": "npm:^7.28.5"
     "@babel/preset-react": "npm:^7.28.5"
     "@babel/preset-typescript": "npm:^7.28.5"
-    "@green-flash/transaction-store": "workspace:^"
+    "@green-flash/reactor": "workspace:^"
     "@green-flash/tsconfig": "workspace:*"
     "@linaria/core": "npm:^6.3.0"
     "@storybook/react-vite": "npm:^10.1.7"
     "@stratum-ui/core": "workspace:^"
+    "@types/babel__core": "npm:^7"
     "@types/node": "npm:^25.0.0"
     "@types/react": "npm:^19"
     "@types/react-dom": "npm:^19"
     "@vitest/coverage-v8": "npm:4.0.15"
     "@wyw-in-js/vite": "npm:^0.8.0"
+    eslint: "npm:^9.39.1"
     eslint-plugin-storybook: "npm:^10.1.7"
     react: "npm:^19.2.2"
     react-dom: "npm:^19.2.2"
@@ -1730,6 +1733,28 @@ __metadata:
     vitest: "npm:^4.0.15"
   languageName: unknown
   linkType: soft
+
+"@tabulo/react@workspace:packages/tabulo-react":
+  version: 0.0.0-use.local
+  resolution: "@tabulo/react@workspace:packages/tabulo-react"
+  dependencies:
+    "@green-flash/tsconfig": "workspace:*"
+    "@types/node": "npm:^25.0.0"
+    "@types/react": "npm:^19"
+    "@vitest/coverage-v8": "npm:4.0.15"
+    react: "npm:^19.2.3"
+    tabulo: "workspace:^"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.0.15"
+  languageName: unknown
+  linkType: soft
+
+"@tanstack/virtual-core@npm:^3.13.13":
+  version: 3.13.13
+  resolution: "@tanstack/virtual-core@npm:3.13.13"
+  checksum: 10c0/0411295054a6fff21a22944c224f2e414c77c6455015b319f378ea3e9937aefb3b43f4113df2ab9096e5f3db673b085cd778d69ec9918f42bbb94c2dbd43a639
+  languageName: node
+  linkType: hard
 
 "@testing-library/jest-dom@npm:^6.6.3":
   version: 6.9.1
@@ -1763,7 +1788,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/babel__core@npm:^7.20.5":
+"@types/babel__core@npm:^7, @types/babel__core@npm:^7.20.5":
   version: 7.20.5
   resolution: "@types/babel__core@npm:7.20.5"
   dependencies:
@@ -4416,7 +4441,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"immer@npm:11.0.1":
+"immer@npm:11.0.1, immer@npm:^11.0.1":
   version: 11.0.1
   resolution: "immer@npm:11.0.1"
   checksum: 10c0/d505c1aa6d5d7ff03196e0a508af2853839eb1a3d5af51d55ca5815c46981b74765faf357fbd276b151109b07dd6b564077be92b0247b0a4effa78130166030d
@@ -5054,7 +5079,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"logarhythm@workspace:*, logarhythm@workspace:packages/logarhythm":
+"logarhythm@workspace:*, logarhythm@workspace:^, logarhythm@workspace:packages/logarhythm":
   version: 0.0.0-use.local
   resolution: "logarhythm@workspace:packages/logarhythm"
   dependencies:
@@ -5852,6 +5877,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"react@npm:^19.2.3":
+  version: 19.2.3
+  resolution: "react@npm:19.2.3"
+  checksum: 10c0/094220b3ba3a76c1b668f972ace1dd15509b157aead1b40391d1c8e657e720c201d9719537375eff08f5e0514748c0319063392a6f000e31303aafc4471f1436
+  languageName: node
+  linkType: hard
+
 "read-yaml-file@npm:^1.1.0":
   version: 1.1.0
   resolution: "read-yaml-file@npm:1.1.0"
@@ -6583,6 +6615,23 @@ __metadata:
   checksum: 10c0/6c4032340701a9950865f7ae8ef38578d8d7053f5e10518076e6554a9381fa91bd9c6850193695c141f32b21f979c985db07265a758867bac95de05f7d8aeb39
   languageName: node
   linkType: hard
+
+"tabulo@workspace:^, tabulo@workspace:packages/tabulo":
+  version: 0.0.0-use.local
+  resolution: "tabulo@workspace:packages/tabulo"
+  dependencies:
+    "@green-flash/reactor": "workspace:^"
+    "@green-flash/ts-utils": "workspace:^"
+    "@green-flash/tsconfig": "workspace:*"
+    "@tanstack/virtual-core": "npm:^3.13.13"
+    "@types/node": "npm:^25.0.0"
+    "@vitest/coverage-v8": "npm:4.0.15"
+    immer: "npm:^11.0.1"
+    logarhythm: "workspace:^"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.0.15"
+  languageName: unknown
+  linkType: soft
 
 "tar@npm:^7.5.2":
   version: 7.5.2

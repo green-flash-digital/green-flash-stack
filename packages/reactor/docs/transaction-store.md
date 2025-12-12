@@ -1,4 +1,4 @@
-# @green-flash/transaction-store
+# @green-flash/reactor
 
 A queued state store with optimistic updates, transaction queuing, and automatic rollback capabilities. Perfect for managing complex state mutations with async side effects in React and other frameworks.
 
@@ -16,15 +16,15 @@ A queued state store with optimistic updates, transaction queuing, and automatic
 ## Installation
 
 ```bash
-yarn add @green-flash/transaction-store
+yarn add @green-flash/reactor
 # or
-npm install @green-flash/transaction-store
+npm install @green-flash/reactor
 ```
 
 ## Quick Start
 
 ```typescript
-import { TransactionStore } from "@green-flash/transaction-store";
+import { TransactionStore } from "@green-flash/reactor";
 
 // Initialize with your state shape
 interface AppState {
@@ -64,7 +64,7 @@ await store.enqueue({
 
 ```typescript
 import { useSyncExternalStore } from "react";
-import { TransactionStore } from "@green-flash/transaction-store";
+import { TransactionStore } from "@green-flash/reactor";
 
 const store = new TransactionStore({ count: 0 });
 

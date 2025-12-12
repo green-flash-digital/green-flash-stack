@@ -1,7 +1,7 @@
 {
-  "name": "@stratum-ui/core",
-  "version": "0.1.0",
-  "description": "UI components and utilities for stratum",
+  "name": "@tabulo/react",
+  "version": "0.0.1",
+  "description": "React bindings for Tabulo – seamless React state sync via useSyncExternalStore for Tabulo instances.",
   "type": "module",
   "sideEffects": false,
   "author": "Drew DeCarme (drew@greenflash.digital)",
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/stratum-ui"
+    "directory": "packages/tabulo-react"
   },
   "bugs": {
     "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
@@ -33,11 +33,13 @@
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
     "@types/node": "^25.0.0",
+    "@types/react": "^19",
     "@vitest/coverage-v8": "4.0.15",
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"
   },
   "dependencies": {
-    "@green-flash/reactor": "workspace:*"
+    "react": "^19.2.3",
+    "tabulo": "workspace:^"
   }
 }

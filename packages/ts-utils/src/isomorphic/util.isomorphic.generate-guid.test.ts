@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { generateGUID } from "./util.isomorphic.generate-guid";
+import { generateGUID } from "./util.isomorphic.generate-guid.js";
 
 describe("generateGUID", () => {
   it("should generate a valid UUID format", () => {

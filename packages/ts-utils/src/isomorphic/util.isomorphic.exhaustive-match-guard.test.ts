@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { exhaustiveMatchGuard } from "./util.isomorphic.exhaustive-match-guard";
+import { exhaustiveMatchGuard } from "./util.isomorphic.exhaustive-match-guard.js";
 
 describe("exhaustiveMatchGuard", () => {
   it("should throw an error with the unexpected value", () => {

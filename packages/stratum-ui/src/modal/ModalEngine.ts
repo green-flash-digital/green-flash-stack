@@ -1,4 +1,4 @@
-import { TransactionStore } from "@green-flash/transaction-store";
+import { TransactionStore } from "@green-flash/reactor";
 
 type EventLike = {
   preventDefault: () => void;

@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { tryHandle, tryHandleSync } from "./util.isomorphic.try-handle";
+import { tryHandle, tryHandleSync } from "./util.isomorphic.try-handle.js";
 
 describe("tryHandle (Async)", () => {
   it("should return data when the function resolves successfully", async () => {
