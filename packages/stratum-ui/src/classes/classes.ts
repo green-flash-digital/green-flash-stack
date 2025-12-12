@@ -1,24 +1,30 @@
 /**
- * Combines class names based on given arguments of strings, numbers, arrays, or objects.
+ * Combines and conditionally includes CSS class names from various input types.
  *
- * @param {...(string | number | boolean | null | undefined | Record<string, boolean> | Array<string | number | boolean | null | undefined | Record<string, boolean>>)} args - Arguments that can be strings, numbers, objects, arrays or boolean values.
- * @returns {string} - A single string with all valid class names concatenated.
+ * This utility function intelligently merges class names from strings, numbers, arrays,
+ * and objects into a single space-separated string. Falsy values (null, undefined, false)
+ * are automatically filtered out, and object keys are included only when their values
+ * are truthy. Supports nested arrays and objects for complex conditional class logic.
  *
  * @example
  * // Basic usage with strings
  * classes('foo', 'bar'); // returns "foo bar"
  *
  * @example
- * // Usage with object notation
+ * // Conditional classes with object notation
  * classes('foo', { bar: true, baz: false }); // returns "foo bar"
  *
  * @example
- * // Usage with arrays
+ * // Arrays are flattened and processed recursively
  * classes(['foo', 'bar']); // returns "foo bar"
  *
  * @example
- * // Combined usage with nested arrays and objects
- * classes(['foo', { bar: true, baz: false }]); // returns "foo bar"
+ * // Complex nested structures
+ * classes('base', ['foo', { bar: true, baz: false }], { active: true }); // returns "base foo bar active"
+ *
+ * @example
+ * // Falsy values are automatically filtered
+ * classes('foo', null, undefined, false, 'bar'); // returns "foo bar"
  */
 export function classes(
   ...args: (
