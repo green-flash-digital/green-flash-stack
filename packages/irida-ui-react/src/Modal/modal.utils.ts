@@ -1,5 +1,4 @@
 import { css } from "@linaria/core";
-import { makeRem, makeRgba } from "@machineq/theme";
 
 export type ModalVariants = "modal" | "drawer-right" | "drawer-up";
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
@@ -40,8 +39,8 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
     margin: 0;
     max-height: unset;
     max-width: unset;
-    border-top-left-radius: ${makeRem(8)};
-    border-bottom-left-radius: ${makeRem(8)};
+    border-top-left-radius: 0.5rem;
+    border-bottom-left-radius: 0.5rem;
 
     // Open
     &[open] {
@@ -100,8 +99,8 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
     margin: 0;
     max-height: calc(100vh - 40px);
     max-width: unset;
-    border-top-left-radius: ${makeRem(8)};
-    border-top-right-radius: ${makeRem(8)};
+    border-top-left-radius: 0.5rem;
+    border-top-right-radius: 0.5rem;
 
     // Open
     &[open] {
@@ -139,7 +138,7 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
     // Base
     margin: auto !important;
     box-shadow: 0px 4px 4px 0px #00000040;
-    border-radius: ${makeRem(4)};
+    border-radius: 0.25rem;
 
     // Open
     &[open] {
@@ -171,7 +170,7 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
       max-width: 100%;
       max-height: 100%;
     }
-  `
+  `,
 };
 
 export const modalStylesRoot = css`
@@ -198,7 +197,7 @@ export const modalStylesRoot = css`
 
   // Base
   &::backdrop {
-    background: ${makeRgba("black", 0.3)};
+    background: rgba(0, 0, 0, 0.3);
   }
 
   // Open

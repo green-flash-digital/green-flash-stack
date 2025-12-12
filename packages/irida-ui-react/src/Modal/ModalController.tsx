@@ -3,10 +3,10 @@ import { ComponentType, lazy, type ReactNode, Suspense } from "react";
 import { ModalControllerProvider } from "./ModalController.provider.js";
 
 import { ModalEngine, ModalOptions, ModalState } from "@irida-ui/core";
-import { useModalContext } from "./modal-controller.utils.js";
+import { useModalContext } from "./modal.useModalContext.js";
 
 export class ModalController<
-  S extends ModalState | undefined = undefined
+  S extends ModalState | undefined
 > extends ModalEngine<S> {
   #LazyModalContent: () => ReactNode;
 

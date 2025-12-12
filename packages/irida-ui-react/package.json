@@ -16,7 +16,8 @@
   },
   "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
   "exports": {
-    "./*": "./dist/index.js"
+    "./*": "./dist/*/index.js",
+    "./css": "./dist/react.css"
   },
   "publishConfig": {
     "access": "public"
@@ -25,23 +26,29 @@
     "dist"
   ],
   "scripts": {
-    "build": "yarn tsc --project tsconfig.build.json",
-    "dev": "yarn build --watch",
+    "build": "tsc && vite build && yarn types",
+    "dev": "vite build --watch",
+    "types": "tsc --project tsconfig.build.json",
     "test": "vitest",
     "test:ci": "vitest run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
   "devDependencies": {
+    "@babel/preset-react": "^7.28.5",
+    "@babel/preset-typescript": "^7.28.5",
     "@green-flash/tsconfig": "workspace:*",
+    "@linaria/core": "^6.3.0",
     "@storybook/react-vite": "^10.1.7",
     "@types/node": "^25.0.0",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@vitest/coverage-v8": "4.0.15",
+    "@wyw-in-js/vite": "^0.8.0",
     "eslint-plugin-storybook": "^10.1.7",
     "storybook": "^10.1.7",
     "typescript": "^5.9.3",
+    "vite": "^7.2.7",
     "vitest": "^4.0.15"
   },
   "dependencies": {

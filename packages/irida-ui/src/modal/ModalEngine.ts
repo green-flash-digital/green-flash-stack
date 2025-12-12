@@ -1,5 +1,10 @@
 import { TransactionStore } from "@green-flash/transaction-store";
 
+type EventLike = {
+  preventDefault: () => void;
+  currentTarget: unknown;
+};
+
 export type ModalState = Record<string, unknown>;
 export type ModalOptions = {
   /**
@@ -32,7 +37,7 @@ export type ModalOptions = {
  * sequence before updating state.
  */
 export class ModalEngine<
-  S extends ModalState | undefined = undefined
+  S extends ModalState | undefined
 > extends TransactionStore<S & { isOpen: boolean }> {
   #dialogNode: HTMLDialogElement | null = null;
   #options: Required<ModalOptions>;
@@ -88,6 +93,28 @@ export class ModalEngine<
     node.addEventListener("click", this.#onBackdropClick);
   }
 
+  impl = (arg: unknown) => {
+    const isEventLike = (v: unknown): v is EventLike =>
+      typeof v === "object" &&
+      v !== null &&
+      typeof (v as EventLike).preventDefault === "function" &&
+      "currentTarget" in (v as EventLike);
+
+    this.enqueue({
+      mutate: (draft) => {
+        draft.isOpen = true;
+
+        // If it's an event (DOM, React, whatever), just open
+        if (isEventLike(arg)) return;
+
+        // Otherwise, treat it as state (only valid when S is not undefined)
+        if (arg != null && typeof arg === "object") {
+          Object.assign(draft, arg as S);
+        }
+      },
+    });
+  };
+
   /**
    * Opens the modal dialog in a controlled manner.
    *
@@ -99,16 +126,15 @@ export class ModalEngine<
    */
   launch<T extends Event>(event: S extends undefined ? T : never): void;
   launch(state: S extends undefined ? never : S): void;
-  launch<T extends Event>(eventOrState: T | S): void {
+  launch<T extends Event>(eventOrState: S extends undefined ? T : S): void {
     /**
      * Type guard to determine if a given value is a DOM MouseEvent.
-     */
-    function isDOMEvent(v: unknown): v is MouseEvent {
+     */ function isEventLike(v: unknown): v is EventLike {
       return (
         typeof v === "object" &&
         v !== null &&
-        typeof (v as Event).preventDefault === "function" &&
-        typeof (v as Event).currentTarget !== "undefined"
+        typeof (v as EventLike).preventDefault === "function" &&
+        "currentTarget" in (v as EventLike)
       );
     }
 
@@ -118,7 +144,7 @@ export class ModalEngine<
     this.enqueue({
       mutate: (draft) => {
         draft.isOpen = true;
-        if (isDOMEvent(eventOrState)) return;
+        if (isEventLike(eventOrState)) return;
         Object.assign(draft, eventOrState);
       },
     });

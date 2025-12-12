@@ -4,6 +4,7 @@
     "noEmit": false,
     "outDir": "dist",
     "declarationDir": "dist",
+    "emitDeclarationOnly": true,
     "declaration": true,
     "declarationMap": true
   },
