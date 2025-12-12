@@ -81,7 +81,12 @@ export function WithRegistry() {
         <button type="button" onClick={CustomStylesController.launch}>
           Launch WithCustomStyles
         </button>
-        <button type="button" onClick={WithStateController.launch}>
+        <button
+          type="button"
+          onClick={() =>
+            WithStateController.launch({ uuid: crypto.randomUUID() })
+          }
+        >
           Launch WithState
         </button>
       </div>
