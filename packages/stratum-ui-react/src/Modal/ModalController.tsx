@@ -2,7 +2,7 @@ import { ComponentType, lazy, type ReactNode, Suspense } from "react";
 
 import { ModalControllerProvider } from "./ModalController.provider.js";
 
-import { ModalEngine, ModalOptions, ModalState } from "@irida-ui/core";
+import { ModalEngine, ModalOptions, ModalState } from "@stratum-ui/core";
 import { useModalContext } from "./modal.useModalContext.js";
 
 export class ModalController<

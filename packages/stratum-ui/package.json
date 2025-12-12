@@ -1,7 +1,7 @@
 {
-  "name": "@irida-ui/core",
+  "name": "@stratum-ui/core",
   "version": "0.1.0",
-  "description": "UI components and utilities for Irida",
+  "description": "UI components and utilities for stratum",
   "type": "module",
   "sideEffects": false,
   "author": "Drew DeCarme (drew@greenflash.digital)",
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/irida-ui"
+    "directory": "packages/stratum-ui"
   },
   "bugs": {
     "url": "https://github.com/green-flash-digital/green-flash-stack/issues"

@@ -1199,45 +1199,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@irida-ui/core@workspace:^, @irida-ui/core@workspace:packages/irida-ui":
-  version: 0.0.0-use.local
-  resolution: "@irida-ui/core@workspace:packages/irida-ui"
-  dependencies:
-    "@green-flash/transaction-store": "workspace:*"
-    "@green-flash/tsconfig": "workspace:*"
-    "@types/node": "npm:^25.0.0"
-    "@vitest/coverage-v8": "npm:4.0.15"
-    typescript: "npm:^5.9.3"
-    vitest: "npm:^4.0.15"
-  languageName: unknown
-  linkType: soft
-
-"@irida-ui/react@workspace:packages/irida-ui-react":
-  version: 0.0.0-use.local
-  resolution: "@irida-ui/react@workspace:packages/irida-ui-react"
-  dependencies:
-    "@babel/preset-react": "npm:^7.28.5"
-    "@babel/preset-typescript": "npm:^7.28.5"
-    "@green-flash/transaction-store": "workspace:^"
-    "@green-flash/tsconfig": "workspace:*"
-    "@irida-ui/core": "workspace:^"
-    "@linaria/core": "npm:^6.3.0"
-    "@storybook/react-vite": "npm:^10.1.7"
-    "@types/node": "npm:^25.0.0"
-    "@types/react": "npm:^19"
-    "@types/react-dom": "npm:^19"
-    "@vitest/coverage-v8": "npm:4.0.15"
-    "@wyw-in-js/vite": "npm:^0.8.0"
-    eslint-plugin-storybook: "npm:^10.1.7"
-    react: "npm:^19.2.2"
-    react-dom: "npm:^19.2.2"
-    storybook: "npm:^10.1.7"
-    typescript: "npm:^5.9.3"
-    vite: "npm:^7.2.7"
-    vitest: "npm:^4.0.15"
-  languageName: unknown
-  linkType: soft
-
 "@isaacs/balanced-match@npm:^4.0.1":
   version: 4.0.1
   resolution: "@isaacs/balanced-match@npm:4.0.1"
@@ -1730,6 +1691,45 @@ __metadata:
   checksum: 10c0/e3c5e424d749cba9924c30a25070b691c4f4a5e478f9e8e098be6043e8f96a7a022e95bb476525d1396cb9519744ffe7e8d2bf9385b4ec31428d8060352ef692
   languageName: node
   linkType: hard
+
+"@stratum-ui/core@workspace:^, @stratum-ui/core@workspace:packages/stratum-ui":
+  version: 0.0.0-use.local
+  resolution: "@stratum-ui/core@workspace:packages/stratum-ui"
+  dependencies:
+    "@green-flash/transaction-store": "workspace:*"
+    "@green-flash/tsconfig": "workspace:*"
+    "@types/node": "npm:^25.0.0"
+    "@vitest/coverage-v8": "npm:4.0.15"
+    typescript: "npm:^5.9.3"
+    vitest: "npm:^4.0.15"
+  languageName: unknown
+  linkType: soft
+
+"@stratum-ui/react@workspace:packages/stratum-ui-react":
+  version: 0.0.0-use.local
+  resolution: "@stratum-ui/react@workspace:packages/stratum-ui-react"
+  dependencies:
+    "@babel/preset-react": "npm:^7.28.5"
+    "@babel/preset-typescript": "npm:^7.28.5"
+    "@green-flash/transaction-store": "workspace:^"
+    "@green-flash/tsconfig": "workspace:*"
+    "@linaria/core": "npm:^6.3.0"
+    "@storybook/react-vite": "npm:^10.1.7"
+    "@stratum-ui/core": "workspace:^"
+    "@types/node": "npm:^25.0.0"
+    "@types/react": "npm:^19"
+    "@types/react-dom": "npm:^19"
+    "@vitest/coverage-v8": "npm:4.0.15"
+    "@wyw-in-js/vite": "npm:^0.8.0"
+    eslint-plugin-storybook: "npm:^10.1.7"
+    react: "npm:^19.2.2"
+    react-dom: "npm:^19.2.2"
+    storybook: "npm:^10.1.7"
+    typescript: "npm:^5.9.3"
+    vite: "npm:^7.2.7"
+    vitest: "npm:^4.0.15"
+  languageName: unknown
+  linkType: soft
 
 "@testing-library/jest-dom@npm:^6.6.3":
   version: 6.9.1

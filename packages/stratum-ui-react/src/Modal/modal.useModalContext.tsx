@@ -1,4 +1,4 @@
-import { ModalState } from "@irida-ui/core";
+import { ModalState } from "@stratum-ui/core";
 import { useContext } from "react";
 import {
   ModalControllerContextType,

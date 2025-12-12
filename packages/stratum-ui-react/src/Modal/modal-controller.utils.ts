@@ -1,4 +1,4 @@
-import { ModalState } from "@irida-ui/core";
+import { ModalState } from "@stratum-ui/core";
 import React from "react";
 
 export type ModalControllerContextType<S extends ModalState> = {

@@ -2,7 +2,7 @@ import { type RefCallback, type ReactNode } from "react";
 import { useSyncExternalStore } from "react";
 
 import { ModalControllerContext } from "./modal-controller.utils.js";
-import type { ModalEngine, ModalState } from "@irida-ui/core";
+import type { ModalEngine, ModalState } from "@stratum-ui/core";
 
 export type ModalControllerProps<S extends ModalState | undefined> = {
   engine: ModalEngine<S>;

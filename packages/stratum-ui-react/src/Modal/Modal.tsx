@@ -5,7 +5,7 @@ import {
   modalStyleVariants,
   ModalVariants,
 } from "./modal.utils.js";
-import { classes } from "@irida-ui/core";
+import { classes } from "@stratum-ui/core";
 import { useModalContext } from "./modal.useModalContext.js";
 
 export type ModalProps = Omit<JSX.IntrinsicElements["dialog"], "ref"> & {

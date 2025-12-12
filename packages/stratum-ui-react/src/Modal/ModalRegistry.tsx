@@ -1,7 +1,7 @@
 import { useSyncExternalStore } from "react";
 import { TransactionStore } from "@green-flash/transaction-store";
 import { ModalController } from "./ModalController.js";
-import { ModalState } from "@irida-ui/core";
+import { ModalState } from "@stratum-ui/core";
 
 type ModalRegistryState = {
   controllers: ModalController<ModalState | undefined>[];

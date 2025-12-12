@@ -1,7 +1,7 @@
 {
-  "name": "@irida-ui/react",
+  "name": "@stratum-ui/react",
   "version": "0.1.0",
-  "description": "UI components and utilities for Irida",
+  "description": "UI components and utilities for stratum",
   "type": "module",
   "sideEffects": false,
   "author": "Drew DeCarme (drew@greenflash.digital)",
@@ -9,7 +9,7 @@
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/irida-ui/react"
+    "directory": "packages/stratum-ui/react"
   },
   "bugs": {
     "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
@@ -53,7 +53,7 @@
   },
   "dependencies": {
     "@green-flash/transaction-store": "workspace:^",
-    "@irida-ui/core": "workspace:^",
+    "@stratum-ui/core": "workspace:^",
     "react": "^19.2.2",
     "react-dom": "^19.2.2"
   }

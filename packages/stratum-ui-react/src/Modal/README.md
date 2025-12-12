@@ -33,7 +33,7 @@ Create your modal content component using the native `<dialog>` element. Use `us
 
 ```tsx
 // MyModalContent.tsx
-import { useModalContext } from "@irida-ui/react";
+import { useModalContext } from "@stratum-ui/react";
 
 export default function MyModalContent() {
   const { onMount, closeModal } = useModalContext();
@@ -54,7 +54,7 @@ Create a controller instance that references your modal content:
 
 ```tsx
 // myModal.controller.ts
-import { ModalController } from "@irida-ui/react";
+import { ModalController } from "@stratum-ui/react";
 
 export const myModalController = new ModalController({
   load: async () => import("./MyModalContent"),
@@ -86,7 +86,7 @@ The recommended approach is to use the native `<dialog>` element directly. This 
 
 ```tsx
 // Content.tsx
-import { useModalContext } from "@irida-ui/react";
+import { useModalContext } from "@stratum-ui/react";
 
 export default function MyModal() {
   const { onMount, closeModal } = useModalContext();
@@ -109,7 +109,7 @@ export default function MyModal() {
 }
 
 // controller.ts
-import { ModalController } from "@irida-ui/react";
+import { ModalController } from "@stratum-ui/react";
 
 export const myModalController = new ModalController({
   load: async () => import("./Content"),
@@ -127,7 +127,7 @@ If you want to use the pre-built styling variants (modal, drawer-right, drawer-u
 
 ```tsx
 // Content.tsx
-import { Modal, useModalContext } from "@irida-ui/react";
+import { Modal, useModalContext } from "@stratum-ui/react";
 
 export default function SimpleModal() {
   const { closeModal } = useModalContext();
@@ -150,7 +150,7 @@ Modals can accept and manage typed state. This is useful when you need to pass d
 
 ```tsx
 // Content.tsx
-import { useModalContext } from "@irida-ui/react";
+import { useModalContext } from "@stratum-ui/react";
 
 export type UserModalState = {
   userId: string;
@@ -187,7 +187,7 @@ export default function UserModal() {
 
 ```tsx
 // controller.ts
-import { ModalController } from "@irida-ui/react";
+import { ModalController } from "@stratum-ui/react";
 import { UserModalState } from "./Content";
 
 export const userModalController = new ModalController<UserModalState>({
@@ -238,7 +238,7 @@ The `Modal` component is an optional wrapper that provides pre-built styling var
 ### Example
 
 ```tsx
-import { Modal } from "@irida-ui/react";
+import { Modal } from "@stratum-ui/react";
 
 export default function CustomStyledModal() {
   return (
@@ -260,7 +260,7 @@ For applications with multiple modals, use a `ModalRegistry` to centrally manage
 
 ```tsx
 // modals.ts
-import { ModalRegistry, ModalController } from "@irida-ui/react";
+import { ModalRegistry, ModalController } from "@stratum-ui/react";
 
 const modals = new ModalRegistry();
 
@@ -398,7 +398,7 @@ registry.register(controller);
 
 ```tsx
 // ConfirmDialog.tsx
-import { useModalContext } from "@irida-ui/react";
+import { useModalContext } from "@stratum-ui/react";
 
 export type ConfirmDialogState = {
   title: string;
@@ -458,7 +458,7 @@ Using the native dialog element with custom styling:
 
 ```tsx
 // Sidebar.tsx
-import { useModalContext } from "@irida-ui/react";
+import { useModalContext } from "@stratum-ui/react";
 
 export default function Sidebar() {
   const { onMount, closeModal } = useModalContext();
@@ -499,7 +499,7 @@ Or using the Modal component if you want the drawer variant defaults:
 
 ```tsx
 // Sidebar.tsx
-import { Modal, useModalContext } from "@irida-ui/react";
+import { Modal, useModalContext } from "@stratum-ui/react";
 
 export default function Sidebar() {
   const { closeModal } = useModalContext();
