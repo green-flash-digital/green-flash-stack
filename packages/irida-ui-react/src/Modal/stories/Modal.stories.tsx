@@ -3,6 +3,8 @@ import { DefaultModalController } from "./withDefaultModal/index.js";
 import { CustomStylesController } from "./withCustomStyles/index.js";
 import { ModalRegistry } from "../ModalRegistry.js";
 import { WithStateController } from "./withState/index.js";
+import { DefaultDrawerController } from "./withDefaultDrawer/index.js";
+import { DefaultDrawerRightController } from "./withDefaultDrawerRight/index.js";
 
 const meta = {
   title: "Modal",
@@ -26,6 +28,28 @@ export function WithDefaultModal() {
       <DefaultModalController.Component />
       <button type="button" onClick={DefaultModalController.launch}>
         Launch WithDefaultModal
+      </button>
+    </>
+  );
+}
+
+export function WithDefaultDrawerUp() {
+  return (
+    <>
+      <DefaultDrawerController.Component />
+      <button type="button" onClick={DefaultDrawerController.launch}>
+        Launch WithDefaultDrawerUp
+      </button>
+    </>
+  );
+}
+
+export function WithDefaultDrawerRight() {
+  return (
+    <>
+      <DefaultDrawerRightController.Component />
+      <button type="button" onClick={DefaultDrawerRightController.launch}>
+        Launch WithDefaultDrawerRight
       </button>
     </>
   );
@@ -64,6 +88,8 @@ Modals.register(BasicController);
 Modals.register(DefaultModalController);
 Modals.register(CustomStylesController);
 Modals.register(WithStateController);
+Modals.register(DefaultDrawerController);
+Modals.register(DefaultDrawerRightController);
 
 export function WithRegistry() {
   return (
@@ -88,6 +114,12 @@ export function WithRegistry() {
           }
         >
           Launch WithState
+        </button>
+        <button type="button" onClick={DefaultDrawerController.launch}>
+          Launch WithDefaultDrawerUp
+        </button>
+        <button type="button" onClick={DefaultDrawerRightController.launch}>
+          Launch WithDefaultDrawerRight
         </button>
       </div>
     </>

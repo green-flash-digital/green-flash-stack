@@ -3,29 +3,33 @@ import { css } from "@linaria/core";
 export type ModalVariants = "modal" | "drawer-right" | "drawer-up";
 export type ModalSize = "sm" | "md" | "lg" | "xl" | "full";
 
-const duration = ".3s";
+const duration = ".4s";
+const durationClose = ".25s";
+// Natural easing curves for smoother animations
+const easeOut = "cubic-bezier(0.16, 1, 0.3, 1)"; // Smooth deceleration
+const easeIn = "cubic-bezier(0.4, 0, 1, 1)"; // Quick acceleration
 
 export const modalStyleVariants: { [key in ModalVariants]: string } = {
   "drawer-right": css`
     @keyframes animate-open {
       from {
         opacity: 0;
-        transform: translateX(100%);
+        transform: translateX(100%) scale(0.98);
       }
       to {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
       }
     }
 
     @keyframes animate-close {
       from {
         opacity: 1;
-        transform: translateX(0);
+        transform: translateX(0) scale(1);
       }
       to {
         opacity: 0;
-        transform: translateX(100%);
+        transform: translateX(100%) scale(0.98);
       }
     }
 
@@ -41,15 +45,16 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
     max-width: unset;
     border-top-left-radius: 0.5rem;
     border-bottom-left-radius: 0.5rem;
+    transform-origin: right center;
 
     // Open
     &[open] {
-      animation: animate-open ${duration} ease-in-out;
+      animation: animate-open ${duration} ${easeOut};
     }
 
     // Close
     &.close {
-      animation: animate-close ${duration} ease-in-out;
+      animation: animate-close ${durationClose} ${easeIn};
     }
 
     // Sizes
@@ -70,22 +75,22 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
     @keyframes animate-open {
       from {
         opacity: 0;
-        transform: translateY(100%);
+        transform: translateY(100%) scale(0.98);
       }
       to {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
     }
 
     @keyframes animate-close {
       from {
         opacity: 1;
-        transform: translateY(0);
+        transform: translateY(0) scale(1);
       }
       to {
         opacity: 0;
-        transform: translateY(100%);
+        transform: translateY(100%) scale(0.98);
       }
     }
 
@@ -101,37 +106,38 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
     max-width: unset;
     border-top-left-radius: 0.5rem;
     border-top-right-radius: 0.5rem;
+    transform-origin: center bottom;
 
     // Open
     &[open] {
-      animation: animate-open ${duration} ease-in-out;
+      animation: animate-open ${duration} ${easeOut};
     }
 
     // Close
     &.close {
-      animation: animate-close ${duration} ease-in-out;
+      animation: animate-close ${durationClose} ${easeIn};
     }
   `,
   modal: css`
     @keyframes animate-open {
       from {
         opacity: 0;
-        transform: scale(0.9);
+        transform: scale(0.95) translateY(10px);
       }
       to {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateY(0);
       }
     }
 
     @keyframes animate-close {
       from {
         opacity: 1;
-        transform: scale(1);
+        transform: scale(1) translateY(0);
       }
       to {
         opacity: 0;
-        transform: scale(0.9);
+        transform: scale(0.95) translateY(10px);
       }
     }
 
@@ -139,15 +145,16 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
     margin: auto !important;
     box-shadow: 0px 4px 4px 0px #00000040;
     border-radius: 0.25rem;
+    transform-origin: center center;
 
     // Open
     &[open] {
-      animation: animate-open ${duration} ease-in-out;
+      animation: animate-open ${duration} ${easeOut};
     }
 
     // Close
     &.close {
-      animation: animate-close ${duration} ease-in-out;
+      animation: animate-close ${durationClose} ${easeIn};
     }
 
     // Sizes
@@ -202,11 +209,11 @@ export const modalStylesRoot = css`
 
   // Open
   &[open]::backdrop {
-    animation: animate-open ${duration} ease-in-out;
+    animation: animate-open ${duration} ${easeOut};
   }
 
   // Close
   &.close::backdrop {
-    animation: animate-close ${duration} ease-in-out;
+    animation: animate-close ${durationClose} ${easeIn};
   }
 `;
