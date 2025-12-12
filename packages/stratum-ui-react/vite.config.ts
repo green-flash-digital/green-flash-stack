@@ -1,7 +1,7 @@
 import path from "node:path";
 import fs from "node:fs/promises";
-import wyw from "@wyw-in-js/vite";
 
+import wyw from "@wyw-in-js/vite";
 import { defineConfig } from "vite";
 
 async function getDependencyKeys() {

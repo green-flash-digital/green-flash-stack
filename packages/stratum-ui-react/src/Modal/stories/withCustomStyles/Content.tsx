@@ -1,4 +1,5 @@
 import { css } from "@linaria/core";
+
 import { Modal } from "../../Modal.js";
 import { useModalContext } from "../../modal.useModalContext.js";
 

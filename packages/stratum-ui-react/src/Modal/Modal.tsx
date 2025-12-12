@@ -1,11 +1,13 @@
-import { JSX } from "react/jsx-runtime";
-import {
-  ModalSize,
-  modalStylesRoot,
-  modalStyleVariants,
-  ModalVariants,
-} from "./modal.utils.js";
+import type { JSX } from "react/jsx-runtime";
 import { classes } from "@stratum-ui/core";
+
+import type {
+  ModalSize,
+  ModalVariants} from "./modal.utils.js";
+import {
+  modalStylesRoot,
+  modalStyleVariants
+} from "./modal.utils.js";
 import { useModalContext } from "./modal.useModalContext.js";
 
 export type ModalProps = Omit<JSX.IntrinsicElements["dialog"], "ref"> & {

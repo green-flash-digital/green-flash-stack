@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import { kebabToCamel } from "./util.isomorphic.kebab-to-camel.js";
 
 describe("kebabToCamel", () => {

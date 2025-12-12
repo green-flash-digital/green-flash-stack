@@ -1,6 +1,7 @@
 import type { Draft } from "immer";
 import { produce } from "immer";
-import { Logarhythm, LogarhythmLogLevel } from "logarhythm";
+import type { LogarhythmLogLevel } from "logarhythm";
+import { Logarhythm } from "logarhythm";
 
 export type TransactionStoreEnqueueOptionsStatic = {
   /**

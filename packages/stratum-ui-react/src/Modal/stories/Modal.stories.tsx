@@ -1,10 +1,11 @@
 import { BasicController } from "./withBasic/index.js";
 import { DefaultModalController } from "./withDefaultModal/index.js";
 import { CustomStylesController } from "./withCustomStyles/index.js";
-import { ModalRegistry } from "../ModalRegistry.js";
 import { WithStateController } from "./withState/index.js";
 import { DefaultDrawerController } from "./withDefaultDrawer/index.js";
 import { DefaultDrawerRightController } from "./withDefaultDrawerRight/index.js";
+
+import { ModalRegistry } from "../ModalRegistry.js";
 
 const meta = {
   title: "Modal",

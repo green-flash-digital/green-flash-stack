@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import { kebabToPascalCase } from "./util.isomorphic.kebab-to-pascal-case.js";
 
 describe("kebabToPascalCase", () => {

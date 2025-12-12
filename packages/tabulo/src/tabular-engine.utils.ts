@@ -1,12 +1,11 @@
 import type { Draft } from "immer";
-
-import type { TabuloConfigColumnValue } from "./TabuloManagerColumn.js";
-
-import {
+import type {
   EventMap,
   TransactionStoreEnqueueOptionsStatic,
 } from "@green-flash/reactor";
-import { ObjectDotNotation } from "@green-flash/ts-utils/isomorphic";
+import type { ObjectDotNotation } from "@green-flash/ts-utils/isomorphic";
+
+import type { TabuloConfigColumnValue } from "./TabuloManagerColumn.js";
 
 export type TabuloEventMap = EventMap | undefined;
 

@@ -1,8 +1,8 @@
-import { ComponentType, lazy, type ReactNode, Suspense } from "react";
+import type { ComponentType, lazy, type ReactNode, Suspense } from "react";
+import type { ModalOptions, ModalState } from "@stratum-ui/core";
+import { ModalEngine } from "@stratum-ui/core";
 
 import { ModalControllerProvider } from "./ModalController.provider.js";
-
-import { ModalEngine, ModalOptions, ModalState } from "@stratum-ui/core";
 import { useModalContext } from "./modal.useModalContext.js";
 
 export class ModalController<

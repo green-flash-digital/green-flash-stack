@@ -1,4 +1,5 @@
 import { describe, it, expect } from "vitest";
+
 import { hashString } from "./util.node.hash-string.js";
 
 describe("hashString", () => {

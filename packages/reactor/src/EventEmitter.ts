@@ -1,4 +1,5 @@
-import { Logarhythm, LogarhythmLogLevel } from "logarhythm";
+import type { LogarhythmLogLevel } from "logarhythm";
+import { Logarhythm } from "logarhythm";
 
 export type EventMap = Record<string, unknown>;
 
