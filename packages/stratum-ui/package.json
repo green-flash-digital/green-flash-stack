@@ -38,6 +38,7 @@
     "vitest": "^4.0.15"
   },
   "dependencies": {
-    "@green-flash/reactor": "workspace:*"
+    "@green-flash/reactor": "workspace:*",
+    "@green-flash/ts-utils": "workspace:^"
   }
 }

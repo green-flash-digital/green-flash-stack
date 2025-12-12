@@ -14,7 +14,7 @@ import {
   type TabuloRecord,
   type TabuloFilter,
   mutateEngineStateHelper,
-} from "./tabular-engine.utils.js";
+} from "./tabulo.utils.js";
 import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloColumnActions = {

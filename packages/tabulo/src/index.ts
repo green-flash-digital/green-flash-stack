@@ -10,4 +10,4 @@ export * from "./TabuloManagerMeta.js";
 export * from "./TabuloManagerRecords.js";
 export * from "./TabuloManagerSort.js";
 
-export * from "./tabular-engine.utils.js";
+export * from "./tabulo.utils.js";

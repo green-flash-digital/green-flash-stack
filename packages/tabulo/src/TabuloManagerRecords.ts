@@ -10,7 +10,7 @@ import type {
   TabuloRecord,
   TabuloSort,
   TabuloStateRecord,
-} from "./tabular-engine.utils.js";
+} from "./tabulo.utils.js";
 import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigRecords = Pick<TabuloStateRecord, "selectable"> & {

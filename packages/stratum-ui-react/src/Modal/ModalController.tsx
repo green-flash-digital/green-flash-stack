@@ -1,4 +1,4 @@
-import type { ComponentType, lazy, type ReactNode, Suspense } from "react";
+import { type ComponentType, lazy, type ReactNode, Suspense } from "react";
 import type { ModalOptions, ModalState } from "@stratum-ui/core";
 import { ModalEngine } from "@stratum-ui/core";
 

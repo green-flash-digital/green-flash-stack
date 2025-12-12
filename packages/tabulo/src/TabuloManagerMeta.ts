@@ -9,7 +9,7 @@ import type {
   TabuloFilter,
   TabuloRecord,
   TabuloSort,
-} from "./tabular-engine.utils.js";
+} from "./tabulo.utils.js";
 import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigMeta = {

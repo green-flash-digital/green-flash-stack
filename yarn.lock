@@ -1697,6 +1697,7 @@ __metadata:
   resolution: "@stratum-ui/core@workspace:packages/stratum-ui"
   dependencies:
     "@green-flash/reactor": "workspace:*"
+    "@green-flash/ts-utils": "workspace:^"
     "@green-flash/tsconfig": "workspace:*"
     "@types/node": "npm:^25.0.0"
     "@vitest/coverage-v8": "npm:4.0.15"

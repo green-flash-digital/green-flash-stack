@@ -13,7 +13,7 @@ import {
   type TabuloRecord,
   type TabuloSort,
   type TabuloStateSortValue,
-} from "./tabular-engine.utils.js";
+} from "./tabulo.utils.js";
 import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigSortValue = {

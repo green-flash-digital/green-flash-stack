@@ -11,7 +11,7 @@ import type {
   TabuloColumnState,
   TabuloExtendedState,
   TabuloEventMap,
-} from "./tabular-engine.utils.js";
+} from "./tabulo.utils.js";
 import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigGroup<R extends TabuloRecord> = TabuloStateGroup<R>;

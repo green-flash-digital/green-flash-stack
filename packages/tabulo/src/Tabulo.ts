@@ -13,7 +13,7 @@ import {
   type TabuloSort,
   type TabuloState,
   logColor,
-} from "./tabular-engine.utils.js";
+} from "./tabulo.utils.js";
 import { TabuloManagerColumn } from "./TabuloManagerColumn.js";
 import type { TabuloConfigFilter } from "./TabuloManagerFilter.js";
 import { TabuloManagerFilter } from "./TabuloManagerFilter.js";
