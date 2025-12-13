@@ -58,30 +58,53 @@ export class ToastEngine<
     return this.#container;
   }
 
-  getRegionPolite() {
+  getRegionAttributes() {
+    return {
+      polite: {
+        id: ToastEngine.regionIds.polite,
+        ariaLive: "polite",
+        ariaAtomic: "false",
+      },
+      assertive: {
+        id: ToastEngine.regionIds.assertive,
+        ariaLive: "assertive",
+        ariaAtomic: "true",
+      },
+    };
+  }
+
+  getRegionPolite(className?: string) {
     if (!this.#regionPolite) {
       const el = document.createElement("div");
-      el.id = ToastEngine.regionIds.polite;
-      el.ariaLive = "polite";
-      el.ariaAtomic = "false";
+      const attributes = this.getRegionAttributes().polite;
+      for (const [key, value] of Object.entries(attributes)) {
+        el.setAttribute(key, value);
+      }
       this.#regionPolite = el;
 
       const container = this.#getContainer();
       container.appendChild(this.#regionPolite);
     }
+    if (className && !this.#regionPolite.classList.contains(className)) {
+      this.#regionPolite.classList.add(className);
+    }
     return this.#regionPolite;
   }
 
-  getRegionAssertive() {
+  getRegionAssertive(className?: string) {
     if (!this.#regionAssertive) {
       const el = document.createElement("div");
-      el.id = ToastEngine.regionIds.assertive;
-      el.ariaLive = "assertive";
-      el.ariaAtomic = "true";
+      const attributes = this.getRegionAttributes().assertive;
+      for (const [key, value] of Object.entries(attributes)) {
+        el.setAttribute(key, value);
+      }
       this.#regionAssertive = el;
 
       const container = this.#getContainer();
       container.appendChild(this.#regionAssertive);
+    }
+    if (className && !this.#regionAssertive.classList.contains(className)) {
+      this.#regionAssertive.classList.add(className);
     }
     return this.#regionAssertive;
   }
