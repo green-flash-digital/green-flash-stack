@@ -136,12 +136,13 @@ export class ToastEngine<
       mutate: (draft) => {
         draft.push({ id, ...toast } as (typeof draft)[number]);
       },
+      notify: true,
     });
 
     if (!this.#duration) return;
     setTimeout(() => {
       this.remove(id);
-    }, this.#duration);
+    }, this.#duration * 1_000);
   }
 
   /**

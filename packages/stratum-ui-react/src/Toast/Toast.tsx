@@ -1,9 +1,9 @@
 import type { ToastOptions, ToastProps, ToastState } from "@stratum-ui/core";
 import { ToastEngine } from "@stratum-ui/core";
-import { useSyncExternalStore, type ReactNode } from "react";
+import { useEffect, useSyncExternalStore, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-export class Toast<T extends ToastProps> extends ToastEngine<T> {
+export class Toaster<T extends ToastProps> extends ToastEngine<T> {
   #ToastComponent: (props: ToastState<T>) => ReactNode;
 
   constructor(
@@ -13,12 +13,12 @@ export class Toast<T extends ToastProps> extends ToastEngine<T> {
   ) {
     super(options);
     this.#ToastComponent = options.ToastComponent;
+    this.Render = this.Render.bind(this);
   }
 
   Render() {
-    return (
-      <ToastRenderer<T> engine={this} ToastComponent={this.#ToastComponent} />
-    );
+    const Component = this.#ToastComponent;
+    return <ToastRenderer<T> engine={this} ToastComponent={Component} />;
   }
 }
 
@@ -26,12 +26,23 @@ function ToastRenderer<T extends ToastProps>({
   engine,
   ToastComponent,
 }: {
-  engine: Toast<T>;
+  engine: Toaster<T>;
   ToastComponent: (props: ToastState<T>) => ReactNode;
 }) {
-  const toasts = useSyncExternalStore(engine.subscribe, engine.getState);
+  const toasts = useSyncExternalStore(
+    engine.subscribe,
+    engine.getState,
+    engine.getState
+  );
+
   const regionPolite = engine.getRegionPolite();
   const regionAssertive = engine.getRegionAssertive();
+
+  useEffect(() => {
+    return () => {
+      engine.destroy();
+    };
+  }, [engine]);
 
   return (
     <>

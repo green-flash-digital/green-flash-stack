@@ -40,6 +40,7 @@
     "@babel/preset-typescript": "^7.28.5",
     "@green-flash/tsconfig": "workspace:*",
     "@linaria/core": "^6.3.0",
+    "@ngneat/falso": "^8.0.2",
     "@storybook/react-vite": "^10.1.7",
     "@types/babel__core": "^7",
     "@types/node": "^25.0.0",
