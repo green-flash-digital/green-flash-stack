@@ -27,11 +27,12 @@ export type ToastOptions = {
 };
 
 /**
- * Manages toast state and creates static toast region containers.
+ * Manages toast state and provides utility methods for toast presentation.
  *
- * The toast regions are created once when the Toast instance is constructed,
- * providing a framework-agnostic container that adapters (like React) can
- * render toast content into.
+ * This class encapsulates toast state management, toast lifecycle, and region attributes
+ * for accessibility (like ARIA live regions) but does not directly perform any DOM rendering.
+ * Intended to be used by framework-specific adapters (e.g., React Toaster) to render and manage toasts
+ * in the UI.
  */
 export class ToastEngine<
   T extends ToastProps = ToastProps
@@ -46,11 +47,23 @@ export class ToastEngine<
     assertive: "__STRATUM_TOAST_REGION_ASSERTIVE__",
   };
 
+  /**
+   * Creates a new ToastEngine instance.
+   *
+   * @param options - Optional configuration for the toast engine.
+   * @param options.toastDuration - The length of time in seconds that a toast is visible (default: undefined, meaning no auto-dismiss).
+   */
   constructor(options?: ToastOptions) {
     super([]);
     this.#duration = options?.toastDuration;
   }
 
+  /**
+   * Gets the container element where toast regions will be appended.
+   * If no container is set, defaults to document.body.
+   *
+   * @returns The container HTMLElement.
+   */
   #getContainer() {
     if (!this.#container) {
       this.#container = document.body;
@@ -58,22 +71,73 @@ export class ToastEngine<
     return this.#container;
   }
 
-  getRegionAttributes() {
+  /**
+   * Converts a camelCase string to kebab-case.
+   *
+   * @param str - The camelCase string to convert.
+   * @returns The kebab-case version of the input string.
+   */
+  #camelToKebab(str: string): string {
+    return str
+      .replace(/([a-z0-9])([A-Z])/g, "$1-$2") // lower/num → Upper
+      .replace(/([A-Z])([A-Z][a-z])/g, "$1-$2") // split acronym boundaries
+      .toLowerCase();
+  }
+
+  /**
+   * Gets the ARIA region attributes for polite and assertive toast regions.
+   * These attributes are used to create accessible live regions for screen readers.
+   *
+   * @param options - Optional configuration.
+   * @param options.toKebabCase - If true, converts attribute keys to kebab-case (e.g., "ariaLive" becomes "aria-live").
+   * @returns An object containing polite and assertive region attributes.
+   */
+  getRegionAttributes(options?: { toKebabCase?: boolean }) {
+    const toKebabCase = options?.toKebabCase ?? false;
+    const polite = {
+      id: ToastEngine.regionIds.polite,
+      ariaLive: "polite",
+      ariaAtomic: "false",
+    };
+    const assertive = {
+      id: ToastEngine.regionIds.assertive,
+      ariaLive: "assertive",
+      ariaAtomic: "true",
+    };
+    if (!toKebabCase)
+      return {
+        polite,
+        assertive,
+      };
+
+    const camelToKebabObj = <T extends Record<string, string>>(obj: T) => {
+      return Object.fromEntries(
+        Object.entries(obj).map(([key, value]) => [
+          this.#camelToKebab(key),
+          value,
+        ])
+      );
+    };
+
     return {
-      polite: {
-        id: ToastEngine.regionIds.polite,
-        ariaLive: "polite",
-        ariaAtomic: "false",
-      },
-      assertive: {
-        id: ToastEngine.regionIds.assertive,
-        ariaLive: "assertive",
-        ariaAtomic: "true",
-      },
+      polite: camelToKebabObj(polite),
+      assertive: camelToKebabObj(assertive),
     };
   }
 
-  getRegionPolite(className?: string) {
+  /**
+   * Ensures the polite ARIA live region exists in the DOM.
+   * If it doesn't exist, creates and appends it to the container.
+   * Optionally adds a CSS class to the region.
+   *
+   * @param className - Optional CSS class name to add to the region element.
+   * @returns The polite region HTMLElement.
+   */
+  ensureRegionPolite(className?: string) {
+    if (!this.#regionPolite) {
+      this.#regionPolite =
+        document.getElementById(ToastEngine.regionIds.polite) ?? undefined;
+    }
     if (!this.#regionPolite) {
       const el = document.createElement("div");
       const attributes = this.getRegionAttributes().polite;
@@ -91,7 +155,19 @@ export class ToastEngine<
     return this.#regionPolite;
   }
 
-  getRegionAssertive(className?: string) {
+  /**
+   * Ensures the assertive ARIA live region exists in the DOM.
+   * If it doesn't exist, creates and appends it to the container.
+   * Optionally adds a CSS class to the region.
+   *
+   * @param className - Optional CSS class name to add to the region element.
+   * @returns The assertive region HTMLElement.
+   */
+  ensureRegionAssertive(className?: string) {
+    if (!this.#regionAssertive) {
+      this.#regionAssertive =
+        document.getElementById(ToastEngine.regionIds.assertive) ?? undefined;
+    }
     if (!this.#regionAssertive) {
       const el = document.createElement("div");
       const attributes = this.getRegionAttributes().assertive;
@@ -109,6 +185,10 @@ export class ToastEngine<
     return this.#regionAssertive;
   }
 
+  /**
+   * Determines the ARIA live region type (polite or assertive) based on the toast variant.
+   * Critical and error toasts use assertive regions, while info, warning, and success toasts use polite regions.
+   */
   getToastType(toast: ToastState<T>) {
     switch (toast.variant) {
       case "critical":
@@ -125,35 +205,56 @@ export class ToastEngine<
     }
   }
 
+  /**
+   * Displays an info toast notification.
+   * Info toasts use the polite ARIA live region and will auto-dismiss if a duration is configured.
+   */
   info(state: ToastInput<T>) {
-    this.getRegionPolite();
+    this.ensureRegionPolite();
     this.#add({ variant: "info", ...state });
   }
 
+  /**
+   * Displays a success toast notification.
+   * Success toasts use the polite ARIA live region and will auto-dismiss if a duration is configured.
+   */
   success(state: ToastInput<T>) {
-    this.getRegionPolite();
+    this.ensureRegionPolite();
     this.#add({ variant: "success", ...state });
   }
 
+  /**
+   * Displays a warning toast notification.
+   * Warning toasts use the polite ARIA live region and will auto-dismiss if a duration is configured.
+   */
   warning(state: ToastInput<T>) {
-    this.getRegionPolite();
+    this.ensureRegionPolite();
     this.#add({ variant: "warning", ...state });
   }
 
+  /**
+   * Displays an error toast notification.
+   * Error toasts use the assertive ARIA live region and do not auto-dismiss.
+   */
   error(state: ToastInput<T>) {
-    this.getRegionAssertive();
-    this.#add({ variant: "error", ...state });
+    this.ensureRegionAssertive();
+    this.#add({ variant: "error", ...state }, { autoDismiss: false });
   }
 
+  /**
+   * Displays a critical toast notification.
+   * Critical toasts use the assertive ARIA live region and do not auto-dismiss.
+   */
   critical(state: ToastInput<T>) {
-    this.getRegionAssertive();
-    this.#add({ variant: "critical", ...state });
+    this.ensureRegionAssertive();
+    this.#add({ variant: "critical", ...state }, { autoDismiss: false });
   }
 
   /**
    * Adds a new toast to the state.
    */
-  #add(toast: ToastInput<T>): void {
+  #add(toast: ToastInput<T>, options?: { autoDismiss?: boolean }): void {
+    const autoDismiss = options?.autoDismiss ?? true;
     const id = window.crypto.randomUUID();
     this.enqueue({
       mutate: (draft) => {
@@ -162,7 +263,7 @@ export class ToastEngine<
       notify: true,
     });
 
-    if (!this.#duration) return;
+    if (!this.#duration || !autoDismiss) return;
     setTimeout(() => {
       this.remove(id);
     }, this.#duration * 1_000);
