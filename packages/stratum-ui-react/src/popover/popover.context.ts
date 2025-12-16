@@ -3,8 +3,7 @@ import React from "react";
 
 export type PopoverContextType<S extends PopoverEngineState> = {
   state: S;
-  onMount: (node: HTMLDialogElement | null) => void;
-  closeModal: () => Promise<void>;
+  closePopover: () => Promise<void>;
 };
 
 export const PopoverContext =

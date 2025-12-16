@@ -26,8 +26,7 @@ export function PopoverProvider<S extends PopoverEngineState | undefined>({
     <PopoverContext.Provider
       value={{
         state,
-        onMount: instance.onMount,
-        closeModal: instance.closePopover,
+        closePopover: instance.closePopover,
       }}
     >
       {children}

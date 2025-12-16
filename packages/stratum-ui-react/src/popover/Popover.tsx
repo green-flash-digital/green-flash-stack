@@ -17,7 +17,7 @@ export type PopoverOptions = PopoverEngineOptions & {
   load: () => Promise<{ default: ComponentType<any> }>;
 };
 
-export class Popover<S extends PopoverEngineState | undefined> {
+export abstract class Popover<S extends PopoverEngineState | undefined> {
   #engine: PopoverEngine<S>;
   #LazyPopoverContent: () => ReactNode;
 
@@ -37,6 +37,9 @@ export class Popover<S extends PopoverEngineState | undefined> {
     this.openPopover = this.#engine.openPopover;
     this.closePopover = this.#engine.closePopover;
     this.togglePopover = this.#engine.togglePopover;
+
+    this.Render = this.Render.bind(this);
+    this.onMount = this.onMount.bind(this);
 
     const LazyComp = lazy(load);
     this.#LazyPopoverContent = () => (
@@ -59,7 +62,7 @@ export class Popover<S extends PopoverEngineState | undefined> {
     const PopoverContent = this.#LazyPopoverContent;
     return (
       <PopoverProvider engine={this.#engine} instance={this}>
-        <PopoverRoot>
+        <PopoverRoot onMount={this.onMount}>
           <PopoverContent />
         </PopoverRoot>
       </PopoverProvider>
@@ -67,10 +70,16 @@ export class Popover<S extends PopoverEngineState | undefined> {
   }
 }
 
-function PopoverRoot({ children }: { children: ReactNode }) {
+function PopoverRoot<S extends PopoverEngineState>({
+  children,
+  onMount,
+}: {
+  children: ReactNode;
+  onMount: Popover<S>["onMount"];
+}) {
   const { state } = usePopoverContext();
 
   if (!state.isOpen) return null;
 
-  return children;
+  return <div ref={onMount}>{children}</div>;
 }
