@@ -32,8 +32,8 @@
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "^25.0.0",
-    "@types/react": "^19",
+    "@types/node": "^25.0.2",
+    "@types/react": "^19.2.7",
     "@vitest/coverage-v8": "4.0.15",
     "typescript": "^5.9.3",
     "vitest": "^4.0.15"

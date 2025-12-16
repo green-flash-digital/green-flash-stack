@@ -1,9 +1,6 @@
 import { TransactionStore } from "@green-flash/reactor";
 
-type EventLike = {
-  preventDefault: () => void;
-  currentTarget: unknown;
-};
+import { isEventLike } from "../utils/util.isEventLike.js";
 
 export type ModalState = Record<string, unknown>;
 export type ModalOptions = {
@@ -93,28 +90,6 @@ export class ModalEngine<
     node.addEventListener("click", this.#onBackdropClick);
   }
 
-  impl = (arg: unknown) => {
-    const isEventLike = (v: unknown): v is EventLike =>
-      typeof v === "object" &&
-      v !== null &&
-      typeof (v as EventLike).preventDefault === "function" &&
-      "currentTarget" in (v as EventLike);
-
-    this.enqueue({
-      mutate: (draft) => {
-        draft.isOpen = true;
-
-        // If it's an event (DOM, React, whatever), just open
-        if (isEventLike(arg)) return;
-
-        // Otherwise, treat it as state (only valid when S is not undefined)
-        if (arg != null && typeof arg === "object") {
-          Object.assign(draft, arg as S);
-        }
-      },
-    });
-  };
-
   /**
    * Opens the modal dialog in a controlled manner.
    *
@@ -127,17 +102,6 @@ export class ModalEngine<
   launch<T extends Event>(event: S extends undefined ? T : never): void;
   launch(state: S extends undefined ? never : S): void;
   launch<T extends Event>(eventOrState: S extends undefined ? T : S): void {
-    /**
-     * Type guard to determine if a given value is a DOM MouseEvent.
-     */ function isEventLike(v: unknown): v is EventLike {
-      return (
-        typeof v === "object" &&
-        v !== null &&
-        typeof (v as EventLike).preventDefault === "function" &&
-        "currentTarget" in (v as EventLike)
-      );
-    }
-
     // Set the initial state if need be
     // but set the state to open. In the component, once the state
     // is open, then the modal will mount

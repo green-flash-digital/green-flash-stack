@@ -22,6 +22,7 @@ export class ModalController<
      * Example:
      *   load: () => import("./UserDetailsModalContent")
      */
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     load: () => Promise<{ default: ComponentType<any> }>;
   }) {
     super({

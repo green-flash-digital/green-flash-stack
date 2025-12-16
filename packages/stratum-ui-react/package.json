@@ -41,24 +41,25 @@
     "@green-flash/tsconfig": "workspace:*",
     "@linaria/core": "^6.3.0",
     "@ngneat/falso": "^8.0.2",
-    "@storybook/react-vite": "^10.1.7",
-    "@types/babel__core": "^7",
-    "@types/node": "^25.0.0",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
+    "@storybook/react-vite": "^10.1.9",
+    "@types/babel__core": "^7.20.5",
+    "@types/node": "^25.0.2",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "4.0.15",
     "@wyw-in-js/vite": "^0.8.0",
-    "eslint": "^9.39.1",
-    "eslint-plugin-storybook": "^10.1.7",
-    "storybook": "^10.1.7",
+    "eslint": "^9.39.2",
+    "eslint-plugin-storybook": "^10.1.9",
+    "storybook": "^10.1.9",
     "typescript": "^5.9.3",
-    "vite": "^7.2.7",
+    "vite": "^7.3.0",
     "vitest": "^4.0.15"
   },
   "dependencies": {
     "@green-flash/reactor": "workspace:^",
+    "@green-flash/ts-utils": "workspace:^",
     "@stratum-ui/core": "workspace:^",
-    "react": "^19.2.2",
-    "react-dom": "^19.2.2"
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3"
   }
 }
