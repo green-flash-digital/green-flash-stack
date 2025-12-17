@@ -153,6 +153,8 @@ export class PopoverEngine<
   ): Partial<CSSStyleDeclaration> {
     const styles: Partial<CSSStyleDeclaration> = {
       position: "absolute",
+      inset: "auto",
+      margin: "0",
       // @ts-expect-error This is still an experimental feature
       positionTryFallbacks: "flip-block, flip-inline",
     };
@@ -330,7 +332,7 @@ export class PopoverEngine<
     popover.classList.add("close");
 
     const animations = popover
-      .getAnimations()
+      .getAnimations({ subtree: true })
       .filter((animation) => animation instanceof CSSAnimation)
       .map((animation) => animation.finished);
     await Promise.all(animations);
