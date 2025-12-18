@@ -96,19 +96,21 @@ export class ToastEngine<
     const toKebabCase = options?.toKebabCase ?? false;
     const polite = {
       id: ToastEngine.regionIds.polite,
+      role: "status",
       ariaLive: "polite",
-      ariaAtomic: "false",
+      ariaAtomic: "true",
+      ariaRelevant: "additions text",
     };
+
     const assertive = {
       id: ToastEngine.regionIds.assertive,
+      role: "alert",
       ariaLive: "assertive",
       ariaAtomic: "true",
+      ariaRelevant: "additions text",
     };
-    if (!toKebabCase)
-      return {
-        polite,
-        assertive,
-      };
+
+    if (!toKebabCase) return { polite, assertive };
 
     const camelToKebabObj = <T extends Record<string, string>>(obj: T) => {
       return Object.fromEntries(

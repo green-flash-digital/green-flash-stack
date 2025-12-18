@@ -1,0 +1,40 @@
+{
+  "name": "fizmoo",
+  "version": "0.1.0",
+  "description": "",
+  "type": "module",
+  "sideEffects": false,
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/fizmoo"
+  },
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "exports": {
+    "./*": "./dist/*/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "yarn tsc --project tsconfig.build.json",
+    "dev": "yarn build --watch",
+    "test": "vitest",
+    "test:ci": "vitest run"
+  },
+  "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
+    "@types/node": "^25.0.2",
+    "@vitest/coverage-v8": "4.0.15",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.15"
+  }
+}
