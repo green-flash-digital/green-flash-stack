@@ -32,16 +32,16 @@
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "^25.0.2",
-    "@vitest/coverage-v8": "4.0.15",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "@types/node": "^26.0.1",
+    "@vitest/coverage-v8": "4.1.9",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   },
   "dependencies": {
     "@green-flash/reactor": "workspace:^",
     "@green-flash/ts-utils": "workspace:^",
-    "@tanstack/virtual-core": "^3.13.13",
-    "immer": "^11.0.1",
+    "@tanstack/virtual-core": "^3.17.2",
+    "immer": "^11.1.8",
     "logarhythm": "workspace:^"
   }
 }

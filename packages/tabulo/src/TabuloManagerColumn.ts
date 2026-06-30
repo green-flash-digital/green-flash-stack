@@ -222,7 +222,7 @@ export class TabuloManagerColumn<
     await this.#engine.queueStateUpdate({
       mutate: (draft) => {
         this.#log.info("Hiding column", key);
-        mutateEngineStateHelper(draft.columns, key, (column) => {
+        mutateEngineStateHelper<T>(draft.columns, key, (column) => {
           column.isVisible = false;
         });
       },
@@ -249,7 +249,7 @@ export class TabuloManagerColumn<
       ...options,
       mutate: (draft) => {
         this.#log.info("Showing column", key);
-        mutateEngineStateHelper(draft.columns, key, (column) => {
+        mutateEngineStateHelper<T>(draft.columns, key, (column) => {
           column.isVisible = true;
         });
       },
@@ -282,7 +282,7 @@ export class TabuloManagerColumn<
             col: colKey,
             isVisible,
           });
-          mutateEngineStateHelper(draft.columns, colKey, (column) => {
+          mutateEngineStateHelper<T>(draft.columns, colKey, (column) => {
             column.isVisible = isVisible;
           });
         }
@@ -303,7 +303,7 @@ export class TabuloManagerColumn<
       mutate: (draft) => {
         this.#log.info("Showing all columns");
         for (const colId of Object.keys(draft.columns)) {
-          mutateEngineStateHelper(draft.columns, colId, (column) => {
+          mutateEngineStateHelper<T>(draft.columns, colId, (column) => {
             column.isVisible = true;
           });
         }

@@ -32,14 +32,14 @@
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "^25.0.2",
-    "@types/react": "^19.2.7",
-    "@vitest/coverage-v8": "4.0.15",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "@types/node": "^26.0.1",
+    "@types/react": "^19.2.17",
+    "@vitest/coverage-v8": "4.1.9",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   },
   "dependencies": {
-    "react": "^19.2.3",
+    "react": "^19.2.7",
     "tabulo": "workspace:^"
   }
 }

@@ -39,7 +39,6 @@ export default defineConfig(async () => {
 
   return defineConfig({
     plugins: [
-      // @ts-expect-error The types don't line up
       wyw({
         displayName: process.env.NODE_ENV === "production",
         include: ["**/*.{ts,tsx}"],

@@ -155,7 +155,6 @@ export class PopoverEngine<
       position: "absolute",
       inset: "auto",
       margin: "0",
-      // @ts-expect-error This is still an experimental feature
       positionTryFallbacks: "flip-block, flip-inline",
     };
 
@@ -281,7 +280,6 @@ export class PopoverEngine<
     // This works with showPopover({ source: target }) which establishes the anchor relationship
     if (CSS.supports("position-area")) {
       const positionArea = this.#getPositionArea(position);
-      // @ts-expect-error: position-area is an experimental CSS property
       popover.style.positionArea = positionArea;
     }
     // Note: Offset is now included directly in the anchor() function calls above
@@ -358,7 +356,6 @@ export class PopoverEngine<
     // According to MDN, showPopover can accept an options object with { source: HTMLElement }
     // This is super important for accessibility and CSS functionality using :anchor
     // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/showPopover#source
-    // @ts-expect-error: Argument may not be in the current TS lib types, but browsers accept it.
     popover.showPopover({ source: target });
   }
 }

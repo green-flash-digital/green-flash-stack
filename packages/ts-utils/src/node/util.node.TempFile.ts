@@ -15,8 +15,8 @@ export class TempFile {
   }
 
   async cleanup() {
-    const res = await tryHandle(unlink)(this.filePath);
-    if (res.hasError) {
+    const res = await tryHandle(unlink(this.filePath));
+    if (!res.success) {
       throw new Error(
         `Error when trying to clean up the temporary file: ${res.error.message}`
       );

@@ -141,7 +141,7 @@ export class TabuloManagerSort<
         this.#log.info("Clearing all sorting values");
         for (const sortKey of Object.keys(draft.sort ?? {})) {
           const key = sortKey as S;
-          mutateEngineStateHelper(draft.sort, key, (sort) => {
+          mutateEngineStateHelper<TabuloStateSort<S>>(draft.sort, key, (sort) => {
             sort.value = undefined;
           });
         }
@@ -183,7 +183,7 @@ export class TabuloManagerSort<
       ...options,
       mutate: (draft) => {
         this.#log.info("Setting sort value", { sortKey: key, value });
-        mutateEngineStateHelper(draft.sort, key, (sort) => {
+        mutateEngineStateHelper<TabuloStateSort<S>>(draft.sort, key, (sort) => {
           sort.value = value;
         });
       },

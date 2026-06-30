@@ -129,7 +129,7 @@ export class TabuloManagerFilter<
 
         await this.#engine.queueStateUpdate({
           mutate: (draft) => {
-            mutateEngineStateHelper(draft.filter, key, (filter) => {
+            mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, key, (filter) => {
               filter.data = records;
               filter.humanReadableValueMap = new Map(
                 records.map((r) => [r.value, r.displayAs])
@@ -214,7 +214,7 @@ export class TabuloManagerFilter<
       ...options,
       mutate: (draft) => {
         this.#log.info("Setting filter value", { key, value });
-        mutateEngineStateHelper(draft.filter, key, (filter) => {
+        mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, key, (filter) => {
           filter.value = value;
         });
       },
@@ -238,7 +238,7 @@ export class TabuloManagerFilter<
       ...options,
       mutate: (draft) => {
         this.#log.info("Clearing filter", { key });
-        mutateEngineStateHelper(draft.filter, key, (filter) => {
+        mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, key, (filter) => {
           filter.value = undefined;
         });
       },
@@ -264,7 +264,7 @@ export class TabuloManagerFilter<
           filters: filterKeys.toString(),
         });
         for (const filterKey of filterKeys) {
-          mutateEngineStateHelper(draft.filter, filterKey, (filter) => {
+          mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, filterKey, (filter) => {
             filter.value = undefined;
           });
         }
@@ -294,7 +294,7 @@ export class TabuloManagerFilter<
         for (const [filterKey] of this.entries) {
           const key = filterKey as K;
           if (ignoredFilterKeys.includes(key)) continue;
-          mutateEngineStateHelper(draft.filter, filterKey, (filter) => {
+          mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, filterKey, (filter) => {
             filter.value = undefined;
           });
         }
@@ -359,7 +359,7 @@ export class TabuloManagerFilter<
       mutate: (draft) => {
         this.#log.info("Clearing filters", { filterKeys });
         for (const filterKey of filterKeys) {
-          mutateEngineStateHelper(draft.filter, filterKey, (filter) => {
+          mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, filterKey, (filter) => {
             filter.value = undefined;
           });
         }
@@ -381,7 +381,7 @@ export class TabuloManagerFilter<
       mutate: (draft) => {
         this.#log.info("Clearing all filters");
         for (const [filterKey] of this.entries) {
-          mutateEngineStateHelper(draft.filter, filterKey, (filter) => {
+          mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, filterKey, (filter) => {
             filter.value = undefined;
           });
         }
@@ -446,7 +446,7 @@ export class TabuloManagerFilter<
       ...options,
       mutate: (draft) => {
         for (const [filterKey, filterValue] of Object.entries(filters)) {
-          mutateEngineStateHelper(draft.filter, filterKey, (filter) => {
+          mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, filterKey, (filter) => {
             filter.value = filterValue;
           });
         }

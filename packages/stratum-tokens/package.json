@@ -1,5 +1,5 @@
 {
-  "name": "linea-tokens",
+  "name": "@stratum-tokens/root",
   "version": "0.1.0",
   "description": "Design tokens for the Linea design system",
   "type": "module",
@@ -32,9 +32,9 @@
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "^25.0.2",
-    "@vitest/coverage-v8": "4.0.15",
-    "typescript": "^5.9.3",
-    "vitest": "^4.0.15"
+    "@types/node": "^26.0.1",
+    "@vitest/coverage-v8": "4.1.9",
+    "typescript": "^6.0.3",
+    "vitest": "^4.1.9"
   }
 }

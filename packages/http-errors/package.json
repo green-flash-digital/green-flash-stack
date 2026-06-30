@@ -1,0 +1,44 @@
+{
+  "name": "@greenflash/http-errors",
+  "version": "0.1.0",
+  "description": "Typed HTTP error classes and serialization utilities for server-side use — HTTPError factory, serializeError, deserializeError, and the shared ErrorResponse type.",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsc --project tsconfig.build.json",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "test:coverage": "vitest run --coverage",
+    "clean": "rm -rf dist"
+  },
+  "keywords": [
+    "http-error",
+    "error-handling",
+    "typed",
+    "zod",
+    "hono",
+    "server",
+    "discriminated-union"
+  ],
+  "license": "MIT",
+  "peerDependencies": {
+    "zod": ">=4.0.0"
+  },
+  "devDependencies": {
+    "@vitest/coverage-v8": "^4.1.9",
+    "typescript": "5.9.3",
+    "vitest": "^4.1.9",
+    "zod": "4.3.6"
+  }
+}

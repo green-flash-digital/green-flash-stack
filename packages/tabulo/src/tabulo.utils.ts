@@ -226,10 +226,15 @@ export type TabuloOnMount<E extends HTMLDivElement = HTMLDivElement> = (
 export function mutateEngineStateHelper<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends Record<string, any>,
-  K extends keyof T
->(draft: Draft<T | undefined>, key: K, fn: (entry: Draft<T[K]>) => void) {
-  const typedKey = key as keyof Draft<T>;
-  const entry = (draft ?? ({} as Draft<T>))[typedKey] as Draft<T[K]>;
+  K extends keyof T = keyof T
+>(
+  draft: Draft<T> | T | undefined,
+  key: K,
+  fn: (entry: Draft<T[K]>) => void
+) {
+  const entry = (draft as Draft<T> ?? ({} as Draft<T>))[
+    key as keyof Draft<T>
+  ] as Draft<T[K]>;
   fn(entry);
 }
 
