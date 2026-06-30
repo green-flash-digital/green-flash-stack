@@ -1,26 +1,78 @@
-# @green-flash/linea-tokens
+# fizmoo
 
-Design tokens for the Linea design system.
+A TypeScript-first framework for building type-safe, self-documenting Node.js CLIs.
 
-## Installation
+You declare commands in a single config file. fizmoo compiles them into a standalone binary with a generated help system, argument validation, and option parsing — all fully inferred from your TypeScript types.
+
+---
+
+## Packages
+
+| Package | Description |
+|---|---|
+| [`@fizmoo/core`](./core) | Library: types, `defineCommand`, `defineConfig`, runtime, build pipeline |
+| [`fizmoo`](./fizmoo) | CLI tool: `fizmoo build` and `fizmoo dev` — itself built with fizmoo |
+
+---
+
+## Quick start
 
 ```bash
-npm install @green-flash/linea-tokens
-# or
-yarn add @green-flash/linea-tokens
-# or
-pnpm add @green-flash/linea-tokens
+npm install --save-dev fizmoo
 ```
 
-## Usage
+Create `.fizmoo/config.ts` in your project root:
 
-```typescript
-import { tokens } from "@green-flash/linea-tokens/tokens";
+```ts
+import { defineConfig, command } from "fizmoo";
 
-// Use tokens in your application
+export default defineConfig({
+  name: "mycli",
+  description: "My CLI tool",
+  commands: [
+    command("./commands/greet.ts"),
+  ],
+});
 ```
+
+Create `.fizmoo/commands/greet.ts`:
+
+```ts
+import { defineCommand } from "fizmoo";
+
+export default defineCommand({
+  name: "greet",
+  description: "Greet someone",
+  options: {
+    name: {
+      type: "string",
+      alias: "n",
+      description: "Who to greet",
+      default: "world",
+    },
+  },
+  action: async ({ options }) => {
+    console.log(`Hello, ${options.name}!`);
+  },
+});
+```
+
+Build and run:
+
+```bash
+npx fizmoo build
+yarn sandbox greet
+yarn sandbox greet --name Alice
+yarn sandbox greet -n Alice
+```
+
+---
 
 ## Documentation
 
-For more information, visit the [Linea Design System documentation](https://greenflash.digital).
-
+- [Getting Started](./docs/getting-started.md) — from zero to working CLI
+- [Defining Commands](./docs/commands.md) — the `defineCommand` API
+- [Config & Command Tree](./docs/config.md) — `defineConfig`, `command()`, nesting
+- [Options & Args](./docs/options-and-args.md) — types, validation, defaults
+- [Lifecycle Hooks](./docs/hooks.md) — `onBeforeAction`, `onAfterAction`, `onError`
+- [CLI Reference](./docs/cli.md) — `fizmoo build` and `fizmoo dev`

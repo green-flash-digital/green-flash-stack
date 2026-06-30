@@ -1,40 +1,39 @@
 {
   "name": "fizmoo",
-  "version": "0.1.0",
-  "description": "",
+  "version": "0.1.4",
+  "description": "Effortlessly create 100% type-safe, self-documenting Node.js CLIs by simply adding files to your file system.",
   "type": "module",
   "sideEffects": false,
-  "author": "Drew DeCarme (drew@greenflash.digital)",
-  "license": "Apache-2.0",
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/fizmoo"
-  },
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
-  "exports": {
-    "./*": "./dist/*/index.js"
-  },
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist"
-  ],
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "bin": "./bin/index.js",
   "scripts": {
-    "build": "yarn tsc --project tsconfig.build.json",
-    "dev": "yarn build --watch",
-    "test": "vitest",
-    "test:ci": "vitest run"
+    "build": "yarn lib:build & yarn cli:build",
+    "cli:build": "yarn tsx ./scripts/build-fizmoo-cli-with-fizmoo.ts",
+    "cli:dev": "yarn lib:build && yarn tsx ./scripts/dev-fizmoo-cli-with-fizmoo.ts",
+    "lib:build": "yarn tsc --project ./tsconfig.build.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/green-flash-digital/fizmoo.git",
+    "directory": "packages/fizmoo"
+  },
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "license": "Apache-2.0",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/fizmoo/issues"
+  },
+  "homepage": "https://github.com/green-flash-digital/fizmoo#readme",
+  "dependencies": {
+    "@fizmoo/core": "workspace:*"
   },
   "devDependencies": {
-    "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "^26.0.1",
-    "@vitest/coverage-v8": "4.1.9",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "@types/node": "22.15.19",
+    "tsx": "4.19.4",
+    "typescript": "5.8.3"
   }
 }

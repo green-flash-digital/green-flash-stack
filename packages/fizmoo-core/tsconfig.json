@@ -1,0 +1,4 @@
+{
+  "extends": "ts-jolt/tsconfig/library-next",
+  "include": ["src"]
+}

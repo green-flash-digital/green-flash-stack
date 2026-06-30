@@ -1,12 +1,9 @@
 {
-  "extends": "./tsconfig.json",
+  "extends": "ts-jolt/tsconfig/library-next",
   "compilerOptions": {
     "noEmit": false,
-    "outDir": "dist",
-    "rootDir": "src",
-    "declarationDir": "dist",
-    "declaration": true,
-    "declarationMap": true
+    "outDir": "./dist",
+    "declaration": true
   },
-  "include": ["src/index.ts"]
+  "include": ["src"]
 }
