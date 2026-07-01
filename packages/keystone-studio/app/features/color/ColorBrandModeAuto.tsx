@@ -1,7 +1,7 @@
 import type { ChangeEventHandler } from "react";
 import { useCallback } from "react";
 
-import { makeSpace, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { generateGUID } from "ts-jolt/isomorphic";
 

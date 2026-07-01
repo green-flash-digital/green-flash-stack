@@ -2,7 +2,7 @@ import type { ChangeEventHandler, FormEventHandler, RefCallback } from "react";
 import { useCallback, useMemo, useRef } from "react";
 import { classes, useToggle } from "react-hook-primitives";
 
-import { makeSpace, makeColor, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { debounce } from "ts-jolt/browser";
 

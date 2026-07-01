@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 
 import { getAccessibleTextColor } from "@keystone-css/core/utils";
-import { makeSpace, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { StyleGuideBasicColor } from "./StyleGuideBasicColor";

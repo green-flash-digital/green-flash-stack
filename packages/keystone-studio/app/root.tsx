@@ -1,9 +1,9 @@
 import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "react-router";
 
-import "@keystone@keystone-css/studio-tokens/root.css";
+import "@keystone-css/studio-tokens/root.css";
 import type { LinksFunction } from "react-router";
 
-import { makeFontFamily } from "@keystone@keystone-css/studio-tokens";
+import { makeFontFamily } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { Label } from "./components/Label";

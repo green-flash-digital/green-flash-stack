@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import { makeSpace, makeRem, makeColor, makeReset } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem, makeColor, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type InputTextPropsNative = Omit<JSX.IntrinsicElements["input"], "type">;

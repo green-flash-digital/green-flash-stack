@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import { makeSpace, makeReset, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeReset, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type VariantListPropsNative = JSX.IntrinsicElements["ul"];

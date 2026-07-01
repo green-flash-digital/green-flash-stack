@@ -1,5 +1,5 @@
 import { manualFontStyles } from "@keystone-css/core/schemas";
-import { makeSpace, makeColor, makeRem, makeReset } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

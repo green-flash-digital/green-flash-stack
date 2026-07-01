@@ -24,10 +24,9 @@
     "build": "yarn fizmoo build"
   },
   "dependencies": {
-    "@fizmoo/runtime": "0.1.4",
     "@keystone-css/core": "0.3.6",
     "@keystone-css/studio": "0.3.6",
-    "fizmoo": "0.1.4"
+    "fizmoo": "workspace:*"
   },
   "devDependencies": {
     "@gfdigital/tsconfig": "0.3.1",

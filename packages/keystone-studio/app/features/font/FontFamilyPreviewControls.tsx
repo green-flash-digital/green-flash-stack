@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { makeSpace, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { Button } from "~/components/Button";

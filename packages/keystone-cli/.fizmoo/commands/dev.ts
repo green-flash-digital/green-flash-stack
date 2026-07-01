@@ -1,28 +1,24 @@
 import type { LogLevel } from "@keystone-css/core";
 import { Keystone } from "@keystone-css/core";
-import { type Action, defineOptions, type Meta } from "fizmoo";
+import { defineCommand } from "fizmoo";
 
-export const meta: Meta = {
+export default defineCommand({
   name: "dev",
-  description: "Watches for changes in the configuration and re-builds the tokens"
-};
-
-export const options = defineOptions({
-  "log-level": {
-    type: "string",
-    alias: "l",
-    description: "Set's the log level",
-    default: "info"
+  description: "Watches for changes in the configuration and re-builds the tokens",
+  options: {
+    "log-level": {
+      type: "string",
+      alias: "l",
+      description: "Set the log level",
+      default: "info"
+    }
+  },
+  action: async ({ options }) => {
+    const tokens = new Keystone({
+      logLevel: options["log-level"] as LogLevel,
+      env: "development",
+      autoInit: true
+    });
+    await tokens.dev();
   }
 });
-
-export const action: Action<never, typeof options> = async ({ options }) => {
-  const logLevel = (options?.["log-level"] as LogLevel) ?? "info";
-  const tokens = new Keystone({
-    logLevel,
-    env: "development",
-    autoInit: true
-  });
-
-  await tokens.dev();
-};

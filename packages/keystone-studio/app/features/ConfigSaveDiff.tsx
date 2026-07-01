@@ -1,9 +1,4 @@
-import {
-  makeSpace,
-  makeColor,
-  makeFontWeight,
-  makeRem
-} from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeFontWeight, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { DiffEditor } from "@monaco-editor/react";
 

@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import { makeSpace, makeFontFamily, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeFontFamily, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import type { CodeToHastOptions, BundledLanguage, BundledTheme } from "shiki";
 

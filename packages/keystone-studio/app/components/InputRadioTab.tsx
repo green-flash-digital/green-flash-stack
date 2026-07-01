@@ -9,7 +9,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset
-} from "@keystone@keystone-css/studio-tokens";
+} from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type InputRadioTabPropsNative = JSX.IntrinsicElements["input"];

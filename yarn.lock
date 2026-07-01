@@ -2230,7 +2230,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@fizmoo/core@npm:0.1.4, @fizmoo/core@workspace:*, @fizmoo/core@workspace:packages/fizmoo-core":
+"@fizmoo/core@workspace:*, @fizmoo/core@workspace:packages/fizmoo-core":
   version: 0.0.0-use.local
   resolution: "@fizmoo/core@workspace:packages/fizmoo-core"
   dependencies:
@@ -2248,16 +2248,6 @@ __metadata:
     zod: "npm:3.25.3"
   languageName: unknown
   linkType: soft
-
-"@fizmoo/runtime@npm:0.1.4":
-  version: 0.1.4
-  resolution: "@fizmoo/runtime@npm:0.1.4"
-  dependencies:
-    "@fizmoo/core": "npm:0.1.4"
-    ts-jolt: "npm:0.2.3"
-  checksum: 10c0/71a0cdc2914d68338ac6e926221425f5eed96c0fcb64baee6b750dbb03f2a6048ac693e27c4994217d43d20df13134aa80ab503c662f44c36f36ce1129b93950
-  languageName: node
-  linkType: hard
 
 "@fizmoo/sandbox@workspace:packages/fizmoo-sandbox":
   version: 0.0.0-use.local
@@ -2990,7 +2980,7 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@keystone-css/studio-tokens@npm:0.3.6, @keystone-css/studio-tokens@workspace:packages/keystone-studio-tokens":
+"@keystone-css/studio-tokens@workspace:packages/keystone-studio-tokens":
   version: 0.0.0-use.local
   resolution: "@keystone-css/studio-tokens@workspace:packages/keystone-studio-tokens"
   dependencies:
@@ -3011,7 +3001,6 @@ __metadata:
     "@babel/preset-typescript": "npm:7.27.1"
     "@chromatic-com/storybook": "npm:3.2.6"
     "@gfdigital/tsconfig": "npm:0.3.1"
-    "@keystone-css/studio-tokens": "npm:0.3.6"
     "@linaria/core": "npm:6.3.0"
     "@linaria/server": "npm:6.3.0"
     "@monaco-editor/react": "npm:4.7.0"
@@ -8908,7 +8897,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"fizmoo@npm:0.1.4, fizmoo@workspace:*, fizmoo@workspace:packages/fizmoo":
+"fizmoo@workspace:*, fizmoo@workspace:packages/fizmoo":
   version: 0.0.0-use.local
   resolution: "fizmoo@workspace:packages/fizmoo"
   dependencies:
@@ -10077,12 +10066,11 @@ __metadata:
   version: 0.0.0-use.local
   resolution: "keystone-css@workspace:packages/keystone-cli"
   dependencies:
-    "@fizmoo/runtime": "npm:0.1.4"
     "@gfdigital/tsconfig": "npm:0.3.1"
     "@keystone-css/core": "npm:0.3.6"
     "@keystone-css/studio": "npm:0.3.6"
     "@types/node": "npm:22.15.19"
-    fizmoo: "npm:0.1.4"
+    fizmoo: "workspace:*"
     typescript: "npm:5.8.3"
   bin:
     keystone: ./bin/index.js

@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import { makeCustom } from "@keystone@keystone-css/studio-tokens";
+import { makeCustom } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type ModalBodyPropsNative = JSX.IntrinsicElements["div"];

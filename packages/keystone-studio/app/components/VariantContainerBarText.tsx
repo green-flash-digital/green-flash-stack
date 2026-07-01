@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import { makeColor, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type VariantContainerBarTextPropsNative = JSX.IntrinsicElements["div"];

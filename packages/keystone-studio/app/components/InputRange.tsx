@@ -8,7 +8,7 @@ import {
   makeFontFamily,
   makeRem,
   makeReset
-} from "@keystone@keystone-css/studio-tokens";
+} from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputNumber } from "./InputNumber";

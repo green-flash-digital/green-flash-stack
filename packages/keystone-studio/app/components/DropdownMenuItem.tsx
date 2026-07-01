@@ -8,7 +8,7 @@ import {
   makeRem,
   makeColor,
   makeFontWeight
-} from "@keystone@keystone-css/studio-tokens";
+} from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import type { IconInspectCode } from "~/icons/IconInspectCode";

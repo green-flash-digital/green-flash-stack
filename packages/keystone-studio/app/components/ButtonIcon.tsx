@@ -2,7 +2,7 @@ import type { JSX, RefCallback } from "react";
 import { forwardRef, useCallback, useId } from "react";
 import { classes, useForwardedRef } from "react-hook-primitives";
 
-import { makeSpace, makeColor, makeRem, makeReset } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

@@ -2,7 +2,7 @@ import type { ChangeEventHandler } from "react";
 import { useCallback } from "react";
 
 import { manualFontStyles } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputGroup } from "~/components/InputGroup";

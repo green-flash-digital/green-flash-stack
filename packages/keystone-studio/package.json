@@ -28,7 +28,6 @@
     "serve": "yarn tsx ./scripts/serve.ts"
   },
   "dependencies": {
-    "@keystone-css/studio-tokens": "0.3.6",
     "@linaria/server": "6.3.0",
     "@monaco-editor/react": "4.7.0",
     "@react-router/express": "7.6.0",

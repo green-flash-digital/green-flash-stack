@@ -1,6 +1,6 @@
-import type { Meta } from "fizmoo";
+import { defineCommand } from "fizmoo";
 
-export const meta: Meta = {
+export default defineCommand({
   name: "add",
   description: "Scaffold new keystone-css assets into your .keystone/ directory"
-};
+});

@@ -1,32 +1,29 @@
 import path from "node:path";
 
 import { Keystone } from "@keystone-css/core";
-import { defineArgs, type Action, type Meta } from "fizmoo";
+import { defineCommand } from "fizmoo";
 import { writeFileRecursive } from "ts-jolt/node";
 
-export const meta: Meta = {
+export default defineCommand({
   name: "template",
-  description: "Scaffolds a new custom token template in .keystone/templates/"
-};
+  description: "Scaffolds a new custom token template in .keystone/templates/",
+  args: {
+    name: {
+      name: "name",
+      type: "string",
+      description: "Name of the template in kebab-case (e.g. make-border)",
+      required: true
+    }
+  },
+  action: async ({ args }) => {
+    const tokens = new Keystone({ logLevel: "info", autoInit: true });
+    const config = await tokens.getConfig();
 
-export const args = defineArgs({
-  name: {
-    name: "name",
-    type: "string",
-    description: "Name of the template in kebab-case (e.g. make-border)",
-    required: true
-  }
-});
+    const filePath = path.resolve(config.meta.dirPath, "templates", `${args.name}.ts`);
 
-export const action: Action<typeof args> = async ({ args }) => {
-  const tokens = new Keystone({ logLevel: "info", autoInit: true });
-  const config = await tokens.getConfig();
-
-  const filePath = path.resolve(config.meta.dirPath, "templates", `${args.name}.ts`);
-
-  await writeFileRecursive(
-    filePath,
-    `import { defineTemplate } from "@keystone-css/core";
+    await writeFileRecursive(
+      filePath,
+      `import { defineTemplate } from "@keystone-css/core";
 
 export default defineTemplate({
   name: "${args.name}",
@@ -43,7 +40,8 @@ export default defineTemplate({
   },
 });
 `
-  );
+    );
 
-  console.log(`Created .keystone/templates/${args.name}.ts`);
-};
+    console.log(`Created .keystone/templates/${args.name}.ts`);
+  }
+});

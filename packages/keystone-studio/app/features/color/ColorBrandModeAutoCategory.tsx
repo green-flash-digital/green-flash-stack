@@ -2,12 +2,7 @@ import type { ChangeEventHandler } from "react";
 import { useCallback, useId, useMemo, useRef, useState } from "react";
 import { classes } from "react-hook-primitives";
 
-import {
-  makeSpace,
-  makeRem,
-  makeColor,
-  makeFontWeight
-} from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem, makeColor, makeFontWeight } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import chroma from "chroma-js";
 import { match, P } from "ts-pattern";

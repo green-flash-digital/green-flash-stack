@@ -1,13 +1,7 @@
 import { useEffect, useRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import {
-  makeSpace,
-  makeColor,
-  makePx,
-  makeRem,
-  makeReset
-} from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "../Config.context";

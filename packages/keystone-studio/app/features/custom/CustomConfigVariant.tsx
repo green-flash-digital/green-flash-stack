@@ -2,7 +2,7 @@ import { useCallback } from "react";
 import { useToggle } from "react-hook-primitives";
 
 import { CustomVariantSchema } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

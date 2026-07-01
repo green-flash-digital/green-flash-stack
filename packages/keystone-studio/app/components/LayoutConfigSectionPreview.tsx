@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import { makeCustom, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeCustom, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type LayoutConfigSectionPreviewPropsNative = JSX.IntrinsicElements["div"];

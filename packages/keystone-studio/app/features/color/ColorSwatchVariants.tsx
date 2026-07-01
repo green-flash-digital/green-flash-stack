@@ -7,7 +7,7 @@ import type {
   KeystoneColorVariantBase,
   ColorVariantTypes
 } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

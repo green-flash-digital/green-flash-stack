@@ -1,6 +1,6 @@
 import { classes } from "react-hook-primitives";
 
-import { makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import type { Meta } from "@storybook/react";
 

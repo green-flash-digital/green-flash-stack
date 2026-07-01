@@ -2,12 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes, useDropdownTooltip } from "react-hook-primitives";
 
-import {
-  makeSpace,
-  makeColor,
-  makeFontFamily,
-  makeRem
-} from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeFontFamily, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import "react-hook-primitives/styles";
 

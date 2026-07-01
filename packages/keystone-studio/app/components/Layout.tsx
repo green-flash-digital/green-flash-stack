@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes } from "react-hook-primitives";
 
-import { makeFontFamily } from "@keystone@keystone-css/studio-tokens";
+import { makeFontFamily } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type LayoutPropsNative = JSX.IntrinsicElements["body"];

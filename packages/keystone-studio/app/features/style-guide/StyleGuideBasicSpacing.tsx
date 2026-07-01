@@ -1,13 +1,7 @@
 import type { JSX } from "react";
 import { classes } from "react-hook-primitives";
 
-import {
-  makeSpace,
-  makeColor,
-  makeFontFamily,
-  makePx,
-  makeRem
-} from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeFontFamily, makePx, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

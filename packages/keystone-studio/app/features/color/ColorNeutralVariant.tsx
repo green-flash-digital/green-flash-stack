@@ -3,7 +3,7 @@ import type { ChangeEventHandler, MouseEventHandler } from "react";
 import { useToggle } from "react-hook-primitives";
 
 import type { ColorVariantTypes } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
 

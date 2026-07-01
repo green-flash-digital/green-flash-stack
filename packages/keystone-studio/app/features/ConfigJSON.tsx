@@ -1,4 +1,4 @@
-import { makeCustom } from "@keystone@keystone-css/studio-tokens";
+import { makeCustom } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { Button } from "~/components/Button";

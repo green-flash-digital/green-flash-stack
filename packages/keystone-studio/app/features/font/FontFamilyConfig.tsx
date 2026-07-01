@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 import { manualFontStyles } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem, makeReset } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { exhaustiveMatchGuard, generateGUID } from "ts-jolt/isomorphic";
 

@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef, useCallback } from "react";
 import { classes, useToggle } from "react-hook-primitives";
 
-import { makeSpace, makeColor, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputGroup } from "~/components/InputGroup";

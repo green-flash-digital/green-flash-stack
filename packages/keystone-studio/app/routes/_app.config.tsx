@@ -1,6 +1,6 @@
 import { NavLink, Outlet, useLoaderData } from "react-router";
 
-import { makeSpace, makeColor, makeCustom, makeRem } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeCustom, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { tryHandle } from "ts-jolt/isomorphic";
 

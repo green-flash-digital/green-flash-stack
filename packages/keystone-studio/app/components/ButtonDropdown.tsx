@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { classes, useDropdownMenu } from "react-hook-primitives";
 
-import { makeSpace, makeColor, makeRem, makeReset } from "@keystone@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { IconArrowDown } from "~/icons/IconArrowDown";
