@@ -1,0 +1,54 @@
+{
+  "name": "@keystone-css/core",
+  "version": "0.3.6",
+  "description": "The JS API for the keystone-css package that is used to distribute schemas, utils, and the main Keystone class.",
+  "homepage": "https://github.com/keystone-css/keystone-css#readme",
+  "bugs": {
+    "url": "https://github.com/keystone-css/keystone-css/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drewdecarme@gmail.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/keystone-css/keystone-css.git",
+    "directory": "packages/core"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./dist/Keystone.js",
+    "./token-utils": "./dist/createTokenUtils.js",
+    "./templates": "./dist/templates/index.js",
+    "./utils": "./dist/utils/index.js",
+    "./schemas": "./dist/schemas/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build:lib": "yarn tsc --project tsconfig.build.json",
+    "build": "yarn tsc --project tsconfig.build.json",
+    "dev": "yarn build --watch"
+  },
+  "dependencies": {
+    "@gfdigital/tsconfig": "0.3.1",
+    "@inquirer/prompts": "7.5.1",
+    "chokidar": "4.0.3",
+    "chroma-js": "3.1.2",
+    "dotdir": "0.3.2",
+    "express": "5.1.0",
+    "globby": "14.1.0",
+    "isoscribe": "0.2.0",
+    "prettier": "3.5.3",
+    "ts-jolt": "0.2.3",
+    "ts-pattern": "5.7.1",
+    "typescript": "5.8.3",
+    "zod": "3.25.4"
+  },
+  "devDependencies": {
+    "@types/chroma-js": "3.1.1",
+    "@types/express": "5.0.2",
+    "@types/node": "22.15.19",
+    "tsx": "4.19.4",
+    "wrangler": "4.15.2"
+  }
+}

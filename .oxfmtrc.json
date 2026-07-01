@@ -12,12 +12,18 @@
   ],
   "trailingComma": "none",
   "singleQuote": false,
+  "tabWidth": 2,
+  "useTabs": false,
   "sortImports": {
     "newlinesBetween": true,
     "customGroups": [
       {
         "groupName": "react",
         "elementNamePattern": ["react", "react-**"]
+      },
+      {
+        "groupName": "greenflash",
+        "elementNamePattern": ["@greenflash/**"]
       }
     ],
     "groups": ["builtin", "react", "external", "internal", ["sibling", "parent", "index"]]

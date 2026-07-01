@@ -1,0 +1,4 @@
+{
+  "extends": "@gfdigital/tsconfig/library",
+  "include": ["./.fizmoo/commands/*"]
+}

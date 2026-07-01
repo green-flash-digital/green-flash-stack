@@ -1,0 +1,17 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "declarationDir": "dist",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": [
+    "src/*/index.ts",
+    "src/Keystone.ts",
+    "src/createTokenUtils.ts",
+    "src/TokenManifest.ts",
+    "src/defineTokens.ts"
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "name": "keystone-css",
+  "version": "0.3.6",
+  "description": "The missing piece between a design specification and developer tooling — typed CSS design tokens with generated utilities.",
+  "homepage": "https://github.com/keystone-css/keystone-css#readme",
+  "bugs": {
+    "url": "https://github.com/keystone-css/keystone-css/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/keystone-css/keystone-css.git"
+  },
+  "bin": {
+    "keystone": "./bin/index.js"
+  },
+  "type": "module",
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "yarn fizmoo dev",
+    "build": "yarn fizmoo build"
+  },
+  "dependencies": {
+    "@fizmoo/runtime": "0.1.4",
+    "@keystone-css/core": "0.3.6",
+    "@keystone-css/studio": "0.3.6",
+    "fizmoo": "0.1.4"
+  },
+  "devDependencies": {
+    "@gfdigital/tsconfig": "0.3.1",
+    "@types/node": "22.15.19",
+    "typescript": "5.8.3"
+  }
+}

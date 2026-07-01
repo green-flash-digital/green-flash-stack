@@ -1,0 +1,3 @@
+{
+  "extends": "@gfdigital/tsconfig/library"
+}

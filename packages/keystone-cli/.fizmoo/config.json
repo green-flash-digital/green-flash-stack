@@ -1,0 +1,7 @@
+{
+  "$schema": "https://schemas.greenflash.digital/fizmoo.json",
+  "name": "keystone",
+  "description": "Auto-generate TS functional utilities to easily recall & implement CSS design tokens",
+  "version": "0.0.1",
+  "commandsDir": "./commands"
+}
