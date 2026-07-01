@@ -2,19 +2,22 @@
   "name": "@stratum-ui/react",
   "version": "0.1.0",
   "description": "UI components and utilities for stratum",
-  "type": "module",
-  "sideEffects": false,
-  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
   "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
     "directory": "packages/stratum-ui/react"
   },
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
   "exports": {
     "./*": "./dist/*/index.js",
     "./css": "./dist/react.css"
@@ -22,9 +25,6 @@
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "tsc && vite build && yarn types",
     "dev": "vite build --watch",
@@ -33,6 +33,13 @@
     "test:ci": "vitest run",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@green-flash/reactor": "workspace:^",
+    "@green-flash/ts-utils": "workspace:^",
+    "@stratum-ui/core": "workspace:^",
+    "react": "^19.2.7",
+    "react-dom": "^19.2.7"
   },
   "devDependencies": {
     "@babel/core": "^8.0.1",
@@ -48,18 +55,9 @@
     "@types/react-dom": "^19.2.3",
     "@vitest/coverage-v8": "4.1.9",
     "@wyw-in-js/vite": "^2.1.0",
-    "eslint": "^10.6.0",
-    "eslint-plugin-storybook": "^10.4.6",
     "storybook": "^10.4.6",
     "typescript": "^6.0.3",
     "vite": "^8.1.0",
     "vitest": "^4.1.9"
-  },
-  "dependencies": {
-    "@green-flash/reactor": "workspace:^",
-    "@green-flash/ts-utils": "workspace:^",
-    "@stratum-ui/core": "workspace:^",
-    "react": "^19.2.7",
-    "react-dom": "^19.2.7"
   }
 }

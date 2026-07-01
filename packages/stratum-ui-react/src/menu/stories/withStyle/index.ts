@@ -10,10 +10,22 @@ const className = css`
   background: #fff;
   min-width: 200px;
   max-width: min(320px, calc(100vw - 24px));
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    "Liberation Sans",
+    sans-serif;
 
-  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.12), 0 6px 16px rgba(2, 6, 23, 0.1),
+  box-shadow:
+    0 14px 40px rgba(2, 6, 23, 0.12),
+    0 6px 16px rgba(2, 6, 23, 0.1),
     0 2px 6px rgba(2, 6, 23, 0.08);
 
   /* Popover baseline */
@@ -65,5 +77,5 @@ export const MenuWithStyle = new MenuController({
   className,
   position: "bottom-span-right",
   offset: 10,
-  load: () => import("./content.js"),
+  load: () => import("./content.js")
 });

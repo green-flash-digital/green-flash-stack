@@ -36,10 +36,11 @@ Runs immediately before a command's `action`. Receives a context object with the
 ```ts
 onBeforeAction: async ({ commandId, args, options }) => {
   console.log(`[${commandId}] starting...`);
-}
+};
 ```
 
 **Common uses:**
+
 - Logging / telemetry
 - Authentication / session checks
 - Setting up shared state (e.g. a database connection)
@@ -53,10 +54,11 @@ Runs after a command's `action` completes without throwing.
 ```ts
 onAfterAction: async ({ commandId, args, options }) => {
   console.log(`[${commandId}] done.`);
-}
+};
 ```
 
 **Common uses:**
+
 - Cleanup (e.g. close a database connection)
 - Logging duration
 - Posting success notifications
@@ -71,10 +73,11 @@ Runs when a command's `action` throws. The context is `Partial` because the erro
 onError: async (error, { commandId }) => {
   console.error(`[${commandId ?? "unknown"}] failed:`, error);
   process.exit(1);
-}
+};
 ```
 
 **Common uses:**
+
 - Centralized error reporting (Sentry, Datadog, etc.)
 - Printing formatted error messages
 - Ensuring a non-zero exit code

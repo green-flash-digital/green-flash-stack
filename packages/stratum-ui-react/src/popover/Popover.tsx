@@ -1,10 +1,8 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import type {
-  PopoverEngineOptions,
-  PopoverEngineState,
-} from "@stratum-ui/core";
-import { PopoverEngine } from "@stratum-ui/core";
 import { lazy, type ComponentType, type ReactNode } from "react";
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { PopoverEngineOptions, PopoverEngineState } from "@stratum-ui/core";
+import { PopoverEngine } from "@stratum-ui/core";
 
 import { PopoverProvider } from "./Popover.provider.js";
 import { usePopoverContext } from "./popover.usePopoverContext.js";
@@ -67,12 +65,7 @@ export abstract class Popover<S extends PopoverEngineState | undefined> {
   };
   #PopoverComponent: PopoverComponent | undefined;
 
-  constructor({
-    load,
-    className,
-    PopoverComponent,
-    ...options
-  }: PopoverOptions) {
+  constructor({ load, className, PopoverComponent, ...options }: PopoverOptions) {
     this.#engine = new PopoverEngine<S>(options);
     this.#className = className;
     this.#PopoverComponent = PopoverComponent;
@@ -100,7 +93,7 @@ export abstract class Popover<S extends PopoverEngineState | undefined> {
     this.preloadHandlers = {
       onMouseEnter: this.preloadContent,
       onMouseOver: this.preloadContent,
-      onFocus: this.preloadContent,
+      onFocus: this.preloadContent
     };
   }
 
@@ -113,7 +106,7 @@ export abstract class Popover<S extends PopoverEngineState | undefined> {
         this.#engine.enqueue({
           mutate: (draft) => {
             draft.isOpen = false;
-          },
+          }
         });
       }
     });
@@ -147,7 +140,7 @@ function PopoverRoot<S extends PopoverEngineState>({
   children,
   onMount,
   className,
-  PopoverComponent,
+  PopoverComponent
 }: {
   children: ReactNode;
   onMount: Popover<S>["onMount"];

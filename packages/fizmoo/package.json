@@ -2,32 +2,32 @@
   "name": "fizmoo",
   "version": "0.1.4",
   "description": "Effortlessly create 100% type-safe, self-documenting Node.js CLIs by simply adding files to your file system.",
+  "homepage": "https://github.com/green-flash-digital/fizmoo#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/fizmoo/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/green-flash-digital/fizmoo.git",
+    "directory": "packages/fizmoo"
+  },
+  "bin": "./bin/index.js",
   "type": "module",
   "sideEffects": false,
-  "publishConfig": {
-    "access": "public"
-  },
   "exports": {
     ".": "./dist/index.js"
   },
-  "bin": "./bin/index.js",
+  "publishConfig": {
+    "access": "public"
+  },
   "scripts": {
     "build": "yarn lib:build & yarn cli:build",
     "cli:build": "yarn tsx ./scripts/build-fizmoo-cli-with-fizmoo.ts",
     "cli:dev": "yarn lib:build && yarn tsx ./scripts/dev-fizmoo-cli-with-fizmoo.ts",
     "lib:build": "yarn tsc --project ./tsconfig.build.json"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/green-flash-digital/fizmoo.git",
-    "directory": "packages/fizmoo"
-  },
-  "author": "Drew DeCarme (drew@greenflash.digital)",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/fizmoo/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/fizmoo#readme",
   "dependencies": {
     "@fizmoo/core": "workspace:*"
   },

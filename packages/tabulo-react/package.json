@@ -2,33 +2,37 @@
   "name": "@tabulo/react",
   "version": "0.0.1",
   "description": "React bindings for Tabulo – seamless React state sync via useSyncExternalStore for Tabulo instances.",
-  "type": "module",
-  "sideEffects": false,
-  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
   "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
     "directory": "packages/tabulo-react"
   },
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "yarn tsc --project tsconfig.build.json",
     "dev": "yarn build --watch",
     "test": "vitest",
     "test:ci": "vitest run"
+  },
+  "dependencies": {
+    "react": "^19.2.7",
+    "tabulo": "workspace:^"
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
@@ -37,9 +41,5 @@
     "@vitest/coverage-v8": "4.1.9",
     "typescript": "^6.0.3",
     "vitest": "^4.1.9"
-  },
-  "dependencies": {
-    "react": "^19.2.7",
-    "tabulo": "workspace:^"
   }
 }

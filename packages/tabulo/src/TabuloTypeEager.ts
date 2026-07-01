@@ -1,6 +1,8 @@
 import { castDraft } from "immer";
 import { Logarhythm } from "logarhythm";
 
+import type { TabuloOptions } from "./Tabulo.js";
+import { Tabulo } from "./Tabulo.js";
 import {
   type TabuloEventMap,
   type TabuloExtendedState,
@@ -11,10 +13,8 @@ import {
   type TabuloRecord,
   type TabuloFilter,
   type TabuloSort,
-  logColor,
+  logColor
 } from "./tabulo.utils.js";
-import type { TabuloOptions } from "./Tabulo.js";
-import { Tabulo } from "./Tabulo.js";
 
 export type TabuloTypeEagerOptions<
   R extends TabuloRecord,
@@ -25,14 +25,14 @@ export type TabuloTypeEagerOptions<
 > = TabuloOptions<R, F, S, C, X>;
 
 export abstract class TabuloTypeEager<
-    R extends TabuloRecord,
-    F extends TabuloFilter,
-    S extends TabuloSort,
-    C extends TabuloColumnConfig<R>,
-    T extends TabuloColumnState<C>,
-    X extends TabuloExtendedState = undefined,
-    E extends TabuloEventMap = undefined
-  >
+  R extends TabuloRecord,
+  F extends TabuloFilter,
+  S extends TabuloSort,
+  C extends TabuloColumnConfig<R>,
+  T extends TabuloColumnState<C>,
+  X extends TabuloExtendedState = undefined,
+  E extends TabuloEventMap = undefined
+>
   extends Tabulo<R, F, S, C, T, X, E>
   implements TabuloMethods
 {
@@ -43,14 +43,11 @@ export abstract class TabuloTypeEager<
 
   abstract onMount(node: HTMLDivElement): Promise<void>;
 
-  constructor(
-    options: TabuloTypeEagerOptions<R, F, S, C, X>,
-    fetcher: TabuloFetcher<R>
-  ) {
+  constructor(options: TabuloTypeEagerOptions<R, F, S, C, X>, fetcher: TabuloFetcher<R>) {
     super(options);
     this.log = new Logarhythm({
       name: `${options.name}:engine:eager`,
-      pillColor: logColor.type,
+      pillColor: logColor.type
     });
     this.log.info("Creating engine...");
     this.#fetcher = fetcher;
@@ -73,7 +70,7 @@ export abstract class TabuloTypeEager<
       mutate: (draft) => {
         draft.data.isRefreshing = true;
         draft.data.pendingReason = "refresh";
-      },
+      }
     });
 
     this.log.info("Resetting scrolling and fetching new records...");
@@ -98,7 +95,7 @@ export abstract class TabuloTypeEager<
         draft.data.records = castDraft(res.records);
         draft.data.meta.loadingMore = false;
         draft.data.meta.totalRecords = res.totalRecords;
-      },
+      }
     });
   }
 
@@ -145,10 +142,10 @@ export abstract class TabuloTypeEager<
             meta: {
               loadingMore: false,
               totalRecords: res.totalRecords,
-              hasRecords: true,
-            },
+              hasRecords: true
+            }
           };
-        },
+        }
       });
     } catch (error) {
       this._handleRequestError(error);

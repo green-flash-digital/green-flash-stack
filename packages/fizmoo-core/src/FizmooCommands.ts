@@ -1,16 +1,18 @@
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
+
+import { printAsBullets } from "isoscribe";
+import pc from "picocolors";
 import { exhaustiveMatchGuard, tryHandle } from "ts-jolt/isomorphic";
+
 import {
   type Args,
   type Options,
   type FizmooCommandEntry,
   type FizmooManifestEntry,
-  type FizmooUserConfig,
+  type FizmooUserConfig
 } from "./_fizmoo.types.js";
 import { LOG } from "./_fizmoo.utils.js";
-import { writeFile } from "node:fs/promises";
-import { printAsBullets } from "isoscribe";
-import pc from "picocolors";
 import { fizmooConstants } from "./_fizmoo.utils.public.js";
 
 type MalformedCommandMode =
@@ -36,10 +38,10 @@ export class FizmooCommands {
     this.rootCommandId = fizmooConstants.COMMAND_ROOT;
     this._errorReport = {
       MISSING_COMMANDS: new Set(),
-      MALFORMED_COMMAND: new Map(),
+      MALFORMED_COMMAND: new Map()
     };
     this._knownSourcePaths = new Set(
-      this._flattenEntries(this._config.commands).map((e) => e.sourcePath),
+      this._flattenEntries(this._config.commands).map((e) => e.sourcePath)
     );
   }
 
@@ -49,7 +51,7 @@ export class FizmooCommands {
     return {
       packageJsonPath: path.resolve(rootDir, "./package.json"),
       binDir,
-      outDir: binDir,
+      outDir: binDir
     };
   }
 
@@ -58,22 +60,16 @@ export class FizmooCommands {
    * The `out` key maps source file positions to `commands/<rel-path>` in outDir.
    */
   get entryPoints(): { in: string; out: string }[] {
-    return this._flattenEntries(this._config.commands).map(
-      ({ sourcePath }) => ({
-        in: sourcePath,
-        out: this._outKey(sourcePath),
-      }),
-    );
+    return this._flattenEntries(this._config.commands).map(({ sourcePath }) => ({
+      in: sourcePath,
+      out: this._outKey(sourcePath)
+    }));
   }
 
-  private _flattenEntries(
-    entries: FizmooCommandEntry[],
-  ): { sourcePath: string }[] {
+  private _flattenEntries(entries: FizmooCommandEntry[]): { sourcePath: string }[] {
     return entries.flatMap((entry) => {
       const sourcePath = path.resolve(this._dirPath, entry.file);
-      const children = entry.commands
-        ? this._flattenEntries(entry.commands)
-        : [];
+      const children = entry.commands ? this._flattenEntries(entry.commands) : [];
       return [{ sourcePath }, ...children];
     });
   }
@@ -112,7 +108,7 @@ export class FizmooCommands {
   private async _buildManifestFromTree(
     entries: FizmooCommandEntry[],
     parentCommandId: string | null,
-    ancestors: string[],
+    ancestors: string[]
   ): Promise<void> {
     for (const entry of entries) {
       const sourcePath = path.resolve(this._dirPath, entry.file);
@@ -124,13 +120,12 @@ export class FizmooCommands {
       const mod = await import(`${absoluteOutPath}?t=${Date.now()}`);
       const def = mod.default;
 
-      const name: string =
-        def?.name ?? path.basename(entry.file, path.extname(entry.file));
+      const name: string = def?.name ?? path.basename(entry.file, path.extname(entry.file));
       const commandId = parentCommandId ? `${parentCommandId}.${name}` : name;
 
       if (name === this._config.name) {
         this._addMalformedCommandError(srcRelPath, {
-          type: "CLI_NAME_CONFLICT",
+          type: "CLI_NAME_CONFLICT"
         });
       }
 
@@ -148,20 +143,17 @@ export class FizmooCommands {
               type: "boolean",
               required: false,
               alias: "h",
-              description: "Display the help menu",
+              description: "Display the help menu"
             },
-            ...def?.options,
+            ...def?.options
           },
           hasAction: typeof def?.action === "function",
-          help: "",
-        },
+          help: ""
+        }
       });
 
       if (entry.commands?.length) {
-        await this._buildManifestFromTree(entry.commands, commandId, [
-          ...ancestors,
-          commandId,
-        ]);
+        await this._buildManifestFromTree(entry.commands, commandId, [...ancestors, commandId]);
       }
     }
   }
@@ -173,11 +165,7 @@ export class FizmooCommands {
   private async writeManifestToDisk() {
     LOG.checkpointStart("Manifest:writing");
     const manifestPath = path.resolve(this.dirs.binDir, "fizmoo.manifest.json");
-    const manifestContent = JSON.stringify(
-      Object.fromEntries(this.manifest.entries()),
-      null,
-      2,
-    );
+    const manifestContent = JSON.stringify(Object.fromEntries(this.manifest.entries()), null, 2);
     const res = await tryHandle(writeFile)(manifestPath, manifestContent);
     if (res.hasError) throw LOG.fatal(res.error);
     LOG.checkpointEnd();
@@ -202,24 +190,23 @@ export class FizmooCommands {
         if (!command.properties.name) {
           this._addMalformedCommandError(command.src, {
             type: "MISSING_ATTRIBUTE",
-            description: "Missing a `name` in defineCommand.",
+            description: "Missing a `name` in defineCommand."
           });
         }
         if (!command.properties.description) {
           this._addMalformedCommandError(command.src, {
             type: "MISSING_ATTRIBUTE",
-            description: "Missing a `description` in defineCommand.",
+            description: "Missing a `description` in defineCommand."
           });
         }
 
         const hasSubCommands = allCommandIds.some(
-          (cmdId) => cmdId !== commandId && cmdId.startsWith(commandId + "."),
+          (cmdId) => cmdId !== commandId && cmdId.startsWith(commandId + ".")
         );
         if (!hasSubCommands && !command.properties.hasAction) {
           this._addMalformedCommandError(command.src, {
             type: "MISSING_ATTRIBUTE",
-            description:
-              "Missing an `action` in defineCommand. Leaf commands must have an action.",
+            description: "Missing an `action` in defineCommand. Leaf commands must have an action."
           });
         }
       }
@@ -231,18 +218,14 @@ export class FizmooCommands {
     LOG.checkpointEnd();
   }
 
-  private _addMalformedCommandError(
-    filePath: string,
-    error: MalformedCommandMode,
-  ) {
-    const currentError =
-      this._errorReport.MALFORMED_COMMAND.get(filePath) ?? [];
+  private _addMalformedCommandError(filePath: string, error: MalformedCommandMode) {
+    const currentError = this._errorReport.MALFORMED_COMMAND.get(filePath) ?? [];
 
     function getErrorText() {
       switch (error.type) {
         case "CLI_NAME_CONFLICT":
           return `${pc.bold(
-            "CLI_NAME_CONFLICT",
+            "CLI_NAME_CONFLICT"
           )}: A command cannot have the same name as the CLI itself. Rename it in defineCommand.`;
         case "MISSING_ATTRIBUTE":
           return `${pc.bold("MISSING_ATTRIBUTE")}: ${error.description}`;
@@ -251,10 +234,7 @@ export class FizmooCommands {
       }
     }
 
-    this._errorReport.MALFORMED_COMMAND.set(
-      filePath,
-      currentError.concat(getErrorText()),
-    );
+    this._errorReport.MALFORMED_COMMAND.set(filePath, currentError.concat(getErrorText()));
   }
 
   private _printErrorReport() {
@@ -274,10 +254,7 @@ ${printAsBullets([...this._errorReport.MISSING_COMMANDS.values()])}
 
     if (hasInvalidCommands) {
       const errors = [...this._errorReport.MALFORMED_COMMAND.entries()]
-        .map(
-          ([filePath, value]) =>
-            `${pc.underline(filePath)}${printAsBullets(value)}`,
-        )
+        .map(([filePath, value]) => `${pc.underline(filePath)}${printAsBullets(value)}`)
         .join("\n\n");
       report = report.concat(`
 ${pc.bold(pc.redBright("Invalid Commands:"))}
@@ -287,9 +264,7 @@ ${errors}
     }
 
     throw LOG.fatal(
-      new Error(
-        `There was an error when validating the generated fizmoo manifest.\n${report}\n`,
-      ),
+      new Error(`There was an error when validating the generated fizmoo manifest.\n${report}\n`)
     );
   }
 
@@ -299,7 +274,7 @@ ${errors}
 
   private _enrichCommandHelp(
     commandId: string,
-    commandEntry: FizmooManifestEntry,
+    commandEntry: FizmooManifestEntry
   ): FizmooManifestEntry {
     LOG.debug(`"${commandId}" - Building help menu...`);
     const helpMenu: string[] = [];
@@ -312,14 +287,14 @@ ${errors}
     LOG.debug(`"${commandId}" - Building help menu... done`);
     return {
       ...commandEntry,
-      properties: { ...commandEntry.properties, help },
+      properties: { ...commandEntry.properties, help }
     };
   }
 
   private _enrichCommandHelpUsage(
     commandId: string,
     { subCommands, properties: { args, options } }: FizmooManifestEntry,
-    helpMenu: string[],
+    helpMenu: string[]
   ) {
     helpMenu.push(this.formatHelpCommandTitle("Usage:"));
 
@@ -340,12 +315,11 @@ ${errors}
         }
         return accum;
       },
-      { required: "", optional: " [args]" },
+      { required: "", optional: " [args]" }
     );
 
     const subCommandStr = (subCommands ?? []).length > 0 ? " <subcommand>" : "";
-    const argStr =
-      argEntries.length === 0 ? "" : `${argVals.required}${argVals.optional}`;
+    const argStr = argEntries.length === 0 ? "" : `${argVals.required}${argVals.optional}`;
     const optStr = optionEntries.length === 0 ? "" : " [--options]";
 
     helpMenu.push(`  ${expression}${subCommandStr}${argStr}${optStr}`);
@@ -354,25 +328,21 @@ ${errors}
 
   private _enrichCommandHelpDescription(
     { properties: { description } }: FizmooManifestEntry,
-    helpMenu: string[],
+    helpMenu: string[]
   ) {
     helpMenu.push(this.formatHelpCommandTitle("Description:"));
     helpMenu.push(`  ${description}`);
     helpMenu.push("");
   }
 
-  private _enrichCommandHelpSubCommands(
-    { subCommands }: FizmooManifestEntry,
-    helpMenu: string[],
-  ) {
+  private _enrichCommandHelpSubCommands({ subCommands }: FizmooManifestEntry, helpMenu: string[]) {
     const subCmdsIds = subCommands ?? [];
     if (subCmdsIds.length === 0) return;
 
     helpMenu.push(this.formatHelpCommandTitle("Sub-commands:"));
 
     const maxLength = subCmdsIds.reduce<number>((accum, subCmdId) => {
-      const length = (this.manifest.get(subCmdId)?.properties.name ?? "")
-        .length;
+      const length = (this.manifest.get(subCmdId)?.properties.name ?? "").length;
       return length > accum ? length : accum;
     }, 0);
 
@@ -388,7 +358,7 @@ ${errors}
 
   private _enrichCommandHelpArgs(
     { properties: { args } }: FizmooManifestEntry,
-    helpMenu: string[],
+    helpMenu: string[]
   ) {
     const argsDef: Args = args ?? {};
     const argEntries = Object.entries(argsDef);
@@ -398,7 +368,7 @@ ${errors}
 
     const maxLength = argEntries.reduce<number>(
       (accum, [argName]) => (argName.length > accum ? argName.length : accum),
-      0,
+      0
     );
 
     for (const [argName, arg] of argEntries) {
@@ -409,9 +379,7 @@ ${errors}
         case "string": {
           if (arg.choices) choices = `choices: [${arg.choices.join(", ")}]`;
           if (arg.length) {
-            const parts = Object.entries(arg.length).map(
-              ([k, v]) => `${k}: ${v}`,
-            );
+            const parts = Object.entries(arg.length).map(([k, v]) => `${k}: ${v}`);
             validations = `length: [${parts.join(", ")}]`;
           }
           break;
@@ -419,9 +387,7 @@ ${errors}
         case "number": {
           if (arg.choices) choices = `choices: [${arg.choices.join(", ")}]`;
           if (arg.range) {
-            const parts = Object.entries(arg.range).map(
-              ([k, v]) => `${k}: ${v}`,
-            );
+            const parts = Object.entries(arg.range).map(([k, v]) => `${k}: ${v}`);
             validations = `range: [${parts.join(", ")}]`;
           }
           break;
@@ -434,24 +400,17 @@ ${errors}
 
       const type = arg.required ? `<${arg.type}>` : `[${arg.type}]`;
       const requirement = arg.required ? "required" : "optional";
-      const defaulted =
-        arg.default !== undefined ? `default: ${arg.default}` : null;
+      const defaulted = arg.default !== undefined ? `default: ${arg.default}` : null;
       const descRoot = `${arg.description} ${type}`;
-      const descVals = [requirement, choices, validations, defaulted]
-        .filter(Boolean)
-        .join(", ");
-      helpMenu.push(
-        `  ${argName.padEnd(maxLength)}  ${descRoot} ${pc.dim(
-          `(${descVals})`,
-        )}`,
-      );
+      const descVals = [requirement, choices, validations, defaulted].filter(Boolean).join(", ");
+      helpMenu.push(`  ${argName.padEnd(maxLength)}  ${descRoot} ${pc.dim(`(${descVals})`)}`);
     }
     helpMenu.push("");
   }
 
   private _enrichCommandHelpOptions(
     { properties: { options } }: FizmooManifestEntry,
-    helpMenu: string[],
+    helpMenu: string[]
   ) {
     const optsDef: Options = options ?? {};
     const optEntries = Object.entries(optsDef);
@@ -471,16 +430,11 @@ ${errors}
       const type = option.required ? `<${option.type}>` : `[${option.type}]`;
       const optionName = `${name}${alias}`;
       // No nested parens: "default: true" not "(default: true)"
-      const defaultVal =
-        option.default !== undefined ? `default: ${option.default}` : null;
+      const defaultVal = option.default !== undefined ? `default: ${option.default}` : null;
       const requirement = option.required ? "required" : "optional";
-      const descProps = pc.dim(
-        `(${[requirement, defaultVal].filter(Boolean).join(", ")})`,
-      );
+      const descProps = pc.dim(`(${[requirement, defaultVal].filter(Boolean).join(", ")})`);
       helpMenu.push(
-        `  ${optionName.padEnd(maxLength)}  ${
-          option.description
-        } ${type} ${descProps}`,
+        `  ${optionName.padEnd(maxLength)}  ${option.description} ${type} ${descProps}`
       );
     }
     helpMenu.push("");
@@ -488,7 +442,7 @@ ${errors}
 
   private _enrichCommandSubCommands(
     commandId: string,
-    commandEntry: FizmooManifestEntry,
+    commandEntry: FizmooManifestEntry
   ): FizmooManifestEntry {
     LOG.debug(`"${commandId}" - Finding sub-commands...`);
     const allCommandIds = [...this.manifest.keys()];
@@ -518,8 +472,8 @@ ${errors}
         options: undefined,
         args: undefined,
         hasAction: false,
-        help: "",
-      },
+        help: ""
+      }
     });
 
     await this._buildManifestFromTree(this._config.commands, null, []);

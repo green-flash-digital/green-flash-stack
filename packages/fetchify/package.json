@@ -2,6 +2,26 @@
   "name": "@greenflash/fetchify",
   "version": "0.1.0",
   "description": "A complete typed HTTP toolkit — isomorphic fetch client, typed error system, SSR relay utilities, and Zod validation. Works in browsers, Node.js, and Cloudflare Workers.",
+  "keywords": [
+    "cloudflare-workers",
+    "discriminated-union",
+    "error-handling",
+    "fetch",
+    "hono",
+    "http-client",
+    "http-error",
+    "isomorphic",
+    "react-router",
+    "relay",
+    "result",
+    "ssr",
+    "typed",
+    "zod"
+  ],
+  "license": "MIT",
+  "files": [
+    "dist"
+  ],
   "type": "module",
   "main": "./dist/index.js",
   "types": "./dist/index.d.ts",
@@ -11,9 +31,6 @@
       "default": "./dist/index.js"
     }
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "tsc --project tsconfig.build.json",
     "typecheck": "tsc --noEmit",
@@ -22,34 +39,17 @@
     "test:coverage": "vitest run --coverage",
     "clean": "rm -rf dist"
   },
-  "keywords": [
-    "fetch",
-    "http-client",
-    "typed",
-    "zod",
-    "ssr",
-    "isomorphic",
-    "result",
-    "http-error",
-    "error-handling",
-    "relay",
-    "react-router",
-    "hono",
-    "cloudflare-workers",
-    "discriminated-union"
-  ],
-  "license": "MIT",
   "dependencies": {
     "@green-flash/ts-utils": "workspace:*",
     "@greenflash/http-errors": "workspace:*"
-  },
-  "peerDependencies": {
-    "zod": ">=4.0.0"
   },
   "devDependencies": {
     "@vitest/coverage-v8": "^4.1.9",
     "typescript": "5.9.3",
     "vitest": "^4.1.9",
     "zod": "4.3.6"
+  },
+  "peerDependencies": {
+    "zod": ">=4.0.0"
   }
 }

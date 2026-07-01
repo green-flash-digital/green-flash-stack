@@ -20,9 +20,7 @@ describe("kebabToPascalCase", () => {
   });
 
   it("should handle mixed hyphens and spaces", () => {
-    expect(kebabToPascalCase("mix-of-hyphens and spaces")).toBe(
-      "MixOfHyphensAndSpaces"
-    );
+    expect(kebabToPascalCase("mix-of-hyphens and spaces")).toBe("MixOfHyphensAndSpaces");
   });
 
   it("should return an empty string if input is empty", () => {

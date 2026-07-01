@@ -33,9 +33,9 @@ export type ModalOptions = {
  * optionally seed typed state) and `closeModal()` to run the controlled close
  * sequence before updating state.
  */
-export class ModalEngine<
-  S extends ModalState | undefined
-> extends TransactionStore<S & { isOpen: boolean }> {
+export class ModalEngine<S extends ModalState | undefined> extends TransactionStore<
+  S & { isOpen: boolean }
+> {
   #dialogNode: HTMLDialogElement | null = null;
   #options: Required<ModalOptions>;
 
@@ -44,7 +44,7 @@ export class ModalEngine<
     this.#options = {
       ...options,
       closeOnBackdropClick: options?.closeOnBackdropClick ?? false,
-      closeOnEscapePress: options?.closeOnEscapePress ?? false,
+      closeOnEscapePress: options?.closeOnEscapePress ?? false
     };
 
     this.launch = this.launch.bind(this);
@@ -110,7 +110,7 @@ export class ModalEngine<
         draft.isOpen = true;
         if (isEventLike(eventOrState)) return;
         Object.assign(draft, eventOrState);
-      },
+      }
     });
   }
 
@@ -144,7 +144,7 @@ export class ModalEngine<
     this.enqueue({
       mutate: (draft) => {
         draft.isOpen = false;
-      },
+      }
     });
     dialog.removeEventListener("cancel", this.#onCancel);
     dialog.removeEventListener("close", this.#onClose);

@@ -34,9 +34,7 @@ export function classes(
     | null
     | undefined
     | Record<string, boolean>
-    | Array<
-        string | number | boolean | null | undefined | Record<string, boolean>
-      >
+    | Array<string | number | boolean | null | undefined | Record<string, boolean>>
   )[]
 ): string {
   const classNames: string[] = [];

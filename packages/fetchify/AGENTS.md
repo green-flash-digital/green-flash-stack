@@ -46,7 +46,7 @@ export class PlaylistsClient extends ApiClient {
       method: "POST",
       path: "",
       body: [CreatePlaylistSchema, body],
-      request,
+      request
     });
   }
 
@@ -122,10 +122,9 @@ Pass `args.request` into every client call. This forwards the session cookie for
 // ✅ Correct
 export async function loader(args: Route.LoaderArgs) {
   const api = new ApiClientSSR({ baseURL: args.context.env.API_URL });
-  return relay.fromResult(
-    await api.playlists.getList(args.request),
-    (playlists) => ({ playlists })
-  );
+  return relay.fromResult(await api.playlists.getList(args.request), (playlists) => ({
+    playlists
+  }));
 }
 
 // ❌ Wrong — no request forwarding, no relay
@@ -137,12 +136,13 @@ export async function loader(args: Route.LoaderArgs) {
 ```
 
 **Parallel fetch:**
+
 ```typescript
 export async function loader(args: Route.LoaderArgs) {
   const api = new ApiClientSSR({ baseURL: args.context.env.API_URL });
   const [playlistResult, photosResult] = await Promise.all([
     api.playlists.getSingle(args.params.id, args.request),
-    api.playlists.getPhotos(args.params.id, args.request),
+    api.playlists.getPhotos(args.params.id, args.request)
   ]);
 
   if (!playlistResult.success) return relay.error(playlistResult.error);
@@ -152,6 +152,7 @@ export async function loader(args: Route.LoaderArgs) {
 ```
 
 **Early bail-out:**
+
 ```typescript
 export async function loader(args: Route.LoaderArgs) {
   const session = await getSession(args.request);
@@ -233,12 +234,13 @@ import { cookies } from "next/headers";
 async function makeAuthRequest() {
   const cookieStore = await cookies();
   return new Request("https://internal", {
-    headers: { cookie: cookieStore.toString() },
+    headers: { cookie: cookieStore.toString() }
   });
 }
 ```
 
 **Server Component:**
+
 ```typescript
 export default async function PlaylistsPage() {
   const api = new PlaylistsClient({ baseURL: process.env.API_URL! });
@@ -249,6 +251,7 @@ export default async function PlaylistsPage() {
 ```
 
 **Server Action:**
+
 ```typescript
 "use server";
 export async function createPlaylistAction(_: unknown, formData: FormData) {
@@ -268,6 +271,7 @@ export async function createPlaylistAction(_: unknown, formData: FormData) {
 Omit the `request` argument. `ApiClient` sends `credentials: "include"` automatically so the cookie jar handles auth.
 
 **With React Query (preferred):**
+
 ```typescript
 export function usePlaylistsQuery() {
   return useQuery({
@@ -276,12 +280,13 @@ export function usePlaylistsQuery() {
       const result = await api.getList(); // no request arg
       if (!result.success) throw result.error;
       return result.data;
-    },
+    }
   });
 }
 ```
 
 **Event handler:**
+
 ```typescript
 async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
   e.preventDefault();
@@ -291,7 +296,10 @@ async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     return;
   }
   const result = await api.create(parsed.data); // no request arg
-  if (!result.success) { setError(result.error); return; }
+  if (!result.success) {
+    setError(result.error);
+    return;
+  }
   // handle success
 }
 ```
@@ -332,31 +340,31 @@ app.onError((err, c) => {
 
 ### Error type reference
 
-| Situation | Method |
-|---|---|
-| No valid session | `HTTPError.unauthenticated()` |
-| Signed in but not permitted | `HTTPError.unauthorized(msg)` |
-| DB row missing | `HTTPError.notFound(msg)` |
-| Bad input / failed precondition | `HTTPError.badRequest(msg)` |
-| ZodError from manual parse | `HTTPError.validation(zodError)` |
-| Resource already exists | `HTTPError.conflict(msg)` |
-| Our code or integration failed | `HTTPError.serverError(reason)` |
-| Maintenance / upstream down | `HTTPError.serviceUnavailable()` |
-| Rate limit exceeded | `HTTPError.tooManyRequests()` |
+| Situation                       | Method                           |
+| ------------------------------- | -------------------------------- |
+| No valid session                | `HTTPError.unauthenticated()`    |
+| Signed in but not permitted     | `HTTPError.unauthorized(msg)`    |
+| DB row missing                  | `HTTPError.notFound(msg)`        |
+| Bad input / failed precondition | `HTTPError.badRequest(msg)`      |
+| ZodError from manual parse      | `HTTPError.validation(zodError)` |
+| Resource already exists         | `HTTPError.conflict(msg)`        |
+| Our code or integration failed  | `HTTPError.serverError(reason)`  |
+| Maintenance / upstream down     | `HTTPError.serviceUnavailable()` |
+| Rate limit exceeded             | `HTTPError.tooManyRequests()`    |
 
 ---
 
 ## Common agent mistakes to avoid
 
-| Mistake | Correct approach |
-|---|---|
-| `fetch(url)` directly in a loader | Extend `ApiClient`, call `this._get` |
-| `try { } catch (e) { }` around API calls | Check `result.success`; `_get`/`_mutate` never throw |
-| `return new Response(...)` from a loader | `return relay.data(...)` or `return relay.error(...)` |
-| `throw new Error(...)` in a loader | `return relay.error(HTTPError.badRequest(...))` |
-| `if (result.error)` to check failure | `if (!result.success)` — `result.error` doesn't exist on success |
-| Inventing `{ success, message }` shapes | Use `ErrorResponse` — `error_type` + `status` + `message` |
-| Skipping `args.request` in SSR | Always pass it — session cookie lives there |
-| `deserializeError` everywhere | Only use it when you need `instanceof` checks; plain `error_type` comparison is simpler |
-| Checking `error.status === 404` | Check `error.error_type === "not_found"` — status codes are unreliable over the wire |
-| Custom error classes | Use `HTTPError.*` factory methods; extend `ApiError` only for domain-specific types |
+| Mistake                                  | Correct approach                                                                        |
+| ---------------------------------------- | --------------------------------------------------------------------------------------- |
+| `fetch(url)` directly in a loader        | Extend `ApiClient`, call `this._get`                                                    |
+| `try { } catch (e) { }` around API calls | Check `result.success`; `_get`/`_mutate` never throw                                    |
+| `return new Response(...)` from a loader | `return relay.data(...)` or `return relay.error(...)`                                   |
+| `throw new Error(...)` in a loader       | `return relay.error(HTTPError.badRequest(...))`                                         |
+| `if (result.error)` to check failure     | `if (!result.success)` — `result.error` doesn't exist on success                        |
+| Inventing `{ success, message }` shapes  | Use `ErrorResponse` — `error_type` + `status` + `message`                               |
+| Skipping `args.request` in SSR           | Always pass it — session cookie lives there                                             |
+| `deserializeError` everywhere            | Only use it when you need `instanceof` checks; plain `error_type` comparison is simpler |
+| Checking `error.status === 404`          | Check `error.error_type === "not_found"` — status codes are unreliable over the wire    |
+| Custom error classes                     | Use `HTTPError.*` factory methods; extend `ApiError` only for domain-specific types     |

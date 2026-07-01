@@ -1,4 +1,3 @@
-
 import { dirname } from "path";
 import { fileURLToPath } from "url";
 
@@ -14,6 +13,6 @@ function getAbsolutePath(value: string): any {
 const config: StorybookConfig = {
   stories: ["../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"],
   addons: [],
-  framework: getAbsolutePath("@storybook/react-vite"),
+  framework: getAbsolutePath("@storybook/react-vite")
 };
 export default config;

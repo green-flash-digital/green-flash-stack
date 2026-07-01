@@ -177,7 +177,7 @@ export const modalStyleVariants: { [key in ModalVariants]: string } = {
       max-width: 100%;
       max-height: 100%;
     }
-  `,
+  `
 };
 
 export const modalStylesRoot = css`

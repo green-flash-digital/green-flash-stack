@@ -1,5 +1,5 @@
-import path from "node:path";
 import fs from "node:fs/promises";
+import path from "node:path";
 
 import wyw from "@wyw-in-js/vite";
 import { defineConfig } from "vite";
@@ -43,23 +43,23 @@ export default defineConfig(async () => {
         displayName: process.env.NODE_ENV === "production",
         include: ["**/*.{ts,tsx}"],
         babelOptions: {
-          presets: ["@babel/preset-typescript", "@babel/preset-react"],
-        },
-      }),
+          presets: ["@babel/preset-typescript", "@babel/preset-react"]
+        }
+      })
     ],
     build: {
       lib: {
         entry,
         formats: ["es"],
-        fileName: (_, entryName) => entryName.concat(".js"),
+        fileName: (_, entryName) => entryName.concat(".js")
       },
       outDir: path.resolve(__dirname, "./dist"),
       rollupOptions: {
         output: {
-          preserveModules: true,
+          preserveModules: true
         },
-        external: dependencyKeys.concat(["@linaria/core", "react/jsx-runtime"]),
-      },
-    },
+        external: dependencyKeys.concat(["@linaria/core", "react/jsx-runtime"])
+      }
+    }
   });
 });

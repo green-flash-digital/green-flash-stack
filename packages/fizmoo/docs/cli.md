@@ -33,10 +33,10 @@ bin/
 
 ### Options
 
-| Flag | Alias | Type | Default | Description |
-|---|---|---|---|---|
-| `--debug` | `-d` | boolean | `false` | Enable verbose build logging |
-| `--autoInit` | `-ai` | boolean | `true` | Bootstrap `.fizmoo/` if not found |
+| Flag         | Alias | Type    | Default | Description                       |
+| ------------ | ----- | ------- | ------- | --------------------------------- |
+| `--debug`    | `-d`  | boolean | `false` | Enable verbose build logging      |
+| `--autoInit` | `-ai` | boolean | `true`  | Bootstrap `.fizmoo/` if not found |
 
 ### autoInit
 
@@ -60,10 +60,10 @@ Everything `fizmoo build` does, plus sets up an esbuild watch context. Any chang
 
 Same as `fizmoo build`:
 
-| Flag | Alias | Type | Default | Description |
-|---|---|---|---|---|
-| `--debug` | `-d` | boolean | `false` | Enable verbose logging |
-| `--autoInit` | `-ai` | boolean | `true` | Bootstrap `.fizmoo/` if not found |
+| Flag         | Alias | Type    | Default | Description                       |
+| ------------ | ----- | ------- | ------- | --------------------------------- |
+| `--debug`    | `-d`  | boolean | `false` | Enable verbose logging            |
+| `--autoInit` | `-ai` | boolean | `true`  | Bootstrap `.fizmoo/` if not found |
 
 ### Typical workflow
 

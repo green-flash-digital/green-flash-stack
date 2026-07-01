@@ -1,5 +1,5 @@
-import { Logarhythm } from "logarhythm";
 import { TransactionStore, EventEmitter } from "@green-flash/reactor";
+import { Logarhythm } from "logarhythm";
 
 import {
   type TabuloEventMap,
@@ -12,19 +12,19 @@ import {
   type TabuloExtendedState,
   type TabuloSort,
   type TabuloState,
-  logColor,
+  logColor
 } from "./tabulo.utils.js";
 import { TabuloManagerColumn } from "./TabuloManagerColumn.js";
 import type { TabuloConfigFilter } from "./TabuloManagerFilter.js";
 import { TabuloManagerFilter } from "./TabuloManagerFilter.js";
 import type { TabuloConfigGroup } from "./TabuloManagerGroup.js";
 import { TabuloManagerGroup } from "./TabuloManagerGroup.js";
+import type { TabuloConfigMeta } from "./TabuloManagerMeta.js";
+import { TabuloManagerMeta } from "./TabuloManagerMeta.js";
 import type { TabuloConfigRecords } from "./TabuloManagerRecords.js";
 import { TabuloManagerRecords } from "./TabuloManagerRecords.js";
 import type { TabuloConfigSort } from "./TabuloManagerSort.js";
 import { TabuloManagerSort } from "./TabuloManagerSort.js";
-import type { TabuloConfigMeta } from "./TabuloManagerMeta.js";
-import { TabuloManagerMeta } from "./TabuloManagerMeta.js";
 
 export type TabuloOptions<
   R extends TabuloRecord,
@@ -106,7 +106,7 @@ export class Tabulo<
     super({ name: o.name, logColor: logColor.engine });
     this.#log = new Logarhythm({
       name: `${o.name}:engine`,
-      pillColor: logColor.engine,
+      pillColor: logColor.engine
     });
     this.#log.info("Initializing state");
     this.#store = new TransactionStore<TabuloState<R, F, S, C, T, X>>({
@@ -125,10 +125,10 @@ export class Tabulo<
         meta: {
           loadingMore: false,
           totalRecords: 0,
-          hasRecords: true,
-        },
+          hasRecords: true
+        }
       },
-      meta: { tick: 0 },
+      meta: { tick: 0 }
     });
 
     this.debugName = o.name;
@@ -174,7 +174,7 @@ export class Tabulo<
     this.queueStateUpdate({
       mutate: (draft) => {
         draft.data.loadingMessage = message;
-      },
+      }
     });
   }
 
@@ -194,10 +194,10 @@ export class Tabulo<
           meta: {
             loadingMore: false,
             totalRecords: 0,
-            hasRecords: false,
-          },
+            hasRecords: false
+          }
         };
-      },
+      }
     });
   }
 }

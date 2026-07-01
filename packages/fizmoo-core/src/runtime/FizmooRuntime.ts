@@ -1,13 +1,15 @@
+import path from "node:path";
+
+import { exhaustiveMatchGuard, tryHandleSync } from "ts-jolt/isomorphic";
+
 import {
   type Args,
   type FizmooManifest,
   type FizmooManifestEntry,
   type Option,
-  type Options,
+  type Options
 } from "../_fizmoo.types.js";
 import { fizmooConstants } from "../_fizmoo.utils.public.js";
-import path from "node:path";
-import { exhaustiveMatchGuard, tryHandleSync } from "ts-jolt/isomorphic";
 import { RuntimeError } from "./utils/util.error.js";
 
 type RuntimeOption =
@@ -28,9 +30,7 @@ export class FizmooRuntime {
     this._commandOptions = new Map();
     this._commandArgs = new Map();
     this._errors = new RuntimeError({
-      cliName:
-        this._manifest.get(fizmooConstants.COMMAND_ROOT)?.properties.name ??
-        "<your cli>",
+      cliName: this._manifest.get(fizmooConstants.COMMAND_ROOT)?.properties.name ?? "<your cli>"
     });
     this._parseExpression = this._parseExpression.bind(this);
     this._setCommandOptions = this._setCommandOptions.bind(this);
@@ -52,7 +52,7 @@ export class FizmooRuntime {
         optionsMap.set(optionId, {
           type: "expanded",
           value: optionValue,
-          raw: rawOption,
+          raw: rawOption
         });
         continue;
       }
@@ -62,7 +62,7 @@ export class FizmooRuntime {
         optionsMap.set(optionId, {
           type: "alias",
           value: optionValue,
-          raw: rawOption,
+          raw: rawOption
         });
         continue;
       }
@@ -166,11 +166,7 @@ export class FizmooRuntime {
         case "expanded":
           optionDef = optionsDef[rOptionId];
           if (!optionDef) {
-            throw this._errors.OPTION_NOT_FOUND(
-              rOptionId,
-              "expanded",
-              optionsDef
-            );
+            throw this._errors.OPTION_NOT_FOUND(rOptionId, "expanded", optionsDef);
           }
           break;
 
@@ -202,7 +198,7 @@ export class FizmooRuntime {
             throw this._errors.OPTION_VALIDATION_FAILED({
               optionId: canonicalId,
               message: `Invalid value "${rOption.value}" for boolean option "--${canonicalId}".`,
-              suggestion: `Use --${canonicalId}=true, --${canonicalId}=false, or just --${canonicalId} (defaults to true).`,
+              suggestion: `Use --${canonicalId}=true, --${canonicalId}=false, or just --${canonicalId} (defaults to true).`
             });
           }
 
@@ -216,14 +212,14 @@ export class FizmooRuntime {
           if (typeof value !== "string") {
             throw this._errors.OPTION_VALIDATION_FAILED({
               optionId: canonicalId,
-              message: `Option "--${canonicalId}" requires a string value.`,
+              message: `Option "--${canonicalId}" requires a string value.`
             });
           }
 
           if (optionDef.validate !== undefined && !optionDef.validate(value)) {
             throw this._errors.OPTION_VALIDATION_FAILED({
               optionId: canonicalId,
-              message: `Validation failed for option "--${canonicalId}".`,
+              message: `Validation failed for option "--${canonicalId}".`
             });
           }
 
@@ -232,29 +228,26 @@ export class FizmooRuntime {
         }
 
         case "number": {
-          const value =
-            rOption.value !== undefined
-              ? Number(rOption.value)
-              : optionDef.default;
+          const value = rOption.value !== undefined ? Number(rOption.value) : optionDef.default;
 
           if (typeof value === "undefined") {
             throw this._errors.OPTION_VALIDATION_FAILED({
               optionId: canonicalId,
-              message: `Option "--${canonicalId}" requires a numeric value.`,
+              message: `Option "--${canonicalId}" requires a numeric value.`
             });
           }
 
           if (Number.isNaN(value)) {
             throw this._errors.OPTION_VALIDATION_FAILED({
               optionId: canonicalId,
-              message: `Option "--${canonicalId}" must be a number, got "${rOption.value}".`,
+              message: `Option "--${canonicalId}" must be a number, got "${rOption.value}".`
             });
           }
 
           if (optionDef.validate !== undefined && !optionDef.validate(value)) {
             throw this._errors.OPTION_VALIDATION_FAILED({
               optionId: canonicalId,
-              message: `Validation failed for option "--${canonicalId}".`,
+              message: `Validation failed for option "--${canonicalId}".`
             });
           }
 
@@ -274,7 +267,7 @@ export class FizmooRuntime {
       if (optionDef.required) {
         throw this._errors.OPTION_VALIDATION_FAILED({
           optionId,
-          message: `Missing required option "--${optionId}".`,
+          message: `Missing required option "--${optionId}".`
         });
       }
 
@@ -288,10 +281,7 @@ export class FizmooRuntime {
    * Validates and coerces each positional arg against its definition (by index),
    * then stores the typed value in _commandArgs.
    */
-  private _setCommandArgs(
-    commandDef: FizmooManifestEntry,
-    runtimeArgs: string[]
-  ): void {
+  private _setCommandArgs(commandDef: FizmooManifestEntry, runtimeArgs: string[]): void {
     const argsDef: Args = commandDef.properties.args ?? {};
     const argEntries = Object.entries(argsDef);
 
@@ -301,7 +291,7 @@ export class FizmooRuntime {
       throw this._errors.ARG_VALIDATION_FAILED({
         argId: unexpected,
         message: `Unexpected argument "${unexpected}".`,
-        suggestion: `This command accepts ${argEntries.length} argument(s): ${argEntries.map(([k]) => k).join(", ")}.`,
+        suggestion: `This command accepts ${argEntries.length} argument(s): ${argEntries.map(([k]) => k).join(", ")}.`
       });
     }
 
@@ -314,7 +304,7 @@ export class FizmooRuntime {
         if (argDef.required) {
           throw this._errors.ARG_VALIDATION_FAILED({
             argId,
-            message: `Missing required argument "${argId}".`,
+            message: `Missing required argument "${argId}".`
           });
         }
         if ("default" in argDef && argDef.default !== undefined) {
@@ -325,8 +315,7 @@ export class FizmooRuntime {
 
       switch (argDef.type) {
         case "boolean": {
-          const value =
-            rawValue.toLowerCase() === "true" || rawValue === "1";
+          const value = rawValue.toLowerCase() === "true" || rawValue === "1";
           this._commandArgs.set(argId, value ?? argDef.default ?? false);
           break;
         }
@@ -335,26 +324,26 @@ export class FizmooRuntime {
           if (argDef.length?.min !== undefined && rawValue.length < argDef.length.min) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
-              message: `Argument "${argId}" must be at least ${argDef.length.min} characters.`,
+              message: `Argument "${argId}" must be at least ${argDef.length.min} characters.`
             });
           }
           if (argDef.length?.max !== undefined && rawValue.length > argDef.length.max) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
-              message: `Argument "${argId}" must be at most ${argDef.length.max} characters.`,
+              message: `Argument "${argId}" must be at most ${argDef.length.max} characters.`
             });
           }
           if (argDef.choices && !argDef.choices.includes(rawValue)) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
               message: `"${rawValue}" is not a valid value for "${argId}".`,
-              suggestion: `Must be one of: ${argDef.choices.join(", ")}.`,
+              suggestion: `Must be one of: ${argDef.choices.join(", ")}.`
             });
           }
           if (argDef.validate && !argDef.validate(rawValue)) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
-              message: `Validation failed for argument "${argId}".`,
+              message: `Validation failed for argument "${argId}".`
             });
           }
           this._commandArgs.set(argId, rawValue);
@@ -366,32 +355,32 @@ export class FizmooRuntime {
           if (Number.isNaN(parsedValue)) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
-              message: `Argument "${argId}" must be a number, got "${rawValue}".`,
+              message: `Argument "${argId}" must be a number, got "${rawValue}".`
             });
           }
           if (argDef.range?.min !== undefined && parsedValue < argDef.range.min) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
-              message: `Argument "${argId}" must be at least ${argDef.range.min}.`,
+              message: `Argument "${argId}" must be at least ${argDef.range.min}.`
             });
           }
           if (argDef.range?.max !== undefined && parsedValue > argDef.range.max) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
-              message: `Argument "${argId}" must be at most ${argDef.range.max}.`,
+              message: `Argument "${argId}" must be at most ${argDef.range.max}.`
             });
           }
           if (argDef.choices && !argDef.choices.includes(parsedValue)) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
               message: `"${rawValue}" is not a valid value for "${argId}".`,
-              suggestion: `Must be one of: ${argDef.choices.join(", ")}.`,
+              suggestion: `Must be one of: ${argDef.choices.join(", ")}.`
             });
           }
           if (argDef.validate && !argDef.validate(parsedValue)) {
             throw this._errors.ARG_VALIDATION_FAILED({
               argId,
-              message: `Validation failed for argument "${argId}".`,
+              message: `Validation failed for argument "${argId}".`
             });
           }
           // FIX: number value was validated but never stored
@@ -417,8 +406,7 @@ export class FizmooRuntime {
    * drill down with `<cli> <subcommand> --help=json`.
    */
   private _printHelpJson(commandId: string, commandDef: FizmooManifestEntry) {
-    const cliName =
-      this._manifest.get(fizmooConstants.COMMAND_ROOT)?.properties.name ?? "";
+    const cliName = this._manifest.get(fizmooConstants.COMMAND_ROOT)?.properties.name ?? "";
     const commandPath =
       commandId === fizmooConstants.COMMAND_ROOT
         ? cliName
@@ -438,7 +426,7 @@ export class FizmooRuntime {
         return {
           id,
           name: sub.properties.name,
-          description: sub.properties.description,
+          description: sub.properties.description
         };
       })
       .filter((x): x is NonNullable<typeof x> => x !== null);
@@ -450,7 +438,7 @@ export class FizmooRuntime {
           description: description ?? "",
           options: userOptions,
           args: args ?? {},
-          subCommands: subCommandDetails,
+          subCommands: subCommandDetails
         },
         null,
         2
@@ -501,7 +489,7 @@ export class FizmooRuntime {
 
     await action({
       options: Object.fromEntries(this._commandOptions.entries()),
-      args: Object.fromEntries(this._commandArgs.entries()),
+      args: Object.fromEntries(this._commandArgs.entries())
     });
   }
 }

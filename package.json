@@ -1,68 +1,65 @@
 {
   "name": "green-flash-stack",
-  "private": true,
   "version": "1.0.0",
+  "private": true,
   "description": "A modern, TypeScript-first technology stack of reusable tools, engines, and developer utilities—maintained in one cohesive monorepo and published as standalone packages",
-  "type": "module",
   "keywords": [
-    "green-flash",
-    "green-flash-stack",
-    "monorepo",
-    "typescript",
-    "nodejs",
-    "devtools",
-    "tooling",
-    "cli",
-    "workspace",
-    "packages",
-    "utilities",
-    "framework",
-    "typescript-tools",
     "build-tools",
-    "shared-libraries",
+    "cli",
     "developer-experience",
+    "devtools",
     "dx",
     "ecosystem",
+    "framework",
+    "green-flash",
+    "green-flash-stack",
     "modules",
-    "toolchain"
+    "monorepo",
+    "nodejs",
+    "packages",
+    "shared-libraries",
+    "toolchain",
+    "tooling",
+    "typescript",
+    "typescript-tools",
+    "utilities",
+    "workspace"
   ],
-  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
   "license": "ISC",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git"
   },
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
   "workspaces": {
     "packages": [
       "packages/**"
     ]
   },
-  "packageManager": "yarn@4.17.0",
+  "type": "module",
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "test": "turbo run test",
     "test:ci": "turbo run test:ci",
-    "lint": "turbo run lint",
+    "format": "oxfmt .",
+    "format:check": "oxfmt . --check",
+    "lint": "oxlint .",
+    "lint:fix": "oxlint . --fix",
     "typecheck": "turbo run typecheck",
     "clean": "turbo run clean",
     "release": "yarn changeset publish"
   },
   "devDependencies": {
     "@changesets/cli": "^2.31.0",
-    "@eslint/js": "^10.0.1",
-    "eslint": "^10.6.0",
-    "eslint-import-resolver-typescript": "^4.4.5",
-    "eslint-plugin-import": "^2.32.0",
-    "eslint-plugin-react": "^7.37.5",
-    "eslint-plugin-react-hooks": "^7.1.1",
-    "globals": "^17.7.0",
+    "oxfmt": "^0.57.0",
+    "oxlint": "^0.17.0",
     "turbo": "^2.10.0",
-    "typescript": "^6.0.3",
-    "typescript-eslint": "^8.62.0"
-  }
+    "typescript": "^6.0.3"
+  },
+  "packageManager": "yarn@4.17.0"
 }

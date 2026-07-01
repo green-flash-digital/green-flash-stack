@@ -1,15 +1,15 @@
-import { randSentence } from "@ngneat/falso";
 import { css } from "@linaria/core";
-import { classes } from "@stratum-ui/core";
+import { randSentence } from "@ngneat/falso";
 import type { Meta } from "@storybook/react-vite";
+import { classes } from "@stratum-ui/core";
 
 import { Toaster } from "./Toaster.js";
 
 const meta: Meta = {
   title: "Toasts",
   parameters: {
-    layout: "centered",
-  },
+    layout: "centered"
+  }
 };
 export default meta;
 
@@ -17,16 +17,14 @@ const ToastBasic = new Toaster({
   toastDuration: 3,
   ToastComponent({ message }) {
     return <div>{message}</div>;
-  },
+  }
 });
 
 export function Basic() {
   return (
     <>
       <ToastBasic.Render />
-      <button onClick={() => ToastBasic.success({ message: randSentence() })}>
-        Success
-      </button>
+      <button onClick={() => ToastBasic.success({ message: randSentence() })}>Success</button>
     </>
   );
 }
@@ -36,8 +34,18 @@ const toastStyles = css`
   padding: 1rem;
   background: rebeccapurple;
   color: white;
-  font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
-    Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    system-ui,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Oxygen,
+    Ubuntu,
+    Cantarell,
+    "Open Sans",
+    "Helvetica Neue",
+    sans-serif;
   border-radius: 0.5rem;
   &.error {
     background-color: red;
@@ -82,29 +90,23 @@ const ToasterWithTopDown = new Toaster({
       * {
         box-sizing: border-box;
       }
-    `,
+    `
   },
   ToastComponent({ message, variant }) {
-    return (
-      <div className={classes(toastStyles, toastStylesSlideDown, variant)}>
-        {message}
-      </div>
-    );
-  },
+    return <div className={classes(toastStyles, toastStylesSlideDown, variant)}>{message}</div>;
+  }
 });
 export function WithTopDown() {
   return (
     <>
       <ToasterWithTopDown.Render />
-      <button
-        onClick={() => ToasterWithTopDown.success({ message: randSentence() })}
-      >
+      <button onClick={() => ToasterWithTopDown.success({ message: randSentence() })}>
         Success
       </button>
       <button
         onClick={() =>
           ToasterWithTopDown.error({
-            message: "error!\n".concat(randSentence()),
+            message: "error!\n".concat(randSentence())
           })
         }
       >
@@ -152,31 +154,23 @@ const ToasterWithBottomRightUp = new Toaster({
       }
 
       ${stylesToastSlideIn};
-    `,
+    `
   },
   ToastComponent({ message, variant }) {
-    return (
-      <div className={classes(toastStyles, stylesToastSlideIn, variant)}>
-        {message}
-      </div>
-    );
-  },
+    return <div className={classes(toastStyles, stylesToastSlideIn, variant)}>{message}</div>;
+  }
 });
 export function WithBottomRight() {
   return (
     <>
       <ToasterWithBottomRightUp.Render />
-      <button
-        onClick={() =>
-          ToasterWithBottomRightUp.success({ message: randSentence() })
-        }
-      >
+      <button onClick={() => ToasterWithBottomRightUp.success({ message: randSentence() })}>
         Success
       </button>
       <button
         onClick={() =>
           ToasterWithBottomRightUp.error({
-            message: "error!\n".concat(randSentence()),
+            message: "error!\n".concat(randSentence())
           })
         }
       >

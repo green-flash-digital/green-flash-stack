@@ -1,16 +1,18 @@
-import { input } from "@inquirer/prompts";
-import { Isoscribe } from "isoscribe";
 import { access, readFile, rm } from "node:fs/promises";
 import path from "node:path";
+
+import { input } from "@inquirer/prompts";
+import { default as esbuild } from "esbuild";
+import { Isoscribe } from "isoscribe";
 import { tryHandle } from "ts-jolt/isomorphic";
 import { writeFileRecursive } from "ts-jolt/node";
-import { default as esbuild } from "esbuild";
+
 import type { FizmooUserConfig } from "./_fizmoo.types.js";
 
 export const LOG = new Isoscribe({
   name: "fizmoo",
   logFormat: "string",
-  logLevel: "debug",
+  logLevel: "debug"
 });
 
 /**
@@ -38,13 +40,8 @@ export async function findFizmooConfigFile(startDir?: string): Promise<{
  * Compiles `.fizmoo/config.ts` with esbuild in-process, imports the result,
  * and returns the resolved FizmooUserConfig from the default export.
  */
-export async function loadFizmooConfig(
-  configFile: string
-): Promise<FizmooUserConfig> {
-  const tempFile = path.resolve(
-    path.dirname(configFile),
-    `_fizmoo_config_${Date.now()}.mjs`
-  );
+export async function loadFizmooConfig(configFile: string): Promise<FizmooUserConfig> {
+  const tempFile = path.resolve(path.dirname(configFile), `_fizmoo_config_${Date.now()}.mjs`);
   try {
     await esbuild.build({
       entryPoints: [configFile],
@@ -53,12 +50,12 @@ export async function loadFizmooConfig(
       format: "esm",
       platform: "node",
       packages: "external",
-      logLevel: "silent",
+      logLevel: "silent"
     });
     const mod = await import(tempFile);
     if (!mod.default) {
       throw new Error(
-        'config.ts must have a default export: `export default defineConfig({ ... })`'
+        "config.ts must have a default export: `export default defineConfig({ ... })`"
       );
     }
     return mod.default as FizmooUserConfig;
@@ -74,7 +71,7 @@ export async function bootstrap() {
   const rootDir = await input({
     message: `Where would you like to create your ".fizmoo/" directory?`,
     required: true,
-    default: process.cwd(),
+    default: process.cwd()
   });
 
   const packageJsonPath = path.resolve(rootDir, "./package.json");
@@ -93,14 +90,13 @@ export async function bootstrap() {
   }
 
   name = await input({
-    message:
-      "What would you like the CLI name to be? (This will also be the binary name)",
-    default: name || undefined,
+    message: "What would you like the CLI name to be? (This will also be the binary name)",
+    default: name || undefined
   });
 
   description = await input({
     message: "Please provide a short description of the CLI",
-    default: description || undefined,
+    default: description || undefined
   });
 
   const configContent = `import { defineConfig, command } from "fizmoo";
@@ -114,10 +110,7 @@ export default defineConfig({
 });
 `;
 
-  const configRes = await tryHandle(writeFileRecursive)(
-    fizmooConfigPath,
-    configContent
-  );
+  const configRes = await tryHandle(writeFileRecursive)(fizmooConfigPath, configContent);
   if (configRes.hasError) throw configRes.error;
 
   const firstCommandPath = path.resolve(commandsDir, "./start-here.ts");

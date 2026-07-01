@@ -1,6 +1,8 @@
 import { castDraft } from "immer";
 import { Logarhythm } from "logarhythm";
 
+import type { TabuloOptions } from "./Tabulo.js";
+import { Tabulo } from "./Tabulo.js";
 import {
   type TabuloEventMap,
   type TabuloExtendedState,
@@ -12,14 +14,10 @@ import {
   type TabuloFetcher,
   type TabuloMethods,
   type TabuloRecord,
-  logColor,
+  logColor
 } from "./tabulo.utils.js";
-import type { TabuloOptions } from "./Tabulo.js";
-import { Tabulo } from "./Tabulo.js";
 
-export type TabuloTypeInfiniteStrategy =
-  | { strategy: "manual" }
-  | { strategy: "auto" };
+export type TabuloTypeInfiniteStrategy = { strategy: "manual" } | { strategy: "auto" };
 
 export type TabuloTypeInfiniteOptions<
   R extends TabuloRecord,
@@ -30,14 +28,14 @@ export type TabuloTypeInfiniteOptions<
 > = TabuloOptions<R, F, S, C, X> & TabuloTypeInfiniteStrategy;
 
 export abstract class TabuloTypeInfinite<
-    R extends TabuloRecord,
-    F extends TabuloFilter,
-    S extends TabuloSort,
-    C extends TabuloColumnConfig<R>,
-    T extends TabuloColumnState<C>,
-    X extends TabuloExtendedState = undefined,
-    E extends TabuloEventMap = undefined
-  >
+  R extends TabuloRecord,
+  F extends TabuloFilter,
+  S extends TabuloSort,
+  C extends TabuloColumnConfig<R>,
+  T extends TabuloColumnState<C>,
+  X extends TabuloExtendedState = undefined,
+  E extends TabuloEventMap = undefined
+>
   extends Tabulo<R, F, S, C, T, X, E>
   implements TabuloMethods
 {
@@ -51,14 +49,11 @@ export abstract class TabuloTypeInfinite<
   #tabularNode: HTMLElement | null = null;
   #fetcher: TabuloFetcher<R>;
 
-  constructor(
-    options: TabuloTypeInfiniteOptions<R, F, S, C, X>,
-    fetcher: TabuloFetcher<R>
-  ) {
+  constructor(options: TabuloTypeInfiniteOptions<R, F, S, C, X>, fetcher: TabuloFetcher<R>) {
     super(options);
     this.log = new Logarhythm({
       name: `${options.name}:engine:infinite`,
-      pillColor: logColor.type,
+      pillColor: logColor.type
     });
     this.log.info("Creating engine...");
     this.#fetcher = fetcher;
@@ -110,7 +105,7 @@ export abstract class TabuloTypeInfinite<
         draft.data.records = castDraft(res.records);
         draft.data.meta.loadingMore = false;
         draft.data.meta.totalRecords = res.totalRecords;
-      },
+      }
     });
   }
 
@@ -149,7 +144,7 @@ export abstract class TabuloTypeInfinite<
       // any records exist in the DB
       const [res, baseRes] = await Promise.all([
         this.#fetcher(1),
-        this.#fetcher(1, { ignoreState: true }),
+        this.#fetcher(1, { ignoreState: true })
       ]);
       this.#requestHasMorePages = res.moreRecordsAvailable;
       this.#requestPage = 2;
@@ -164,12 +159,10 @@ export abstract class TabuloTypeInfinite<
           draft.data.meta.hasRecords = baseRes.totalRecords !== 0;
 
           if (this.records.areAllSelected()) {
-            this.log.debug(
-              "All records have been selected. Selecting all newly fetched records"
-            );
+            this.log.debug("All records have been selected. Selecting all newly fetched records");
             draft.records.selected = res.records.map((record) => record.id);
           }
-        },
+        }
       });
     } catch (error) {
       this._handleRequestError(error);
@@ -205,7 +198,7 @@ export abstract class TabuloTypeInfinite<
       this.queueStateUpdate({
         mutate: (draft) => {
           draft.data.meta.loadingMore = true;
-        },
+        }
       });
 
       // Get the records
@@ -231,11 +224,9 @@ export abstract class TabuloTypeInfinite<
         },
         onAfterCommit: () => {
           if (!wereRecordsPreviouslyAllSelected) return;
-          this.log.info(
-            "Records we're previously all selected. Selecting all new records"
-          );
+          this.log.info("Records we're previously all selected. Selecting all new records");
           this.records.selectAll();
-        },
+        }
       });
 
       return res;
@@ -259,7 +250,7 @@ export abstract class TabuloTypeInfinite<
     const options: ManagerMutationOptions = {
       emit: false,
       optimistic: false,
-      notify: false,
+      notify: false
     };
 
     this.#requestPage = 1;
@@ -290,10 +281,10 @@ export abstract class TabuloTypeInfinite<
           meta: {
             loadingMore: false,
             totalRecords: 0,
-            hasRecords: true,
-          },
+            hasRecords: true
+          }
         };
-      },
+      }
     });
   }
 
@@ -339,7 +330,7 @@ export abstract class TabuloTypeInfinite<
           this.loadNextPage();
         },
         {
-          threshold: 0.0, // will fire even when 1px shows in the DOM
+          threshold: 0.0 // will fire even when 1px shows in the DOM
         }
       );
     }

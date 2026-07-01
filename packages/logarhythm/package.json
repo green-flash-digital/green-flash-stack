@@ -2,36 +2,36 @@
   "name": "logarhythm",
   "version": "0.0.1",
   "description": "An isomorphic logging utility for any JavaScript runtime, providing structured, styled, and extensible logs.",
-  "type": "module",
-  "sideEffects": false,
-  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "keywords": [
+    "console",
+    "isomorphic",
+    "logger",
+    "logging",
+    "structured-logging",
+    "typescript"
+  ],
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
   "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
     "directory": "packages/logarhythm"
   },
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
-  "keywords": [
-    "logging",
-    "logger",
-    "isomorphic",
-    "structured-logging",
-    "typescript",
-    "console"
+  "files": [
+    "dist"
   ],
+  "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "tsc --project ./tsconfig.build.json",
     "dev": "yarn build --watch",

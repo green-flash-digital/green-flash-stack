@@ -1,5 +1,6 @@
 import { describe, it, expect, vi, beforeEach } from "vitest";
 import { z } from "zod";
+
 import { ApiClient } from "../ApiClient.js";
 
 // ─── Test subclass ─────────────────────────────────────────────────────────────
@@ -25,7 +26,7 @@ class TestClient extends ApiClient {
       retries: opts.retries ?? 0,
       timeout: opts.timeout,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      query: opts.query as any,
+      query: opts.query as any
     });
   }
 
@@ -43,7 +44,7 @@ class TestClient extends ApiClient {
       method: opts.method ?? "POST",
       request: opts.request,
       retries: opts.retries,
-      timeout: opts.timeout,
+      timeout: opts.timeout
     });
   }
 }
@@ -53,7 +54,7 @@ class TestClient extends ApiClient {
 function makeJsonResponse(body: unknown, status = 200): Response {
   return new Response(JSON.stringify(body), {
     status,
-    headers: { "Content-Type": "application/json" },
+    headers: { "Content-Type": "application/json" }
   });
 }
 
@@ -153,7 +154,7 @@ describe("constructor headers option", () => {
     const mock = mockFetchWith(makeJsonResponse({ ok: true }));
     const client = new TestClient({
       baseURL: "https://api.example.com",
-      headers: { "X-Api-Key": "secret123", "X-Tenant": "acme" },
+      headers: { "X-Api-Key": "secret123", "X-Tenant": "acme" }
     });
 
     await client.callGet("/test");
@@ -168,7 +169,7 @@ describe("constructor headers option", () => {
     const mock = mockFetchWith(makeJsonResponse({ id: 1 }));
     const client = new TestClient({
       baseURL: "https://api.example.com",
-      headers: { Authorization: "Bearer token" },
+      headers: { Authorization: "Bearer token" }
     });
 
     await client.callMutate("/test", { method: "POST" });
@@ -194,7 +195,7 @@ describe("AbortSignal forwarding", () => {
     const controller = new AbortController();
     const request = new Request("https://app.example.com/loader", {
       signal: controller.signal,
-      headers: { Cookie: "session=abc" },
+      headers: { Cookie: "session=abc" }
     });
 
     const client = new TestClient({ baseURL: "https://api.example.com" });
@@ -330,7 +331,7 @@ describe("timeout", () => {
 
     const controller = new AbortController();
     const request = new Request("https://app.example.com/loader", {
-      signal: controller.signal,
+      signal: controller.signal
     });
 
     const client = new TestClient({ baseURL: "https://api.example.com", timeout: 5000 });
@@ -371,7 +372,9 @@ describe("response parsing", () => {
   it("returns undefined data when Content-Length is 0", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(new Response("", { status: 200, headers: { "Content-Length": "0" } }))
+      vi
+        .fn()
+        .mockResolvedValue(new Response("", { status: 200, headers: { "Content-Length": "0" } }))
     );
     const result = await client.callGet("/test");
     expect(result).toEqual({ success: true, data: undefined });
@@ -407,7 +410,9 @@ describe("response parsing", () => {
   it("returns unknown error on non-ok non-JSON body", async () => {
     vi.stubGlobal(
       "fetch",
-      vi.fn().mockResolvedValue(makeResponse("Not found", { status: 404, contentType: "text/plain" }))
+      vi
+        .fn()
+        .mockResolvedValue(makeResponse("Not found", { status: 404, contentType: "text/plain" }))
     );
     const result = await client.callGet("/test");
     expect(result.success).toBe(false);

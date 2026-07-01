@@ -1,8 +1,8 @@
 import { css } from "@linaria/core";
 import { classes } from "@stratum-ui/core";
 
-import { MenuController } from "../../MenuController.js";
 import type { PopoverComponentProps } from "../../../popover/Popover.js";
+import { MenuController } from "../../MenuController.js";
 
 const styles = css`
   margin: 0;
@@ -12,10 +12,22 @@ const styles = css`
   background: #fff;
   min-width: 200px;
   max-width: min(320px, calc(100vw - 24px));
-  font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto,
-    "Helvetica Neue", Arial, "Noto Sans", "Liberation Sans", sans-serif;
+  font-family:
+    Inter,
+    ui-sans-serif,
+    system-ui,
+    -apple-system,
+    Segoe UI,
+    Roboto,
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    "Liberation Sans",
+    sans-serif;
 
-  box-shadow: 0 14px 40px rgba(2, 6, 23, 0.12), 0 6px 16px rgba(2, 6, 23, 0.1),
+  box-shadow:
+    0 14px 40px rgba(2, 6, 23, 0.12),
+    0 6px 16px rgba(2, 6, 23, 0.1),
     0 2px 6px rgba(2, 6, 23, 0.08);
 
   /* Popover baseline */
@@ -63,11 +75,7 @@ const styles = css`
   }
 `;
 
-export function PopoverComponent({
-  children,
-  className,
-  ref,
-}: PopoverComponentProps) {
+export function PopoverComponent({ children, className, ref }: PopoverComponentProps) {
   return (
     <div ref={ref} className={classes(styles, className)}>
       {children}
@@ -80,5 +88,5 @@ export const MenuWithCustomPopoverComponent = new MenuController({
   PopoverComponent,
   position: "bottom-span-right",
   offset: 10,
-  load: () => import("./content.js"),
+  load: () => import("./content.js")
 });

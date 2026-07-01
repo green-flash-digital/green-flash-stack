@@ -1,19 +1,18 @@
 import { type ComponentType, lazy, type ReactNode, Suspense } from "react";
+
 import type { ModalOptions, ModalState } from "@stratum-ui/core";
 import { ModalEngine } from "@stratum-ui/core";
 
-import { ModalControllerProvider } from "./ModalController.provider.js";
 import { useModalContext } from "./modal.useModalContext.js";
+import { ModalControllerProvider } from "./ModalController.provider.js";
 
-export class ModalController<
-  S extends ModalState | undefined
-> extends ModalEngine<S> {
+export class ModalController<S extends ModalState | undefined> extends ModalEngine<S> {
   #LazyModalContent: () => ReactNode;
 
   constructor({
     closeOnBackdropClick = false,
     closeOnEscapePress = true,
-    load,
+    load
   }: ModalOptions & {
     /**
      * Lazily loaded modal content via dynamic import.
@@ -27,7 +26,7 @@ export class ModalController<
   }) {
     super({
       closeOnBackdropClick,
-      closeOnEscapePress,
+      closeOnEscapePress
     });
 
     const LazyComp = lazy(load);

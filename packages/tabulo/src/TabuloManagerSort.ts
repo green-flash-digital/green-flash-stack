@@ -1,6 +1,7 @@
-import { Logarhythm } from "logarhythm";
 import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
+import { Logarhythm } from "logarhythm";
 
+import type { Tabulo } from "./Tabulo.js";
 import {
   type TabuloEventMap,
   type TabuloColumnConfig,
@@ -12,9 +13,8 @@ import {
   type TabuloFilter,
   type TabuloRecord,
   type TabuloSort,
-  type TabuloStateSortValue,
+  type TabuloStateSortValue
 } from "./tabulo.utils.js";
-import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigSortValue = {
   /**
@@ -24,17 +24,11 @@ export type TabuloConfigSortValue = {
   defaultValue?: TabuloStateSortValue | undefined;
 };
 
-export type TabuloConfigSort<S extends TabuloSort> = Record<
-  S,
-  TabuloConfigSortValue
->;
+export type TabuloConfigSort<S extends TabuloSort> = Record<S, TabuloConfigSortValue>;
 
 export type TabuloSortActions = {
   getValue: () => string | undefined;
-  setValue: (
-    value: TabuloStateSortValue | undefined,
-    options?: ManagerMutationOptions
-  ) => void;
+  setValue: (value: TabuloStateSortValue | undefined, options?: ManagerMutationOptions) => void;
   rotate: () => void;
 };
 
@@ -57,15 +51,12 @@ export class TabuloManagerSort<
     }
   >;
 
-  constructor(
-    engine: Tabulo<R, F, S, C, T, X, E>,
-    config?: TabuloConfigSort<S>
-  ) {
+  constructor(engine: Tabulo<R, F, S, C, T, X, E>, config?: TabuloConfigSort<S>) {
     this.#engine = engine;
     this.#config = config ?? undefined;
     this.#log = new Logarhythm({
       name: `${engine.debugName}:engine-manager:sort`,
-      pillColor: engine.debugColor,
+      pillColor: engine.debugColor
     });
     this.entries = new Map();
     for (const [key, config] of Object.entries(this.#config ?? {})) {
@@ -79,7 +70,7 @@ export class TabuloManagerSort<
         setValue: (value: TabuloStateSortValue | undefined, options) => {
           this.setSortValue(sortKey, value, options);
         },
-        rotate: () => this.rotateSortValue(sortKey),
+        rotate: () => this.rotateSortValue(sortKey)
       });
     }
   }
@@ -95,8 +86,8 @@ export class TabuloManagerSort<
       return {
         ...accum,
         [sortKey]: {
-          value: config?.[sortKey]?.defaultValue ?? undefined,
-        },
+          value: config?.[sortKey]?.defaultValue ?? undefined
+        }
       };
     }, {} as TabuloStateSort<S>);
   }
@@ -150,7 +141,7 @@ export class TabuloManagerSort<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("sort:change");
-      },
+      }
     });
   }
 
@@ -191,7 +182,7 @@ export class TabuloManagerSort<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("sort:change");
-      },
+      }
     });
   }
 
@@ -234,14 +225,15 @@ export class TabuloManagerSort<
    */
   normalizeState(): Partial<Record<S, TabuloStateSortValue>> {
     const state = this.#engine.getState().sort;
-    const normalizedState = Object.keys(state).reduce<
-      Partial<Record<S, TabuloStateSortValue>>
-    >((accum, key) => {
-      const sortKey = key as S;
-      const sortState = state[sortKey];
-      if (typeof sortState.value === "undefined") return accum;
-      return Object.assign(accum, { [key]: sortState.value });
-    }, {} as Partial<Record<S, TabuloStateSortValue>>);
+    const normalizedState = Object.keys(state).reduce<Partial<Record<S, TabuloStateSortValue>>>(
+      (accum, key) => {
+        const sortKey = key as S;
+        const sortState = state[sortKey];
+        if (typeof sortState.value === "undefined") return accum;
+        return Object.assign(accum, { [key]: sortState.value });
+      },
+      {} as Partial<Record<S, TabuloStateSortValue>>
+    );
     return normalizedState;
   }
 }

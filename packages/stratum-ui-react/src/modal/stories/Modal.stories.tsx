@@ -1,14 +1,13 @@
+import { ModalRegistry } from "../ModalRegistry.js";
 import { BasicController } from "./withBasic/index.js";
-import { DefaultModalController } from "./withDefaultModal/index.js";
 import { CustomStylesController } from "./withCustomStyles/index.js";
-import { WithStateController } from "./withState/index.js";
 import { DefaultDrawerController } from "./withDefaultDrawer/index.js";
 import { DefaultDrawerRightController } from "./withDefaultDrawerRight/index.js";
-
-import { ModalRegistry } from "../ModalRegistry.js";
+import { DefaultModalController } from "./withDefaultModal/index.js";
+import { WithStateController } from "./withState/index.js";
 
 const meta = {
-  title: "Modal",
+  title: "Modal"
 };
 export default meta;
 
@@ -73,9 +72,7 @@ export function WithState() {
       <WithStateController.Component />
       <button
         type="button"
-        onClick={() =>
-          WithStateController.launch({ uuid: crypto.randomUUID() })
-        }
+        onClick={() => WithStateController.launch({ uuid: crypto.randomUUID() })}
       >
         Launch WithState
       </button>
@@ -110,9 +107,7 @@ export function WithRegistry() {
         </button>
         <button
           type="button"
-          onClick={() =>
-            WithStateController.launch({ uuid: crypto.randomUUID() })
-          }
+          onClick={() => WithStateController.launch({ uuid: crypto.randomUUID() })}
         >
           Launch WithState
         </button>

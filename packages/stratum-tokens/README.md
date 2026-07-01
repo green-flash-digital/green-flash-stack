@@ -23,7 +23,3 @@ import { tokens } from "@green-flash/linea-tokens/tokens";
 ## Documentation
 
 For more information, visit the [Linea Design System documentation](https://greenflash.digital).
-
-
-
-

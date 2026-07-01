@@ -1,9 +1,6 @@
-import type { Draft } from "immer";
-import type {
-  EventMap,
-  TransactionStoreEnqueueOptionsStatic,
-} from "@green-flash/reactor";
+import type { EventMap, TransactionStoreEnqueueOptionsStatic } from "@green-flash/reactor";
 import type { ObjectDotNotation } from "@green-flash/ts-utils/isomorphic";
+import type { Draft } from "immer";
 
 import type { TabuloConfigColumnValue } from "./TabuloManagerColumn.js";
 
@@ -32,18 +29,16 @@ export type TabuloEventsBase = {
 };
 
 // --- Events ---
-export type TabuloEvents<E extends TabuloEventMap = undefined> =
-  E extends undefined ? TabuloEventsBase : E & TabuloEventsBase;
+export type TabuloEvents<E extends TabuloEventMap = undefined> = E extends undefined
+  ? TabuloEventsBase
+  : E & TabuloEventsBase;
 
 // --- Definitions
 export type TabuloRecord = { id: number };
 export type TabuloSort = string;
 export type TabuloFilter = Record<string, TabuloFilterValue>;
 export type TabuloFilterValue = string | number | boolean | null | undefined;
-export type TabuloColumnConfig<R extends TabuloRecord> = Record<
-  string,
-  TabuloConfigColumnValue<R>
->;
+export type TabuloColumnConfig<R extends TabuloRecord> = Record<string, TabuloConfigColumnValue<R>>;
 export type TabuloColumnState<T extends Record<string, unknown>> = Record<
   keyof T,
   TabuloStateColumnValue
@@ -95,10 +90,7 @@ export type TabuloStateMeta = {
 
 // --- STATE: Sort ---
 export type TabuloStateSortValue = "ascending" | "descending" | undefined;
-export type TabuloStateSort<S extends TabuloSort> = Record<
-  S,
-  { value: TabuloStateSortValue }
->;
+export type TabuloStateSort<S extends TabuloSort> = Record<S, { value: TabuloStateSortValue }>;
 
 // --- STATE: Filter ---
 export type TabuloStateFilterData<T extends string = string> = {
@@ -189,9 +181,7 @@ export type TabuloFetcherData<R extends TabuloRecord> = {
   totalRecords: number;
   moreRecordsAvailable: boolean;
 };
-export type TabuloFetcherReturn<R extends TabuloRecord> = Promise<
-  TabuloFetcherData<R>
->;
+export type TabuloFetcherReturn<R extends TabuloRecord> = Promise<TabuloFetcherData<R>>;
 export type TabuloFetcherOptions = {
   /**
    * Ignores the state of the data grid
@@ -206,9 +196,7 @@ export type TabuloFetcher<R extends TabuloRecord> = (
 // ---------------------------
 
 // -------- ON MOUNT --------
-export type TabuloOnMount<E extends HTMLDivElement = HTMLDivElement> = (
-  node: E
-) => Promise<void>;
+export type TabuloOnMount<E extends HTMLDivElement = HTMLDivElement> = (node: E) => Promise<void>;
 // ---------------------------
 
 /**
@@ -227,14 +215,8 @@ export function mutateEngineStateHelper<
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   T extends Record<string, any>,
   K extends keyof T = keyof T
->(
-  draft: Draft<T> | T | undefined,
-  key: K,
-  fn: (entry: Draft<T[K]>) => void
-) {
-  const entry = (draft as Draft<T> ?? ({} as Draft<T>))[
-    key as keyof Draft<T>
-  ] as Draft<T[K]>;
+>(draft: Draft<T> | T | undefined, key: K, fn: (entry: Draft<T[K]>) => void) {
+  const entry = ((draft as Draft<T>) ?? ({} as Draft<T>))[key as keyof Draft<T>] as Draft<T[K]>;
   fn(entry);
 }
 
@@ -257,5 +239,5 @@ export type ManagerMutationOptions = TransactionStoreEnqueueOptionsStatic & {
 
 export const logColor = {
   engine: "#194e39ff",
-  type: "#277757ff",
+  type: "#277757ff"
 };

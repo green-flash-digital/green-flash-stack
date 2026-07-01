@@ -1,5 +1,6 @@
 import { type RefCallback, type ReactNode } from "react";
 import { useSyncExternalStore } from "react";
+
 import type { ModalEngine, ModalState } from "@stratum-ui/core";
 
 import { ModalControllerContext } from "./modal-controller.utils.js";
@@ -12,20 +13,16 @@ export type ModalControllerProps<S extends ModalState | undefined> = {
 
 export function ModalControllerProvider<S extends ModalState | undefined>({
   children,
-  engine,
+  engine
 }: ModalControllerProps<S>) {
-  const state = useSyncExternalStore(
-    engine.subscribe,
-    engine.getState,
-    engine.getState
-  );
+  const state = useSyncExternalStore(engine.subscribe, engine.getState, engine.getState);
 
   return (
     <ModalControllerContext.Provider
       value={{
         state,
         onMount: engine.onMount,
-        closeModal: engine.closeModal,
+        closeModal: engine.closeModal
       }}
     >
       {children}

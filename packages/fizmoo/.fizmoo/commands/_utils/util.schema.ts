@@ -9,7 +9,7 @@ const baseOptionsSchema = z.object({
   /**
    * An option to run create the required directories and files
    */
-  autoInit: z.boolean().optional().default(true),
+  autoInit: z.boolean().optional().default(true)
 });
 export type FizmooBaseOptions = z.infer<typeof baseOptionsSchema>;
 

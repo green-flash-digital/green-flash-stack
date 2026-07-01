@@ -89,7 +89,12 @@ export class PlaylistsClient extends ApiClient {
   }
 
   create(body: z.infer<typeof CreatePlaylistSchema>, request?: Request) {
-    return this.mutate<Playlist>({ method: "POST", path: "", body: [CreatePlaylistSchema, body], request });
+    return this.mutate<Playlist>({
+      method: "POST",
+      path: "",
+      body: [CreatePlaylistSchema, body],
+      request
+    });
   }
 
   delete(id: string, request?: Request) {
@@ -145,9 +150,7 @@ That's the full pattern. The sections below explain each piece in detail.
 Every `get` and `mutate` call returns this discriminated union:
 
 ```typescript
-type ApiClientResult<T> =
-  | { success: true; data: T }
-  | { success: false; error: ErrorResponse };
+type ApiClientResult<T> = { success: true; data: T } | { success: false; error: ErrorResponse };
 ```
 
 It never throws. You check `result.success` and TypeScript narrows the type from there. On `true`, you get `result.data`. On `false`, you get `result.error`.
@@ -160,11 +163,20 @@ The standardized error shape that travels over the wire as JSON. Defined in and 
 type ErrorResponse = {
   status: number;
   message: string;
-  error_type: "bad_request" | "validation" | "unauthenticated" | "unauthorized"
-            | "not_found" | "conflict" | "too_many_requests" | "method_not_allowed"
-            | "server_error" | "service_unavailable" | "unknown";
+  error_type:
+    | "bad_request"
+    | "validation"
+    | "unauthenticated"
+    | "unauthorized"
+    | "not_found"
+    | "conflict"
+    | "too_many_requests"
+    | "method_not_allowed"
+    | "server_error"
+    | "service_unavailable"
+    | "unknown";
   fieldErrors?: Record<string, string[]>; // validation only
-  formErrors?: string[];                  // validation only
+  formErrors?: string[]; // validation only
 };
 ```
 
@@ -174,8 +186,8 @@ The standardized shape returned from SSR route handlers. Only one field is set a
 
 ```typescript
 type RelayResult<T> = {
-  data: T | undefined;       // Set on success
-  valError: V | undefined;   // Set on form validation error
+  data: T | undefined; // Set on success
+  valError: V | undefined; // Set on form validation error
   error: ErrorResponse | undefined; // Set on API or domain error
 };
 ```
@@ -288,8 +300,8 @@ export class PlaylistsClient extends ApiClient {
       baseURL: `${args.baseURL}/api/playlist`,
       headers: {
         "X-Api-Key": process.env.INTERNAL_API_KEY!,
-        "X-Tenant-Id": "acme",
-      },
+        "X-Tenant-Id": "acme"
+      }
     });
   }
 }
@@ -306,7 +318,7 @@ export class PlaylistsClient extends ApiClient {
   constructor(args: ApiClientArgs) {
     super({
       baseURL: `${args.baseURL}/api/playlist`,
-      timeout: 10_000, // 10 seconds for all calls
+      timeout: 10_000 // 10 seconds for all calls
     });
   }
 
@@ -353,6 +365,7 @@ import { HTTPError, serializeError } from "@greenflash/http-errors";
 ```
 
 See the [`@greenflash/http-errors` README](../http-errors/README.md) for:
+
 - All `HTTPError.*` factory methods with examples
 - How to wire `serializeError` into a global error handler
 - `deserializeError` for `instanceof` checks on the client
@@ -407,10 +420,7 @@ The most common method. Unwraps an `ApiClientResult` into a `RelayResult`. Pass 
 return relay.fromResult(await api.playlists.create(body, request));
 
 // With transform — rename the data
-return relay.fromResult(
-  await api.playlists.getList(request),
-  (playlists) => ({ playlists })
-);
+return relay.fromResult(await api.playlists.getList(request), (playlists) => ({ playlists }));
 ```
 
 ---
@@ -441,7 +451,7 @@ export async function loader(args: Route.LoaderArgs) {
 
   const [playlistResult, photosResult] = await Promise.all([
     api.playlists.getSingle(args.params.id, args.request),
-    api.playlists.getPhotos(args.params.id, args.request),
+    api.playlists.getPhotos(args.params.id, args.request)
   ]);
 
   if (!playlistResult.success) return relay.error(playlistResult.error);
@@ -449,7 +459,7 @@ export async function loader(args: Route.LoaderArgs) {
 
   return relay.data({
     playlist: playlistResult.data,
-    photos: photosResult.data,
+    photos: photosResult.data
   });
 }
 ```
@@ -505,10 +515,12 @@ export async function action(args: Route.ActionArgs) {
   const result = await api.playlists.create(formRes.data, args.request);
   if (!result.success) return relay.error(result.error);
 
-  throw redirect(href("/:household_id/:playlist_id", {
-    household_id: args.params.household_id,
-    playlist_id: result.data.id,
-  }));
+  throw redirect(
+    href("/:household_id/:playlist_id", {
+      household_id: args.params.household_id,
+      playlist_id: result.data.id
+    })
+  );
 }
 ```
 
@@ -675,7 +687,7 @@ export async function createPlaylistAction(_: unknown, formData: FormData) {
 
   const cookieStore = await cookies();
   const request = new Request("https://internal", {
-    headers: { cookie: cookieStore.toString() },
+    headers: { cookie: cookieStore.toString() }
   });
 
   const api = new PlaylistsClient({ baseURL: process.env.API_URL! });
@@ -839,12 +851,12 @@ yarn workspace @greenflash/fetchify test:coverage
 
 **What's covered:**
 
-| File | What it tests |
-|---|---|
-| `tryHandle.test.ts` | Promise wrapping, error coercion, non-Error rejections |
-| `tryFetch.test.ts` | 200/204/text/blob responses, `ErrorResponse` parsing, network failures, `AbortSignal` passthrough |
-| `httpError.test.ts` | All factory methods, `.toJson()`, `serializeError`, `deserializeError` round-trips |
-| `relay.test.ts` | All four relay methods including `fromResult` transform overload |
+| File                | What it tests                                                                                                                                          |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `tryHandle.test.ts` | Promise wrapping, error coercion, non-Error rejections                                                                                                 |
+| `tryFetch.test.ts`  | 200/204/text/blob responses, `ErrorResponse` parsing, network failures, `AbortSignal` passthrough                                                      |
+| `httpError.test.ts` | All factory methods, `.toJson()`, `serializeError`, `deserializeError` round-trips                                                                     |
+| `relay.test.ts`     | All four relay methods including `fromResult` transform overload                                                                                       |
 | `ApiClient.test.ts` | endpoint construction, query string building, static headers, `AbortSignal` forwarding, retry on `server_error`/`service_unavailable`, no retry on 4xx |
 
 **Testing subclasses in your own packages**
@@ -867,33 +879,33 @@ Setting `_retryDelay = 0` removes the 1-second delay between retries so your ret
 
 #### `ApiClient` constructor
 
-| Option | Type | Description |
-|---|---|---|
-| `baseURL` | `string` | Base URL for all requests |
-| `headers` | `Record<string, string>?` | Static headers merged into every request |
-| `timeout` | `number?` | Default request timeout in ms. Applied via `AbortSignal.timeout()`. |
+| Option    | Type                      | Description                                                         |
+| --------- | ------------------------- | ------------------------------------------------------------------- |
+| `baseURL` | `string`                  | Base URL for all requests                                           |
+| `headers` | `Record<string, string>?` | Static headers merged into every request                            |
+| `timeout` | `number?`                 | Default request timeout in ms. Applied via `AbortSignal.timeout()`. |
 
 #### `get<T>(options)`
 
-| Option | Type | Description |
-|---|---|---|
-| `path` | `string` | Path appended to `baseURL` |
-| `request` | `Request?` | Incoming SSR request — headers and `AbortSignal` forwarded automatically |
-| `query` | `[ZodSchema, data]?` | Validated query params |
-| `retries` | `number?` | Times to retry on `server_error` / `service_unavailable`. Default: `0` |
-| `timeout` | `number?` | Per-call timeout in ms. Overrides the constructor default. |
+| Option    | Type                 | Description                                                              |
+| --------- | -------------------- | ------------------------------------------------------------------------ |
+| `path`    | `string`             | Path appended to `baseURL`                                               |
+| `request` | `Request?`           | Incoming SSR request — headers and `AbortSignal` forwarded automatically |
+| `query`   | `[ZodSchema, data]?` | Validated query params                                                   |
+| `retries` | `number?`            | Times to retry on `server_error` / `service_unavailable`. Default: `0`   |
+| `timeout` | `number?`            | Per-call timeout in ms. Overrides the constructor default.               |
 
 #### `mutate<R>(options)`
 
-| Option | Type | Description |
-|---|---|---|
-| `path` | `string` | Path appended to `baseURL` |
-| `method` | `"POST" \| "PUT" \| "PATCH" \| "DELETE"` | HTTP method |
-| `request` | `Request?` | Incoming SSR request — headers and `AbortSignal` forwarded automatically |
-| `body` | `[ZodSchema, data] \| FormData?` | JSON body (Zod-validated) or FormData |
-| `query` | `[ZodSchema, data]?` | Validated query params |
-| `retries` | `number?` | Times to retry on `server_error` / `service_unavailable`. Default: `0` |
-| `timeout` | `number?` | Per-call timeout in ms. Overrides the constructor default. |
+| Option    | Type                                     | Description                                                              |
+| --------- | ---------------------------------------- | ------------------------------------------------------------------------ |
+| `path`    | `string`                                 | Path appended to `baseURL`                                               |
+| `method`  | `"POST" \| "PUT" \| "PATCH" \| "DELETE"` | HTTP method                                                              |
+| `request` | `Request?`                               | Incoming SSR request — headers and `AbortSignal` forwarded automatically |
+| `body`    | `[ZodSchema, data] \| FormData?`         | JSON body (Zod-validated) or FormData                                    |
+| `query`   | `[ZodSchema, data]?`                     | Validated query params                                                   |
+| `retries` | `number?`                                | Times to retry on `server_error` / `service_unavailable`. Default: `0`   |
+| `timeout` | `number?`                                | Per-call timeout in ms. Overrides the constructor default.               |
 
 For `HTTPError`, `serializeError`, error classes, and `ErrorResponse` — see the [`@greenflash/http-errors` API reference](../http-errors/README.md#api-reference).
 

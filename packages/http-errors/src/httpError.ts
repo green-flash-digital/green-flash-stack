@@ -4,7 +4,7 @@ import { ErrorResponseSchema } from "./error.js";
 import type { ErrorResponse } from "./error.js";
 
 export class ApiError<
-  T extends ErrorResponse["error_type"] = ErrorResponse["error_type"],
+  T extends ErrorResponse["error_type"] = ErrorResponse["error_type"]
 > extends Error {
   readonly error_type: T;
   readonly status: number;
@@ -39,9 +39,9 @@ export class ApiError<
       ...(this.error_type === "validation"
         ? {
             fieldErrors: this.fieldErrors || {},
-            formErrors: this.formErrors || [],
+            formErrors: this.formErrors || []
           }
-        : {}),
+        : {})
     };
     return ErrorResponseSchema.parse(payload);
   }
@@ -51,14 +51,14 @@ export class ValidationError extends ApiError<"validation"> {
   constructor(
     fieldErrors: Record<string, string[]>,
     formErrors: string[] = [],
-    message = "Validation failed",
+    message = "Validation failed"
   ) {
     super({
       error_type: "validation",
       message,
       status: 400,
       fieldErrors,
-      formErrors,
+      formErrors
     });
   }
 }
@@ -98,7 +98,7 @@ export class MethodNotAllowedError extends ApiError<"method_not_allowed"> {
     super({
       error_type: "method_not_allowed",
       message: `"${method}" is not allowed.`,
-      status: 405,
+      status: 405
     });
   }
 }
@@ -122,9 +122,7 @@ export class TooManyRequestsError extends ApiError<"too_many_requests"> {
 }
 
 export class ServiceUnavailableError extends ApiError<"service_unavailable"> {
-  constructor(
-    message = "Service temporarily unavailable. Please try again later.",
-  ) {
+  constructor(message = "Service temporarily unavailable. Please try again later.") {
     super({ error_type: "service_unavailable", message, status: 503 });
   }
 }
@@ -151,7 +149,7 @@ export class HTTPError {
     return new ValidationError(
       fieldErrors,
       flattened.formErrors || [],
-      message || "Validation failed",
+      message || "Validation failed"
     );
   }
 
@@ -160,7 +158,7 @@ export class HTTPError {
   }
 
   static unauthenticated(
-    message = "You need to sign in to access this resource.",
+    message = "You need to sign in to access this resource."
   ): UnauthenticatedError {
     return new UnauthenticatedError(message);
   }
@@ -173,9 +171,7 @@ export class HTTPError {
     return new ForbiddenError(message);
   }
 
-  static notFound(
-    message = "The requested resource does not exist",
-  ): NotFoundError {
+  static notFound(message = "The requested resource does not exist"): NotFoundError {
     return new NotFoundError(message);
   }
 
@@ -188,13 +184,13 @@ export class HTTPError {
   }
 
   static tooManyRequests(
-    message = "Too many requests. Please try again later.",
+    message = "Too many requests. Please try again later."
   ): TooManyRequestsError {
     return new TooManyRequestsError(message);
   }
 
   static serviceUnavailable(
-    message = "Service temporarily unavailable. Please try again later.",
+    message = "Service temporarily unavailable. Please try again later."
   ): ServiceUnavailableError {
     return new ServiceUnavailableError(message);
   }
@@ -203,10 +199,7 @@ export class HTTPError {
     return new ServerError(`There was an internal server error: ${reason}`);
   }
 
-  static unknown(
-    message = "An unknown error occurred",
-    status = 500,
-  ): UnknownError {
+  static unknown(message = "An unknown error occurred", status = 500): UnknownError {
     return new UnknownError(message, status);
   }
 }
@@ -224,33 +217,23 @@ export function serializeError(error: unknown): ErrorResponse {
     if (parsed.success) return parsed.data;
   }
 
-  return HTTPError.unknown(
-    error instanceof Error ? error.message : String(error),
-  ).toJson();
+  return HTTPError.unknown(error instanceof Error ? error.message : String(error)).toJson();
 }
 
 /**
  * Converts a received ErrorResponse JSON payload back into a typed ApiError instance.
  * Useful when you need instanceof checks on error responses from an API.
  */
-export function deserializeError(
-  errorJson: unknown,
-  method?: string,
-): ApiError {
+export function deserializeError(errorJson: unknown, method?: string): ApiError {
   if (errorJson instanceof ApiError) return errorJson;
 
   const parsed = ErrorResponseSchema.safeParse(errorJson);
-  if (!parsed.success)
-    return HTTPError.serverError("Unknown error format received from server");
+  if (!parsed.success) return HTTPError.serverError("Unknown error format received from server");
 
   const error = parsed.data;
   switch (error.error_type) {
     case "validation":
-      return new ValidationError(
-        error.fieldErrors,
-        error.formErrors,
-        error.message,
-      );
+      return new ValidationError(error.fieldErrors, error.formErrors, error.message);
     case "unauthenticated":
       return HTTPError.unauthenticated(error.message);
     case "unauthorized":

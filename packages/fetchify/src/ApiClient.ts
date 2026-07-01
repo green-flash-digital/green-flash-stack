@@ -1,7 +1,6 @@
-import type { z, ZodType } from "zod";
-import { ErrorResponseSchema, type ErrorResponse } from "@greenflash/http-errors";
-
 import { tryHandle } from "@green-flash/ts-utils/isomorphic";
+import { ErrorResponseSchema, type ErrorResponse } from "@greenflash/http-errors";
+import type { z, ZodType } from "zod";
 
 export type ApiClientArgs = {
   baseURL: string;
@@ -42,7 +41,7 @@ function getContentType(headers: Headers): "json" | "text" | "blob" | "unknown" 
 
 const RETRYABLE_ERRORS = new Set<ErrorResponse["error_type"]>([
   "server_error",
-  "service_unavailable",
+  "service_unavailable"
 ]);
 
 export class ApiClient {
@@ -88,24 +87,18 @@ export class ApiClient {
 
   async #withRetry<T>(
     fn: () => Promise<ApiClientResult<T>>,
-    retries: number,
+    retries: number
   ): Promise<ApiClientResult<T>> {
     const result = await fn();
-    if (
-      !result.success &&
-      retries > 0 &&
-      RETRYABLE_ERRORS.has(result.error.error_type)
-    ) {
-      await new Promise<void>((resolve) =>
-        setTimeout(resolve, this._retryDelay),
-      );
+    if (!result.success && retries > 0 && RETRYABLE_ERRORS.has(result.error.error_type)) {
+      await new Promise<void>((resolve) => setTimeout(resolve, this._retryDelay));
       return this.#withRetry(fn, retries - 1);
     }
     return result;
   }
 
   #makeQueryString<Q extends ZodType = ZodType>(
-    query?: [schema: Q, data: z.infer<Q> | undefined],
+    query?: [schema: Q, data: z.infer<Q> | undefined]
   ): string {
     if (!query) return "";
     const [schema, value] = query;
@@ -114,25 +107,18 @@ export class ApiClient {
     const validated = schema.parse(value);
     const searchParams = new URLSearchParams();
 
-    if (
-      validated &&
-      typeof validated === "object" &&
-      !Array.isArray(validated)
-    ) {
-      Object.entries(validated as Record<string, unknown>).forEach(
-        ([key, val]) => {
-          if (val !== undefined && val !== null) {
-            if (Array.isArray(val)) {
-              val.forEach((item) => {
-                if (item !== undefined && item !== null)
-                  searchParams.append(key, String(item));
-              });
-            } else {
-              searchParams.append(key, String(val));
-            }
+    if (validated && typeof validated === "object" && !Array.isArray(validated)) {
+      Object.entries(validated as Record<string, unknown>).forEach(([key, val]) => {
+        if (val !== undefined && val !== null) {
+          if (Array.isArray(val)) {
+            val.forEach((item) => {
+              if (item !== undefined && item !== null) searchParams.append(key, String(item));
+            });
+          } else {
+            searchParams.append(key, String(val));
           }
-        },
-      );
+        }
+      });
     }
 
     return searchParams.toString();
@@ -145,21 +131,19 @@ export class ApiClient {
       relativePath = `${args.path}${separator}${args.queryString}`;
     }
 
-    const baseURL = this.#baseURL.endsWith("/")
-      ? this.#baseURL.slice(0, -1)
-      : this.#baseURL;
+    const baseURL = this.#baseURL.endsWith("/") ? this.#baseURL.slice(0, -1) : this.#baseURL;
     const normalizedPath =
       relativePath === "" || relativePath.startsWith("?")
         ? relativePath
         : relativePath.startsWith("/")
-        ? relativePath
-        : `/${relativePath}`;
+          ? relativePath
+          : `/${relativePath}`;
 
     return `${baseURL}${normalizedPath}`;
   }
 
   #makeBody<B extends ZodType = ZodType>(
-    body?: [schema: B, data: z.infer<B>] | FormData,
+    body?: [schema: B, data: z.infer<B>] | FormData
   ): string | FormData | undefined {
     if (!body) return undefined;
     if (body instanceof FormData) return body;
@@ -172,7 +156,14 @@ export class ApiClient {
 
     if (!fetchRes.success) {
       const msg = fetchRes.error instanceof Error ? fetchRes.error.message : String(fetchRes.error);
-      return { success: false, error: { error_type: "server_error", status: 500, message: `Network error while fetching ${url}: ${msg}` } };
+      return {
+        success: false,
+        error: {
+          error_type: "server_error",
+          status: 500,
+          message: `Network error while fetching ${url}: ${msg}`
+        }
+      };
     }
 
     const res = fetchRes.data;
@@ -186,14 +177,20 @@ export class ApiClient {
         if (parsed.success) return { success: false, error: parsed.data };
         // Body is already consumed — use what we parsed rather than calling res.text()
         const msg = typeof jsonErr.data === "string" ? jsonErr.data : JSON.stringify(jsonErr.data);
-        return { success: false, error: { error_type: "unknown", status: res.status, message: msg } };
+        return {
+          success: false,
+          error: { error_type: "unknown", status: res.status, message: msg }
+        };
       }
       // res.json() itself failed (content-type lied); body may still be readable — fall through
     }
 
     if (!res.ok) {
       const text = await res.text().catch(() => "Unknown error");
-      return { success: false, error: { error_type: "unknown", status: res.status, message: text } };
+      return {
+        success: false,
+        error: { error_type: "unknown", status: res.status, message: text }
+      };
     }
 
     if (contentLength === "0" || res.status === 204) {
@@ -203,21 +200,52 @@ export class ApiClient {
     switch (contentType) {
       case "blob": {
         const result = await tryHandle<Blob>(res.blob());
-        if (!result.success) return { success: false, error: { error_type: "server_error", status: 500, message: `Failed to read blob response from ${url}` } };
+        if (!result.success)
+          return {
+            success: false,
+            error: {
+              error_type: "server_error",
+              status: 500,
+              message: `Failed to read blob response from ${url}`
+            }
+          };
         return { success: true, data: result.data as R };
       }
       case "text": {
         const result = await tryHandle<string>(res.text());
-        if (!result.success) return { success: false, error: { error_type: "server_error", status: 500, message: `Failed to read text response from ${url}` } };
+        if (!result.success)
+          return {
+            success: false,
+            error: {
+              error_type: "server_error",
+              status: 500,
+              message: `Failed to read text response from ${url}`
+            }
+          };
         return { success: true, data: result.data as R };
       }
       case "json": {
         const result = await tryHandle<unknown>(res.json());
-        if (!result.success) return { success: false, error: { error_type: "server_error", status: 500, message: `Failed to parse JSON response from ${url}` } };
+        if (!result.success)
+          return {
+            success: false,
+            error: {
+              error_type: "server_error",
+              status: 500,
+              message: `Failed to parse JSON response from ${url}`
+            }
+          };
         return { success: true, data: result.data as R };
       }
       case "unknown":
-        return { success: false, error: { error_type: "server_error", status: 500, message: `Unrecognized content type "${res.headers.get("Content-Type")}" from ${url}` } };
+        return {
+          success: false,
+          error: {
+            error_type: "server_error",
+            status: 500,
+            message: `Unrecognized content type "${res.headers.get("Content-Type")}" from ${url}`
+          }
+        };
     }
   }
 
@@ -226,7 +254,7 @@ export class ApiClient {
     query,
     request,
     retries = 0,
-    timeout,
+    timeout
   }: {
     path: string;
     query?: [schema: Q, data: z.infer<Q> | undefined];
@@ -244,22 +272,18 @@ export class ApiClient {
 
     return this.#withRetry(
       () => this.#fetch<T>(endpoint, { headers, signal, ...additionalOptions }),
-      retries,
+      retries
     );
   }
 
-  protected async mutate<
-    R = unknown,
-    B extends ZodType = ZodType,
-    Q extends ZodType = ZodType,
-  >({
+  protected async mutate<R = unknown, B extends ZodType = ZodType, Q extends ZodType = ZodType>({
     path,
     method,
     body,
     query,
     request,
     retries = 0,
-    timeout,
+    timeout
   }: {
     path: string;
     method: "POST" | "PUT" | "PATCH" | "DELETE";
@@ -290,9 +314,9 @@ export class ApiClient {
           headers,
           body: requestBody,
           signal,
-          ...additionalOptions,
+          ...additionalOptions
         }),
-      retries,
+      retries
     );
   }
 }

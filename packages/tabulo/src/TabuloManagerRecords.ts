@@ -1,5 +1,6 @@
 import { Logarhythm } from "logarhythm";
 
+import type { Tabulo } from "./Tabulo.js";
 import type {
   ManagerMutationOptions,
   TabuloColumnConfig,
@@ -9,9 +10,8 @@ import type {
   TabuloFilter,
   TabuloRecord,
   TabuloSort,
-  TabuloStateRecord,
+  TabuloStateRecord
 } from "./tabulo.utils.js";
-import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigRecords = Pick<TabuloStateRecord, "selectable"> & {
   defaultSelected?: TabuloStateRecord["selected"] | undefined;
@@ -30,15 +30,12 @@ export class TabuloManagerRecords<
   #log: Logarhythm;
   #config: TabuloConfigRecords | undefined;
 
-  constructor(
-    engine: Tabulo<R, F, S, C, T, X, E>,
-    config?: TabuloConfigRecords
-  ) {
+  constructor(engine: Tabulo<R, F, S, C, T, X, E>, config?: TabuloConfigRecords) {
     this.#engine = engine;
     this.#config = config;
     this.#log = new Logarhythm({
       name: `${engine.debugName}:engine-manager:records`,
-      pillColor: engine.debugColor,
+      pillColor: engine.debugColor
     });
 
     this.selectAll = this.selectAll.bind(this);
@@ -51,12 +48,10 @@ export class TabuloManagerRecords<
    * Creates the initial state based upon the config
    * during construction
    */
-  static createInitState(
-    config: TabuloConfigRecords | undefined
-  ): TabuloStateRecord {
+  static createInitState(config: TabuloConfigRecords | undefined): TabuloStateRecord {
     return {
       selectable: config?.selectable ?? false,
-      selected: config?.defaultSelected ?? [],
+      selected: config?.defaultSelected ?? []
     };
   }
 
@@ -135,8 +130,7 @@ export class TabuloManagerRecords<
   areAllSelected() {
     const state = this.#engine.getState().records;
     return (
-      state.selected.length === this.#loadedRecordIds.length &&
-      this.#loadedRecordIds.length !== 0
+      state.selected.length === this.#loadedRecordIds.length && this.#loadedRecordIds.length !== 0
     );
   }
 
@@ -153,15 +147,11 @@ export class TabuloManagerRecords<
    * Selects a record or an array of records. If a record is already
    * selected it will skip over adding it
    */
-  async select(
-    singleOrMany: number | (number | string)[],
-    options?: ManagerMutationOptions
-  ) {
+  async select(singleOrMany: number | (number | string)[], options?: ManagerMutationOptions) {
     await this.#engine.queueStateUpdate({
       ...options,
       mutate: (draft) => {
-        const records =
-          typeof singleOrMany === "number" ? [singleOrMany] : singleOrMany;
+        const records = typeof singleOrMany === "number" ? [singleOrMany] : singleOrMany;
         for (const record of records) {
           const selected = Number(record);
           if (draft.records.selected.includes(selected)) continue;
@@ -174,9 +164,7 @@ export class TabuloManagerRecords<
         const totalRecords = (draft.data.records ?? []).length;
 
         if (totalSelectedRecords === totalRecords) {
-          this.#log.debug(
-            "Total selected records now equals number of records"
-          );
+          this.#log.debug("Total selected records now equals number of records");
           this.selectAll(options);
         }
       },
@@ -184,7 +172,7 @@ export class TabuloManagerRecords<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("records:select");
-      },
+      }
     });
   }
 
@@ -218,7 +206,7 @@ export class TabuloManagerRecords<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("records:deselect");
-      },
+      }
     });
   }
 
@@ -236,7 +224,7 @@ export class TabuloManagerRecords<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("records:select");
-      },
+      }
     });
   }
 
@@ -251,8 +239,7 @@ export class TabuloManagerRecords<
         // Remove the records that are loaded in the table from
         // the selected id
         for (const recordId of this.#loadedRecordIds) {
-          const selectedRecordIdIndex =
-            draft.records.selected.indexOf(recordId);
+          const selectedRecordIdIndex = draft.records.selected.indexOf(recordId);
           if (selectedRecordIdIndex === -1) continue;
           draft.records.selected.splice(selectedRecordIdIndex, 1);
         }
@@ -261,7 +248,7 @@ export class TabuloManagerRecords<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("records:deselect");
-      },
+      }
     });
   }
 
@@ -278,7 +265,7 @@ export class TabuloManagerRecords<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("records:selection:enable");
-      },
+      }
     });
   }
 
@@ -295,7 +282,7 @@ export class TabuloManagerRecords<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("records:selection:disable");
-      },
+      }
     });
   }
 }

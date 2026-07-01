@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
 import { z } from "zod";
+
 import {
   ApiError,
   HTTPError,
@@ -13,7 +14,7 @@ import {
   ServerError,
   ServiceUnavailableError,
   serializeError,
-  deserializeError,
+  deserializeError
 } from "../httpError.js";
 
 // ─── HTTPError factory ────────────────────────────────────────────────────────
@@ -30,7 +31,7 @@ describe("HTTPError factory methods", () => {
     ["methodNotAllowed", HTTPError.methodNotAllowed("TRACE"), 405, "method_not_allowed"],
     ["serverError", HTTPError.serverError("crash"), 500, "server_error"],
     ["serviceUnavailable", HTTPError.serviceUnavailable(), 503, "service_unavailable"],
-    ["unknown", HTTPError.unknown(), 500, "unknown"],
+    ["unknown", HTTPError.unknown(), 500, "unknown"]
   ])("%s() returns the correct status and error_type", (_, err, status, errorType) => {
     expect(err.status).toBe(status);
     expect(err.error_type).toBe(errorType);
@@ -131,7 +132,7 @@ describe("deserializeError()", () => {
       HTTPError.conflict("taken"),
       HTTPError.tooManyRequests(),
       HTTPError.serverError("crash"),
-      HTTPError.serviceUnavailable(),
+      HTTPError.serviceUnavailable()
     ];
 
     for (const original of cases) {

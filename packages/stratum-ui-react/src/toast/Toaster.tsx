@@ -1,8 +1,9 @@
-import type { ToastOptions, ToastProps, ToastState } from "@stratum-ui/core";
-import { ToastEngine } from "@stratum-ui/core";
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { createPortal } from "react-dom";
+
+import type { ToastOptions, ToastProps, ToastState } from "@stratum-ui/core";
+import { ToastEngine } from "@stratum-ui/core";
 import type { JSX } from "react/jsx-runtime";
 
 export type ToastContainerProps = Omit<JSX.IntrinsicElements["div"], "ref">;
@@ -57,11 +58,7 @@ export class Toaster<T extends ToastProps> extends ToastEngine<T> {
   Render() {
     const containerProps = this.#containerProps;
     return (
-      <ToastRenderer<T>
-        engine={this}
-        ToastComponent={this.#ToastComponent}
-        {...containerProps}
-      />
+      <ToastRenderer<T> engine={this} ToastComponent={this.#ToastComponent} {...containerProps} />
     );
   }
 }
@@ -74,16 +71,9 @@ function ToastRenderer<T extends ToastProps>({
   engine: Toaster<T>;
   ToastComponent: (props: ToastState<T>) => ReactNode;
 } & ToasterOptions<T>["containerProps"]) {
-  const toasts = useSyncExternalStore(
-    engine.subscribe,
-    engine.getState,
-    engine.getState
-  );
+  const toasts = useSyncExternalStore(engine.subscribe, engine.getState, engine.getState);
   const hostRef = useRef<HTMLDivElement | null>(null);
-  const regionProps = useMemo(
-    () => engine.getRegionAttributes({ toKebabCase: true }),
-    [engine]
-  );
+  const regionProps = useMemo(() => engine.getRegionAttributes({ toKebabCase: true }), [engine]);
   const srOnly = useMemo<CSSProperties>(
     () => ({
       position: "absolute",
@@ -95,7 +85,7 @@ function ToastRenderer<T extends ToastProps>({
       clip: "rect(0, 0, 0, 0)",
       clipPath: "inset(50%)",
       whiteSpace: "nowrap",
-      border: 0,
+      border: 0
     }),
     []
   );
@@ -128,13 +118,7 @@ function ToastRenderer<T extends ToastProps>({
   }, [engine]);
 
   return createPortal(
-    <div
-      {...containerProps}
-      ref={hostRef}
-      popover="manual"
-      tabIndex={-1}
-      role="presentation"
-    >
+    <div {...containerProps} ref={hostRef} popover="manual" tabIndex={-1} role="presentation">
       {/* Live regions: ONLY place text/announcements here */}
       <div {...regionProps.polite} style={srOnly}>
         {toasts

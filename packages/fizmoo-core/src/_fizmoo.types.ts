@@ -31,8 +31,8 @@ export type Options = { [key: string]: Option };
 type InferOptionValue<T extends Option> = T extends OptionBoolean
   ? boolean
   : T extends OptionNumber
-  ? number
-  : string;
+    ? number
+    : string;
 
 export type InferOptionValues<T extends Options> = {
   [K in keyof T]: InferOptionValue<T[K]>;
@@ -75,8 +75,8 @@ export type Args = { [key: string]: Arg };
 type InferArgValue<T extends Arg> = T extends ArgBoolean
   ? boolean
   : T extends ArgNumber
-  ? number
-  : string;
+    ? number
+    : string;
 
 export type InferArgValues<T extends Args> = {
   [K in keyof T]: InferArgValue<T[K]>;
@@ -86,10 +86,7 @@ export type InferArgValues<T extends Args> = {
 // Command
 // ===========================
 
-export type FizmooCommandDef<
-  A extends Args = Args,
-  O extends Options = Options
-> = {
+export type FizmooCommandDef<A extends Args = Args, O extends Options = Options> = {
   name: string;
   description: string;
   options?: O;
@@ -113,10 +110,7 @@ type HookActionContext = {
 export type FizmooHooks = {
   onBeforeAction?: (ctx: HookActionContext) => Promise<void> | void;
   onAfterAction?: (ctx: HookActionContext) => Promise<void> | void;
-  onError?: (
-    err: unknown,
-    ctx: Partial<HookActionContext>
-  ) => Promise<void> | void;
+  onError?: (err: unknown, ctx: Partial<HookActionContext>) => Promise<void> | void;
 };
 
 export type FizmooCommandEntry = {

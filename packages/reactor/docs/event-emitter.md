@@ -103,6 +103,7 @@ new EventEmitter<T>(options?: {
 Creates a new event emitter with optional logging configuration.
 
 **Options:**
+
 - **`name?: string`** - Custom name for the logger (default: `"EventEmitter"`)
 - **`logColor?: string`** - Hex color for log pills (default: `"#202020ff"`)
 - **`logLevel?: LogarhythmLogLevel`** - Minimum log level to display
@@ -114,6 +115,7 @@ Creates a new event emitter with optional logging configuration.
 Registers a listener for a specific event. Returns an unsubscribe function.
 
 **Parameters:**
+
 - **`event: K`** - The event name (must be a key in the event map)
 - **`listener: (payload: T[K]) => void`** - Callback function that receives the event payload
 
@@ -124,15 +126,18 @@ Registers a listener for a specific event. Returns an unsubscribe function.
 Removes a specific listener from an event.
 
 **Parameters:**
+
 - **`event: K`** - The event name
 - **`listener: (payload: T[K]) => void`** - The listener function to remove
 
 ##### `emit<K extends keyof T>(event: K): void`
+
 ##### `emit<K extends keyof T>(event: K, payload: T[K]): void`
 
 Emits an event, calling all registered listeners. The payload is optional if the event's payload type is `void` or `undefined`.
 
 **Parameters:**
+
 - **`event: K`** - The event name to emit
 - **`payload?: T[K]`** - Optional payload data (required if event type is not `void`)
 
@@ -203,7 +208,7 @@ import { LogarhythmLogLevel } from "logarhythm";
 const emitter = new EventEmitter<MyEvents>({
   name: "MyCustomEmitter",
   logColor: "#10b981", // Green
-  logLevel: LogarhythmLogLevel.DEBUG, // Show debug logs
+  logLevel: LogarhythmLogLevel.DEBUG // Show debug logs
 });
 
 // All event operations will be logged with custom settings
@@ -220,7 +225,9 @@ const unsubscribe = emitter.on("event", handler);
 unsubscribe();
 
 // Pattern 2: Remove specific listener
-const handler = (payload) => { /* ... */ };
+const handler = (payload) => {
+  /* ... */
+};
 emitter.on("event", handler);
 // Later...
 emitter.off("event", handler);
@@ -237,12 +244,9 @@ import { useEffect, useRef } from "react";
 function useEventEmitter<T extends EventMap>(emitter: EventEmitter<T>) {
   const handlersRef = useRef<Map<keyof T, Set<Function>>>(new Map());
 
-  const on = <K extends keyof T>(
-    event: K,
-    handler: (payload: T[K]) => void
-  ) => {
+  const on = <K extends keyof T>(event: K, handler: (payload: T[K]) => void) => {
     const unsubscribe = emitter.on(event, handler);
-    
+
     if (!handlersRef.current.has(event)) {
       handlersRef.current.set(event, new Set());
     }
@@ -277,10 +281,7 @@ class StateManager {
   private emitter = new EventEmitter<StateEvents>();
   private state: Record<string, unknown> = {};
 
-  subscribe<K extends keyof StateEvents>(
-    event: K,
-    handler: (payload: StateEvents[K]) => void
-  ) {
+  subscribe<K extends keyof StateEvents>(event: K, handler: (payload: StateEvents[K]) => void) {
     return this.emitter.on(event, handler);
   }
 
@@ -350,4 +351,3 @@ emitter.emit("userCreated", { wrong: "data" }); // ❌ Type error
 ## License
 
 Apache-2.0
-

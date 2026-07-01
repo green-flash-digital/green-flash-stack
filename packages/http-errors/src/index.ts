@@ -16,5 +16,5 @@ export {
   UnknownError,
   HTTPError,
   serializeError,
-  deserializeError,
+  deserializeError
 } from "./httpError.js";

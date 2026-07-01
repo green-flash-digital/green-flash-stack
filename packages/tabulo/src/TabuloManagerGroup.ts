@@ -1,6 +1,7 @@
 import { castDraft, current } from "immer";
 import { Logarhythm } from "logarhythm";
 
+import type { Tabulo } from "./Tabulo.js";
 import type {
   TabuloStateGroup,
   TabuloRecord,
@@ -10,9 +11,8 @@ import type {
   TabuloColumnConfig,
   TabuloColumnState,
   TabuloExtendedState,
-  TabuloEventMap,
+  TabuloEventMap
 } from "./tabulo.utils.js";
-import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigGroup<R extends TabuloRecord> = TabuloStateGroup<R>;
 
@@ -29,15 +29,12 @@ export class TabuloManagerGroup<
   #log: Logarhythm;
   #config: TabuloConfigGroup<R> | undefined;
 
-  constructor(
-    engine: Tabulo<R, F, S, C, T, X, E>,
-    config?: TabuloConfigGroup<R>
-  ) {
+  constructor(engine: Tabulo<R, F, S, C, T, X, E>, config?: TabuloConfigGroup<R>) {
     this.#engine = engine;
     this.#config = config;
     this.#log = new Logarhythm({
       name: `${this.#engine.debugName}:engine-manager:group`,
-      pillColor: this.#engine.debugColor,
+      pillColor: this.#engine.debugColor
     });
 
     this.setGrouping = this.setGrouping.bind(this);
@@ -64,10 +61,7 @@ export class TabuloManagerGroup<
    * set the key to group as well as the function that
    * determines how that key value is displayed.
    */
-  async setGrouping(
-    { key, ...restArgs }: TabuloStateGroup<R>,
-    options?: ManagerMutationOptions
-  ) {
+  async setGrouping({ key, ...restArgs }: TabuloStateGroup<R>, options?: ManagerMutationOptions) {
     await this.#engine.queueStateUpdate({
       ...options,
       mutate: (draft) => {
@@ -75,7 +69,7 @@ export class TabuloManagerGroup<
         draft.group = castDraft({
           ...castDraft(draft.group ?? {}),
           ...restArgs,
-          key,
+          key
         });
         const currentState = current(draft);
         if (!currentState.group?.renderFn) {
@@ -88,7 +82,7 @@ export class TabuloManagerGroup<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("group:change");
-      },
+      }
     });
   }
 }

@@ -2,12 +2,19 @@
   "name": "@fizmoo/core",
   "version": "0.1.4",
   "description": "The core library for building type-safe, self-documenting Node.js CLIs with fizmoo.",
+  "homepage": "https://github.com/green-flash-digital/fizmoo#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/fizmoo/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/green-flash-digital/fizmoo.git",
+    "directory": "packages/fizmoo-core"
+  },
   "type": "module",
   "sideEffects": false,
-  "scripts": {
-    "build": "yarn tsc --project ./tsconfig.build.json",
-    "dev": "yarn tsc --project ./tsconfig.build.json --watch"
-  },
   "exports": {
     ".": "./dist/index.js",
     "./runtime": "./dist/runtime/index.js"
@@ -15,22 +22,9 @@
   "publishConfig": {
     "access": "public"
   },
-  "repository": {
-    "type": "git",
-    "url": "git+ssh://git@github.com/green-flash-digital/fizmoo.git",
-    "directory": "packages/fizmoo-core"
-  },
-  "author": "Drew DeCarme (drew@greenflash.digital)",
-  "license": "Apache-2.0",
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/fizmoo/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/fizmoo#readme",
-  "devDependencies": {
-    "@types/node": "22.15.19",
-    "@types/picomatch": "4.0.0",
-    "tsx": "4.19.4",
-    "typescript": "5.8.3"
+  "scripts": {
+    "build": "yarn tsc --project ./tsconfig.build.json",
+    "dev": "yarn tsc --project ./tsconfig.build.json --watch"
   },
   "dependencies": {
     "@inquirer/prompts": "7.5.1",
@@ -41,5 +35,11 @@
     "picomatch": "4.0.2",
     "ts-jolt": "0.2.3",
     "zod": "3.25.3"
+  },
+  "devDependencies": {
+    "@types/node": "22.15.19",
+    "@types/picomatch": "4.0.0",
+    "tsx": "4.19.4",
+    "typescript": "5.8.3"
   }
 }

@@ -1,9 +1,10 @@
 import { type ReactNode } from "react";
 import { useSyncExternalStore } from "react";
+
 import type { PopoverEngine, PopoverEngineState } from "@stratum-ui/core";
 
-import type { Popover } from "./Popover.js";
 import { PopoverContext } from "./popover.context.js";
+import type { Popover } from "./Popover.js";
 
 export type PopoverProps<S extends PopoverEngineState | undefined> = {
   engine: PopoverEngine<S>;
@@ -14,19 +15,15 @@ export type PopoverProps<S extends PopoverEngineState | undefined> = {
 export function PopoverProvider<S extends PopoverEngineState | undefined>({
   children,
   instance,
-  engine,
+  engine
 }: PopoverProps<S>) {
-  const state = useSyncExternalStore(
-    engine.subscribe,
-    engine.getState,
-    engine.getState
-  );
+  const state = useSyncExternalStore(engine.subscribe, engine.getState, engine.getState);
 
   return (
     <PopoverContext.Provider
       value={{
         state,
-        closePopover: instance.closePopover,
+        closePopover: instance.closePopover
       }}
     >
       {children}

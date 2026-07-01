@@ -10,15 +10,11 @@ export class EventEmitter<T extends EventMap> {
   #listeners: { [K in keyof T]?: Set<(payload: T[K]) => void> } = {};
   #log: Logarhythm;
 
-  constructor(options?: {
-    name?: string;
-    logColor?: string;
-    logLevel?: LogarhythmLogLevel;
-  }) {
+  constructor(options?: { name?: string; logColor?: string; logLevel?: LogarhythmLogLevel }) {
     this.#log = new Logarhythm({
       logLevel: options?.logLevel,
       name: options?.name ? `${options.name}:events` : "EventEmitter",
-      pillColor: options?.logColor ?? "#202020ff",
+      pillColor: options?.logColor ?? "#202020ff"
     });
   }
 
@@ -49,9 +45,7 @@ export class EventEmitter<T extends EventMap> {
       return this.#log.debug(`No listeners for`, event);
     }
 
-    this.#log.info(
-      `Running ${listeners.size} "${String(event)}" event listener(s)`
-    );
+    this.#log.info(`Running ${listeners.size} "${String(event)}" event listener(s)`);
 
     for (const listener of listeners) {
       // payload will be undefined if omitted, but if the event’s payload type

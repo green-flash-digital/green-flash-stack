@@ -3,12 +3,7 @@ import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 
 export type ToastProps = Record<string, unknown>;
 
-export type ToastVariant =
-  | "info"
-  | "success"
-  | "warning"
-  | "error"
-  | "critical";
+export type ToastVariant = "info" | "success" | "warning" | "error" | "critical";
 
 export type ToastInputBase = {
   message: string;
@@ -34,9 +29,9 @@ export type ToastOptions = {
  * Intended to be used by framework-specific adapters (e.g., React Toaster) to render and manage toasts
  * in the UI.
  */
-export class ToastEngine<
-  T extends ToastProps = ToastProps
-> extends TransactionStore<ToastState<T>[]> {
+export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionStore<
+  ToastState<T>[]
+> {
   #container: HTMLElement | undefined;
   #regionPolite: HTMLElement | undefined;
   #regionAssertive: HTMLElement | undefined;
@@ -44,7 +39,7 @@ export class ToastEngine<
 
   static regionIds = {
     polite: "__STRATUM_TOAST_REGION_POLITE__",
-    assertive: "__STRATUM_TOAST_REGION_ASSERTIVE__",
+    assertive: "__STRATUM_TOAST_REGION_ASSERTIVE__"
   };
 
   /**
@@ -99,7 +94,7 @@ export class ToastEngine<
       role: "status",
       ariaLive: "polite",
       ariaAtomic: "true",
-      ariaRelevant: "additions text",
+      ariaRelevant: "additions text"
     };
 
     const assertive = {
@@ -107,23 +102,20 @@ export class ToastEngine<
       role: "alert",
       ariaLive: "assertive",
       ariaAtomic: "true",
-      ariaRelevant: "additions text",
+      ariaRelevant: "additions text"
     };
 
     if (!toKebabCase) return { polite, assertive };
 
     const camelToKebabObj = <T extends Record<string, string>>(obj: T) => {
       return Object.fromEntries(
-        Object.entries(obj).map(([key, value]) => [
-          this.#camelToKebab(key),
-          value,
-        ])
+        Object.entries(obj).map(([key, value]) => [this.#camelToKebab(key), value])
       );
     };
 
     return {
       polite: camelToKebabObj(polite),
-      assertive: camelToKebabObj(assertive),
+      assertive: camelToKebabObj(assertive)
     };
   }
 
@@ -137,8 +129,7 @@ export class ToastEngine<
    */
   ensureRegionPolite(className?: string) {
     if (!this.#regionPolite) {
-      this.#regionPolite =
-        document.getElementById(ToastEngine.regionIds.polite) ?? undefined;
+      this.#regionPolite = document.getElementById(ToastEngine.regionIds.polite) ?? undefined;
     }
     if (!this.#regionPolite) {
       const el = document.createElement("div");
@@ -167,8 +158,7 @@ export class ToastEngine<
    */
   ensureRegionAssertive(className?: string) {
     if (!this.#regionAssertive) {
-      this.#regionAssertive =
-        document.getElementById(ToastEngine.regionIds.assertive) ?? undefined;
+      this.#regionAssertive = document.getElementById(ToastEngine.regionIds.assertive) ?? undefined;
     }
     if (!this.#regionAssertive) {
       const el = document.createElement("div");
@@ -262,7 +252,7 @@ export class ToastEngine<
       mutate: (draft) => {
         draft.push({ id, ...toast } as (typeof draft)[number]);
       },
-      notify: true,
+      notify: true
     });
 
     if (!this.#duration || !autoDismiss) return;
@@ -279,7 +269,7 @@ export class ToastEngine<
       mutate: (draft) => {
         const index = draft.findIndex((toast) => toast.id === id);
         draft.splice(index, 1);
-      },
+      }
     });
   }
 
@@ -290,7 +280,7 @@ export class ToastEngine<
     this.enqueue({
       mutate: (draft) => {
         draft.length = 0;
-      },
+      }
     });
   }
 

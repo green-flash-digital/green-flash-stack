@@ -57,7 +57,7 @@ Create a controller instance that references your modal content:
 import { ModalController } from "@stratum-ui/react";
 
 export const myModalController = new ModalController({
-  load: async () => import("./MyModalContent"),
+  load: async () => import("./MyModalContent")
 });
 ```
 
@@ -98,7 +98,7 @@ export default function MyModal() {
         padding: "2rem",
         borderRadius: "0.5rem",
         border: "1px solid #ccc",
-        maxWidth: "500px",
+        maxWidth: "500px"
       }}
     >
       <h2>My Custom Modal</h2>
@@ -112,11 +112,12 @@ export default function MyModal() {
 import { ModalController } from "@stratum-ui/react";
 
 export const myModalController = new ModalController({
-  load: async () => import("./Content"),
+  load: async () => import("./Content")
 });
 ```
 
 You can apply any CSS you want - inline styles, CSS modules, styled-components, Tailwind classes, etc. The `onMount` ref callback handles:
+
 - Opening the dialog when the modal state becomes `isOpen: true`
 - Managing event listeners for escape key and backdrop clicks
 - Coordinating the close animation sequence
@@ -167,7 +168,7 @@ export default function UserModal() {
       style={{
         padding: "2rem",
         borderRadius: "0.5rem",
-        maxWidth: "500px",
+        maxWidth: "500px"
       }}
     >
       <h2>User Details</h2>
@@ -191,7 +192,7 @@ import { ModalController } from "@stratum-ui/react";
 import { UserModalState } from "./Content";
 
 export const userModalController = new ModalController<UserModalState>({
-  load: async () => import("./Content"),
+  load: async () => import("./Content")
 });
 ```
 
@@ -204,7 +205,7 @@ function MyComponent() {
   const handleOpen = () => {
     userModalController.launch({
       userId: "123",
-      userName: "John Doe",
+      userName: "John Doe"
     });
   };
 
@@ -267,13 +268,13 @@ const modals = new ModalRegistry();
 // Register your modal controllers
 export const userModal = modals.register(
   new ModalController({
-    load: async () => import("./UserModal"),
+    load: async () => import("./UserModal")
   })
 );
 
 export const settingsModal = modals.register(
   new ModalController({
-    load: async () => import("./SettingsModal"),
+    load: async () => import("./SettingsModal")
   })
 );
 
@@ -293,7 +294,7 @@ function App() {
     <>
       {/* Render all registered modals */}
       <modals.Render />
-      
+
       {/* Rest of your app */}
       <YourAppContent />
     </>
@@ -333,14 +334,17 @@ new ModalController<S>(options: {
 ```
 
 **Generic Parameter:**
+
 - `S` - The type of state your modal accepts (optional, defaults to `undefined`)
 
 **Methods:**
+
 - `launch(eventOrState?: S | Event)` - Opens the modal, optionally with state
 - `Component()` - React component that renders the modal
 - `closeModal()` - Closes the modal with animation
 
 **Properties:**
+
 - `closeOnBackdropClick` - Whether clicking the backdrop closes the modal
 - `closeOnEscapePress` - Whether pressing Escape closes the modal
 
@@ -365,13 +369,14 @@ Hook to access modal state and controls from within modal content.
 
 ```tsx
 const {
-  state,      // The current modal state (typed if using generic)
+  state, // The current modal state (typed if using generic)
   closeModal, // Function to close the modal with animation
-  onMount,    // Ref callback for the dialog element - pass this to your <dialog> ref to handle lifecycle
+  onMount // Ref callback for the dialog element - pass this to your <dialog> ref to handle lifecycle
 } = useModalContext<S>();
 ```
 
 **Generic Parameter:**
+
 - `S` - The type of state your modal uses (should match your controller's type)
 
 ### `ModalRegistry`
@@ -385,10 +390,11 @@ const registry = new ModalRegistry();
 registry.register(controller);
 
 // Render all registered modals
-<registry.Render />
+<registry.Render />;
 ```
 
 **Methods:**
+
 - `register(controller: ModalController)` - Registers a modal controller
 - `Render()` - React component that renders all registered modals
 
@@ -422,7 +428,7 @@ export default function ConfirmDialog() {
         padding: "2rem",
         borderRadius: "0.5rem",
         border: "1px solid #ccc",
-        maxWidth: "400px",
+        maxWidth: "400px"
       }}
     >
       <h2>{title}</h2>
@@ -439,7 +445,7 @@ export default function ConfirmDialog() {
 export const confirmDialog = new ModalController<ConfirmDialogState>({
   closeOnBackdropClick: false, // Prevent accidental closes
   closeOnEscapePress: false,
-  load: async () => import("./ConfirmDialog"),
+  load: async () => import("./ConfirmDialog")
 });
 
 // Usage
@@ -448,7 +454,7 @@ confirmDialog.launch({
   message: "Are you sure you want to delete this item?",
   onConfirm: () => {
     // Perform deletion
-  },
+  }
 });
 ```
 
@@ -476,7 +482,7 @@ export default function Sidebar() {
         padding: "2rem",
         border: "none",
         borderLeft: "1px solid #ccc",
-        boxShadow: "-2px 0 8px rgba(0,0,0,0.1)",
+        boxShadow: "-2px 0 8px rgba(0,0,0,0.1)"
       }}
     >
       <header style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
@@ -485,9 +491,15 @@ export default function Sidebar() {
       </header>
       <nav>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/about">About</a>
+          </li>
+          <li>
+            <a href="/contact">Contact</a>
+          </li>
         </ul>
       </nav>
     </dialog>
@@ -512,9 +524,15 @@ export default function Sidebar() {
       </header>
       <nav>
         <ul>
-          <li><a href="/">Home</a></li>
-          <li><a href="/about">About</a></li>
-          <li><a href="/contact">Contact</a></li>
+          <li>
+            <a href="/">Home</a>
+          </li>
+          <li>
+            <a href="/about">About</a>
+          </li>
+          <li>
+            <a href="/contact">Contact</a>
+          </li>
         </ul>
       </nav>
     </Modal>
@@ -531,4 +549,3 @@ export default function Sidebar() {
 5. **State Management**: Keep modal state minimal - only include data needed for the modal to render
 6. **User Experience**: Consider setting `closeOnBackdropClick: false` for critical actions (like confirmations)
 7. **Styling Flexibility**: Style your dialogs however you want - inline styles, CSS modules, styled-components, Tailwind, etc. The `onMount` callback handles all the lifecycle management.
-

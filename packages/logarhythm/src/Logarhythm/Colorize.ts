@@ -14,13 +14,13 @@ const ANSI_COLORS = {
   blueBright: "\x1b[94m",
   magentaBright: "\x1b[95m",
   cyanBright: "\x1b[96m",
-  whiteBright: "\x1b[97m",
+  whiteBright: "\x1b[97m"
 } as const;
 
 const ANSI_STYLES = {
   bold: "\x1b[1m",
   underline: "\x1b[4m",
-  bg: "\x1b[7m",
+  bg: "\x1b[7m"
 } as const;
 
 const RESET = "\x1b[0m";
@@ -73,11 +73,7 @@ type ColorizerInstance = {
   [key in Colors | Styles]: ColorizerInstance;
 } & ((text: string) => string);
 
-const createColorizerProxy = (
-  parent?: Colorizer,
-  color?: Colors,
-  style?: Styles
-) => {
+const createColorizerProxy = (parent?: Colorizer, color?: Colors, style?: Styles) => {
   // 🔥 This function actually gets called when you invoke `c("text")`
   function applyColorizer(text: string) {
     return new Colorizer(parent, color, style)["callable"](text);
@@ -90,16 +86,14 @@ const createColorizerProxy = (
         return createColorizerProxy(new Colorizer(parent, prop as Colors));
       }
       if (prop in ANSI_STYLES) {
-        return createColorizerProxy(
-          new Colorizer(parent, undefined, prop as Styles)
-        );
+        return createColorizerProxy(new Colorizer(parent, undefined, prop as Styles));
       }
       return undefined;
     },
     // 🔹 Handle function calls (e.g., `c("Hello")`)
     apply(target, _, args) {
       return target(args[0]); // Calls `applyColorizer(text)`, which formats the string
-    },
+    }
   });
 };
 

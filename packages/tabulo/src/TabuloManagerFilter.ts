@@ -1,5 +1,6 @@
 import { Logarhythm } from "logarhythm";
 
+import type { Tabulo } from "./Tabulo.js";
 import type {
   TabuloStateFilterData,
   TabuloFilterValue,
@@ -11,15 +12,11 @@ import type {
   TabuloColumnConfig,
   TabuloColumnState,
   TabuloExtendedState,
-  TabuloEventMap,
+  TabuloEventMap
 } from "./tabulo.utils.js";
 import { mutateEngineStateHelper } from "./tabulo.utils.js";
-import type { Tabulo } from "./Tabulo.js";
 
-export type TabuloConfigFilter<F extends TabuloFilter> = Record<
-  keyof F,
-  TabuloConfigFilterValue
->;
+export type TabuloConfigFilter<F extends TabuloFilter> = Record<keyof F, TabuloConfigFilterValue>;
 
 export type TabuloConfigFilterValue = {
   label: string;
@@ -28,10 +25,7 @@ export type TabuloConfigFilterValue = {
 };
 
 export type TabuloFilterActions = {
-  setValue: (
-    value: TabuloFilterValue,
-    opts?: ManagerMutationOptions
-  ) => Promise<void>;
+  setValue: (value: TabuloFilterValue, opts?: ManagerMutationOptions) => Promise<void>;
   getValue: () => string | undefined;
   clearValue: (opts?: ManagerMutationOptions) => Promise<void>;
   getData: () => TabuloStateFilterData<string>[];
@@ -61,15 +55,12 @@ export class TabuloManagerFilter<
   #filters: Map<keyof F, TabuloFilterDef>;
   entries: Array<[keyof F, TabuloFilterDef]>;
 
-  constructor(
-    engine: Tabulo<R, F, S, C, T, X, E>,
-    config?: TabuloConfigFilter<F>
-  ) {
+  constructor(engine: Tabulo<R, F, S, C, T, X, E>, config?: TabuloConfigFilter<F>) {
     this.#engine = engine;
     this.#config = config ?? undefined;
     this.#log = new Logarhythm({
       name: `${this.#engine.debugName}:engine-manager:filter`,
-      pillColor: this.#engine.debugColor,
+      pillColor: this.#engine.debugColor
     });
     this.#filters = new Map();
     for (const [key, config] of Object.entries(this.#config ?? {})) {
@@ -89,7 +80,7 @@ export class TabuloManagerFilter<
         },
         getDisplayFromValue: (value) => {
           return this.getDisplayFromValue(key, value);
-        },
+        }
       });
     }
     this.entries = [...this.#filters.entries()];
@@ -105,8 +96,8 @@ export class TabuloManagerFilter<
         [filterKey]: {
           data: [],
           humanReadableValueMap: new Map(),
-          value: config.defaultValue ?? undefined,
-        },
+          value: config.defaultValue ?? undefined
+        }
       }),
       {} as TabuloStateFilter<F>
     );
@@ -122,22 +113,18 @@ export class TabuloManagerFilter<
     const getAndSetAllFilterConfigData = Object.entries(this.#config ?? {}).map(
       async ([filterKey, filterConfig]) => {
         const key = filterKey as keyof F;
-        let records = filterConfig.getRecords
-          ? await filterConfig.getRecords()
-          : [];
+        let records = filterConfig.getRecords ? await filterConfig.getRecords() : [];
         if (records === false) records = [];
 
         await this.#engine.queueStateUpdate({
           mutate: (draft) => {
             mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, key, (filter) => {
               filter.data = records;
-              filter.humanReadableValueMap = new Map(
-                records.map((r) => [r.value, r.displayAs])
-              );
+              filter.humanReadableValueMap = new Map(records.map((r) => [r.value, r.displayAs]));
             });
           },
           optimistic: true,
-          notify: false,
+          notify: false
         });
       }
     );
@@ -222,7 +209,7 @@ export class TabuloManagerFilter<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("filter:change");
-      },
+      }
     });
   }
 
@@ -230,10 +217,7 @@ export class TabuloManagerFilter<
    * Clear the value of a filter. Set's the value
    * of the filter to undefined
    */
-  async clearFilterValue<K extends keyof F>(
-    key: K,
-    options?: ManagerMutationOptions
-  ) {
+  async clearFilterValue<K extends keyof F>(key: K, options?: ManagerMutationOptions) {
     await this.#engine.queueStateUpdate({
       ...options,
       mutate: (draft) => {
@@ -246,7 +230,7 @@ export class TabuloManagerFilter<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("filter:change");
-      },
+      }
     });
   }
 
@@ -261,7 +245,7 @@ export class TabuloManagerFilter<
       ...options,
       mutate: (draft) => {
         this.#log.info("Clearing filter values for", {
-          filters: filterKeys.toString(),
+          filters: filterKeys.toString()
         });
         for (const filterKey of filterKeys) {
           mutateEngineStateHelper<TabuloStateFilter<F>>(draft.filter, filterKey, (filter) => {
@@ -273,7 +257,7 @@ export class TabuloManagerFilter<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("filter:change");
-      },
+      }
     });
   }
 
@@ -289,7 +273,7 @@ export class TabuloManagerFilter<
       ...options,
       mutate: (draft) => {
         this.#log.info("Clearing all filter values except for", {
-          filters: ignoredFilterKeys.toString(),
+          filters: ignoredFilterKeys.toString()
         });
         for (const [filterKey] of this.entries) {
           const key = filterKey as K;
@@ -303,17 +287,14 @@ export class TabuloManagerFilter<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("filter:change");
-      },
+      }
     });
   }
 
   /**
    * Get display string for a given filter value
    */
-  getDisplayFromValue<K extends keyof F>(
-    key: K,
-    value: TabuloFilterValue
-  ): string {
+  getDisplayFromValue<K extends keyof F>(key: K, value: TabuloFilterValue): string {
     if (!value) return "";
     const state = this.#engine.getState().filter[key];
     if (!state.data) {
@@ -327,7 +308,7 @@ export class TabuloManagerFilter<
       .split(",")
       .map((v) => {
         const display = state.humanReadableValueMap.get(v);
-        return typeof display === "function" ? display(v) : display ?? v;
+        return typeof display === "function" ? display(v) : (display ?? v);
       })
       .join(", ");
   }
@@ -343,7 +324,7 @@ export class TabuloManagerFilter<
 
         return {
           keys: accum.keys + 1,
-          values: accum.values + count,
+          values: accum.values + count
         };
       },
       { keys: 0, values: 0 }
@@ -368,7 +349,7 @@ export class TabuloManagerFilter<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("filter:change");
-      },
+      }
     });
   }
 
@@ -390,7 +371,7 @@ export class TabuloManagerFilter<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("filter:change");
-      },
+      }
     });
   }
 
@@ -401,18 +382,19 @@ export class TabuloManagerFilter<
     this.#log.info("Normalizing filters...");
     const filterState = this.#engine.getState().filter;
 
-    const normalizedObj = Object.entries(filterState).reduce<
-      Partial<Record<keyof F, string>>
-    >((accum, [filterKey, filterState]) => {
-      const { value } = filterState;
+    const normalizedObj = Object.entries(filterState).reduce<Partial<Record<keyof F, string>>>(
+      (accum, [filterKey, filterState]) => {
+        const { value } = filterState;
 
-      const isUndefined = typeof value === "undefined";
-      const isNull = value === null;
-      const isEmptyString = typeof value === "string" && value === "";
+        const isUndefined = typeof value === "undefined";
+        const isNull = value === null;
+        const isEmptyString = typeof value === "string" && value === "";
 
-      if (isUndefined || isNull || isEmptyString) return accum;
-      return Object.assign(accum, { [filterKey]: value });
-    }, {});
+        if (isUndefined || isNull || isEmptyString) return accum;
+        return Object.assign(accum, { [filterKey]: value });
+      },
+      {}
+    );
 
     this.#log.info("Normalizing filters... done", normalizedObj);
 
@@ -455,7 +437,7 @@ export class TabuloManagerFilter<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("filter:change");
-      },
+      }
     });
   }
 }

@@ -9,5 +9,5 @@ const className = css`
 export const MenuWithPositioning = new MenuController({
   className,
   position: "top-span-right",
-  load: () => import("./content.js"),
+  load: () => import("./content.js")
 });

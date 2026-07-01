@@ -4,7 +4,7 @@ async function buildFizmooCLIWithFizmoo() {
   const fizmoo = await createFizmoo({
     logLevel: "trace",
     autoInit: false,
-    env: "development",
+    env: "development"
   });
   if (!fizmoo) return;
   await fizmoo.build();

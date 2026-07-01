@@ -5,7 +5,7 @@ export type CustomState = { uuid: string };
 
 export default function WithStateModal() {
   const {
-    state: { uuid },
+    state: { uuid }
   } = useModalContext<CustomState>();
 
   return (

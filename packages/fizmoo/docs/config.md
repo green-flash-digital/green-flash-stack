@@ -13,20 +13,17 @@ export default defineConfig({
   name: "mycli",
   description: "My CLI tool",
   version: "1.0.0",
-  commands: [
-    command("./commands/build.ts"),
-    command("./commands/deploy.ts"),
-  ],
+  commands: [command("./commands/build.ts"), command("./commands/deploy.ts")]
 });
 ```
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `name` | `string` | yes | CLI name and binary name |
-| `description` | `string` | yes | Shown in root help menu |
-| `version` | `string` | no | Shown in `--version` output |
-| `hooks` | `FizmooHooks` | no | Lifecycle hooks (see [Hooks](./hooks.md)) |
-| `commands` | `FizmooCommandEntry[]` | yes | Registered command files |
+| Field         | Type                   | Required | Description                               |
+| ------------- | ---------------------- | -------- | ----------------------------------------- |
+| `name`        | `string`               | yes      | CLI name and binary name                  |
+| `description` | `string`               | yes      | Shown in root help menu                   |
+| `version`     | `string`               | no       | Shown in `--version` output               |
+| `hooks`       | `FizmooHooks`          | no       | Lifecycle hooks (see [Hooks](./hooks.md)) |
+| `commands`    | `FizmooCommandEntry[]` | yes      | Registered command files                  |
 
 ---
 
@@ -35,7 +32,7 @@ export default defineConfig({
 `command(file, children?)` registers a command file. The path is relative to `config.ts`.
 
 ```ts
-command("./commands/build.ts")
+command("./commands/build.ts");
 ```
 
 The first argument is the source file path. The optional second argument is an array of child `command()` calls, which establishes parent/child relationships in the command tree.
@@ -54,9 +51,9 @@ export default defineConfig({
     command("./commands/build.ts"),
     command("./commands/deploy.ts", [
       command("./commands/deploy-prod.ts"),
-      command("./commands/deploy-staging.ts"),
-    ]),
-  ],
+      command("./commands/deploy-staging.ts")
+    ])
+  ]
 });
 ```
 
@@ -80,11 +77,11 @@ commands: [
   command("./commands/cloud.ts", [
     command("./commands/cloud-aws.ts", [
       command("./commands/cloud-aws-deploy.ts"),
-      command("./commands/cloud-aws-destroy.ts"),
+      command("./commands/cloud-aws-destroy.ts")
     ]),
-    command("./commands/cloud-gcp.ts"),
-  ]),
-]
+    command("./commands/cloud-gcp.ts")
+  ])
+];
 ```
 
 ```
@@ -103,9 +100,9 @@ Command files can live anywhere — they don't have to be in `.fizmoo/commands/`
 
 ```ts
 commands: [
-  command("../../src/commands/build.ts"),   // outside .fizmoo/
-  command("./commands/dev.ts"),              // inside .fizmoo/
-]
+  command("../../src/commands/build.ts"), // outside .fizmoo/
+  command("./commands/dev.ts") // inside .fizmoo/
+];
 ```
 
 The conventional location is `.fizmoo/commands/` but there is no requirement.
@@ -116,9 +113,9 @@ The conventional location is `.fizmoo/commands/` but there is no requirement.
 
 Each command file compiles to `bin/commands/<relative-path>.js`. For example:
 
-| Source | Output |
-|---|---|
-| `.fizmoo/commands/build.ts` | `bin/commands/build.js` |
+| Source                            | Output                        |
+| --------------------------------- | ----------------------------- |
+| `.fizmoo/commands/build.ts`       | `bin/commands/build.js`       |
 | `.fizmoo/commands/deploy-prod.ts` | `bin/commands/deploy-prod.js` |
 
 The `bin/fizmoo.manifest.json` is the runtime contract that maps command IDs to their compiled file locations, options, args, and help text. It is generated at build time and read at runtime by `FizmooRuntime`.

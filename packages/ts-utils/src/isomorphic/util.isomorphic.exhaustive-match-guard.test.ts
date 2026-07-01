@@ -4,9 +4,7 @@ import { exhaustiveMatchGuard } from "./util.isomorphic.exhaustive-match-guard.j
 
 describe("exhaustiveMatchGuard", () => {
   it("should throw an error with the unexpected value", () => {
-    expect(() =>
-      exhaustiveMatchGuard("unexpected_value" as never)
-    ).toThrowError(
+    expect(() => exhaustiveMatchGuard("unexpected_value" as never)).toThrowError(
       'Forgot to include an "unexpected_value" in the switch statement'
     );
   });

@@ -33,9 +33,7 @@ import { defineConfig, command } from "fizmoo";
 export default defineConfig({
   name: "mycli",
   description: "My CLI tool",
-  commands: [
-    command("./commands/hello.ts"),
-  ],
+  commands: [command("./commands/hello.ts")]
 });
 ```
 
@@ -65,12 +63,12 @@ export default defineCommand({
       type: "string",
       alias: "n",
       description: "Who to greet",
-      default: "world",
-    },
+      default: "world"
+    }
   },
   action: async ({ options }) => {
     console.log(`Hello, ${options.name}!`);
-  },
+  }
 });
 ```
 

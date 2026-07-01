@@ -1,5 +1,6 @@
 import { Logarhythm } from "logarhythm";
 
+import type { Tabulo } from "./Tabulo.js";
 import type {
   ManagerMutationOptions,
   TabuloColumnConfig,
@@ -8,9 +9,8 @@ import type {
   TabuloExtendedState,
   TabuloFilter,
   TabuloRecord,
-  TabuloSort,
+  TabuloSort
 } from "./tabulo.utils.js";
-import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloConfigMeta = {
   messages: {
@@ -50,12 +50,12 @@ export class TabuloManagerMeta<
       ...config,
       messages: {
         noResults: config?.messages?.noResults ?? "global.no_search_results",
-        noRecords: config?.messages?.noRecords ?? "global.no_records_exist",
-      },
+        noRecords: config?.messages?.noRecords ?? "global.no_records_exist"
+      }
     };
     this.#log = new Logarhythm({
       name: `${engine.debugName}:engine-manager:meta`,
-      pillColor: engine.debugColor,
+      pillColor: engine.debugColor
     });
   }
 
@@ -85,7 +85,7 @@ export class TabuloManagerMeta<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("meta:tick");
-      },
+      }
     });
   }
 }

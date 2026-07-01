@@ -15,37 +15,37 @@ export default defineCommand({
       type: "number",
       alias: "p",
       description: "Port to listen on",
-      default: 3000,
+      default: 3000
     },
     watch: {
       type: "boolean",
       alias: "w",
-      description: "Rebuild on change",
+      description: "Rebuild on change"
     },
     env: {
       type: "string",
       alias: "e",
       description: "Target environment",
-      required: true,
-    },
+      required: true
+    }
   },
   action: async ({ options }) => {
-    options.port  // number
-    options.watch // boolean
-    options.env   // string
-  },
+    options.port; // number
+    options.watch; // boolean
+    options.env; // string
+  }
 });
 ```
 
 ### Common fields
 
-| Field | Type | Description |
-|---|---|---|
-| `type` | `"boolean" \| "string" \| "number"` | Value type |
-| `description` | `string` | Shown in help menu |
-| `alias` | `string` | Short flag (e.g. `"p"` → `-p`) |
-| `required` | `boolean` | If `true`, build will error if not provided |
-| `default` | `boolean \| string \| number` | Value when not provided by user |
+| Field         | Type                                | Description                                 |
+| ------------- | ----------------------------------- | ------------------------------------------- |
+| `type`        | `"boolean" \| "string" \| "number"` | Value type                                  |
+| `description` | `string`                            | Shown in help menu                          |
+| `alias`       | `string`                            | Short flag (e.g. `"p"` → `-p`)              |
+| `required`    | `boolean`                           | If `true`, build will error if not provided |
+| `default`     | `boolean \| string \| number`       | Value when not provided by user             |
 
 ### Boolean options
 
@@ -54,6 +54,7 @@ verbose: { type: "boolean", alias: "v", description: "Enable verbose output" }
 ```
 
 Usage:
+
 ```bash
 mycli build --verbose          # true
 mycli build --verbose=true     # true
@@ -76,6 +77,7 @@ output: {
 ```
 
 Usage:
+
 ```bash
 mycli build --output ./build
 mycli build --output=./build
@@ -126,23 +128,24 @@ export default defineCommand({
       type: "string",
       description: "Target environment",
       required: true,
-      choices: ["prod", "staging", "dev"],
+      choices: ["prod", "staging", "dev"]
     },
     version: {
       name: "version",
       type: "string",
       description: "Version tag to deploy",
-      default: "latest",
-    },
+      default: "latest"
+    }
   },
   action: async ({ args }) => {
-    args.environment  // string
-    args.version      // string
-  },
+    args.environment; // string
+    args.version; // string
+  }
 });
 ```
 
 Usage:
+
 ```bash
 mycli deploy prod
 mycli deploy prod v1.2.3
@@ -150,13 +153,13 @@ mycli deploy prod v1.2.3
 
 ### Common fields
 
-| Field | Type | Description |
-|---|---|---|
-| `name` | `string` | Display name used in help output |
-| `type` | `"boolean" \| "string" \| "number"` | Value type |
-| `description` | `string` | Shown in help menu |
-| `required` | `boolean` | If `true`, errors when not provided |
-| `default` | matching type | Value when not provided |
+| Field         | Type                                | Description                         |
+| ------------- | ----------------------------------- | ----------------------------------- |
+| `name`        | `string`                            | Display name used in help output    |
+| `type`        | `"boolean" \| "string" \| "number"` | Value type                          |
+| `description` | `string`                            | Shown in help menu                  |
+| `required`    | `boolean`                           | If `true`, errors when not provided |
+| `default`     | matching type                       | Value when not provided             |
 
 ### String args
 
@@ -171,12 +174,12 @@ format: {
 }
 ```
 
-| Constraint | Description |
-|---|---|
-| `choices` | Allowlist of valid values |
-| `length.min` | Minimum character length |
-| `length.max` | Maximum character length |
-| `validate` | Custom validation function |
+| Constraint   | Description                |
+| ------------ | -------------------------- |
+| `choices`    | Allowlist of valid values  |
+| `length.min` | Minimum character length   |
+| `length.max` | Maximum character length   |
+| `validate`   | Custom validation function |
 
 ### Number args
 
@@ -191,12 +194,12 @@ count: {
 }
 ```
 
-| Constraint | Description |
-|---|---|
-| `choices` | Allowlist of valid values |
-| `range.min` | Minimum value |
-| `range.max` | Maximum value |
-| `validate` | Custom validation function |
+| Constraint  | Description                |
+| ----------- | -------------------------- |
+| `choices`   | Allowlist of valid values  |
+| `range.min` | Minimum value              |
+| `range.max` | Maximum value              |
+| `validate`  | Custom validation function |
 
 ### Boolean args
 
@@ -210,6 +213,7 @@ force: {
 ```
 
 Boolean args are matched by position. Pass `true`, `false`, or `1`/`0`:
+
 ```bash
 mycli reset true
 ```
@@ -234,11 +238,13 @@ mycli copy ./src ./dist
 ### Options vs. args
 
 Use **options** when:
+
 - The value is optional
 - The user might skip it or provide it in any order
 - It's a mode toggle (e.g. `--watch`, `--verbose`)
 
 Use **args** when:
+
 - The value is a primary subject of the command (e.g. a filename, environment name)
 - The order is meaningful and predictable
 - You want a terser invocation (`mycli deploy prod` vs. `mycli deploy --env prod`)

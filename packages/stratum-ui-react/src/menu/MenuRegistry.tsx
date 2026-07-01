@@ -1,4 +1,5 @@
 import { useSyncExternalStore } from "react";
+
 import { TransactionStore } from "@green-flash/reactor";
 
 import type { MenuController, MenuState } from "./MenuController.js";
@@ -29,7 +30,7 @@ export class MenuRegistry extends TransactionStore<MenuRegistryState> {
       mutate: (draft) => {
         if (draft.controllers.includes(controller)) return; // avoid duplicates
         draft.controllers.push(controller);
-      },
+      }
     });
 
     return controller;

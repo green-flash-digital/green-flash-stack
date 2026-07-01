@@ -8,10 +8,10 @@ You declare commands in a single config file. fizmoo compiles them into a standa
 
 ## Packages
 
-| Package | Description |
-|---|---|
+| Package                  | Description                                                              |
+| ------------------------ | ------------------------------------------------------------------------ |
 | [`@fizmoo/core`](./core) | Library: types, `defineCommand`, `defineConfig`, runtime, build pipeline |
-| [`fizmoo`](./fizmoo) | CLI tool: `fizmoo build` and `fizmoo dev` — itself built with fizmoo |
+| [`fizmoo`](./fizmoo)     | CLI tool: `fizmoo build` and `fizmoo dev` — itself built with fizmoo     |
 
 ---
 
@@ -29,9 +29,7 @@ import { defineConfig, command } from "fizmoo";
 export default defineConfig({
   name: "mycli",
   description: "My CLI tool",
-  commands: [
-    command("./commands/greet.ts"),
-  ],
+  commands: [command("./commands/greet.ts")]
 });
 ```
 
@@ -48,12 +46,12 @@ export default defineCommand({
       type: "string",
       alias: "n",
       description: "Who to greet",
-      default: "world",
-    },
+      default: "world"
+    }
   },
   action: async ({ options }) => {
     console.log(`Hello, ${options.name}!`);
-  },
+  }
 });
 ```
 

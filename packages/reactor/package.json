@@ -2,28 +2,28 @@
   "name": "@green-flash/reactor",
   "version": "0.2.2",
   "description": "A type-safe event emitter and transactional state store with optimistic updates for managing state mutations",
-  "type": "module",
-  "sideEffects": false,
-  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
   "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
     "directory": "packages/reactor"
   },
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
   "exports": {
     ".": "./dist/index.js"
   },
   "publishConfig": {
     "access": "public"
   },
-  "files": [
-    "dist"
-  ],
   "scripts": {
     "build": "yarn tsc --project tsconfig.build.json",
     "dev": "yarn build --watch",

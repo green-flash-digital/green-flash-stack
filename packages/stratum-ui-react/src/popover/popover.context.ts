@@ -1,5 +1,6 @@
-import type { PopoverEngineState } from "@stratum-ui/core";
 import React from "react";
+
+import type { PopoverEngineState } from "@stratum-ui/core";
 
 export type PopoverContextType<S extends PopoverEngineState> = {
   state: S;

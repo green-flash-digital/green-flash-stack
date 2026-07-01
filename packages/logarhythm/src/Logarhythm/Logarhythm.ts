@@ -2,13 +2,7 @@ import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 
 import { c } from "./Colorize.js";
 
-export type LogarhythmLogLevel =
-  | "trace"
-  | "debug"
-  | "info"
-  | "warn"
-  | "error"
-  | "fatal";
+export type LogarhythmLogLevel = "trace" | "debug" | "info" | "warn" | "error" | "fatal";
 
 export type LogarhythmAction =
   | LogarhythmLogLevel
@@ -27,7 +21,7 @@ const LOG_LEVEL_PRIORITY: Record<LogarhythmLogLevel, number> = {
   info: 2,
   warn: 3,
   error: 4,
-  fatal: 5,
+  fatal: 5
 };
 
 const LOG_ACTION: Record<LogarhythmAction, string> = {
@@ -40,7 +34,7 @@ const LOG_ACTION: Record<LogarhythmAction, string> = {
   success: c.green(`✓ ${c.underline("success")}`),
   watch: c.cyan(`⦿ ${c.underline("watching")}`),
   "checkpoint:start": c.cyanBright(`➤ ${c.underline("checkpoint:start")}`),
-  "checkpoint:end": c.cyanBright(`➤ ${c.underline("checkpoint:end")}`),
+  "checkpoint:end": c.cyanBright(`➤ ${c.underline("checkpoint:end")}`)
 };
 type LogAction = keyof typeof LOG_ACTION;
 
@@ -88,7 +82,7 @@ export class Logarhythm {
     );
     this._logPill = {
       text: this._logName,
-      css: this.getLogPillCss(args.pillColor ?? "#55daf0"),
+      css: this.getLogPillCss(args.pillColor ?? "#55daf0")
     };
     this._registerToWindow();
   }
@@ -115,8 +109,7 @@ export class Logarhythm {
   }
 
   private shouldLog(level: LogarhythmLogLevel): boolean {
-    const shouldLog =
-      LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[this._logLevel];
+    const shouldLog = LOG_LEVEL_PRIORITY[level] >= LOG_LEVEL_PRIORITY[this._logLevel];
     return shouldLog;
   }
 
@@ -136,8 +129,7 @@ export class Logarhythm {
       const c = ch / 255;
       return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
     };
-    const lum =
-      0.2126 * luminance(r) + 0.7152 * luminance(g) + 0.0722 * luminance(b);
+    const lum = 0.2126 * luminance(r) + 0.7152 * luminance(g) + 0.0722 * luminance(b);
 
     const textColor = lum > 0.179 ? "#000" : "#fff";
 
@@ -147,13 +139,10 @@ export class Logarhythm {
       ["font-weight"]: "bold",
       padding: "2px 6px",
       "margin-right": "4px",
-      "border-radius": "4px",
+      "border-radius": "4px"
     };
     const css = Object.entries(styles)
-      .reduce<string[]>(
-        (accum, [property, value]) => accum.concat(`${property}: ${value}`),
-        []
-      )
+      .reduce<string[]>((accum, [property, value]) => accum.concat(`${property}: ${value}`), [])
       .join("; ");
 
     return css;
@@ -180,28 +169,23 @@ export class Logarhythm {
   }
 
   /** Gets the formatted name of the logging event */
-  private getLogLevelName(
-    logLevel: LogarhythmLogLevel,
-    options?: { setWidth?: boolean }
-  ) {
+  private getLogLevelName(logLevel: LogarhythmLogLevel, options?: { setWidth?: boolean }) {
     const css = "font-weight: bold";
     const name = logLevel.toUpperCase();
     if (!options?.setWidth) {
       return {
         name,
-        css,
+        css
       };
     }
     return {
       name: `[${name}]`.padEnd(this._logLevelNameMaxLen),
-      css,
+      css
     };
   }
 
   /** Get's and formats the timestamp of the logging event */
-  private getLogTimestamp(options?: {
-    format?: "iso" | "hh:mm:ss AM/PM";
-  }): string {
+  private getLogTimestamp(options?: { format?: "iso" | "hh:mm:ss AM/PM" }): string {
     const format = options?.format ?? "iso";
     const now = new Date();
     switch (format) {
@@ -209,9 +193,7 @@ export class Logarhythm {
         return now.toISOString();
 
       case "hh:mm:ss AM/PM":
-        return new Intl.DateTimeFormat("en", { timeStyle: "medium" }).format(
-          new Date()
-        );
+        return new Intl.DateTimeFormat("en", { timeStyle: "medium" }).format(new Date());
 
       default:
         exhaustiveMatchGuard(format);
@@ -219,11 +201,7 @@ export class Logarhythm {
   }
 
   log(
-    {
-      level,
-      message,
-      action,
-    }: { level: LogarhythmLogLevel; action?: LogAction; message: string },
+    { level, message, action }: { level: LogarhythmLogLevel; action?: LogAction; message: string },
     ...data: any[]
   ) {
     // Do nothing if the level shouldn't be logged
@@ -251,9 +229,7 @@ export class Logarhythm {
       }
 
       case "server-string": {
-        const logTimestamp = c.gray(
-          this.getLogTimestamp({ format: "hh:mm:ss AM/PM" })
-        );
+        const logTimestamp = c.gray(this.getLogTimestamp({ format: "hh:mm:ss AM/PM" }));
         const logFeature = this._logName;
         const logAction = action ? LOG_ACTION[action] : "";
         const logMessage = c.gray(message);
@@ -276,7 +252,7 @@ export class Logarhythm {
             feature: logFeature,
             level,
             message,
-            data,
+            data
           })
         );
         break;

@@ -1,5 +1,6 @@
-import type { Options } from "../../_fizmoo.types.js";
 import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
+
+import type { Options } from "../../_fizmoo.types.js";
 
 export class FizmooRuntimeError extends Error {
   type: string;
@@ -10,7 +11,7 @@ export class FizmooRuntimeError extends Error {
     type = "ERROR",
     reason,
     message,
-    suggestion,
+    suggestion
   }: {
     type?: string;
     reason: string;
@@ -53,7 +54,7 @@ export class RuntimeError {
       new FizmooRuntimeError({
         type: "UNKNOWN_ERROR",
         reason: "An error occurred for an unknown reason",
-        message: String(error),
+        message: String(error)
       })
     );
   }
@@ -63,7 +64,7 @@ export class RuntimeError {
       type: "MALFORMED_OPTION",
       reason: "There was an error when trying to parse the provided options",
       message: `"${optionKey}" is malformed. Options must be prefixed with "--" (expanded) or "-" (alias).`,
-      suggestion: `Use an alias prefixed with a "-" or an expanded option prefixed with "--".`,
+      suggestion: `Use an alias prefixed with a "-" or an expanded option prefixed with "--".`
     });
   }
 
@@ -72,7 +73,7 @@ export class RuntimeError {
       type: "COMMAND_NOT_FOUND",
       reason: "There was an error when trying to locate the provided command",
       message: `The command "${commandName}" could not be found.`,
-      suggestion: `Check the available commands with: ${this._cliName} --help`,
+      suggestion: `Check the available commands with: ${this._cliName} --help`
     });
   }
 
@@ -81,15 +82,11 @@ export class RuntimeError {
       type: "MISSING_ACTION",
       reason: "There was an error when trying to run the command",
       message: `The "${commandId}" command is valid but is missing an action. This should have been caught at build time.`,
-      suggestion: `Please log a GitHub issue. https://github.com/green-flash-digital/fizmoo/issues/new`,
+      suggestion: `Please log a GitHub issue. https://github.com/green-flash-digital/fizmoo/issues/new`
     });
   }
 
-  OPTION_NOT_FOUND(
-    optionId: string,
-    type: "expanded" | "alias",
-    possibleOptions: Options
-  ) {
+  OPTION_NOT_FOUND(optionId: string, type: "expanded" | "alias", possibleOptions: Options) {
     const errorType = "UNKNOWN_OPTION";
     const reason =
       "There was an error when trying to match the provided option with the available options";
@@ -106,7 +103,7 @@ export class RuntimeError {
           type: errorType,
           reason,
           message: `"--${optionId}" is not a valid option.`,
-          suggestion: availableOptions,
+          suggestion: availableOptions
         });
 
       case "alias":
@@ -114,7 +111,7 @@ export class RuntimeError {
           type: errorType,
           reason,
           message: `"-${optionId}" is not a valid alias.`,
-          suggestion: availableOptions,
+          suggestion: availableOptions
         });
 
       default:
@@ -125,7 +122,7 @@ export class RuntimeError {
   OPTION_VALIDATION_FAILED({
     optionId,
     message,
-    suggestion,
+    suggestion
   }: {
     optionId: string;
     message: string;
@@ -135,14 +132,14 @@ export class RuntimeError {
       type: "OPTION_VALIDATION_FAILURE",
       reason: `There was an error when trying to validate the option "${optionId}"`,
       message,
-      suggestion,
+      suggestion
     });
   }
 
   ARG_VALIDATION_FAILED({
     argId,
     message,
-    suggestion,
+    suggestion
   }: {
     argId: string;
     message: string;
@@ -152,7 +149,7 @@ export class RuntimeError {
       type: "ARG_VALIDATION_FAILURE",
       reason: `There was an error when trying to validate the argument "${argId}"`,
       message,
-      suggestion,
+      suggestion
     });
   }
 }

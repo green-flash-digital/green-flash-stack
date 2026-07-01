@@ -6,9 +6,7 @@ import { Popover } from "../popover/Popover.js";
 export type MenuState = PopoverEngineState;
 export type MenuOptions = Omit<PopoverOptions, "type">;
 
-export class MenuController<
-  S extends MenuState | undefined
-> extends Popover<S> {
+export class MenuController<S extends MenuState | undefined> extends Popover<S> {
   constructor(options: MenuOptions) {
     super({ type: "auto", ...options });
   }

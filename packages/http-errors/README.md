@@ -122,7 +122,7 @@ The user is known, but this specific action is off-limits. Different from `unaut
 app.delete("/:id", async (c) => {
   const session = c.get("session");
   const household = await db.query.households.findFirst({
-    where: eq(households.id, params.id),
+    where: eq(households.id, params.id)
   });
 
   if (household.ownerId !== session.user.id) {
@@ -148,8 +148,8 @@ app.get("/:id", async (c) => {
       and(
         eq(schema.playlist.id, params.id),
         eq(schema.playlist.householdId, session.activeOrganizationId),
-        eq(schema.playlist.isActive, true),
-      ),
+        eq(schema.playlist.isActive, true)
+      )
     )
     .limit(1);
 
@@ -160,7 +160,7 @@ app.get("/:id", async (c) => {
 
   return response.json(c, {
     schema: GetSinglePlaylistResponseSchema,
-    data: rows[0],
+    data: rows[0]
   });
 });
 ```
@@ -191,7 +191,7 @@ When a third-party call returns falsy or a recoverable failure. You know the req
 // GET /api/onboarding/validate-slug/:slug
 app.get("/:slug", async (c) => {
   const slugRes = await tryHandle(
-    betterAuth.checkOrganizationSlug({ body: { slug: params.slug } }),
+    betterAuth.checkOrganizationSlug({ body: { slug: params.slug } })
   );
 
   if (!slugRes.success) {
@@ -201,7 +201,7 @@ app.get("/:slug", async (c) => {
 
   return response.json(c, {
     schema: ValidateSlugResponseSchema,
-    data: { isAvailable: true },
+    data: { isAvailable: true }
   });
 });
 ```
@@ -215,13 +215,11 @@ Use when a third-party call succeeds (no exception) but returns `null` where it 
 app.get("/:slug", async (c) => {
   const res = await betterAuth.getFullOrganization({
     query: { organizationSlug: params.slug },
-    headers: c.req.raw.headers,
+    headers: c.req.raw.headers
   });
 
   if (!res) {
-    throw HTTPError.serverError(
-      `Failed to fetch household '${params.slug}' from auth provider.`,
-    );
+    throw HTTPError.serverError(`Failed to fetch household '${params.slug}' from auth provider.`);
     // → 500 { error_type: "server_error", message: "There was an internal server error: ..." }
   }
 
@@ -257,7 +255,7 @@ app.post("/", async (c) => {
   const session = c.get("session");
   if (session.activeOrganizationId) {
     throw HTTPError.conflict(
-      "You already belong to a household. Leave it before creating a new one.",
+      "You already belong to a household. Leave it before creating a new one."
     );
     // → 409 { error_type: "conflict", message: "You already belong to a household..." }
   }
@@ -267,7 +265,7 @@ app.post("/", async (c) => {
 // POST /api/onboarding/validate-slug — slug is taken
 app.get("/:slug", async (c) => {
   const existing = await db.query.households.findFirst({
-    where: eq(households.slug, params.slug),
+    where: eq(households.slug, params.slug)
   });
   if (existing) {
     throw HTTPError.conflict(`The slug '${params.slug}' is already taken.`);
@@ -288,9 +286,7 @@ export const withRateLimit = createMiddleware(async (c, next) => {
 
   const count = await kv.get(key);
   if (Number(count) > 100) {
-    throw HTTPError.tooManyRequests(
-      "Rate limit exceeded. Try again in 60 seconds.",
-    );
+    throw HTTPError.tooManyRequests("Rate limit exceeded. Try again in 60 seconds.");
     // → 429 { error_type: "too_many_requests", message: "Rate limit exceeded..." }
   }
 
@@ -309,7 +305,7 @@ export const withMaintenanceCheck = createMiddleware(async (c, next) => {
   const isUnderMaintenance = await kv.get("maintenance:active");
   if (isUnderMaintenance) {
     throw HTTPError.serviceUnavailable(
-      "The service is under maintenance. Please try again in a few minutes.",
+      "The service is under maintenance. Please try again in a few minutes."
     );
     // → 503 { error_type: "service_unavailable", message: "The service is under maintenance..." }
   }
@@ -320,9 +316,7 @@ export const withMaintenanceCheck = createMiddleware(async (c, next) => {
 app.use("*", async (c, next) => {
   const dbRes = await tryHandle(createDb().ping());
   if (!dbRes.success) {
-    throw HTTPError.serviceUnavailable(
-      "Unable to reach the database. Please try again shortly.",
-    );
+    throw HTTPError.serviceUnavailable("Unable to reach the database. Please try again shortly.");
   }
   return next();
 });
@@ -359,11 +353,7 @@ app.onError((err, c) => {
 `ApiClient` and `tryFetch` return `ErrorResponse` as a plain object — no class methods, no `instanceof`. If you need to branch using the class hierarchy, convert it with `deserializeError`.
 
 ```typescript
-import {
-  deserializeError,
-  UnauthenticatedError,
-  NotFoundError,
-} from "@greenflash/http-errors";
+import { deserializeError, UnauthenticatedError, NotFoundError } from "@greenflash/http-errors";
 
 const result = await tryFetch<User>("/api/profile");
 if (!result.success) {
@@ -392,7 +382,7 @@ class RateLimitError extends ApiError<"bad_request"> {
     super({
       error_type: "bad_request",
       status: 429,
-      message: "Rate limit exceeded",
+      message: "Rate limit exceeded"
     });
     this.retryAfter = retryAfter;
   }

@@ -38,12 +38,16 @@ describe("tryHandleSync", () => {
 
   it("returns failure when the function throws an Error", () => {
     const error = new Error("Sync failure");
-    const result = tryHandleSync(() => { throw error; })();
+    const result = tryHandleSync(() => {
+      throw error;
+    })();
     expect(result).toEqual({ success: false, error });
   });
 
   it("wraps a non-Error throw in an Error", () => {
-    const result = tryHandleSync(() => { throw "raw string"; })();
+    const result = tryHandleSync(() => {
+      throw "raw string";
+    })();
     expect(result.success).toBe(false);
     if (!result.success) {
       expect(result.error).toBeInstanceOf(Error);

@@ -1,8 +1,10 @@
 import type { ChangeEvent, ReactNode } from "react";
 import type React from "react";
+
 import type { ObjectDotNotation } from "@green-flash/ts-utils/isomorphic";
 import { Logarhythm } from "logarhythm";
 
+import type { Tabulo } from "./Tabulo.js";
 import {
   type TabuloStateColumnValue,
   type TabuloEventMap,
@@ -13,9 +15,8 @@ import {
   type TabuloSort,
   type TabuloRecord,
   type TabuloFilter,
-  mutateEngineStateHelper,
+  mutateEngineStateHelper
 } from "./tabulo.utils.js";
-import type { Tabulo } from "./Tabulo.js";
 
 export type TabuloColumnActions = {
   isVisible: () => boolean;
@@ -122,7 +123,7 @@ export class TabuloManagerColumn<
     this.#config = config;
     this.#log = new Logarhythm({
       name: `${this.#engine.debugName}:engine-manager:column`,
-      pillColor: this.#engine.debugColor,
+      pillColor: this.#engine.debugColor
     });
     this.#columns = new Map();
     for (const [colId, config] of Object.entries(this.#config ?? {})) {
@@ -153,7 +154,7 @@ export class TabuloManagerColumn<
           const isChecked = e.currentTarget.checked;
           if (isChecked) return this.showColumn(colId);
           this.hideColumn(colId);
-        },
+        }
       });
     }
     this.entries = [...this.#columns.entries()];
@@ -170,7 +171,7 @@ export class TabuloManagerColumn<
     return Object.entries(config).reduce<T>((accum, [colId, col]) => {
       return {
         ...accum,
-        [colId]: { isVisible: col.defaults?.isVisible ?? true },
+        [colId]: { isVisible: col.defaults?.isVisible ?? true }
       };
     }, {} as T);
   }
@@ -215,10 +216,7 @@ export class TabuloManagerColumn<
   /**
    * Hides a column
    */
-  async hideColumn<K extends keyof C>(
-    key: K,
-    options?: ManagerMutationOptions
-  ) {
+  async hideColumn<K extends keyof C>(key: K, options?: ManagerMutationOptions) {
     await this.#engine.queueStateUpdate({
       mutate: (draft) => {
         this.#log.info("Hiding column", key);
@@ -232,19 +230,16 @@ export class TabuloManagerColumn<
         if (!emit) return;
         this.#engine.emit("column:change", {
           columnId: key.toString(),
-          isVisible: false,
+          isVisible: false
         });
-      },
+      }
     });
   }
 
   /**
    * Displays a column
    */
-  async showColumn<K extends keyof C>(
-    key: K,
-    options?: ManagerMutationOptions
-  ) {
+  async showColumn<K extends keyof C>(key: K, options?: ManagerMutationOptions) {
     await this.#engine.queueStateUpdate({
       ...options,
       mutate: (draft) => {
@@ -258,19 +253,16 @@ export class TabuloManagerColumn<
         if (!emit) return;
         this.#engine.emit("column:change", {
           columnId: key.toString(),
-          isVisible: true,
+          isVisible: true
         });
-      },
+      }
     });
   }
 
   /**
    * Toggles the visibility of some columns
    */
-  async showHide<K extends keyof T>(
-    colVis: Record<K, boolean>,
-    options?: ManagerMutationOptions
-  ) {
+  async showHide<K extends keyof T>(colVis: Record<K, boolean>, options?: ManagerMutationOptions) {
     await this.#engine.queueStateUpdate({
       ...options,
       mutate: (draft) => {
@@ -280,7 +272,7 @@ export class TabuloManagerColumn<
 
           this.#log.info("Toggling visibility of column", {
             col: colKey,
-            isVisible,
+            isVisible
           });
           mutateEngineStateHelper<T>(draft.columns, colKey, (column) => {
             column.isVisible = isVisible;
@@ -291,7 +283,7 @@ export class TabuloManagerColumn<
         const emit = options?.emit ?? true;
         if (!emit) return;
         this.#engine.emit("columns:change");
-      },
+      }
     });
   }
 
@@ -312,7 +304,7 @@ export class TabuloManagerColumn<
       onAfterCommit: () => {
         if (options?.emit) return;
         this.#engine.emit("columns:change");
-      },
+      }
     });
   }
 }

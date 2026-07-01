@@ -1,12 +1,13 @@
 import { describe, it, expect, vi } from "vitest";
 import { z } from "zod";
-import { relay } from "../relay.js";
+
 import type { ErrorResponse } from "../error.js";
+import { relay } from "../relay.js";
 
 const mockError: ErrorResponse = {
   error_type: "bad_request",
   status: 400,
-  message: "Invalid input",
+  message: "Invalid input"
 };
 
 describe("relay.data()", () => {
@@ -14,7 +15,7 @@ describe("relay.data()", () => {
     expect(relay.data({ name: "test" })).toEqual({
       data: { name: "test" },
       valError: undefined,
-      error: undefined,
+      error: undefined
     });
   });
 
@@ -28,7 +29,7 @@ describe("relay.error()", () => {
     expect(relay.error(mockError)).toEqual({
       data: undefined,
       valError: undefined,
-      error: mockError,
+      error: mockError
     });
   });
 });
@@ -73,7 +74,7 @@ describe("relay.fromResult()", () => {
     expect(result).toEqual({
       data: { items: [{ id: "1" }, { id: "2" }], count: 2 },
       valError: undefined,
-      error: undefined,
+      error: undefined
     });
   });
 
@@ -84,10 +85,9 @@ describe("relay.fromResult()", () => {
   });
 
   it("passes the error through unchanged when transform is provided but result failed", () => {
-    const result = relay.fromResult(
-      { success: false, error: mockError },
-      () => ({ transformed: true })
-    );
+    const result = relay.fromResult({ success: false, error: mockError }, () => ({
+      transformed: true
+    }));
     expect(result.error).toBe(mockError);
     expect(result.data).toBeUndefined();
   });

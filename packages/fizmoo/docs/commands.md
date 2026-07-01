@@ -14,19 +14,19 @@ export default defineCommand({
   description: "Compile the project",
   action: async () => {
     console.log("Building...");
-  },
+  }
 });
 ```
 
-| Field | Type | Required | Description |
-|---|---|---|---|
-| `name` | `string` | yes | The token the user types (e.g. `mycli build`) |
-| `description` | `string` | yes | Shown in help menus |
-| `options` | `Options` | no | Key/value flags (e.g. `--watch`, `--port 3000`) |
-| `args` | `Args` | no | Positional arguments (e.g. `mycli deploy prod`) |
-| `action` | `function` | yes* | The function that runs when the command is invoked |
+| Field         | Type       | Required | Description                                        |
+| ------------- | ---------- | -------- | -------------------------------------------------- |
+| `name`        | `string`   | yes      | The token the user types (e.g. `mycli build`)      |
+| `description` | `string`   | yes      | Shown in help menus                                |
+| `options`     | `Options`  | no       | Key/value flags (e.g. `--watch`, `--port 3000`)    |
+| `args`        | `Args`     | no       | Positional arguments (e.g. `mycli deploy prod`)    |
+| `action`      | `function` | yes\*    | The function that runs when the command is invoked |
 
-*Parent commands (those with sub-commands declared in config) don't need an `action` — they show a help menu automatically.
+\*Parent commands (those with sub-commands declared in config) don't need an `action` — they show a help menu automatically.
 
 ---
 
@@ -39,13 +39,13 @@ export default defineCommand({
   options: {
     port: { type: "number", description: "Port to listen on", default: 3000 },
     watch: { type: "boolean", description: "Enable watch mode" },
-    env: { type: "string", description: "Target environment", default: "development" },
+    env: { type: "string", description: "Target environment", default: "development" }
   },
   action: async ({ options }) => {
     // options.port  → number
     // options.watch → boolean
     // options.env   → string
-  },
+  }
 });
 ```
 
@@ -61,7 +61,7 @@ A **parent command** has sub-commands registered under it in `defineConfig`. Its
 // parent command — no action needed
 export default defineCommand({
   name: "deploy",
-  description: "Deployment commands",
+  description: "Deployment commands"
 });
 ```
 
@@ -70,7 +70,9 @@ export default defineCommand({
 export default defineCommand({
   name: "prod",
   description: "Deploy to production",
-  action: async () => { /* ... */ },
+  action: async () => {
+    /* ... */
+  }
 });
 ```
 
@@ -113,6 +115,7 @@ export const myCommand = defineCommand({ ... });
 ## Command naming
 
 The `name` field in `defineCommand` is what the user types. It must:
+
 - Not match the CLI name itself
 - Be unique within its level of the command tree
 

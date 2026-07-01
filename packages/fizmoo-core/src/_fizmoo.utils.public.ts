@@ -3,11 +3,11 @@ import type {
   FizmooCommandDef,
   FizmooCommandEntry,
   FizmooUserConfig,
-  Options,
+  Options
 } from "./_fizmoo.types.js";
 
 export const fizmooConstants = {
-  COMMAND_ROOT: "__ROOT__",
+  COMMAND_ROOT: "__ROOT__"
 } as const;
 
 /**
@@ -28,7 +28,7 @@ export const fizmooConstants = {
  * });
  */
 export function defineCommand<A extends Args, O extends Options>(
-  def: FizmooCommandDef<A, O>,
+  def: FizmooCommandDef<A, O>
 ): FizmooCommandDef<A, O> {
   return def;
 }
@@ -42,10 +42,7 @@ export function defineCommand<A extends Args, O extends Options>(
  *   command('./commands/build-watch.ts'),
  * ])
  */
-export function command(
-  file: string,
-  commands?: FizmooCommandEntry[],
-): FizmooCommandEntry {
+export function command(file: string, commands?: FizmooCommandEntry[]): FizmooCommandEntry {
   return { file, commands };
 }
 

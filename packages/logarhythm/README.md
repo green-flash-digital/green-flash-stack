@@ -31,7 +31,7 @@ import { Logarhythm } from "logarhythm";
 const logger = new Logarhythm({
   name: "my-feature",
   logLevel: "info",
-  logFormat: "string", // or "json"
+  logFormat: "string" // or "json"
 });
 
 // Log messages
@@ -54,20 +54,20 @@ interface LogarhythmOptions {
    * separate logger
    */
   name: string;
-  
+
   /**
    * A hex value for the background color of the pill that
    * is logged to the console in the browser
    * @default "#55daf0"
    */
   pillColor?: string;
-  
+
   /**
    * The default log level to be printed
    * @default "info"
    */
   logLevel?: LogarhythmLogLevel;
-  
+
   /**
    * The format at which the log should be printed
    * @default "string"
@@ -155,7 +155,7 @@ The JSON format provides structured, machine-readable output:
 ```typescript
 const logger = new Logarhythm({
   name: "api",
-  logFormat: "json",
+  logFormat: "json"
 });
 
 logger.info("Request received");
@@ -219,7 +219,7 @@ import { Logarhythm } from "logarhythm";
 
 const logger = new Logarhythm({
   name: "user-service",
-  logLevel: "info",
+  logLevel: "info"
 });
 
 logger.info("User service initialized");
@@ -235,12 +235,12 @@ logger.debug("Now this will be logged");
 // Create separate loggers for different features
 const authLogger = new Logarhythm({
   name: "authentication",
-  pillColor: "#ff6b6b",
+  pillColor: "#ff6b6b"
 });
 
 const dbLogger = new Logarhythm({
   name: "database",
-  pillColor: "#4ecdc4",
+  pillColor: "#4ecdc4"
 });
 
 authLogger.info("User authenticated");
@@ -292,4 +292,3 @@ Apache-2.0
 ## Author
 
 Drew DeCarme (drew@greenflash.digital)
-

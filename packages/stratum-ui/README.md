@@ -3,8 +3,6 @@
   <p></p>
 </div>
 
-
-
 **stratum UI** is a headless, accessible, framework-independent engine for orchestrating layered surfaces: dialogs, sheets, drawers, popovers, tooltips, banners, toasts, and more.
 It gives you precise control over focus, depth, and interaction flow — the behavioral infrastructure beneath your design system.
 
@@ -25,7 +23,7 @@ pnpm add stratum-ui
 ## Usage
 
 ```typescript
-import { /* ... */ } from "stratum-ui/*";
+import {} from /* ... */ "stratum-ui/*";
 ```
 
 ## Development
@@ -43,4 +41,3 @@ yarn test
 # Test (CI mode)
 yarn test:ci
 ```
-

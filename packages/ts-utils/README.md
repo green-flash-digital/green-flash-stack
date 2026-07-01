@@ -167,10 +167,7 @@ Writes a file, creating the directory structure if it doesn't exist.
 ```typescript
 import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
-await writeFileRecursive(
-  "/path/to/nested/directory/file.txt",
-  "File contents"
-);
+await writeFileRecursive("/path/to/nested/directory/file.txt", "File contents");
 // Creates directories and writes file
 ```
 

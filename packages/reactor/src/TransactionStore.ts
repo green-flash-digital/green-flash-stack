@@ -63,7 +63,7 @@ export class TransactionStore<S> {
     this.#log = new Logarhythm({
       logLevel: options?.logLevel,
       name: "TransactionStore",
-      pillColor: "#202020ff",
+      pillColor: "#202020ff"
     });
 
     this.enqueue = this.enqueue.bind(this);
@@ -105,7 +105,7 @@ export class TransactionStore<S> {
     notify = true,
     optimistic = true,
     debounce,
-    debounceKey,
+    debounceKey
   }: TransactionStoreEnqueueOptions<S, R>) {
     const key = debounceKey ?? `${mutate.toString()}-${action?.toString()}`;
 
@@ -121,7 +121,7 @@ export class TransactionStore<S> {
             onAfterCommit,
             rollback,
             notify,
-            optimistic,
+            optimistic
           })
             .then(resolve)
             .catch(reject);
@@ -137,7 +137,7 @@ export class TransactionStore<S> {
       onAfterCommit,
       rollback,
       notify,
-      optimistic,
+      optimistic
     });
   }
 
@@ -148,7 +148,7 @@ export class TransactionStore<S> {
     onAfterCommit,
     rollback,
     notify,
-    optimistic,
+    optimistic
   }: Omit<TransactionStoreEnqueueOptions<S, R>, "debounce" | "debounceKey">) {
     this.#queue = this.#queue.then(async () => {
       const prevState = this.#state;

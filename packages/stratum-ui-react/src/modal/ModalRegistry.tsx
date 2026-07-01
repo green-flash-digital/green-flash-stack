@@ -1,6 +1,7 @@
 import { useSyncExternalStore } from "react";
-import type { ModalState } from "@stratum-ui/core";
+
 import { TransactionStore } from "@green-flash/reactor";
+import type { ModalState } from "@stratum-ui/core";
 
 import type { ModalController } from "./ModalController.js";
 
@@ -30,7 +31,7 @@ export class ModalRegistry extends TransactionStore<ModalRegistryState> {
       mutate: (draft) => {
         if (draft.controllers.includes(controller)) return; // avoid duplicates
         draft.controllers.push(controller);
-      },
+      }
     });
 
     return controller;

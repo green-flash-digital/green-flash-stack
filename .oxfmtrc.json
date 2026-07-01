@@ -1,0 +1,25 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "ignorePatterns": [
+    "**/.turbo/**",
+    "**/.wrangler/**",
+    "**/dist/**",
+    "**/bin/**",
+    "**/.store/**",
+    "**/.react-router/**",
+    "**/.vite-cache/**",
+    "**/.yarn/**"
+  ],
+  "trailingComma": "none",
+  "singleQuote": false,
+  "sortImports": {
+    "newlinesBetween": true,
+    "customGroups": [
+      {
+        "groupName": "react",
+        "elementNamePattern": ["react", "react-**"]
+      }
+    ],
+    "groups": ["builtin", "react", "external", "internal", ["sibling", "parent", "index"]]
+  }
+}

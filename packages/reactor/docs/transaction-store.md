@@ -34,14 +34,14 @@ interface AppState {
 
 const store = new TransactionStore<AppState>({
   count: 0,
-  items: [],
+  items: []
 });
 
 // Enqueue a simple mutation
 await store.enqueue({
   mutate: (draft) => {
     draft.count += 1;
-  },
+  }
 });
 
 // Enqueue with async action
@@ -56,7 +56,7 @@ await store.enqueue({
   reconcile: (draft, result) => {
     // Merge server response with local state
     draft.items[draft.items.length - 1].id = result.id;
-  },
+  }
 });
 ```
 
@@ -164,7 +164,7 @@ await store.enqueue({
   action: async () => {
     const response = await fetch("/api/items", {
       method: "POST",
-      body: JSON.stringify({ name: "New Item" }),
+      body: JSON.stringify({ name: "New Item" })
     });
     if (!response.ok) throw new Error("Failed to create item");
     return response.json();
@@ -174,7 +174,7 @@ await store.enqueue({
     const index = draft.items.findIndex((item) => item.id === "temp");
     draft.items[index] = result;
   },
-  rollback: true, // Revert if action fails
+  rollback: true // Revert if action fails
 });
 ```
 
@@ -193,7 +193,7 @@ store.enqueue({
     draft.searchResults = result;
   },
   debounce: 300, // Wait 300ms after last call
-  debounceKey: "search", // Group all search updates together
+  debounceKey: "search" // Group all search updates together
 });
 ```
 
@@ -205,7 +205,7 @@ await store.enqueue({
   mutate: (draft) => {
     draft.ui.isLoading = false;
   },
-  notify: true, // Still notify subscribers
+  notify: true // Still notify subscribers
 });
 ```
 
@@ -223,7 +223,7 @@ await store.enqueue({
     // Called after successful mutation
     console.log("User updated:", result);
     showToast("Profile saved!");
-  },
+  }
 });
 ```
 
@@ -238,7 +238,7 @@ await store.enqueue({
   action: async () => {
     return createItem(newItem);
   },
-  optimistic: false, // Don't update until action completes
+  optimistic: false // Don't update until action completes
 });
 ```
 
@@ -268,7 +268,7 @@ interface MyState {
 
 const store = new TransactionStore<MyState>({
   users: [],
-  count: 0,
+  count: 0
 });
 
 // TypeScript knows the draft shape
@@ -276,11 +276,10 @@ store.enqueue({
   mutate: (draft) => {
     draft.count += 1; // ✅ Type-safe
     draft.users.push({ name: "John" }); // ✅ Type-safe
-  },
+  }
 });
 ```
 
 ## License
 
 Apache-2.0
-

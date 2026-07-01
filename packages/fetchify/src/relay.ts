@@ -1,13 +1,14 @@
-import type { z } from "zod";
 import type { ErrorResponse } from "@greenflash/http-errors";
+import type { z } from "zod";
 
 import type { ApiClientResult } from "./ApiClient.js";
 
-type ExtractFieldErrors<E> = E extends ReturnType<typeof z.flattenError>
-  ? E["fieldErrors"] extends Record<string, string[]> | undefined
-    ? E["fieldErrors"]
-    : undefined
-  : undefined;
+type ExtractFieldErrors<E> =
+  E extends ReturnType<typeof z.flattenError>
+    ? E["fieldErrors"] extends Record<string, string[]> | undefined
+      ? E["fieldErrors"]
+      : undefined
+    : undefined;
 
 /**
  * The standardized shape returned from SSR route handlers (loaders and actions).
@@ -18,9 +19,7 @@ type ExtractFieldErrors<E> = E extends ReturnType<typeof z.flattenError>
  */
 export type RelayResult<
   T,
-  V extends Record<string, string[]> | undefined =
-    | Record<string, string[]>
-    | undefined,
+  V extends Record<string, string[]> | undefined = Record<string, string[]> | undefined
 > = {
   data: T | undefined;
   valError: V;
@@ -30,20 +29,15 @@ export type RelayResult<
 // Overloads defined as a standalone function — TypeScript doesn't support
 // overload signatures inside object literal methods.
 function fromResult<T>(result: ApiClientResult<T>): RelayResult<T>;
-function fromResult<T, U>(
-  result: ApiClientResult<T>,
-  transform: (data: T) => U,
-): RelayResult<U>;
+function fromResult<T, U>(result: ApiClientResult<T>, transform: (data: T) => U): RelayResult<U>;
 function fromResult<T, U = T>(
   result: ApiClientResult<T>,
-  transform?: (data: T) => U,
+  transform?: (data: T) => U
 ): RelayResult<T> | RelayResult<U> {
   if (!result.success) {
     return { data: undefined, valError: undefined, error: result.error };
   }
-  const data = transform
-    ? transform(result.data)
-    : (result.data as unknown as U);
+  const data = transform ? transform(result.data) : (result.data as unknown as U);
   return { data, valError: undefined, error: undefined };
 }
 
@@ -72,12 +66,12 @@ export const relay = {
    * Field errors are narrowed to the exact keys of the validated schema.
    */
   validationError<E extends ReturnType<typeof z.flattenError> | undefined>(
-    error: E,
+    error: E
   ): RelayResult<never, ExtractFieldErrors<E>> {
     return {
       data: undefined,
       valError: (error?.fieldErrors ?? undefined) as ExtractFieldErrors<E>,
-      error: undefined,
+      error: undefined
     } as const;
   },
 
@@ -88,5 +82,5 @@ export const relay = {
    * avoids the manual `if (!result.success)` split when you only need to rename
    * or restructure the data.
    */
-  fromResult,
+  fromResult
 };

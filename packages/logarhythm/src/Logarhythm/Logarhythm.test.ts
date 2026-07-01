@@ -1,7 +1,7 @@
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-import { Logarhythm } from "./Logarhythm.js"; // Adjust path as needed
 import { c } from "./Colorize.js";
+import { Logarhythm } from "./Logarhythm.js"; // Adjust path as needed
 
 describe("Logarhythm", () => {
   let logger: Logarhythm;
@@ -45,18 +45,14 @@ describe("Logarhythm", () => {
       logger.logLevel = "info";
       logger.info("Test message");
 
-      expect(consoleSpyLog).toHaveBeenCalledWith(
-        expect.stringContaining("Test message")
-      );
+      expect(consoleSpyLog).toHaveBeenCalledWith(expect.stringContaining("Test message"));
     });
 
     it("should format JSON log messages correctly", () => {
       logger = new Logarhythm({ name: "jsonLogger", logFormat: "json" });
 
       logger.info("JSON log");
-      expect(consoleSpyLog).toHaveBeenCalledWith(
-        expect.stringContaining('"message":"JSON log"')
-      );
+      expect(consoleSpyLog).toHaveBeenCalledWith(expect.stringContaining('"message":"JSON log"'));
     });
   });
 
@@ -140,9 +136,7 @@ describe("Logarhythm", () => {
       logger.checkpointStart("Feature1");
 
       expect(consoleSpyLog).toHaveBeenCalledWith(
-        expect.stringContaining(
-          c.cyanBright(`➤ ${c.underline("checkpoint:start")}`)
-        )
+        expect.stringContaining(c.cyanBright(`➤ ${c.underline("checkpoint:start")}`))
       );
     });
 
@@ -151,9 +145,7 @@ describe("Logarhythm", () => {
       logger.checkpointEnd();
 
       expect(consoleSpyLog).toHaveBeenCalledWith(
-        expect.stringContaining(
-          c.cyanBright(`➤ ${c.underline("checkpoint:end")}`)
-        )
+        expect.stringContaining(c.cyanBright(`➤ ${c.underline("checkpoint:end")}`))
       );
     });
   });

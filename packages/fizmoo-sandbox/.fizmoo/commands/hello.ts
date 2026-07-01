@@ -8,10 +8,10 @@ export default defineCommand({
       type: "string",
       alias: "n",
       description: "Who to greet",
-      default: "world",
-    },
+      default: "world"
+    }
   },
   action: async ({ options }) => {
     console.log(`Hello, ${options.name}!`);
-  },
+  }
 });

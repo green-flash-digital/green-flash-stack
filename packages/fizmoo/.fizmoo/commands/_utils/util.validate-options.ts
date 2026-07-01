@@ -1,6 +1,7 @@
 import { printAsBullets } from "isoscribe";
 import type { ZodSchema } from "zod";
 import { ZodError } from "zod";
+
 import { LOG } from "./util.logger.js";
 /**
  * This function takes in a schema, some input data that should be validated
@@ -13,10 +14,7 @@ import { LOG } from "./util.logger.js";
  * a function are well formed and properly defaulted. This ostensibly turns functional option
  * reconciliation and defaulting into a one liner.
  */
-export function validateOptions<T>(
-  schema: ZodSchema<T>,
-  options: Partial<T> | undefined
-) {
+export function validateOptions<T>(schema: ZodSchema<T>, options: Partial<T> | undefined) {
   try {
     const rawOptions = (options ?? {}) as T;
     // Parse input data, apply defaults, and validate
@@ -27,7 +25,7 @@ export function validateOptions<T>(
       const formattedErrors = error.errors.map((err) => ({
         path: err.path.join("."),
         message: err.message,
-        value: err.code,
+        value: err.code
       }));
 
       const validationErrors = formattedErrors.map(
@@ -35,11 +33,7 @@ export function validateOptions<T>(
       );
 
       throw LOG.fatal(
-        new Error(
-          `Failed to validate provided options: ${printAsBullets(
-            validationErrors
-          )}`
-        )
+        new Error(`Failed to validate provided options: ${printAsBullets(validationErrors)}`)
       );
     }
     throw LOG.fatal(new Error(`Failed to parse options: ${error}`));

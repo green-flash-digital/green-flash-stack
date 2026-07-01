@@ -1,11 +1,12 @@
-import { Isoscribe } from "isoscribe";
 import { useCallback, useState } from "react";
+
+import { Isoscribe } from "isoscribe";
 
 const LOG = new Isoscribe({
   name: "counter",
   logFormat: "string",
   logLevel: "debug",
-  pillColor: "#9248d9",
+  pillColor: "#9248d9"
 });
 
 export function Counter() {

@@ -27,10 +27,7 @@ const createGetBullet = (type: BulletType) => (index: number) => {
  * Prints an array of strings as an indented set
  * of bullet points.
  */
-export function printAsBullets(
-  strArr: string[],
-  options?: PrintAsBulletsOptions
-) {
+export function printAsBullets(strArr: string[], options?: PrintAsBulletsOptions) {
   const getBullet = createGetBullet(options?.bulletType ?? "dashes");
   return `${strArr.map((path, i) => `\n\t${getBullet(i)} ${path}`)}`;
 }

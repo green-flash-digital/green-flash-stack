@@ -3,11 +3,13 @@ import {
   observeElementOffset,
   observeElementRect,
   elementScroll,
-  Virtualizer,
+  Virtualizer
 } from "@tanstack/virtual-core";
 import { castDraft } from "immer";
 import { Logarhythm } from "logarhythm";
 
+import type { TabuloOptions } from "./Tabulo.js";
+import { Tabulo } from "./Tabulo.js";
 import {
   type TabuloEventMap,
   type TabuloExtendedState,
@@ -19,10 +21,8 @@ import {
   type TabuloFetcher,
   type TabuloMethods,
   type TabuloRecord,
-  logColor,
+  logColor
 } from "./tabulo.utils.js";
-import type { TabuloOptions } from "./Tabulo.js";
-import { Tabulo } from "./Tabulo.js";
 
 export type TabuloTypeVirtualOptions<
   R extends TabuloRecord,
@@ -46,14 +46,14 @@ type LoadPagePayload<R extends TabuloRecord> = {
 type VirtualRecord<R extends TabuloRecord> = R | null;
 
 export abstract class TabuloTypeVirtual<
-    R extends TabuloRecord,
-    F extends TabuloFilter,
-    S extends TabuloSort,
-    C extends TabuloColumnConfig<R>,
-    T extends TabuloColumnState<C>,
-    X extends TabuloExtendedState = undefined,
-    E extends TabuloEventMap = undefined
-  >
+  R extends TabuloRecord,
+  F extends TabuloFilter,
+  S extends TabuloSort,
+  C extends TabuloColumnConfig<R>,
+  T extends TabuloColumnState<C>,
+  X extends TabuloExtendedState = undefined,
+  E extends TabuloEventMap = undefined
+>
   extends Tabulo<R, F, S, C, T, X, E>
   implements TabuloMethods
 {
@@ -69,19 +69,15 @@ export abstract class TabuloTypeVirtual<
   #spacerNodeBot: HTMLTableCellElement | null = null;
   #fetcher: TabuloFetcher<R>;
 
-  constructor(
-    options: TabuloTypeVirtualOptions<R, F, S, C, X>,
-    fetcher: TabuloFetcher<R>
-  ) {
+  constructor(options: TabuloTypeVirtualOptions<R, F, S, C, X>, fetcher: TabuloFetcher<R>) {
     super(options);
     this.log = new Logarhythm({
       name: `${options.name}:engine:virtual`,
-      pillColor: logColor.type,
+      pillColor: logColor.type
     });
     this.log.info("Creating engine...");
     this.#fetcher = fetcher;
-    this.#virtualRowHeight =
-      options.rowHeight === "variable" ? 56 : options.rowHeight ?? 56;
+    this.#virtualRowHeight = options.rowHeight === "variable" ? 56 : (options.rowHeight ?? 56);
 
     this.reload = this.reload.bind(this);
     this.destroy = this.destroy.bind(this);
@@ -139,14 +135,12 @@ export abstract class TabuloTypeVirtual<
     this.queueStateUpdate({
       mutate: (draft) => {
         draft.data.phase = "complete";
-      },
+      }
     });
 
     const v = this.getVirtualizer();
     if (!v) {
-      this.log.debug(
-        "Virtualizer has not been set yet. Cannot set options or scroll to row."
-      );
+      this.log.debug("Virtualizer has not been set yet. Cannot set options or scroll to row.");
       return;
     }
     v.setOptions({ ...v.options, count: data.totalRecords });
@@ -177,7 +171,7 @@ export abstract class TabuloTypeVirtual<
     this.queueStateUpdate({
       mutate: (draft) => {
         draft.meta.tick = draft.meta.tick === 0 ? 1 : 0;
-      },
+      }
     });
   }
 
@@ -185,10 +179,7 @@ export abstract class TabuloTypeVirtual<
    * Initialize the virtual engine. Should be run when the
    * scrollable node mounts
    */
-  protected async _initEngine(
-    node: HTMLDivElement,
-    options?: { rowHeight?: number }
-  ) {
+  protected async _initEngine(node: HTMLDivElement, options?: { rowHeight?: number }) {
     this.log.info("Initializing...");
     this.#virtualScrollNode = node;
 
@@ -215,7 +206,7 @@ export abstract class TabuloTypeVirtual<
         this.#setSpacerHeights(instance);
         this.#tick();
         this.#onVirtualizerChange(instance);
-      },
+      }
     });
 
     // Tell the vitalizer that it mounted after the next frame
@@ -230,7 +221,7 @@ export abstract class TabuloTypeVirtual<
       mutate: (draft) => {
         draft.data.phase = "complete";
         draft.data.meta.loadingMore = false;
-      },
+      }
     });
   }
 
@@ -254,8 +245,8 @@ export abstract class TabuloTypeVirtual<
 
     this.#onChangeTimeout = setTimeout(async () => {
       // Coerce the start and end index's into real pages
-      const pagesFromRange = [range.startIndex, range.endIndex].map(
-        (rowIndexValue) => Math.ceil(rowIndexValue / this.#pageSize)
+      const pagesFromRange = [range.startIndex, range.endIndex].map((rowIndexValue) =>
+        Math.ceil(rowIndexValue / this.#pageSize)
       );
 
       // Loop through each page to fetch
@@ -265,7 +256,7 @@ export abstract class TabuloTypeVirtual<
           this.log.trace("Preventing table from fetching more records", {
             pageNum,
             pageNumIs0: pageNum === 0,
-            pageCacheHasPageNum: this.#pageCache.has(pageNum),
+            pageCacheHasPageNum: this.#pageCache.has(pageNum)
           });
           continue;
         }
@@ -283,29 +274,23 @@ export abstract class TabuloTypeVirtual<
             wereRecordsPreviouslyAllSelected = this.records.areAllSelected();
 
             const prevRecords = draft.data.records ?? [];
-            prevRecords.splice(
-              insertIndex,
-              data.records.length,
-              ...castDraft(data.records)
-            );
+            prevRecords.splice(insertIndex, data.records.length, ...castDraft(data.records));
             draft.data.phase = "complete";
             draft.data.meta.loadingMore = false;
             draft.data.meta.totalRecords = data.totalRecords;
           },
           onAfterCommit: () => {
             if (!wereRecordsPreviouslyAllSelected) return;
-            this.log.info(
-              "Records we're previously all selected. Selecting all new records"
-            );
+            this.log.info("Records we're previously all selected. Selecting all new records");
             this.records.selectAll();
-          },
+          }
         });
       }
 
       this.queueStateUpdate({
         mutate: (draft) => {
           draft.data.meta.loadingMore = false;
-        },
+        }
       });
     }, 50);
   }
@@ -343,7 +328,7 @@ export abstract class TabuloTypeVirtual<
         draft.data.records = castDraft(virtualRecords);
         draft.data.meta.loadingMore = false;
         draft.data.meta.totalRecords = data.totalRecords;
-      },
+      }
     });
   }
 
@@ -389,7 +374,7 @@ export abstract class TabuloTypeVirtual<
       key: `row-${virtualItem.index}`,
       ["data-row-id"]: virtualItem.index,
       className: virtualItem.index % 2 ? "odd" : "even",
-      height: virtualItem.size,
+      height: virtualItem.size
     };
   }
 

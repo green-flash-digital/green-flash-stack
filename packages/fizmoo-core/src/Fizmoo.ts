@@ -1,22 +1,16 @@
-import {
-  default as esbuild,
-  BuildOptions,
-  Plugin as EsbuildPlugin,
-} from "esbuild";
 import { readFile, rm, writeFile } from "node:fs/promises";
-import { FizmooCommands } from "./FizmooCommands.js";
+import path from "node:path";
+
+import { confirm } from "@inquirer/prompts";
+import type { BuildOptions, Plugin as EsbuildPlugin } from "esbuild";
+import { default as esbuild } from "esbuild";
+import type { IsoScribeLogLevel } from "isoscribe";
 import { tryHandle } from "ts-jolt/isomorphic";
 import { writeFileRecursive } from "ts-jolt/node";
-import path from "node:path";
-import {
-  findFizmooConfigFile,
-  loadFizmooConfig,
-  bootstrap,
-  LOG,
-} from "./_fizmoo.utils.js";
+
 import { type FizmooUserConfig } from "./_fizmoo.types.js";
-import { IsoScribeLogLevel } from "isoscribe";
-import { confirm } from "@inquirer/prompts";
+import { findFizmooConfigFile, loadFizmooConfig, bootstrap, LOG } from "./_fizmoo.utils.js";
+import { FizmooCommands } from "./FizmooCommands.js";
 
 export async function createFizmoo(options: {
   logLevel?: IsoScribeLogLevel;
@@ -24,11 +18,8 @@ export async function createFizmoo(options: {
   autoInit: boolean;
 }) {
   const logLevel: IsoScribeLogLevel =
-    (process.env.FIZMOO_LOG_LEVEL as IsoScribeLogLevel) ??
-    options.logLevel ??
-    "info";
-  process.env.FIZMOO_ENV =
-    options.env ?? process.env.FIZMOO_ENV ?? "development";
+    (process.env.FIZMOO_LOG_LEVEL as IsoScribeLogLevel) ?? options.logLevel ?? "info";
+  process.env.FIZMOO_ENV = options.env ?? process.env.FIZMOO_ENV ?? "development";
 
   LOG.logLevel = logLevel;
 
@@ -45,21 +36,19 @@ export async function createFizmoo(options: {
   let shouldBootstrap = false;
 
   if (options.autoInit) {
-    LOG.debug(
-      "autoInit is enabled. Bootstrapping the required fizmoo directories and files.",
-    );
+    LOG.debug("autoInit is enabled. Bootstrapping the required fizmoo directories and files.");
     shouldBootstrap = true;
   } else {
     shouldBootstrap = await confirm({
-      message: "Would you like to bootstrap fizmoo now?",
+      message: "Would you like to bootstrap fizmoo now?"
     });
   }
 
   if (!shouldBootstrap) {
     LOG.fatal(
       new Error(
-        "No .fizmoo/config.ts found. Run `fizmoo build` in a directory containing a .fizmoo/config.ts file.",
-      ),
+        "No .fizmoo/config.ts found. Run `fizmoo build` in a directory containing a .fizmoo/config.ts file."
+      )
     );
     return null;
   }
@@ -99,8 +88,8 @@ export class Fizmoo extends FizmooCommands {
         this._pluginWatchLogger(),
         this._pluginProcessFilesAndCommands(),
         this._pluginEnrichPackageJSON(),
-        this._pluginValidateAndBuildManifest(),
-      ].filter((p): p is EsbuildPlugin => !!p),
+        this._pluginValidateAndBuildManifest()
+      ].filter((p): p is EsbuildPlugin => !!p)
     };
   }
 
@@ -112,7 +101,7 @@ export class Fizmoo extends FizmooCommands {
           await this.processFile(args.path);
           return null;
         });
-      },
+      }
     };
   }
 
@@ -122,12 +111,12 @@ export class Fizmoo extends FizmooCommands {
       setup: (build) => {
         build.onStart(async () => {
           const packageJsonString = await readFile(this.dirs.packageJsonPath, {
-            encoding: "utf8",
+            encoding: "utf8"
           });
           const packageJson = JSON.parse(packageJsonString);
           const additions = {
             type: "module",
-            bin: { [this._config.name]: "./bin/index.js" },
+            bin: { [this._config.name]: "./bin/index.js" }
           };
           for (const [key, value] of Object.entries(additions)) {
             if (!(key in packageJson)) {
@@ -138,10 +127,10 @@ export class Fizmoo extends FizmooCommands {
           await writeFile(
             this.dirs.packageJsonPath,
             `${JSON.stringify(packageJson, null, 2)}\n`,
-            "utf-8",
+            "utf-8"
           );
         });
-      },
+      }
     };
   }
 
@@ -152,7 +141,7 @@ export class Fizmoo extends FizmooCommands {
         build.onEnd(async () => {
           await this.buildManifest();
         });
-      },
+      }
     };
   }
 
@@ -171,14 +160,14 @@ export class Fizmoo extends FizmooCommands {
           }
           if (isWatching) LOG.debug("Rebuilding");
         });
-      },
+      }
     };
   }
 
   private async _init() {
     const res = await tryHandle(rm)(this.dirs.binDir, {
       recursive: true,
-      force: true,
+      force: true
     });
     if (res.hasError) throw res.error;
 
@@ -193,17 +182,14 @@ runtime.execute().catch((error) => {
   process.exit(1);
 });
 `;
-    const entryRes = await tryHandle(writeFileRecursive)(
-      entryFilePath,
-      entryFileContent,
-    );
+    const entryRes = await tryHandle(writeFileRecursive)(entryFilePath, entryFileContent);
     if (entryRes.hasError) throw entryRes.error;
   }
 
   async checkForCommands() {
     if (this._config.commands.length === 0) {
       LOG.warn(
-        "No commands declared in .fizmoo/config.ts. Add at least one using the command() helper.",
+        "No commands declared in .fizmoo/config.ts. Add at least one using the command() helper."
       );
     }
   }

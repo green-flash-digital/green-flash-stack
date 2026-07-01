@@ -49,9 +49,9 @@ export type PopoverEngineOptions = Partial<Omit<EngineBaseState, "isOpen">> & {
   type?: PopoverEngineType;
 };
 
-export class PopoverEngine<
-  S extends PopoverEngineState | undefined
-> extends TransactionStore<EngineState<S>> {
+export class PopoverEngine<S extends PopoverEngineState | undefined> extends TransactionStore<
+  EngineState<S>
+> {
   #popoverTarget: HTMLElement | undefined = undefined;
   #popoverNode: HTMLElement | undefined = undefined;
   #type: PopoverEngineType;
@@ -60,7 +60,7 @@ export class PopoverEngine<
     super({
       isOpen: false,
       offset: options.offset ?? 0,
-      ...options,
+      ...options
     } as EngineState<S>);
 
     this.#type = type;
@@ -155,7 +155,7 @@ export class PopoverEngine<
       position: "absolute",
       inset: "auto",
       margin: "0",
-      positionTryFallbacks: "flip-block, flip-inline",
+      positionTryFallbacks: "flip-block, flip-inline"
     };
 
     switch (position) {
@@ -297,14 +297,9 @@ export class PopoverEngine<
     e: T,
     state: S extends undefined ? never : S
   ): S extends undefined ? never : void;
-  openPopover<T extends Event>(
-    e: T,
-    state?: S extends undefined ? never : S
-  ): void {
+  openPopover<T extends Event>(e: T, state?: S extends undefined ? never : S): void {
     if (!e.currentTarget) {
-      throw new Error(
-        "Cannot determine the target that attempted to launch the popover."
-      );
+      throw new Error("Cannot determine the target that attempted to launch the popover.");
     }
     this.#popoverTarget = e.currentTarget as HTMLElement;
 
@@ -314,7 +309,7 @@ export class PopoverEngine<
         if (state !== undefined) {
           Object.assign(draft, state);
         }
-      },
+      }
     });
 
     // Let the ay adapter decide when to call popover.showPopover()
@@ -340,7 +335,7 @@ export class PopoverEngine<
     this.enqueue({
       mutate: (draft) => {
         draft.isOpen = false;
-      },
+      }
     });
   }
 
