@@ -1,4 +1,4 @@
-import { createFizmoo } from "@fizmoo/core";
+import { createFizmoo } from "fizmoo";
 
 async function main() {
   const fizmoo = await createFizmoo({

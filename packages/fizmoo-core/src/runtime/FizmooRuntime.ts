@@ -405,6 +405,59 @@ export class FizmooRuntime {
     }
   }
 
+  /**
+   * Outputs structured JSON describing a command — intended for agents and
+   * other programmatic consumers. Triggered by --help=json.
+   *
+   * Output shape:
+   *   { command, description, usage, options, args, subCommands }
+   *
+   * The `help` option is excluded from `options` (it is implicit on every command).
+   * Sub-commands include only { id, name, description } so the consumer can
+   * drill down with `<cli> <subcommand> --help=json`.
+   */
+  private _printHelpJson(commandId: string, commandDef: FizmooManifestEntry) {
+    const cliName =
+      this._manifest.get(fizmooConstants.COMMAND_ROOT)?.properties.name ?? "";
+    const commandPath =
+      commandId === fizmooConstants.COMMAND_ROOT
+        ? cliName
+        : `${cliName} ${commandId.replace(/\./g, " ")}`;
+
+    const { description, options, args } = commandDef.properties;
+    const { subCommands } = commandDef;
+
+    // Exclude the implicit --help flag so agents see only user-defined options
+    const { help: _help, ...userOptions } = options ?? {};
+
+    const subCommandDetails = (subCommands ?? [])
+      .filter((id) => id !== fizmooConstants.COMMAND_ROOT)
+      .map((id) => {
+        const sub = this._manifest.get(id);
+        if (!sub) return null;
+        return {
+          id,
+          name: sub.properties.name,
+          description: sub.properties.description,
+        };
+      })
+      .filter((x): x is NonNullable<typeof x> => x !== null);
+
+    console.log(
+      JSON.stringify(
+        {
+          command: commandPath,
+          description: description ?? "",
+          options: userOptions,
+          args: args ?? {},
+          subCommands: subCommandDetails,
+        },
+        null,
+        2
+      )
+    );
+  }
+
   public async execute() {
     const commandRes = tryHandleSync(this._parseExpression)();
     if (commandRes.hasError) {
@@ -417,9 +470,14 @@ export class FizmooRuntime {
       return this._errors.log(this._errors.COMMAND_NOT_FOUND(commandId));
     }
 
-    // Parent commands and --help always print the help menu
+    // Parent commands and --help always print the help menu.
+    // --help=json emits structured JSON for programmatic consumers (agents, tooling).
+    const helpOption = options.get("help");
     const isParentCommand = (commandDef.subCommands ?? []).length > 0;
-    if (options.has("help") || isParentCommand) {
+    if (helpOption !== undefined || isParentCommand) {
+      if (helpOption?.value === "json") {
+        return this._printHelpJson(commandId, commandDef);
+      }
       return console.log(commandDef.properties.help);
     }
 

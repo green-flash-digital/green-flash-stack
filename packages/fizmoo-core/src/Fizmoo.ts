@@ -1,4 +1,8 @@
-import { default as esbuild, BuildOptions, Plugin as EsbuildPlugin } from "esbuild";
+import {
+  default as esbuild,
+  BuildOptions,
+  Plugin as EsbuildPlugin,
+} from "esbuild";
 import { readFile, rm, writeFile } from "node:fs/promises";
 import { FizmooCommands } from "./FizmooCommands.js";
 import { tryHandle } from "ts-jolt/isomorphic";
@@ -42,7 +46,7 @@ export async function createFizmoo(options: {
 
   if (options.autoInit) {
     LOG.debug(
-      "autoInit is enabled. Bootstrapping the required fizmoo directories and files."
+      "autoInit is enabled. Bootstrapping the required fizmoo directories and files.",
     );
     shouldBootstrap = true;
   } else {
@@ -54,8 +58,8 @@ export async function createFizmoo(options: {
   if (!shouldBootstrap) {
     LOG.fatal(
       new Error(
-        "No .fizmoo/config.ts found. Run `fizmoo build` in a directory containing a .fizmoo/config.ts file."
-      )
+        "No .fizmoo/config.ts found. Run `fizmoo build` in a directory containing a .fizmoo/config.ts file.",
+      ),
     );
     return null;
   }
@@ -134,7 +138,7 @@ export class Fizmoo extends FizmooCommands {
           await writeFile(
             this.dirs.packageJsonPath,
             `${JSON.stringify(packageJson, null, 2)}\n`,
-            "utf-8"
+            "utf-8",
           );
         });
       },
@@ -191,7 +195,7 @@ runtime.execute().catch((error) => {
 `;
     const entryRes = await tryHandle(writeFileRecursive)(
       entryFilePath,
-      entryFileContent
+      entryFileContent,
     );
     if (entryRes.hasError) throw entryRes.error;
   }
@@ -199,7 +203,7 @@ runtime.execute().catch((error) => {
   async checkForCommands() {
     if (this._config.commands.length === 0) {
       LOG.warn(
-        'No commands declared in .fizmoo/config.ts. Add at least one using the command() helper.'
+        "No commands declared in .fizmoo/config.ts. Add at least one using the command() helper.",
       );
     }
   }

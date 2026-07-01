@@ -76,3 +76,4 @@ yarn sandbox greet -n Alice
 - [Options & Args](./docs/options-and-args.md) — types, validation, defaults
 - [Lifecycle Hooks](./docs/hooks.md) — `onBeforeAction`, `onAfterAction`, `onError`
 - [CLI Reference](./docs/cli.md) — `fizmoo build` and `fizmoo dev`
+- [Agent Integration](./docs/agent-integration.md) — `--help=json` for programmatic consumers
