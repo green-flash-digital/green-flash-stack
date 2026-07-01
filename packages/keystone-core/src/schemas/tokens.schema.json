@@ -1,0 +1,471 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schemas.greenflash.digital/keystone-tokens.json",
+  "title": "KeystoneTokens",
+  "description": "Design token data for a keystone-css design system — stored in tokens.json and imported by config.ts.",
+  "type": "object",
+  "properties": {
+    "runtime": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A short description explaining rationale for the choices or how they should be used"
+        },
+        "prefix": {
+          "type": "string"
+        },
+        "strict": {
+          "type": "boolean"
+        },
+        "suppressStrictWarnings": {
+          "type": "boolean"
+        }
+      },
+      "required": ["prefix"],
+      "additionalProperties": false,
+      "default": {
+        "prefix": "new"
+      }
+    },
+    "sizeAndSpace": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A short description explaining rationale for the choices or how they should be used"
+        },
+        "baseFontSize": {
+          "type": "number",
+          "default": 16
+        },
+        "baselineGrid": {
+          "type": "number",
+          "default": 4
+        },
+        "size": {
+          "type": "object",
+          "properties": {
+            "variants": {
+              "type": "object",
+              "additionalProperties": {
+                "type": "number"
+              },
+              "description": "Semantically named variants that describe the height of elements that can be placed inline with each other. By default, the values of the key value pairs should be divisible by the baselineGrid factor. This ensures that all mechanisms that use this are the same height so vertical rhythm is preserved using any inline element. Sizes often follow modular scaling systems (e.g., Major Third Scale, where each step is 1.25x the previous size) or the Golden Ratio (1.618x) for harmonious proportions."
+            }
+          },
+          "required": ["variants"],
+          "additionalProperties": false,
+          "description": "A key in which to describe the sizing constraints of the keystone-css utility system"
+        },
+        "space": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "const": "manual"
+                },
+                "variants": {
+                  "type": "array",
+                  "items": {
+                    "type": "number"
+                  }
+                }
+              },
+              "required": ["mode", "variants"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "mode": {
+                  "type": "string",
+                  "const": "auto"
+                },
+                "variants": {
+                  "type": "number",
+                  "default": 11
+                }
+              },
+              "required": ["mode"],
+              "additionalProperties": false
+            }
+          ]
+        }
+      },
+      "required": ["size", "space"],
+      "additionalProperties": false,
+      "default": {
+        "size": {
+          "variants": {}
+        },
+        "space": {
+          "mode": "auto",
+          "variants": 10
+        }
+      }
+    },
+    "font": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A short description explaining rationale for the choices or how they should be used"
+        },
+        "source": {
+          "type": "string",
+          "const": "manual"
+        },
+        "families": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "family": {
+                "type": "string"
+              },
+              "fallback": {
+                "type": "string",
+                "default": "system-ui, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\""
+              },
+              "styles": {
+                "type": "array",
+                "items": {
+                  "type": "string",
+                  "enum": [
+                    "thin-100",
+                    "thin-100-italic",
+                    "extraLight-200",
+                    "extraLight-200-italic",
+                    "light-300",
+                    "light-300-italic",
+                    "regular-400",
+                    "regular-400-italic",
+                    "medium-500",
+                    "medium-500-italic",
+                    "semiBold-600",
+                    "semiBold-600-italic",
+                    "bold-700",
+                    "bold-700-italic",
+                    "extraBold-800",
+                    "extraBold-800-italic",
+                    "black-900",
+                    "black-900-italic"
+                  ]
+                }
+              }
+            },
+            "required": ["family", "styles"],
+            "additionalProperties": false
+          }
+        },
+        "variants": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "object",
+            "properties": {
+              "familyToken": {
+                "type": "string"
+              },
+              "weight": {
+                "type": "string"
+              },
+              "size": {
+                "type": "number"
+              },
+              "lineHeight": {
+                "type": "number"
+              },
+              "letterSpacing": {
+                "type": "number",
+                "default": 0
+              }
+            },
+            "required": ["familyToken", "weight", "size", "lineHeight"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["source", "families", "variants"],
+      "additionalProperties": false,
+      "default": {
+        "source": "manual",
+        "families": {},
+        "variants": {}
+      }
+    },
+    "response": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A short description explaining rationale for the choices or how they should be used"
+        },
+        "breakpoints": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "number"
+          },
+          "default": {
+            "mobile": 480,
+            "tablet": 768,
+            "laptop": 1024,
+            "desktop": 1280,
+            "ultraWide": 1536
+          }
+        }
+      },
+      "additionalProperties": false,
+      "default": {}
+    },
+    "color": {
+      "type": "object",
+      "properties": {
+        "description": {
+          "type": "string",
+          "description": "A short description explaining rationale for the choices or how they should be used"
+        },
+        "vibe": {
+          "anyOf": [
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "jewel"
+                },
+                "lightness": {
+                  "type": "number",
+                  "minimum": 0.4,
+                  "maximum": 0.65
+                },
+                "chroma": {
+                  "type": "number",
+                  "minimum": 0.14,
+                  "maximum": 0.22
+                }
+              },
+              "required": ["type", "lightness", "chroma"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "pastel"
+                },
+                "lightness": {
+                  "type": "number",
+                  "minimum": 0.8,
+                  "maximum": 0.92
+                },
+                "chroma": {
+                  "type": "number",
+                  "minimum": 0.04,
+                  "maximum": 0.1
+                }
+              },
+              "required": ["type", "lightness", "chroma"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "earth"
+                },
+                "lightness": {
+                  "type": "number",
+                  "minimum": 0.4,
+                  "maximum": 0.65
+                },
+                "chroma": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 0.1
+                }
+              },
+              "required": ["type", "lightness", "chroma"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "neutral"
+                },
+                "lightness": {
+                  "type": "number",
+                  "minimum": 0.5,
+                  "maximum": 0.9
+                },
+                "chroma": {
+                  "type": "number",
+                  "minimum": 0,
+                  "maximum": 0.02
+                }
+              },
+              "required": ["type", "lightness", "chroma"],
+              "additionalProperties": false
+            },
+            {
+              "type": "object",
+              "properties": {
+                "type": {
+                  "type": "string",
+                  "const": "fluorescent"
+                },
+                "lightness": {
+                  "type": "number",
+                  "minimum": 0.75,
+                  "maximum": 0.9
+                },
+                "chroma": {
+                  "type": "number",
+                  "minimum": 0.22,
+                  "maximum": 0.28
+                }
+              },
+              "required": ["type", "lightness", "chroma"],
+              "additionalProperties": false
+            }
+          ]
+        },
+        "colors": {
+          "type": "object",
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "object",
+                "properties": {
+                  "hue": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 360
+                  },
+                  "variants": {
+                    "anyOf": [
+                      {
+                        "type": "number"
+                      },
+                      {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        }
+                      }
+                    ]
+                  }
+                },
+                "required": ["hue", "variants"],
+                "additionalProperties": false
+              },
+              {
+                "type": "object",
+                "properties": {
+                  "hex": {
+                    "type": "string"
+                  },
+                  "variants": {
+                    "anyOf": [
+                      {
+                        "anyOf": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "array",
+                            "items": {
+                              "type": "string"
+                            }
+                          }
+                        ]
+                      },
+                      {
+                        "type": "object",
+                        "additionalProperties": {
+                          "type": "string"
+                        }
+                      }
+                    ],
+                    "default": 0
+                  }
+                },
+                "required": ["hex"],
+                "additionalProperties": false
+              }
+            ]
+          },
+          "default": {}
+        }
+      },
+      "additionalProperties": false,
+      "default": {}
+    },
+    "custom": {
+      "type": "object",
+      "additionalProperties": {
+        "anyOf": [
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "rem"
+              },
+              "value": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "value", "description"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "string"
+              },
+              "value": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "value", "description"],
+            "additionalProperties": false
+          },
+          {
+            "type": "object",
+            "properties": {
+              "type": {
+                "type": "string",
+                "const": "number"
+              },
+              "value": {
+                "type": "number"
+              },
+              "description": {
+                "type": "string"
+              }
+            },
+            "required": ["type", "value", "description"],
+            "additionalProperties": false
+          }
+        ]
+      },
+      "default": {}
+    }
+  },
+  "additionalProperties": false
+}

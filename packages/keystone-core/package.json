@@ -19,15 +19,18 @@
     "./token-utils": "./dist/createTokenUtils.js",
     "./templates": "./dist/templates/index.js",
     "./utils": "./dist/utils/index.js",
-    "./schemas": "./dist/schemas/index.js"
+    "./schemas": "./dist/schemas/index.js",
+    "./schema": "./dist/schemas/tokens.schema.json"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build:lib": "yarn tsc --project tsconfig.build.json",
-    "build": "yarn tsc --project tsconfig.build.json",
-    "dev": "yarn build --watch"
+    "build": "yarn generate:schema && yarn build:lib && yarn copy:schema",
+    "build:lib": "tsc --project tsconfig.build.json",
+    "generate:schema": "tsx scripts/generate-tokens-schema.ts",
+    "copy:schema": "cp src/schemas/tokens.schema.json dist/schemas/tokens.schema.json",
+    "dev": "yarn build:lib --watch"
   },
   "dependencies": {
     "@gfdigital/tsconfig": "0.3.1",
@@ -49,6 +52,7 @@
     "@types/express": "5.0.2",
     "@types/node": "22.15.19",
     "tsx": "4.19.4",
-    "wrangler": "4.15.2"
+    "wrangler": "4.15.2",
+    "zod-to-json-schema": "^3.24.1"
   }
 }
