@@ -58,7 +58,7 @@ type GetConfigOptions = {
 export type LogLevel = IsoScribeLogLevel;
 
 /** Walks up from `startDir` looking for `.keystone/tokens.json`. Returns the path or null. */
-async function findKeystoneTokensFile(startDir: string): Promise<string | null> {
+export async function findKeystoneTokensFile(startDir: string): Promise<string | null> {
   let dir = startDir;
   while (true) {
     const candidate = path.resolve(dir, ".keystone", "tokens.json");
@@ -163,7 +163,7 @@ export class Keystone {
   private _getDirsFromMeta(meta: TokensConfigMeta): TokensConfigDirectories {
     return {
       generated: path.resolve(meta.dirPath, "_generated"),
-      versions: path.resolve(meta.dirName, "versions")
+      versions: path.resolve(meta.dirPath, "_versions")
     };
   }
 

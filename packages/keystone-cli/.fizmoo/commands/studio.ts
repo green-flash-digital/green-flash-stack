@@ -1,5 +1,6 @@
-import type { LogLevel } from "@keystone-css/core";
-import { Keystone } from "@keystone-css/core";
+import path from "node:path";
+
+import { findKeystoneTokensFile } from "@keystone-css/core";
 import { StudioServer } from "@keystone-css/studio/server";
 import { defineCommand } from "fizmoo";
 
@@ -7,12 +8,6 @@ export default defineCommand({
   name: "studio",
   description: "Launches the interactive tokens studio in a local development environment",
   options: {
-    "log-level": {
-      type: "string",
-      alias: "l",
-      description: "Set the log level",
-      default: "info"
-    },
     port: {
       type: "number",
       alias: "p",
@@ -21,22 +16,18 @@ export default defineCommand({
     }
   },
   action: async ({ options }) => {
-    const tokens = new Keystone({
-      logLevel: options["log-level"] as LogLevel,
-      env: "development",
-      autoInit: true
-    });
-
-    try {
-      const config = await tokens.getConfig();
-      const server = new StudioServer({
-        port: options.port,
-        configPath: config.meta.filePath,
-        versionsDir: config.dirs.versions
-      });
-      server.listen();
-    } catch (error) {
-      tokens.printError(error);
+    const tokensPath = await findKeystoneTokensFile(process.cwd());
+    if (!tokensPath) {
+      throw new Error(
+        'Could not locate ".keystone/tokens.json". Run `keystone init` to create one.'
+      );
     }
+    const keystoneDir = path.dirname(tokensPath);
+    const server = new StudioServer({
+      port: options.port,
+      configPath: tokensPath,
+      versionsDir: path.resolve(keystoneDir, "_versions")
+    });
+    server.listen();
   }
 });
