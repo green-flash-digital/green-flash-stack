@@ -1,6 +1,5 @@
 import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { match, P } from "ts-pattern";
 
 import { useConfigurationContext } from "../Config.context";
 import type { StyleGuideSharedProps } from "./style-guide.utils";
@@ -59,35 +58,26 @@ export function StyleGuideBasicFont(props: StyleGuideSharedProps) {
       </StyleGuidePageLeft>
       <StyleGuidePageRight>
         <div className={styles}>
-          {match(font)
-            .with({ source: "manual" }, (state) =>
-              Object.entries(state.families).map(([familyId, familyDef]) => {
-                return (
-                  <div
-                    key={familyId}
-                    className="family"
-                    style={{
-                      // @ts-expect-error Custom properties are valid
-                      "--family": familyDef.name,
-                      "--bg": makeColor("neutral-light", {
-                        opacity: getRandomNumber(0, 0.03)
-                      })
-                    }}
-                  >
-                    <div className="overline">{familyDef.tokenName}</div>
-                    <div className="title">{familyDef.familyName}</div>
-                    <div className="alph">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
-                    <div className="alph">abcdefghijklmnopqrstuvwxyz</div>
-                    <div className="alph">123456789!@#$%^&*()</div>
-                    <div className="a">Aa</div>
-                  </div>
-                );
-              })
-            )
-            .with({ source: P.union("adobe", "google") }, () => {
-              return <div>not implemented</div>;
-            })
-            .exhaustive()}
+          {Object.entries(font.families).map(([familyId, familyDef]) => (
+            <div
+              key={familyId}
+              className="family"
+              style={{
+                // @ts-expect-error Custom properties are valid
+                "--family": familyDef.name,
+                "--bg": makeColor("neutral-light", {
+                  opacity: getRandomNumber(0, 0.03)
+                })
+              }}
+            >
+              <div className="overline">{familyDef.tokenName}</div>
+              <div className="title">{familyDef.familyName}</div>
+              <div className="alph">ABCDEFGHIJKLMNOPQRSTUVWXYZ</div>
+              <div className="alph">abcdefghijklmnopqrstuvwxyz</div>
+              <div className="alph">123456789!@#$%^&*()</div>
+              <div className="a">Aa</div>
+            </div>
+          ))}
         </div>
       </StyleGuidePageRight>
     </StyleGuidePage>

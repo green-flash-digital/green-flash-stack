@@ -20,7 +20,7 @@ import { LayoutFooter } from "./components/LayoutFooter";
 import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
 import { LayoutMain } from "./components/LayoutMain";
-import { getIsLocalConfig } from "./utils/util.getLocalConfig";
+import type { Route } from "./+types/root";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -81,12 +81,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
   );
 }
 
-export async function loader() {
-  const isLocalConfig = getIsLocalConfig();
-  if (isLocalConfig) {
-    return { isLocal: true };
-  }
-  return { isLocal: false };
+export async function loader({ context }: Route.LoaderArgs) {
+  return { isLocal: context.isLocal };
 }
 
 export default function App() {

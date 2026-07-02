@@ -4,6 +4,7 @@ import { makeSpace, makeColor, makeCustom, makeRem } from "@keystone-css/studio-
 import { css } from "@linaria/core";
 import { tryHandle } from "ts-jolt/isomorphic";
 
+import type { Route } from "./+types/layout";
 import { ButtonGroup } from "~/components/ButtonGroup";
 import { NavTabs } from "~/components/NavTabs";
 import { ConfigurationProvider } from "~/features/Config.context";
@@ -11,7 +12,7 @@ import { ConfigJSON } from "~/features/ConfigJSON";
 import { ConfigSave } from "~/features/ConfigSave";
 import { ConfigStyleGuide } from "~/features/ConfigStyleGuide";
 import { errors } from "~/utils/util.error-modes";
-import { getKeystoneConfig } from "~/utils/util.getLocalConfig";
+import { readTokensConfig } from "~/utils/util.getLocalConfig";
 
 const styles = css`
   position: sticky;
@@ -53,8 +54,8 @@ const styles = css`
   }
 `;
 
-export async function loader() {
-  const config = await tryHandle(getKeystoneConfig)();
+export async function loader({ context }: Route.LoaderArgs) {
+  const config = await tryHandle(readTokensConfig)(context.tokensPath);
   if (config.hasError) {
     throw errors.API_ERROR(500, config.error);
   }

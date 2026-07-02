@@ -119,7 +119,7 @@ export function LayoutHeaderMenu() {
       <button className="menu" onClick={MenuModal.open}>
         <IconMenu11 dxSize={24} />
       </button>
-      <Modal dxEngine={MenuModal} dxType="drawer" dxVariant="right-to-left">
+      <Modal dxEngine={MenuModal} dxType="drawer" dxVariant="right">
         <ModalHeader>Options</ModalHeader>
         <ModalBody ref={ref}>
           <ul>

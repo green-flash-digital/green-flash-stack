@@ -135,21 +135,27 @@ createRequestHandler({
 
 Loaders receive context typed via the `AppLoadContext` interface in `env.ts` — which replaces the current `whatever: string` placeholder with the real shape.
 
+### Notes
+
+- The plan showed `layout()` for the config section with a `path` option — that's not valid. `layout()` is always pathless in React Router 7. Used `route("config", ...)` with children instead, which is the correct pattern for a route that also acts as a layout.
+- `util.getLocalConfig.ts` wasn't deleted — it was simplified to a single `readTokensConfig(tokensPath)` function. The env var functions were removed but the file is still useful.
+- `StudioServer.ts` private members updated to use `#` runtime-private syntax (requested during implementation).
+
 ### Tasks
 
-- [ ] Upgrade to latest React Router 7.x patch (currently on 7.6.0)
-- [ ] Rewrite `app/routes.ts` with explicit `route()` / `layout()` / `index()` calls
-- [ ] Rename route files per table above
-- [ ] Run `react-router typegen`, verify generated types in `app/.react-router/types/`
-- [ ] Migrate each loader/action to `Route.LoaderArgs` / `Route.ActionArgs`
-- [ ] Implement `getLoadContext` in `StudioServer.ts` with `tokensPath`, `versionsDir`, `isLocal`
-- [ ] Define real `AppLoadContext` shape in `env.ts`, delete `whatever: string` placeholder
-- [ ] Update all loaders to read from `context` instead of env vars
-- [ ] Delete `getLocalConfigVars`, `getIsLocalConfig`, and all `process.env.KEYSTONE_CSS_STUDIO_*` reads
-- [ ] Delete `StudioEnvVars` type and all `_setEnvVar` / `_getEnvVar` machinery
-- [ ] Remove `@react-router/fs-routes` dependency
-- [ ] Run `yarn server:build` to regenerate `StudioServer.js` / `StudioServer.d.ts`
-- [ ] Verify `yarn typecheck` passes
+- [x] Upgrade to latest React Router 7.x patch (7.6.0 → 7.18.1)
+- [x] Rewrite `app/routes.ts` with explicit `route()` / `layout()` / `index()` calls
+- [x] Rename route files per table above
+- [x] Run `react-router typegen`, verify generated types in `.react-router/types/`
+- [x] Migrate each loader/action to `Route.LoaderArgs` / `Route.ActionArgs`
+- [x] Implement `getLoadContext` in `StudioServer.ts` with `tokensPath`, `versionsDir`, `isLocal`
+- [x] Define real `AppLoadContext` shape in `env.ts`, delete `whatever: string` placeholder
+- [x] Update all loaders to read from `context` instead of env vars
+- [x] Delete `getLocalConfigVars`, `getIsLocalConfig`, and all `process.env.KEYSTONE_CSS_STUDIO_*` reads
+- [x] Delete `StudioEnvVars` type and all `_setEnvVar` / `_getEnvVar` machinery
+- [x] Remove `@react-router/fs-routes` dependency
+- [x] Run `yarn server:build` to regenerate `StudioServer.js` / `StudioServer.d.ts`
+- [x] Verify `yarn typecheck` passes
 
 ---
 
@@ -391,11 +397,43 @@ Auth UI (login, user menu, project picker) only renders when `context.isLocal ==
 
 ---
 
+## Conventions to Adopt
+
+### Error handling — `http-errors` + loader/action data shape
+
+Use `http-errors` for structured error responses rather than ad-hoc objects. The goal is a consistent `{ data, valErrors }` shape for loader/action returns that matches the conventions from `fetchify` — the same pattern used on the client for typed API responses.
+
+Target shape for route actions:
+
+```ts
+// action returns one of:
+{ data: T; valErrors?: never }          // success
+{ data?: never; valErrors: FieldErrors } // validation failure (422)
+// throws HttpError for hard failures (400, 500)
+```
+
+Loader convention:
+```ts
+export async function loader({ context }: Route.LoaderArgs) {
+  const result = await readTokensConfig(context.tokensPath);
+  return { data: result };  // always wrapped in `data`
+}
+
+// component
+const { data } = useLoaderData<typeof loader>();
+```
+
+This keeps the shape predictable when consumed in components and when checked with `fetchify` on any future client-side `fetch()` calls to these routes.
+
+**When to apply:** Adopt this incrementally as routes are touched during Phase 1 and later. Don't retrofit all at once — just be consistent in new code and update old loaders/actions when you're already editing them.
+
+---
+
 ## Pre-existing Issues
 
 Fix opportunistically — not introduced by this refactor:
 
-- `LayoutHeaderMenu.tsx:122` — `Type '"right-to-left"' is not assignable to type '"right"'`
-- `StyleGuideBasicFont.tsx:87` — `'source' does not exist in type 'Matcher<..>'` (ts-pattern)
+- ~~`LayoutHeaderMenu.tsx:122`~~ — fixed (Phase 0)
+- ~~`StyleGuideBasicFont.tsx:87`~~ — fixed (Phase 0)
 - `color.utils.ts` — still imports `ConfigSchema` directly; should use `TokensSchema`
-- `env.ts` — `AppLoadContext { whatever: string }` placeholder is live in production (fixed in Phase 0)
+- ~~`env.ts` — `AppLoadContext { whatever: string }` placeholder~~ — fixed (Phase 0)

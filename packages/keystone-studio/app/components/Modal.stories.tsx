@@ -108,7 +108,7 @@ export function RightToLeft() {
       >
         ODrawer
       </Button>
-      <Modal dxEngine={DrawerRightToLeft} dxType="drawer" dxVariant="right-to-left">
+      <Modal dxEngine={DrawerRightToLeft} dxType="drawer" dxVariant="right">
         <ModalHeader>Right to left drawer</ModalHeader>
       </Modal>
     </>
