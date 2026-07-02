@@ -11,7 +11,6 @@ import {
 } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
-import { IconDashboardSquare3 } from "~/icons/IconDashboardSquare3";
 import { IconMenu11 } from "~/icons/IconMenu11";
 import { IconSettings05 } from "~/icons/IconSettings05";
 
@@ -136,23 +135,6 @@ export function LayoutHeaderMenu() {
                     <div className="title">Configure</div>
                     <div className="sub">
                       View, edit and save changes to your tokens configuration
-                    </div>
-                  </div>
-                </div>
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="/projects">
-                <div className="item">
-                  <div className="icon v-b">
-                    <div>
-                      <IconDashboardSquare3 dxSize={28} />
-                    </div>
-                  </div>
-                  <div>
-                    <div className="title">Projects</div>
-                    <div className="sub">
-                      View and manage all saved configurations for your projects
                     </div>
                   </div>
                 </div>

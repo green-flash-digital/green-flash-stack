@@ -1,18 +1,16 @@
-import { watch, existsSync } from "node:fs";
+import { existsSync, watch } from "node:fs";
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { input } from "@inquirer/prompts";
-import { DotDir, type DotDirResponse } from "dotdir";
 import { globby } from "globby";
 import type { IsoScribeLogLevel } from "isoscribe";
 import { Isoscribe, printAsBullets } from "isoscribe";
 import prettier from "prettier";
-import { tryHandle } from "ts-jolt/isomorphic";
 import { writeFileRecursive } from "ts-jolt/node";
 
 import type { KeystoneDefinition } from "./defineTokens.js";
-import { ConfigSchema, type KeystoneConfig } from "./schemas/schema.js";
+import { TokensSchema, type KeystoneConfig } from "./schemas/schema.js";
 import { defineTemplate } from "./templates/types.js";
 import type { TokenManifest } from "./TokenManifest.js";
 export { defineTokens } from "./defineTokens.js";
@@ -38,19 +36,80 @@ export type TokensConfigDirectories = {
   versions: string;
 };
 
-export type TokensConfig = DotDirResponse<KeystoneConfig> & {
+export type TokensConfigMeta = {
+  /** Absolute path to the `.keystone/` directory */
+  dirPath: string;
+  /** Absolute path to the directory that contains `.keystone/` */
+  dirName: string;
+  /** Absolute path to `tokens.json` */
+  filePath: string;
+};
+
+export type TokensConfig = {
+  config: KeystoneConfig;
+  meta: TokensConfigMeta;
   dirs: TokensConfigDirectories;
 };
 
 type GetConfigOptions = {
-  /**
-   * Add this option if you wish to not use the cached config
-   * but instead get a new one.
-   */
   noCache?: boolean;
 };
 
 export type LogLevel = IsoScribeLogLevel;
+
+/** Walks up from `startDir` looking for `.keystone/tokens.json`. Returns the path or null. */
+async function findKeystoneTokensFile(startDir: string): Promise<string | null> {
+  let dir = startDir;
+  while (true) {
+    const candidate = path.resolve(dir, ".keystone", "tokens.json");
+    if (existsSync(candidate)) return candidate;
+    const parent = path.dirname(dir);
+    if (parent === dir) return null;
+    dir = parent;
+  }
+}
+
+/**
+ * Scaffolds a new keystone-css project in `cwd` (defaults to `process.cwd()`).
+ * Creates:
+ *   .keystone/tokens.json  — token data with $schema reference for VS Code IntelliSense
+ *   .keystone/config.ts    — entry point that imports tokens.json
+ */
+export async function bootstrap(options?: { cwd?: string; prefix?: string }) {
+  const rootDir = options?.cwd ?? process.cwd();
+  const keystoneDir = path.resolve(rootDir, ".keystone");
+
+  const prefix =
+    options?.prefix ??
+    (await input({
+      message:
+        "What prefix would you like to use for your CSS tokens? (https://keystone-css/concepts/token-prefixing)",
+      default: path.basename(rootDir)
+    }));
+
+  const defaultTokens = TokensSchema.parse({ runtime: { prefix } } as KeystoneConfig);
+
+  const tokensPath = path.resolve(keystoneDir, "tokens.json");
+  await writeFileRecursive(
+    tokensPath,
+    JSON.stringify(
+      {
+        $schema: "https://schemas.greenflash.digital/keystone-tokens.json",
+        ...defaultTokens
+      },
+      null,
+      2
+    ) + "\n"
+  );
+
+  const configPath = path.resolve(keystoneDir, "config.ts");
+  await writeFileRecursive(
+    configPath,
+    `import tokens from "./tokens.json";\nexport default tokens;\n`
+  );
+
+  return { keystoneDir, tokensPath, configPath };
+}
 
 function deepMerge(target: Record<string, unknown>, source: Record<string, unknown>): void {
   for (const key of Object.keys(source)) {
@@ -82,7 +141,7 @@ export class Keystone {
     logLevel?: IsoScribeLogLevel;
     env?: "development" | "production";
     autoInit?: boolean;
-    /** Definition produced by `defineTokens()`. When provided, DotDir lookup is skipped. */
+    /** Definition produced by `defineTokens()`. When provided, file lookup is skipped. */
     definition?: KeystoneDefinition;
     /** Directory that contains the `.keystone/` folder. Defaults to `process.cwd()`. Required when `definition` is provided. */
     cwd?: string;
@@ -101,84 +160,81 @@ export class Keystone {
     });
   }
 
-  private _getDirsFromConfig(dotDirRes: DotDirResponse<KeystoneConfig>): TokensConfigDirectories {
-    const generated = path.resolve(dotDirRes.meta.dirPath, "./_generated");
-    const versions = path.resolve(dotDirRes.meta.dirName, "./versions");
-    return { generated, versions };
+  private _getDirsFromMeta(meta: TokensConfigMeta): TokensConfigDirectories {
+    return {
+      generated: path.resolve(meta.dirPath, "_generated"),
+      versions: path.resolve(meta.dirName, "versions")
+    };
   }
 
   async getConfig(options?: GetConfigOptions): Promise<TokensConfig> {
     const shouldGetNew = options?.noCache ?? false;
-
     if (this._config && !shouldGetNew) return this._config;
 
+    // Inline definition path (programmatic use, e.g. tests or monorepo setups)
     if (this._inlineDefinition) {
       const cwd = this._inlineCwd ?? process.cwd();
       const keystoneDir = path.resolve(cwd, ".keystone");
+      const meta: TokensConfigMeta = {
+        dirPath: keystoneDir,
+        dirName: cwd,
+        filePath: path.resolve(keystoneDir, "tokens.json")
+      };
       this._config = {
         config: this._inlineDefinition.config,
-        meta: {
-          dirPath: keystoneDir,
-          dirName: cwd,
-          filePath: path.resolve(keystoneDir, "config.ts")
-        } as DotDirResponse<KeystoneConfig>["meta"],
-        dirs: {
-          generated: path.resolve(keystoneDir, "_generated"),
-          versions: path.resolve(cwd, "versions")
-        }
-      } as TokensConfig;
-      return this._config;
-    }
-
-    const dotDir = new DotDir<KeystoneConfig>();
-    const dirRes = await tryHandle(dotDir.find)({ dirName: "keystone" });
-    if (dirRes.data) {
-      this._config = {
-        ...dirRes.data,
-        dirs: this._getDirsFromConfig(dirRes.data)
+        meta,
+        dirs: this._getDirsFromMeta(meta)
       };
       return this._config;
     }
 
-    let shouldBootstrap = false;
-    this._log.warn("Unable to located the necessary directories to initialize keystone-css");
-    if (this._configAutoInit) {
-      this._log.debug("AutoInit has been enabled. Bootstrapping the required assets");
-      shouldBootstrap = true;
+    // tokens.json discovery path
+    const tokensFilePath = await findKeystoneTokensFile(process.cwd());
+
+    if (tokensFilePath) {
+      const raw = JSON.parse(await readFile(tokensFilePath, "utf8"));
+      const config = TokensSchema.parse(raw);
+      const keystoneDir = path.dirname(tokensFilePath);
+      const meta: TokensConfigMeta = {
+        dirPath: keystoneDir,
+        dirName: path.dirname(keystoneDir),
+        filePath: tokensFilePath
+      };
+      this._config = { config, meta, dirs: this._getDirsFromMeta(meta) };
+      return this._config;
     }
-    if (!shouldBootstrap) throw dirRes.error;
 
-    const rootDir = await input({
-      message: `Where would you like to create your ".keystone/" dotdir?`,
-      required: true,
-      default: process.cwd()
-    });
+    // No tokens.json found — bootstrap if autoInit, otherwise throw
+    if (!this._configAutoInit) {
+      throw new Error(
+        'Could not locate ".keystone/tokens.json". Run `keystone init` to create one.'
+      );
+    }
 
-    const keystoneDir = path.resolve(rootDir, "./.keystone");
-    const keystoneConfigPath = path.resolve(keystoneDir, "./config.json");
+    this._log.warn("Unable to locate .keystone/tokens.json — bootstrapping a new project");
+    const { tokensPath } = await bootstrap();
 
-    const prefix = await input({
-      message:
-        "What prefix would you like to use for your CSS tokens? (https://keystone-css/concepts/token-prefixing)"
-    });
-
-    const configJson = ConfigSchema.parse({
-      runtime: { prefix }
-    } as KeystoneConfig);
-    const keystoneConfigContent = JSON.stringify(configJson, null, 2);
-
-    await writeFileRecursive(keystoneConfigPath, keystoneConfigContent);
-
-    const config = await this.getConfig();
-    return config;
+    // Re-read the freshly created file
+    const raw = JSON.parse(await readFile(tokensPath, "utf8"));
+    const config = TokensSchema.parse(raw);
+    const keystoneDir = path.dirname(tokensPath);
+    const meta: TokensConfigMeta = {
+      dirPath: keystoneDir,
+      dirName: path.dirname(keystoneDir),
+      filePath: tokensPath
+    };
+    this._config = { config, meta, dirs: this._getDirsFromMeta(meta) };
+    return this._config;
   }
 
   printError(error: string | Error | unknown) {
     if (error instanceof Error) {
       this._log.fatal(error);
+      return;
     }
     if (typeof error === "string") {
       this._log.fatal(new Error(error));
+      return;
     }
     this._log.fatal(new Error(String(`Unknown error: ${error}`)));
   }
@@ -408,10 +464,10 @@ export class Keystone {
 
     const config = await this.getConfig();
     const watcher = watch(config.meta.filePath);
-    const watchedFileKeystoneConfig = path.relative(process.cwd(), config.meta.filePath);
+    const watchedFile = path.relative(process.cwd(), config.meta.filePath);
     this._log.watch(`Running subsequent builds in watch mode
 
-Watching for changes in the following files:${printAsBullets([watchedFileKeystoneConfig])}
+Watching for changes in the following files:${printAsBullets([watchedFile])}
 `);
     watcher.on("change", async (file) => {
       const relPath = path.relative(process.cwd(), file);

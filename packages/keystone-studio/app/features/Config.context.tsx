@@ -2,7 +2,7 @@ import type { FC, ReactNode } from "react";
 import { useContext, useMemo, createContext, useCallback } from "react";
 
 import type { KeystoneConfig } from "@keystone-css/core/schemas";
-import { ConfigSchema } from "@keystone-css/core/schemas";
+import { TokensSchema } from "@keystone-css/core/schemas";
 
 import type { ConfigurationContextColorType } from "./color/color.utils.js";
 import { useConfigStateColor, getColorConfigFromState } from "./color/color.utils.js";
@@ -67,7 +67,7 @@ export const ConfigurationProvider: FC<ConfigurationProviderProps> = ({
       runtime: configSettings
     };
 
-    const config = ConfigSchema.safeParse(parsableConfig);
+    const config = TokensSchema.safeParse(parsableConfig);
     if (config.error) {
       throw config.error;
     }

@@ -1,4 +1,13 @@
-import { Links, Meta, Outlet, Scripts, ScrollRestoration, useLoaderData } from "react-router";
+import { useEffect } from "react";
+import {
+  Links,
+  Meta,
+  Outlet,
+  Scripts,
+  ScrollRestoration,
+  useLoaderData,
+  useRevalidator
+} from "react-router";
 
 import "@keystone-css/studio-tokens/root.css";
 import type { LinksFunction } from "react-router";
@@ -82,6 +91,15 @@ export async function loader() {
 
 export default function App() {
   const { isLocal } = useLoaderData<typeof loader>();
+  const revalidator = useRevalidator();
+
+  useEffect(() => {
+    if (!isLocal) return;
+    const es = new EventSource("/api/tokens-watch");
+    es.onmessage = () => revalidator.revalidate();
+    return () => es.close();
+  }, [isLocal]);
+
   return (
     <>
       <LayoutHeader>

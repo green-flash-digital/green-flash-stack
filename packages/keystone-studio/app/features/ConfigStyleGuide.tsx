@@ -64,6 +64,29 @@ const bodyStyles = css`
       margin: 0 auto;
     }
   }
+
+  @media print {
+    display: block;
+    height: auto;
+    overflow: visible;
+
+    .sidebar {
+      display: none;
+    }
+
+    .guide {
+      padding: 0;
+      height: auto;
+      overflow: visible;
+      background: white;
+
+      & > div {
+        padding: 0;
+        border-radius: 0;
+        max-width: 100%;
+      }
+    }
+  }
 `;
 
 export function ConfigStyleGuide() {

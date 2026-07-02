@@ -40,7 +40,6 @@
     "isbot": "5.1.28",
     "isoscribe": "0.2.0",
     "monaco-editor": "0.52.2",
-    "puppeteer": "24.8.2",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-hook-primitives": "0.2.3",

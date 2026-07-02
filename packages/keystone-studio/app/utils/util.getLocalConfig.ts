@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises";
 
 import type { KeystoneConfig } from "@keystone-css/core/schemas";
-import { ConfigSchema } from "@keystone-css/core/schemas";
+import { TokensSchema } from "@keystone-css/core/schemas";
 import { tryHandleSync } from "ts-jolt/isomorphic";
 
 import { errors } from "./util.error-modes";
@@ -49,7 +49,7 @@ async function getLocalConfig() {
       jsonConfig.error
     );
   }
-  const parsedConfig = ConfigSchema.safeParse(jsonConfig.data);
+  const parsedConfig = TokensSchema.safeParse(jsonConfig.data);
   if (parsedConfig.error) {
     throw errors.WITH_MESSAGE(
       "Error when trying to parse the local config against the schema",
@@ -68,7 +68,7 @@ export async function getKeystoneConfig(): Promise<KeystoneConfig> {
   }
 
   // TODO: Fetch the configuration from the API
-  const config = ConfigSchema.safeParse({});
+  const config = TokensSchema.safeParse({});
   if (config.error) {
     throw errors.WITH_MESSAGE(
       "Error when trying to parse the local config against the schema",

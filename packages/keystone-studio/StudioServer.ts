@@ -1,7 +1,8 @@
+import { watch } from "node:fs";
 import path from "node:path";
 
 import { createRequestHandler } from "@react-router/express";
-import type { Express } from "express";
+import type { Express, Response } from "express";
 import express from "express";
 import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
 
@@ -20,6 +21,7 @@ export type StudioServerOptions = {
 
 export class StudioServer {
   private _app: Express;
+  private _sseClients = new Set<Response>();
 
   constructor(options: StudioServerOptions) {
     this._app = express();
@@ -57,6 +59,26 @@ export class StudioServer {
     // Serve static files from the build/client directory
     const studioClientAssets = path.resolve(buildDir, "./client");
     this._app.use(express.static(studioClientAssets));
+
+    // SSE endpoint — must be registered before the React Router catch-all
+    this._app.get("/api/tokens-watch", (req, res) => {
+      res.setHeader("Content-Type", "text/event-stream");
+      res.setHeader("Cache-Control", "no-cache");
+      res.setHeader("Connection", "keep-alive");
+      res.flushHeaders();
+      this._sseClients.add(res);
+      req.on("close", () => this._sseClients.delete(res));
+    });
+
+    // Watch tokens.json and push change events to connected clients
+    const tokensPath = this._getEnvVar("KEYSTONE_CSS_STUDIO_CONFIG_PATH");
+    if (tokensPath) {
+      watch(tokensPath, () => {
+        for (const client of this._sseClients) {
+          client.write("data: change\n\n");
+        }
+      });
+    }
 
     // Middleware to handle React Router requests
     const studioServerEntry = path.resolve(buildDir, "./server/index.js");

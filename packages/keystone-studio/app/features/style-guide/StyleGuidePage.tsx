@@ -18,6 +18,13 @@ const styles = css`
     border-bottom: 1px solid ${makeColor("neutral-light", { opacity: 0.2 })};
     margin-bottom: ${makeRem(100)};
   }
+
+  @media print {
+    border-bottom: none !important;
+    margin-bottom: 0 !important;
+    padding-bottom: 0 !important;
+    padding: 0 !important;
+  }
 `;
 
 export const StyleGuidePage = forwardRef<HTMLElement, StyleGuidePageProps>(function StyleGuidePage(

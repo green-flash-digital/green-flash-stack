@@ -22,7 +22,9 @@
           "type": "boolean"
         }
       },
-      "required": ["prefix"],
+      "required": [
+        "prefix"
+      ],
       "additionalProperties": false,
       "default": {
         "prefix": "new"
@@ -54,7 +56,9 @@
               "description": "Semantically named variants that describe the height of elements that can be placed inline with each other. By default, the values of the key value pairs should be divisible by the baselineGrid factor. This ensures that all mechanisms that use this are the same height so vertical rhythm is preserved using any inline element. Sizes often follow modular scaling systems (e.g., Major Third Scale, where each step is 1.25x the previous size) or the Golden Ratio (1.618x) for harmonious proportions."
             }
           },
-          "required": ["variants"],
+          "required": [
+            "variants"
+          ],
           "additionalProperties": false,
           "description": "A key in which to describe the sizing constraints of the keystone-css utility system"
         },
@@ -74,7 +78,10 @@
                   }
                 }
               },
-              "required": ["mode", "variants"],
+              "required": [
+                "mode",
+                "variants"
+              ],
               "additionalProperties": false
             },
             {
@@ -89,13 +96,18 @@
                   "default": 11
                 }
               },
-              "required": ["mode"],
+              "required": [
+                "mode"
+              ],
               "additionalProperties": false
             }
           ]
         }
       },
-      "required": ["size", "space"],
+      "required": [
+        "size",
+        "space"
+      ],
       "additionalProperties": false,
       "default": {
         "size": {
@@ -157,7 +169,10 @@
                 }
               }
             },
-            "required": ["family", "styles"],
+            "required": [
+              "family",
+              "styles"
+            ],
             "additionalProperties": false
           }
         },
@@ -183,12 +198,21 @@
                 "default": 0
               }
             },
-            "required": ["familyToken", "weight", "size", "lineHeight"],
+            "required": [
+              "familyToken",
+              "weight",
+              "size",
+              "lineHeight"
+            ],
             "additionalProperties": false
           }
         }
       },
-      "required": ["source", "families", "variants"],
+      "required": [
+        "source",
+        "families",
+        "variants"
+      ],
       "additionalProperties": false,
       "default": {
         "source": "manual",
@@ -247,7 +271,11 @@
                   "maximum": 0.22
                 }
               },
-              "required": ["type", "lightness", "chroma"],
+              "required": [
+                "type",
+                "lightness",
+                "chroma"
+              ],
               "additionalProperties": false
             },
             {
@@ -268,7 +296,11 @@
                   "maximum": 0.1
                 }
               },
-              "required": ["type", "lightness", "chroma"],
+              "required": [
+                "type",
+                "lightness",
+                "chroma"
+              ],
               "additionalProperties": false
             },
             {
@@ -289,7 +321,11 @@
                   "maximum": 0.1
                 }
               },
-              "required": ["type", "lightness", "chroma"],
+              "required": [
+                "type",
+                "lightness",
+                "chroma"
+              ],
               "additionalProperties": false
             },
             {
@@ -310,7 +346,11 @@
                   "maximum": 0.02
                 }
               },
-              "required": ["type", "lightness", "chroma"],
+              "required": [
+                "type",
+                "lightness",
+                "chroma"
+              ],
               "additionalProperties": false
             },
             {
@@ -331,7 +371,11 @@
                   "maximum": 0.28
                 }
               },
-              "required": ["type", "lightness", "chroma"],
+              "required": [
+                "type",
+                "lightness",
+                "chroma"
+              ],
               "additionalProperties": false
             }
           ]
@@ -362,7 +406,10 @@
                     ]
                   }
                 },
-                "required": ["hue", "variants"],
+                "required": [
+                  "hue",
+                  "variants"
+                ],
                 "additionalProperties": false
               },
               {
@@ -396,7 +443,9 @@
                     "default": 0
                   }
                 },
-                "required": ["hex"],
+                "required": [
+                  "hex"
+                ],
                 "additionalProperties": false
               }
             ]
@@ -425,7 +474,11 @@
                 "type": "string"
               }
             },
-            "required": ["type", "value", "description"],
+            "required": [
+              "type",
+              "value",
+              "description"
+            ],
             "additionalProperties": false
           },
           {
@@ -442,7 +495,11 @@
                 "type": "string"
               }
             },
-            "required": ["type", "value", "description"],
+            "required": [
+              "type",
+              "value",
+              "description"
+            ],
             "additionalProperties": false
           },
           {
@@ -459,7 +516,11 @@
                 "type": "string"
               }
             },
-            "required": ["type", "value", "description"],
+            "required": [
+              "type",
+              "value",
+              "description"
+            ],
             "additionalProperties": false
           }
         ]
