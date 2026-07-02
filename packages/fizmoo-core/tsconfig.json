@@ -1,4 +1,7 @@
 {
-  "extends": "ts-jolt/tsconfig/library-next",
+  "extends": "@green-flash/tsconfig/library",
+  "compilerOptions": {
+    "types": ["node"]
+  },
   "include": ["src"]
 }

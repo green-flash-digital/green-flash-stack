@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
 
-import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 
 import type { ButtonIconProps } from "./ButtonIcon";
 import { ButtonIcon } from "./ButtonIcon";

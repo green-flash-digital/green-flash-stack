@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import type { ColorVariantTypeKeyValue } from "@keystone-css/core/schemas";
 import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { generateGUID } from "ts-jolt/isomorphic";
+import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { useImmer } from "use-immer";
 
 import { InputColor } from "../../components/InputColor";

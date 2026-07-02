@@ -61,6 +61,8 @@ export const SizeAndSpaceSchema = withDescription(
     space: z.discriminatedUnion("mode", [SpaceManualSchema, SpaceAutoSchema])
   })
 ).default({
+  baseFontSize: 16,
+  baselineGrid: 4,
   size: {
     variants: {}
   },

@@ -3,7 +3,7 @@ import path from "node:path";
 
 import { printAsBullets } from "isoscribe";
 import pc from "picocolors";
-import { exhaustiveMatchGuard, tryHandle } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard, tryHandle } from "@green-flash/ts-utils/isomorphic";
 
 import {
   type Args,
@@ -167,7 +167,7 @@ export class FizmooCommands {
     const manifestPath = path.resolve(this.dirs.binDir, "fizmoo.manifest.json");
     const manifestContent = JSON.stringify(Object.fromEntries(this.manifest.entries()), null, 2);
     const res = await tryHandle(writeFile)(manifestPath, manifestContent);
-    if (res.hasError) throw LOG.fatal(res.error);
+    if (res.success === false) throw LOG.fatal(res.error);
     LOG.checkpointEnd();
   }
 

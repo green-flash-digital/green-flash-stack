@@ -1,57 +1,43 @@
-import { NavLink, Outlet, useLoaderData } from "react-router";
+import { Outlet, useLoaderData } from "react-router";
 
-import { makeSpace, makeColor, makeCustom, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { tryHandle } from "ts-jolt/isomorphic";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
 import type { Route } from "./+types/layout";
 import { ButtonGroup } from "~/components/ButtonGroup";
-import { NavTabs } from "~/components/NavTabs";
+import { LayoutSidebar } from "~/components/LayoutSidebar";
+import { LayoutSidebarItem } from "~/components/LayoutSidebarItem";
 import { ConfigurationProvider } from "~/features/Config.context";
 import { ConfigJSON } from "~/features/ConfigJSON";
 import { ConfigSave } from "~/features/ConfigSave";
 import { ConfigStyleGuide } from "~/features/ConfigStyleGuide";
+import { IconCode } from "~/icons/IconCode";
+import { IconColors } from "~/icons/IconColors";
+import { IconGrid } from "~/icons/IconGrid";
+import { IconLayout2Column } from "~/icons/IconLayout2Column";
+import { IconSettings05 } from "~/icons/IconSettings05";
+import { IconTextFont } from "~/icons/IconTextFont";
 import { errors } from "~/utils/util.error-modes";
 import { readTokensConfig } from "~/utils/util.getLocalConfig";
 
-const styles = css`
-  position: sticky;
-  top: 0;
-  background: white;
-  z-index: 11;
+const shellStyles = css`
+  display: flex;
+  height: 100%;
+`;
 
-  & > * {
-    margin: 0 auto;
-    max-width: ${makeCustom("layout-max-width")};
-  }
+const sidebarFooterStyles = css`
+  margin-top: auto;
+  padding: ${makeSpace(12)} ${makeSpace(8)};
+  border-top: ${makeRem(1)} solid ${makeColor("neutral-dark", { opacity: 0.08 })};
+  display: flex;
+  flex-direction: column;
+  gap: ${makeSpace(8)};
+`;
 
-  .page-header {
-    display: grid;
-    grid-template-columns: 1fr auto;
-    width: 100%;
-    padding: ${makeSpace(20)} ${makeCustom("layout-gutters")};
-
-    h2 {
-      margin: 0;
-    }
-
-    p {
-      font-size: ${makeSpace(12)};
-      margin-bottom: 0;
-      color: ${makeColor("neutral-light", { opacity: 0.8 })};
-    }
-
-    .actions {
-      display: flex;
-      gap: ${makeSpace(16)};
-    }
-    & + * {
-    }
-  }
-
-  .tabs {
-    padding: 0 ${makeCustom("layout-gutters")};
-  }
+const contentStyles = css`
+  flex: 1;
+  overflow-y: auto;
 `;
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -68,47 +54,38 @@ export default function AppConfigRoute() {
 
   return (
     <ConfigurationProvider originalConfig={config}>
-      <div className={styles}>
-        <div className="page-header">
-          <div>
-            <h2>Configuration</h2>
-          </div>
-          <div className="actions">
+      <div className={shellStyles}>
+        <LayoutSidebar>
+          <LayoutSidebarItem to="/config" label="Color" DXIcon={IconColors} end />
+          <LayoutSidebarItem
+            to="/config/size-and-spacing"
+            label="Size & Space"
+            DXIcon={IconGrid}
+          />
+          <LayoutSidebarItem
+            to="/config/typography"
+            label="Typography"
+            DXIcon={IconTextFont}
+          />
+          <LayoutSidebarItem
+            to="/config/response"
+            label="Response"
+            DXIcon={IconLayout2Column}
+          />
+          <LayoutSidebarItem to="/config/custom" label="Custom" DXIcon={IconCode} />
+          <LayoutSidebarItem to="/config/settings" label="Settings" DXIcon={IconSettings05} />
+          <div className={sidebarFooterStyles}>
             <ButtonGroup>
               <ConfigStyleGuide />
               <ConfigJSON />
             </ButtonGroup>
-            <ButtonGroup>
-              <ConfigSave />
-            </ButtonGroup>
+            <ConfigSave />
           </div>
+        </LayoutSidebar>
+        <div className={contentStyles}>
+          <Outlet />
         </div>
-        <NavTabs>
-          <ul className="tabs">
-            <li>
-              <NavLink to="." end>
-                Color
-              </NavLink>
-            </li>
-            <li>
-              <NavLink to="./size-and-spacing">Size & Spacing</NavLink>
-            </li>
-            <li>
-              <NavLink to="./typography">Typography</NavLink>
-            </li>
-            <li>
-              <NavLink to="./response">Response</NavLink>
-            </li>
-            <li>
-              <NavLink to="./custom">Custom</NavLink>
-            </li>
-            <li>
-              <NavLink to="./settings">Settings</NavLink>
-            </li>
-          </ul>
-        </NavTabs>
       </div>
-      <Outlet />
     </ConfigurationProvider>
   );
 }

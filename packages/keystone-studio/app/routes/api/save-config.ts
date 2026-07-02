@@ -1,4 +1,4 @@
-import { tryHandle } from "ts-jolt/isomorphic";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
 import type { Route } from "./+types/save-config";
 import { errors } from "~/utils/util.error-modes";

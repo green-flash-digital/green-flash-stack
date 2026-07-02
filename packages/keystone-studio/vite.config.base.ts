@@ -3,6 +3,9 @@ import { defineConfig, mergeConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
 export default defineConfig({
+  optimizeDeps: {
+    exclude: ["globby"]
+  },
   plugins: [
     wyw({
       include: "/**/*.(ts|tsx)",

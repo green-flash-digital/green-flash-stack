@@ -3,7 +3,7 @@ import { useCallback } from "react";
 
 import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { generateGUID } from "ts-jolt/isomorphic";
+import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import type { Updater } from "use-immer";
 
 import { VariantAdd } from "~/components/VariantAdd";

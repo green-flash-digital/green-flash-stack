@@ -1,5 +1,5 @@
 import { useRef } from "react";
-import { classes } from "react-hook-primitives";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 
 import { ColorAccessibilityChecker, getAccessibleTextColor } from "@keystone-css/core/utils";
 import {

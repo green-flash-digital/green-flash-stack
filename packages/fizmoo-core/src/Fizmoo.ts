@@ -5,8 +5,8 @@ import { confirm } from "@inquirer/prompts";
 import type { BuildOptions, Plugin as EsbuildPlugin } from "esbuild";
 import { default as esbuild } from "esbuild";
 import type { IsoScribeLogLevel } from "isoscribe";
-import { tryHandle } from "ts-jolt/isomorphic";
-import { writeFileRecursive } from "ts-jolt/node";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
 import { type FizmooUserConfig } from "./_fizmoo.types.js";
 import { findFizmooConfigFile, loadFizmooConfig, bootstrap, LOG } from "./_fizmoo.utils.js";
@@ -54,7 +54,7 @@ export async function createFizmoo(options: {
   }
 
   const resBootstrap = await tryHandle(bootstrap)();
-  if (resBootstrap.hasError) {
+  if (resBootstrap.success === false) {
     LOG.fatal(resBootstrap.error);
     return null;
   }
@@ -169,7 +169,7 @@ export class Fizmoo extends FizmooCommands {
       recursive: true,
       force: true
     });
-    if (res.hasError) throw res.error;
+    if (res.success === false) throw res.error;
 
     const entryFilePath = path.resolve(this.dirs.binDir, "./index.js");
     const entryFileContent = `import { FizmooRuntime } from "@fizmoo/core/runtime";
@@ -183,7 +183,7 @@ runtime.execute().catch((error) => {
 });
 `;
     const entryRes = await tryHandle(writeFileRecursive)(entryFilePath, entryFileContent);
-    if (entryRes.hasError) throw entryRes.error;
+    if (entryRes.success === false) throw entryRes.error;
   }
 
   async checkForCommands() {

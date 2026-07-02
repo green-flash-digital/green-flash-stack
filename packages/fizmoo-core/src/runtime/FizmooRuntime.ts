@@ -1,6 +1,6 @@
 import path from "node:path";
 
-import { exhaustiveMatchGuard, tryHandleSync } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard, tryHandleSync } from "@green-flash/ts-utils/isomorphic";
 
 import {
   type Args,
@@ -448,7 +448,7 @@ export class FizmooRuntime {
 
   public async execute() {
     const commandRes = tryHandleSync(this._parseExpression)();
-    if (commandRes.hasError) {
+    if (commandRes.success === false) {
       return this._errors.log(commandRes.error);
     }
 
@@ -470,12 +470,12 @@ export class FizmooRuntime {
     }
 
     const optionRes = tryHandleSync(this._setCommandOptions)(commandDef, options);
-    if (optionRes.hasError) {
+    if (optionRes.success === false) {
       return this._errors.log(optionRes.error);
     }
 
     const argsRes = tryHandleSync(this._setCommandArgs)(commandDef, args);
-    if (argsRes.hasError) {
+    if (argsRes.success === false) {
       return this._errors.log(argsRes.error);
     }
 

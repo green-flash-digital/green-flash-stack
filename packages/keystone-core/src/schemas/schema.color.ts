@@ -112,5 +112,5 @@ export const ColorSchema = withDescription(
     vibe: VibeSchema.optional(),
     colors: z.record(z.string(), ColorEntrySchema).default({})
   })
-).default({});
+).default({ colors: {} });
 export type KeystoneColor = z.infer<typeof ColorSchema>;

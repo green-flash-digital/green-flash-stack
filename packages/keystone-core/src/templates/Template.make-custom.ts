@@ -1,4 +1,4 @@
-import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 
 import { createCSSProperty } from "../utils/index.js";
 import { defineTemplate } from "./types.js";

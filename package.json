@@ -55,11 +55,16 @@
     "release": "yarn changeset publish"
   },
   "devDependencies": {
-    "@changesets/cli": "^2.31.0",
-    "oxfmt": "^0.57.0",
-    "oxlint": "^0.17.0",
-    "turbo": "^2.10.0",
-    "typescript": "^6.0.3"
+    "@changesets/cli": "2.31.0",
+    "oxfmt": "0.57.0",
+    "oxlint": "1.72.0",
+    "turbo": "2.10.2",
+    "typescript": "6.0.3"
+  },
+  "resolutions": {
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "unicorn-magic": "0.4.0"
   },
   "packageManager": "yarn@4.17.0"
 }

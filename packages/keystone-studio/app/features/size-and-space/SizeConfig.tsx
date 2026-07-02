@@ -1,7 +1,7 @@
 import type { ChangeEventHandler } from "react";
 import { useCallback, useEffect } from "react";
 
-import { exhaustiveMatchGuard, generateGUID } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 
 import { InputGroup } from "~/components/InputGroup";
 import { InputLabel } from "~/components/InputLabel";

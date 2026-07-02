@@ -4,8 +4,8 @@ import path from "node:path";
 import { input } from "@inquirer/prompts";
 import { default as esbuild } from "esbuild";
 import { Isoscribe } from "isoscribe";
-import { tryHandle } from "ts-jolt/isomorphic";
-import { writeFileRecursive } from "ts-jolt/node";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
 import type { FizmooUserConfig } from "./_fizmoo.types.js";
 
@@ -27,7 +27,7 @@ export async function findFizmooConfigFile(startDir?: string): Promise<{
   while (true) {
     const configFile = path.resolve(dir, ".fizmoo/config.ts");
     const res = await tryHandle(access)(configFile);
-    if (!res.hasError) {
+    if (res.success) {
       return { configFile, dirPath: path.resolve(dir, ".fizmoo") };
     }
     const parent = path.dirname(dir);
@@ -83,7 +83,7 @@ export async function bootstrap() {
   let description = "";
 
   const resPackageJson = await tryHandle(readFile)(packageJsonPath, "utf8");
-  if (resPackageJson.data) {
+  if (resPackageJson.success) {
     const json = JSON.parse(resPackageJson.data.toString());
     name = json.name ?? "";
     description = json.description ?? "";
@@ -111,7 +111,7 @@ export default defineConfig({
 `;
 
   const configRes = await tryHandle(writeFileRecursive)(fizmooConfigPath, configContent);
-  if (configRes.hasError) throw configRes.error;
+  if (configRes.success === false) throw configRes.error;
 
   const firstCommandPath = path.resolve(commandsDir, "./start-here.ts");
   const firstCommandContent = `import { defineCommand } from "fizmoo";
@@ -129,7 +129,7 @@ export default defineCommand({
     firstCommandPath,
     firstCommandContent
   );
-  if (firstCommandRes.hasError) throw firstCommandRes.error;
+  if (firstCommandRes.success === false) throw firstCommandRes.error;
 
   return configRes.data;
 }

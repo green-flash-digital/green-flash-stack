@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { generateGUID } from "ts-jolt/isomorphic";
+import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import type { Updater } from "use-immer";
 
 import { VariantAdd } from "~/components/VariantAdd";

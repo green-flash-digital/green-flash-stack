@@ -2,7 +2,7 @@ import { useCallback } from "react";
 
 import { makeSpace, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { exhaustiveMatchGuard, generateGUID } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 
 import { VariantAdd } from "~/components/VariantAdd";
 import { VariantEmpty } from "~/components/VariantEmpty";

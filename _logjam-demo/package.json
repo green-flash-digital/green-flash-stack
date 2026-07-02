@@ -10,14 +10,14 @@
   },
   "dependencies": {
     "isoscribe": "0.2.0",
-    "react": "^19.1.0",
-    "react-dom": "^19.1.0"
+    "react": "19.1.0",
+    "react-dom": "19.1.0"
   },
   "devDependencies": {
-    "@types/react": "^19.1.4",
-    "@types/react-dom": "^19.1.5",
-    "@vitejs/plugin-react-swc": "^3.9.0",
-    "typescript": "^5.9.3",
-    "vite": "^6.3.5"
+    "@types/react": "19.1.4",
+    "@types/react-dom": "19.1.5",
+    "@vitejs/plugin-react-swc": "3.9.0",
+    "typescript": "5.9.3",
+    "vite": "6.3.5"
   }
 }

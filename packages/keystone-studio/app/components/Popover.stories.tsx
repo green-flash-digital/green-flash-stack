@@ -1,4 +1,4 @@
-import { classes } from "react-hook-primitives";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 
 import { makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";

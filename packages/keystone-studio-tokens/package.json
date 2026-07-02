@@ -28,11 +28,11 @@
   },
   "dependencies": {
     "@gfdigital/tsconfig": "0.3.1",
-    "typescript": "5.8.3"
+    "typescript": "6.0.3"
   },
   "devDependencies": {
     "@keystone-css/core": "0.3.6",
     "isoscribe": "0.2.0",
-    "tsx": "4.19.4"
+    "tsx": "4.22.4"
   }
 }

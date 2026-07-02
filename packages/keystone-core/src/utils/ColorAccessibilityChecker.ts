@@ -1,3 +1,5 @@
+import chroma from "chroma-js";
+
 type ComplianceResult = {
   contrast: string;
   AA: boolean;
@@ -18,9 +20,18 @@ type AnalysisResult = {
   };
 };
 
+// Parses oklch(L C H) CSS strings and any hex into a chroma-parseable hex
+function normalizeToHex(color: string): string {
+  const oklchMatch = color.match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/);
+  if (oklchMatch) {
+    return chroma(parseFloat(oklchMatch[1]), parseFloat(oklchMatch[2]), parseFloat(oklchMatch[3]), "oklch").hex();
+  }
+  return color;
+}
+
 export class ColorAccessibilityChecker {
-  // Calculate luminance for a color
-  private getLuminance(hex: string): number {
+  private getLuminance(color: string): number {
+    const hex = normalizeToHex(color);
     const rgb = hex.match(/[a-fA-F0-9]{2}/g)?.map((c) => parseInt(c, 16) / 255) || [];
     if (rgb.length !== 3) throw new Error(`Invalid hex color: ${hex}`);
     return rgb
@@ -36,7 +47,6 @@ export class ColorAccessibilityChecker {
     return (lighter + 0.05) / (darker + 0.05);
   }
 
-  // Check WCAG compliance for the provided font size
   public checkCompliance(fgHex: string, bgHex: string, fontSize: number): ComplianceResult {
     const contrast = this.getContrastRatio(fgHex, bgHex);
     const isLargeText = fontSize >= 18 || (fontSize >= 14 && fontSize >= 700); // Bold ≥ 14pt counts as large
@@ -63,11 +73,12 @@ export class ColorAccessibilityChecker {
 
   // Suggest accessible colors by adjusting lightness
   public suggestAccessibleColors(
-    fgHex: string,
-    bgHex: string,
+    fgColor: string,
+    bgColor: string,
     targetContrast: number
   ): ColorSuggestion[] {
-    const adjustLightness = (hex: string, amount: number): string => {
+    const adjustLightness = (color: string, amount: number): string => {
+      const hex = normalizeToHex(color);
       const rgb = hex.match(/[a-fA-F0-9]{2}/g)?.map((c) => parseInt(c, 16)) || [];
       if (rgb.length !== 3) throw new Error(`Invalid hex color: ${hex}`);
       const newRgb = rgb.map((c) => Math.max(0, Math.min(255, c + amount)));
@@ -76,8 +87,8 @@ export class ColorAccessibilityChecker {
 
     const suggestions: ColorSuggestion[] = [];
     for (let i = -50; i <= 50; i += 5) {
-      const adjustedColor = adjustLightness(fgHex, i);
-      const contrast = this.getContrastRatio(fgHex, bgHex);
+      const adjustedColor = adjustLightness(fgColor, i);
+      const contrast = this.getContrastRatio(fgColor, bgColor);
       if (contrast >= targetContrast) {
         suggestions.push({
           color: adjustedColor,

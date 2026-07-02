@@ -17,7 +17,7 @@ import type {
 import { fontFamilyFallback, manualFontStyles } from "@keystone-css/core/schemas";
 import type { SpaceVariantsRecord } from "@keystone-css/core/utils";
 import { calculateSpaceVariantsAuto, calculateSpaceVariantsManual } from "@keystone-css/core/utils";
-import { exhaustiveMatchGuard, generateGUID } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { match } from "ts-pattern";
 
 // ── Color state types ─────────────────────────────────────────────────────────

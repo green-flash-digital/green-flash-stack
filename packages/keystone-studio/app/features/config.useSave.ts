@@ -1,6 +1,6 @@
 import { useFetcher } from "react-router";
 
-import { tryHandle } from "ts-jolt/isomorphic";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
 import { useConfigurationContext } from "./Config.context";
 

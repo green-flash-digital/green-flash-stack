@@ -247,14 +247,14 @@ If init→serialize is a perfect round-trip, the refactor is correct.
 
 ### Tasks
 
-- [ ] Define `StudioState` and entry types in `app/features/studio.state.ts`
-- [ ] Write `initStudioState(tokens: KeystoneTokens): StudioState`
-- [ ] Write `getTokensFromState(state: StudioState): KeystoneTokens`
-- [ ] Add round-trip unit tests before touching any components
-- [ ] Rewrite `Config.context.tsx` — single `useImmer<StudioState>`, four-value context
-- [ ] Update all feature components to use `update(draft => { ... })`
-- [ ] Delete `color.utils.ts`, `font.utils.ts`, `size-and-space.utils.ts`, `response.utils.ts`, `custom.utils.ts`, `settings.utils.ts`
-- [ ] Verify all routes render and save correctly
+- [x] Define `StudioState` and entry types in `app/features/studio.state.ts`
+- [x] Write `initStudioState(tokens: KeystoneTokens): StudioState`
+- [x] Write `getTokensFromState(state: StudioState): KeystoneTokens`
+- [ ] Add round-trip unit tests
+- [x] Rewrite `Config.context.tsx` — single `useImmer<StudioState>`, four-value context
+- [x] Update all feature components to use `update(draft => { ... })`
+- [x] Delete `font.utils.ts`, `response.utils.ts`, `settings.utils.ts`, `custom.utils.ts`; trim `color.utils.ts` and `size-and-space.utils.ts`
+- [x] Verify all routes render and save correctly
 
 ---
 
@@ -293,9 +293,9 @@ Fixed sidebar ~220px. Route structure unchanged — only the shell layout compon
 
 ### Tasks
 
-- [ ] Create `LayoutSidebar.tsx` — fixed left nav with icon + label per section
-- [ ] Create `LayoutSidebarItem.tsx` — NavLink with active highlight
-- [ ] Update config layout route to use sidebar instead of top tabs
+- [x] Create `LayoutSidebar.tsx` — fixed left nav with icon + label per section
+- [x] Create `LayoutSidebarItem.tsx` — NavLink with active highlight
+- [x] Update config layout route to use sidebar instead of top tabs
 - [ ] Verify narrow viewport fallback (icon-only collapse or hamburger)
 
 ---
@@ -406,6 +406,51 @@ Auth UI (login, user menu, project picker) only renders when `context.isLocal ==
 - [ ] Add user menu to header (renders only when `isLocal === false`)
 - [ ] Add project picker — lists design systems per logged-in user
 - [ ] Enforce the parity rule: add an ESLint rule or comment convention flagging direct `node:fs` imports in route files
+
+---
+
+## Phase 6 — Color Accessibility & `makeLightDark`
+
+**Goal:** Give users a type-safe `makeLightDark` utility that wraps CSS `light-dark()`, and improve how the studio communicates accessible color pairings.
+
+### Background
+
+The CSS `light-dark(colorA, colorB)` function resolves to `colorA` when the active color scheme is light, and `colorB` when dark. It requires `color-scheme` to be set on a containing element and is well-supported (Chrome 123+, Firefox 120+, Safari 17.5+). A typed `makeLightDark` keeps theming consistent with the existing `makeColor` vocabulary — no magic strings.
+
+The color system already generates `oklch()` values. `ColorAccessibilityChecker` and `getAccessibleTextColor` in `keystone-core` have been updated to accept oklch strings (via chroma-js conversion) so the style guide no longer crashes on vibe-based colors.
+
+### `makeLightDark` design
+
+```ts
+// Accepts the same typed token names as makeColor
+makeLightDark("neutral-light", "neutral-dark")
+// → light-dark(var(--color-neutral-light), var(--color-neutral-dark))
+
+// With opacity
+makeLightDark(["neutral-light", { opacity: 0.9 }], ["neutral-dark", { opacity: 0.9 }])
+// → light-dark(color-mix(in srgb, var(--color-neutral-light) 90%, transparent), ...)
+```
+
+Start with the simple string-only overload. Add the opacity tuple overload only if it's needed in practice.
+
+Lives in `studio-tokens` alongside `makeColor`. The signature mirrors `makeColor` so callers don't need to learn a new API shape.
+
+### Color accessibility strategy
+
+The current style guide computes contrast ratios against a single fixed background (`bgColor` prop, default `#fff`). This is useful but incomplete — real usage involves colors on top of other colors from the same palette. Future improvements:
+
+- Allow `bgColor` in `StyleGuideBasicColor` to be any typed token name (not just a raw hex), so callers can preview contrast against their actual background tokens.
+- Show a contrast matrix (foreground × background) for primary palette colors.
+
+These are additive — don't change the existing per-color WCAG table.
+
+### Tasks
+
+- [ ] Add `makeLightDark(light: ColorToken, dark: ColorToken): string` to `studio-tokens`
+- [ ] Add type tests confirming it rejects invalid token names
+- [ ] Add opacity-tuple overload if needed
+- [ ] Update `StyleGuideBasicColor` to accept a typed token name for `bgColor`
+- [ ] (Stretch) Add a contrast matrix view to the color style guide page
 
 ---
 

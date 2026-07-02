@@ -1,5 +1,5 @@
 import type { JSX } from "react";
-import { classes } from "react-hook-primitives";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 
 import { makeSpace, makeColor, makeFontFamily, makePx, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";

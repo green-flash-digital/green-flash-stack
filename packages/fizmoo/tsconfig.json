@@ -1,4 +1,4 @@
 {
-  "extends": "ts-jolt/tsconfig/library-next",
+  "extends": "@green-flash/tsconfig",
   "include": ["src", "scripts", ".fizmoo/**/*.ts"]
 }

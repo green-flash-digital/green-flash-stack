@@ -7,7 +7,7 @@ import { globby } from "globby";
 import type { IsoScribeLogLevel } from "isoscribe";
 import { Isoscribe, printAsBullets } from "isoscribe";
 import prettier from "prettier";
-import { writeFileRecursive } from "ts-jolt/node";
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
 import type { KeystoneDefinition } from "./defineTokens.js";
 import { TokensSchema, type KeystoneConfig } from "./schemas/schema.js";

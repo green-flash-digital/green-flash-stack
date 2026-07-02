@@ -5,7 +5,7 @@ import { useToggle } from "react-hook-primitives";
 import type { ColorVariantTypes } from "@keystone-css/core/schemas";
 import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
+import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 import type { Updater } from "use-immer";
 
 import { ColorBlob, useColorBlob } from "~/components/ColorBlob";

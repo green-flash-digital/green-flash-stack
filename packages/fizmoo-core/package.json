@@ -27,19 +27,20 @@
     "dev": "yarn tsc --project ./tsconfig.build.json --watch"
   },
   "dependencies": {
-    "@inquirer/prompts": "7.5.1",
-    "dotdir": "0.3.2",
-    "esbuild": "0.25.4",
+    "@green-flash/ts-utils": "workspace:*",
+    "@inquirer/prompts": "8.5.2",
+    "dotdir": "0.4.7",
+    "esbuild": "0.28.1",
     "isoscribe": "0.2.0",
     "picocolors": "1.1.1",
-    "picomatch": "4.0.2",
-    "ts-jolt": "0.2.3",
-    "zod": "3.25.3"
+    "picomatch": "4.0.4",
+    "zod": "4.4.3"
   },
   "devDependencies": {
-    "@types/node": "22.15.19",
-    "@types/picomatch": "4.0.0",
-    "tsx": "4.19.4",
-    "typescript": "5.8.3"
+    "@green-flash/tsconfig": "workspace:*",
+    "@types/node": "26.1.0",
+    "@types/picomatch": "4.0.3",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3"
   }
 }

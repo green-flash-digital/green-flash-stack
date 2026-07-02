@@ -1,6 +1,6 @@
 import type { ChangeEventHandler } from "react";
 import { useCallback, useId, useMemo, useRef, useState } from "react";
-import { classes } from "react-hook-primitives";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 
 import { makeSpace, makeRem, makeColor, makeFontWeight } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";

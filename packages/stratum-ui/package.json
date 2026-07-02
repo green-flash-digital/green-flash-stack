@@ -32,14 +32,14 @@
   },
   "dependencies": {
     "@green-flash/reactor": "workspace:*",
-    "@green-flash/ts-utils": "workspace:^"
+    "@green-flash/ts-utils": "workspace:"
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "^26.0.1",
+    "@types/node": "26.1.0",
     "@vitest/coverage-v8": "4.1.9",
-    "csstype": "^3.2.3",
-    "typescript": "^6.0.3",
-    "vitest": "^4.1.9"
+    "csstype": "3.2.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
   }
 }

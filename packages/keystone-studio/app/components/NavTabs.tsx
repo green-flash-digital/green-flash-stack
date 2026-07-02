@@ -1,8 +1,9 @@
 import type { JSX } from "react";
 import { forwardRef, useCallback } from "react";
 import type { UseTrackingNodeCallback } from "react-hook-primitives";
-import { classes, useForwardedRef, useTrackingNode } from "react-hook-primitives";
+import { useForwardedRef, useTrackingNode } from "react-hook-primitives";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,

@@ -1,7 +1,8 @@
 {
-  "extends": "ts-jolt/tsconfig/library-next",
+  "extends": "@green-flash/tsconfig/library",
   "compilerOptions": {
     "noEmit": false,
+    "rootDir": "./src",
     "outDir": "./dist",
     "declaration": true
   },

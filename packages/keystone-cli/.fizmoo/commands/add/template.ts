@@ -2,7 +2,7 @@ import path from "node:path";
 
 import { Keystone } from "@keystone-css/core";
 import { defineCommand } from "fizmoo";
-import { writeFileRecursive } from "ts-jolt/node";
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
 export default defineCommand({
   name: "template",

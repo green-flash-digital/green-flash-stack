@@ -3,7 +3,7 @@ import path from "node:path";
 
 import type { KeystoneTokens } from "@keystone-css/core/schemas";
 import { TokensSchema } from "@keystone-css/core/schemas";
-import { writeFileRecursive } from "ts-jolt/node";
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
 export interface StorageAdapter {
   read(): Promise<KeystoneTokens>;

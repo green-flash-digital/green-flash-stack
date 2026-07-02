@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
-import { classes } from "react-hook-primitives";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 
 export type LayoutConfigSectionControlsContentPropsNative = JSX.IntrinsicElements["div"];
 export type LayoutConfigSectionControlsContentProps = LayoutConfigSectionControlsContentPropsNative;

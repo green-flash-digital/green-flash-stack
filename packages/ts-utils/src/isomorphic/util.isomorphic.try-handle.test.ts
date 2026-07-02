@@ -30,6 +30,43 @@ describe("tryHandle", () => {
   });
 });
 
+describe("tryHandle (function-wrapping overload)", () => {
+  it("wraps an async function and returns success when it resolves", async () => {
+    const fn = async (x: number) => x * 2;
+    const result = await tryHandle(fn)(21);
+    expect(result).toEqual({ success: true, data: 42 });
+  });
+
+  it("wraps an async function and returns failure when it throws", async () => {
+    const error = new Error("async fail");
+    const fn = async () => {
+      throw error;
+    };
+    const result = await tryHandle(fn)();
+    expect(result).toEqual({ success: false, error });
+  });
+
+  it("supports being called multiple times from the same wrapped function", async () => {
+    let call = 0;
+    const fn = async () => {
+      call++;
+      if (call === 1) throw new Error("first");
+      return "ok";
+    };
+    const safe = tryHandle(fn);
+    const r1 = await safe();
+    const r2 = await safe();
+    expect(r1.success).toBe(false);
+    expect(r2).toEqual({ success: true, data: "ok" });
+  });
+
+  it("passes arguments through to the wrapped function", async () => {
+    const fn = async (a: string, b: number) => `${a}-${b}`;
+    const result = await tryHandle(fn)("hello", 42);
+    expect(result).toEqual({ success: true, data: "hello-42" });
+  });
+});
+
 describe("tryHandleSync", () => {
   it("returns success when the function returns a value", () => {
     const result = tryHandleSync((n: number) => n * 2)(21);

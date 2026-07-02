@@ -95,9 +95,8 @@ export const FontSchema = withDescription(
     for (const [key, variant] of variantEntries) {
       if (!familyKeys.includes(variant.familyToken)) {
         ctx.addIssue({
-          code: "invalid_union",
+          code: "custom",
           path: ["variants", key, "family"],
-          unionErrors: [],
           message: `family must be one of: ${familyKeys.join(", ")}`
         });
       }

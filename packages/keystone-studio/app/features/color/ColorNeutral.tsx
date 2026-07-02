@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 
-import { generateGUID } from "ts-jolt/isomorphic";
+import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 
 import { InputLabel } from "~/components/InputLabel";
 import { InputSection } from "~/components/InputSection";

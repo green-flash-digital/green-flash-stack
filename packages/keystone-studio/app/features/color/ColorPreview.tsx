@@ -1,5 +1,5 @@
 import { useMemo, type ReactNode } from "react";
-import { classes } from "react-hook-primitives";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 
 import { css } from "@linaria/core";
 
