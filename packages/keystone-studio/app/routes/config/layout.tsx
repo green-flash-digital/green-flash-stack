@@ -1,13 +1,13 @@
 import { Outlet, useLoaderData } from "react-router";
 
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
-import type { Route } from "./+types/layout";
 import { ButtonGroup } from "~/components/ButtonGroup";
 import { LayoutSidebar } from "~/components/LayoutSidebar";
 import { LayoutSidebarItem } from "~/components/LayoutSidebarItem";
+import { TokensPathContext } from "~/context";
 import { ConfigurationProvider } from "~/features/Config.context";
 import { ConfigJSON } from "~/features/ConfigJSON";
 import { ConfigSave } from "~/features/ConfigSave";
@@ -20,6 +20,8 @@ import { IconSettings05 } from "~/icons/IconSettings05";
 import { IconTextFont } from "~/icons/IconTextFont";
 import { errors } from "~/utils/util.error-modes";
 import { readTokensConfig } from "~/utils/util.getLocalConfig";
+
+import type { Route } from "./+types/layout";
 
 const shellStyles = css`
   display: flex;
@@ -41,8 +43,8 @@ const contentStyles = css`
 `;
 
 export async function loader({ context }: Route.LoaderArgs) {
-  const config = await tryHandle(readTokensConfig)(context.tokensPath);
-  if (config.hasError) {
+  const config = await tryHandle(readTokensConfig)(context.get(TokensPathContext));
+  if (config.success === false) {
     throw errors.API_ERROR(500, config.error);
   }
 
@@ -57,21 +59,9 @@ export default function AppConfigRoute() {
       <div className={shellStyles}>
         <LayoutSidebar>
           <LayoutSidebarItem to="/config" label="Color" DXIcon={IconColors} end />
-          <LayoutSidebarItem
-            to="/config/size-and-spacing"
-            label="Size & Space"
-            DXIcon={IconGrid}
-          />
-          <LayoutSidebarItem
-            to="/config/typography"
-            label="Typography"
-            DXIcon={IconTextFont}
-          />
-          <LayoutSidebarItem
-            to="/config/response"
-            label="Response"
-            DXIcon={IconLayout2Column}
-          />
+          <LayoutSidebarItem to="/config/size-and-spacing" label="Size & Space" DXIcon={IconGrid} />
+          <LayoutSidebarItem to="/config/typography" label="Typography" DXIcon={IconTextFont} />
+          <LayoutSidebarItem to="/config/response" label="Response" DXIcon={IconLayout2Column} />
           <LayoutSidebarItem to="/config/custom" label="Custom" DXIcon={IconCode} />
           <LayoutSidebarItem to="/config/settings" label="Settings" DXIcon={IconSettings05} />
           <div className={sidebarFooterStyles}>

@@ -1,9 +1,13 @@
 import { watch } from "node:fs";
 import path from "node:path";
 
+import { RouterContextProvider } from "react-router";
+
 import { createRequestHandler } from "@react-router/express";
 import type { Express, Response } from "express";
 import express from "express";
+
+import { TokensPathContext, VersionsDirContext, IsLocalContext } from "./app/context.js";
 
 export type StudioServerOptions = {
   port?: number;
@@ -49,11 +53,13 @@ export class StudioServer {
       createRequestHandler({
         build: async () => import(studioServerEntry),
         mode: process.env.NODE_ENV,
-        getLoadContext: () => ({
-          tokensPath: this.#options.configPath,
-          versionsDir: this.#options.versionsDir,
-          isLocal: true,
-        }),
+        getLoadContext: () => {
+          const ctx = new RouterContextProvider();
+          ctx.set(TokensPathContext, this.#options.configPath);
+          ctx.set(VersionsDirContext, this.#options.versionsDir);
+          ctx.set(IsLocalContext, true);
+          return ctx;
+        }
       })
     );
   }

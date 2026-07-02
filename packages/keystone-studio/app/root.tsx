@@ -15,12 +15,13 @@ import type { LinksFunction } from "react-router";
 import { makeFontFamily } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
+import type { Route } from "./+types/root";
 import { Label } from "./components/Label";
 import { LayoutFooter } from "./components/LayoutFooter";
 import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
 import { LayoutMain } from "./components/LayoutMain";
-import type { Route } from "./+types/root";
+import { IsLocalContext } from "./context";
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },
@@ -82,7 +83,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
-  return { isLocal: context.isLocal };
+  return { isLocal: context.get(IsLocalContext) };
 }
 
 export default function App() {

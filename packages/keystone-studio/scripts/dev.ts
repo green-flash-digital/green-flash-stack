@@ -1,11 +1,15 @@
 import { watch } from "node:fs";
 import path from "node:path";
 
+import type { ServerBuild } from "react-router";
+import { RouterContextProvider } from "react-router";
+
 import { createRequestHandler } from "@react-router/express";
 import type { Response } from "express";
-import type { ServerBuild } from "react-router";
 import express from "express";
 import { createServer } from "vite";
+
+import { TokensPathContext, VersionsDirContext, IsLocalContext } from "../app/context.js";
 
 const tokensPath = path.resolve(import.meta.dirname, "../.keystone/tokens.json");
 const versionsDir = path.resolve(import.meta.dirname, "../.keystone/_versions");
@@ -14,7 +18,7 @@ const app = express();
 const sseClients = new Set<Response>();
 
 const viteServer = await createServer({
-  server: { middlewareMode: true },
+  server: { middlewareMode: true }
 });
 
 app.use(viteServer.middlewares);
@@ -36,12 +40,15 @@ watch(tokensPath, () => {
 
 app.use(
   createRequestHandler({
-    build: () => viteServer.ssrLoadModule("virtual:react-router/server-build") as Promise<ServerBuild>,
-    getLoadContext: () => ({
-      tokensPath,
-      versionsDir,
-      isLocal: true,
-    }),
+    build: () =>
+      viteServer.ssrLoadModule("virtual:react-router/server-build") as Promise<ServerBuild>,
+    getLoadContext: () => {
+      const ctx = new RouterContextProvider();
+      ctx.set(TokensPathContext, tokensPath);
+      ctx.set(VersionsDirContext, versionsDir);
+      ctx.set(IsLocalContext, true);
+      return ctx;
+    }
   })
 );
 
