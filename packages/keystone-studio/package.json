@@ -17,7 +17,7 @@
   "scripts": {
     "build": "react-router build && yarn server:build",
     "deploy": "wrangler pages deploy ./build/client",
-    "dev": "react-router dev",
+    "dev": "NODE_ENV=development yarn tsx ./scripts/dev.ts",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "wrangler pages dev ./build/client",
     "typecheck": "react-router typegen && tsc",

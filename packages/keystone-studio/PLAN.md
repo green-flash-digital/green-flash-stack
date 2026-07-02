@@ -45,14 +45,14 @@ This means Linaria is load-bearing: removing it would require rewriting all stud
 
 The order below is deliberately different from the original draft. **Dev setup (Phase 4) moves to second** because you cannot do UI work without `yarn dev` working. Everything else follows.
 
-| Order | Phase | Risk |
-|---|---|---|
-| 1 | 0 — React Router conventions upgrade | Medium — touches every route, no logic change |
-| 2 | 4 — Local dev setup | Low |
-| 3 | 1 — State unification | High surface area, no UI change |
-| 4 | 2 — Sidebar nav layout | Low — shell only |
-| 5 | 3 — Section previews | Low — isolated components |
-| 6 | 5 — SaaS / Auth | Medium — new code paths |
+| Order | Phase                                | Risk                                          |
+| ----- | ------------------------------------ | --------------------------------------------- |
+| 1     | 0 — React Router conventions upgrade | Medium — touches every route, no logic change |
+| 2     | 4 — Local dev setup                  | Low                                           |
+| 3     | 1 — State unification                | High surface area, no UI change               |
+| 4     | 2 — Sidebar nav layout               | Low — shell only                              |
+| 5     | 3 — Section previews                 | Low — isolated components                     |
+| 6     | 5 — SaaS / Auth                      | Medium — new code paths                       |
 
 ---
 
@@ -73,29 +73,29 @@ export default [
     layout("routes/config/layout.tsx", { path: "config" }, [
       index("routes/config/color.tsx"),
       route("size-and-spacing", "routes/config/size-and-spacing.tsx"),
-      route("typography",       "routes/config/typography.tsx"),
-      route("response",         "routes/config/response.tsx"),
-      route("custom",           "routes/config/custom.tsx"),
-      route("settings",         "routes/config/settings.tsx"),
+      route("typography", "routes/config/typography.tsx"),
+      route("response", "routes/config/response.tsx"),
+      route("custom", "routes/config/custom.tsx"),
+      route("settings", "routes/config/settings.tsx")
     ]),
-    route("api/save-config", "routes/api/save-config.ts"),
-  ]),
+    route("api/save-config", "routes/api/save-config.ts")
+  ])
 ] satisfies RouteConfig;
 ```
 
 ### File renames
 
-| Old | New |
-|---|---|
-| `routes/_app.tsx` | `routes/layout.tsx` |
-| `routes/_app.config.tsx` | `routes/config/layout.tsx` |
-| `routes/_app.config._index.tsx` | `routes/config/color.tsx` |
+| Old                                       | New                                  |
+| ----------------------------------------- | ------------------------------------ |
+| `routes/_app.tsx`                         | `routes/layout.tsx`                  |
+| `routes/_app.config.tsx`                  | `routes/config/layout.tsx`           |
+| `routes/_app.config._index.tsx`           | `routes/config/color.tsx`            |
 | `routes/_app.config.size-and-spacing.tsx` | `routes/config/size-and-spacing.tsx` |
-| `routes/_app.config.typography.tsx` | `routes/config/typography.tsx` |
-| `routes/_app.config.response.tsx` | `routes/config/response.tsx` |
-| `routes/_app.config.custom.tsx` | `routes/config/custom.tsx` |
-| `routes/_app.config.settings.tsx` | `routes/config/settings.tsx` |
-| `routes/api.save-config.ts` | `routes/api/save-config.ts` |
+| `routes/_app.config.typography.tsx`       | `routes/config/typography.tsx`       |
+| `routes/_app.config.response.tsx`         | `routes/config/response.tsx`         |
+| `routes/_app.config.custom.tsx`           | `routes/config/custom.tsx`           |
+| `routes/_app.config.settings.tsx`         | `routes/config/settings.tsx`         |
+| `routes/api.save-config.ts`               | `routes/api/save-config.ts`          |
 
 ### Per-route generated types
 
@@ -126,6 +126,7 @@ createRequestHandler({
 ```
 
 **What this deletes entirely:**
+
 - `StudioEnvVars` type in `StudioServer.ts`
 - `_setEnvVar`, `_setEnvVars`, `_getEnvVar` methods in `StudioServer.ts`
 - `exhaustiveMatchGuard` import in `StudioServer.ts`
@@ -184,11 +185,11 @@ After Phase 0, these env vars disappear entirely and `getLoadContext` reads dire
 
 ### Tasks
 
-- [ ] Create `packages/keystone-studio/.keystone/tokens.json` — committed dev fixture with real token data
-- [ ] Add `packages/keystone-studio/.keystone/_versions/` to `.gitignore`
-- [ ] Add `.env.local` with absolute paths for stop-gap dev (gitignored)
-- [ ] After Phase 0: create a `scripts/dev.ts` that starts Vite dev with a context-aware entry
-- [ ] Verify `yarn dev` works cold with no manual setup
+- [x] Create `packages/keystone-studio/.keystone/tokens.json` — committed dev fixture with real token data
+- [x] Add `packages/keystone-studio/.keystone/_versions/` to `.gitignore`
+- ~~[ ] Add `.env.local` with absolute paths for stop-gap dev~~ — not needed after Phase 0
+- [x] Create `scripts/dev.ts` — Vite middleware mode + Express + `getLoadContext`; `yarn dev` updated to use it
+- [x] Verify `yarn dev` works cold with no manual setup
 
 ---
 
@@ -206,12 +207,17 @@ A single `StudioState` type with GUID-keyed lists where needed (React key stabil
 
 ```ts
 type StudioState = {
-  runtime:      KeystoneTokens["runtime"];
-  color:        { vibe?: KeystoneColorVibe; hue: Record<string, HueEntry>; hex: Record<string, HexEntry> };
-  font:         { families: Record<string, FamilyEntry>; variants: Record<string, VariantEntry> };
-  sizeAndSpace: { baseFontSize: number; baselineGrid: number; size: Record<string, SizeEntry>; space: SpaceState };
-  response:     { breakpoints: Record<string, { name: string; value: number }> };
-  custom:       Record<string, CustomEntry>;
+  runtime: KeystoneTokens["runtime"];
+  color: { vibe?: KeystoneColorVibe; hue: Record<string, HueEntry>; hex: Record<string, HexEntry> };
+  font: { families: Record<string, FamilyEntry>; variants: Record<string, VariantEntry> };
+  sizeAndSpace: {
+    baseFontSize: number;
+    baselineGrid: number;
+    size: Record<string, SizeEntry>;
+    space: SpaceState;
+  };
+  response: { breakpoints: Record<string, { name: string; value: number }> };
+  custom: Record<string, CustomEntry>;
 };
 ```
 
@@ -219,10 +225,10 @@ Context shrinks to four things:
 
 ```ts
 type StudioContext = {
-  state:     StudioState;
-  update:    Updater<StudioState>;          // immer setter
-  getTokens: () => KeystoneTokens;          // serializes back to tokens.json shape
-  save:      () => void;                    // getTokens() → POST /api/save-config
+  state: StudioState;
+  update: Updater<StudioState>; // immer setter
+  getTokens: () => KeystoneTokens; // serializes back to tokens.json shape
+  save: () => void; // getTokens() → POST /api/save-config
 };
 ```
 
@@ -299,21 +305,27 @@ Fixed sidebar ~220px. Route structure unchanged — only the shell layout compon
 **Goal:** Each section preview communicates the token values immediately and intuitively.
 
 ### Color (current: swatch blocks ✓)
+
 Keep. Simplify density — show a collapsed summary per color with an expand affordance rather than showing all variants open by default.
 
 ### Size (current: button/input row demo)
+
 **Baseline grid overlay** — a small frame with a repeating horizontal grid line at the configured `baselineGrid` px interval, with sample elements (button, input, icon) placed at each size variant. Shows at a glance whether elements are on-grid.
 
 ### Spacing (current: variant values)
+
 **Scale bar** — horizontal bars of increasing width, one per spacing variant, labeled with token name and px/rem value. Same visual language as Tailwind's spacing docs.
 
 ### Typography (current: placeholder)
+
 **Type specimen** — "Aa Bb Cc 0123" rendered at a large size per family, showing weight/style variants. Below that, each font variant rendered at its exact configured size, weight, and line-height with sample text.
 
 ### Breakpoints (current: nothing)
+
 **Viewport slider** — a `<input type="range">` controlling `width` on a preview container. Breakpoint threshold labels appear and disappear as you drag. Immediately shows when each breakpoint activates.
 
 ### Custom tokens (current: nothing)
+
 Compact token list — name, type badge, value, copy CSS variable name to clipboard.
 
 ### Tasks
@@ -339,10 +351,10 @@ The filesystem is a feature of the local tool, not a liability. The right bounda
 
 ### Two entry points, one app
 
-| Entry point | Runtime | Auth | Storage |
-|---|---|---|---|
-| `StudioServer.ts` (Express) | Node.js — local CLI | None | `FileSystemAdapter` |
-| `worker.ts` (Cloudflare Pages Function) | Cloudflare Workers — SaaS | BetterAuth | `D1Adapter` + R2 |
+| Entry point                             | Runtime                   | Auth       | Storage             |
+| --------------------------------------- | ------------------------- | ---------- | ------------------- |
+| `StudioServer.ts` (Express)             | Node.js — local CLI       | None       | `FileSystemAdapter` |
+| `worker.ts` (Cloudflare Pages Function) | Cloudflare Workers — SaaS | BetterAuth | `D1Adapter` + R2    |
 
 `getLoadContext` is the only thing that differs:
 
@@ -351,15 +363,15 @@ The filesystem is a feature of the local tool, not a liability. The right bounda
 getLoadContext: () => ({
   adapter: new FileSystemAdapter(tokensPath, versionsDir),
   isLocal: true,
-  user: null,
-})
+  user: null
+});
 
 // worker.ts (SaaS)
 getLoadContext: (ctx) => ({
   adapter: new D1Adapter(ctx.env.DB),
   isLocal: false,
-  user: await getUser(ctx),
-})
+  user: await getUser(ctx)
+});
 ```
 
 ### Dev workflows
@@ -413,10 +425,11 @@ Target shape for route actions:
 ```
 
 Loader convention:
+
 ```ts
 export async function loader({ context }: Route.LoaderArgs) {
   const result = await readTokensConfig(context.tokensPath);
-  return { data: result };  // always wrapped in `data`
+  return { data: result }; // always wrapped in `data`
 }
 
 // component

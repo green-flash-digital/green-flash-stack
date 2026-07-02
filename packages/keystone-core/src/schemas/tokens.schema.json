@@ -5,6 +5,9 @@
   "description": "Design token data for a keystone-css design system — stored in tokens.json and imported by config.ts.",
   "type": "object",
   "properties": {
+    "$schema": {
+      "type": "string"
+    },
     "runtime": {
       "type": "object",
       "properties": {
