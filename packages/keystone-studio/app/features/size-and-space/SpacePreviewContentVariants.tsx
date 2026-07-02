@@ -2,7 +2,7 @@ import { makeSpace, makeColor, makeRem, makeReset } from "@keystone-css/studio-t
 import { css } from "@linaria/core";
 import { Fragment } from "react/jsx-runtime";
 
-import type { ConfigurationStateSizeAndSpace_SpaceVariants } from "./size-and-space.utils.js";
+import type { ConfigurationStateSizeAndSpace_SpaceVariants } from "../studio.state";
 
 const styles = css`
   ${makeReset("ul")};

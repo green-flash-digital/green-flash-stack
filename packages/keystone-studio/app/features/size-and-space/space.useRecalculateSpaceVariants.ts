@@ -6,16 +6,18 @@ import { useConfigurationContext } from "../Config.context";
 
 export function useRecalculateSpaceVariants() {
   const {
-    setSizing,
-    sizing: {
-      space: { mode }
+    update,
+    state: {
+      sizing: {
+        space: { mode }
+      }
     }
   } = useConfigurationContext();
 
   const recalculateSpaceVariants = useCallback<(numOfVariants?: number) => void>(
     (numOfVariants) => {
-      setSizing((draft) => {
-        const prevVariants = draft.space[mode].variants;
+      update((draft) => {
+        const prevVariants = draft.sizing.space[mode].variants;
         const prevVarEntries = Object.entries(prevVariants);
         const prevVarEntriesLength = prevVarEntries.length;
         const prevVarLastEntryVal = prevVarEntries[prevVarEntriesLength - 1][1];
@@ -24,9 +26,8 @@ export function useRecalculateSpaceVariants() {
 
         // Remove the amount of values
         if (totalVariants < prevVarEntriesLength) {
-          // Remove the amount of values
           const newEntries = prevVarEntries.slice(0, totalVariants);
-          draft.space[mode].variants = Object.fromEntries(newEntries);
+          draft.sizing.space[mode].variants = Object.fromEntries(newEntries);
           return;
         }
 
@@ -41,7 +42,7 @@ export function useRecalculateSpaceVariants() {
             case "auto": {
               const newAutoVariants = Object.entries(newVariantsArr).reduce((accum, _, i) => {
                 const order = newVariantStartOrder + i;
-                const value = draft.baselineGrid * (prevVarEntriesLength + i + 1);
+                const value = draft.sizing.baselineGrid * (prevVarEntriesLength + i + 1);
                 return Object.assign(accum, {
                   [generateGUID()]: {
                     name: String(value),
@@ -50,7 +51,7 @@ export function useRecalculateSpaceVariants() {
                   }
                 });
               }, prevVariants);
-              draft.space[mode].variants = newAutoVariants;
+              draft.sizing.space[mode].variants = newAutoVariants;
               return;
             }
 
@@ -58,7 +59,7 @@ export function useRecalculateSpaceVariants() {
               const newManualVariants = Object.entries(newVariantsArr).reduce((accum, _, i) => {
                 const index = newVariantStartIndex + i;
                 const order = newVariantStartOrder + i;
-                const value = index * draft.baselineGrid;
+                const value = index * draft.sizing.baselineGrid;
 
                 return Object.assign(accum, {
                   [generateGUID()]: {
@@ -68,7 +69,7 @@ export function useRecalculateSpaceVariants() {
                   }
                 });
               }, prevVariants);
-              draft.space[mode].variants = newManualVariants;
+              draft.sizing.space[mode].variants = newManualVariants;
               return;
             }
 
@@ -78,7 +79,7 @@ export function useRecalculateSpaceVariants() {
         }
       });
     },
-    [mode, setSizing]
+    [mode, update]
   );
 
   return { recalculateSpaceVariants };

@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
 import { manualFontStyles } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem, makeReset } from "@keystone-css/studio-tokens";
+import { makeSpace, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { exhaustiveMatchGuard, generateGUID } from "ts-jolt/isomorphic";
 
@@ -10,8 +10,8 @@ import { VariantEmpty } from "~/components/VariantEmpty";
 import { LOG } from "~/utils/util.logger";
 
 import { useConfigurationContext } from "../Config.context";
-import type { OnFontFamilyAction } from "./font.utils";
 import { FontFamilyConfigManual } from "./FontFamilyConfigManual";
+import type { OnFontFamilyAction } from "./FontFamilyConfigVariant";
 
 const styles = css`
   ${makeReset("ul")};
@@ -21,16 +21,16 @@ const styles = css`
 `;
 
 export function FontFamilyConfig() {
-  const { font, setFont } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
 
   const handleAction = useCallback<OnFontFamilyAction>(
     (args) => {
       switch (args.action) {
         case "addFontFamily":
-          setFont((draft) => {
-            const numOfFamilies = (Object.values(draft.families).length = 0);
-            draft.source = "manual";
-            draft.families[generateGUID()] = {
+          update((draft) => {
+            const numOfFamilies = (Object.values(draft.font.families).length = 0);
+            draft.font.source = "manual";
+            draft.font.families[generateGUID()] = {
               tokenName: `family${numOfFamilies + 1}`,
               familyName: "Arial",
               fallback: undefined,
@@ -47,9 +47,9 @@ export function FontFamilyConfig() {
           break;
 
         case "deleteFontFamily": {
-          setFont((draft) => {
-            const familyToDelete = draft.families[args.id];
-            const isFontFamilyInVariants = Object.values(draft.variants).reduce(
+          update((draft) => {
+            const familyToDelete = draft.font.families[args.id];
+            const isFontFamilyInVariants = Object.values(draft.font.variants).reduce(
               (accum, variant) => {
                 if (variant.familyToken === familyToDelete.tokenName) return true;
                 return accum;
@@ -63,21 +63,22 @@ export function FontFamilyConfig() {
               return;
             }
 
-            delete draft.families[args.id];
+            delete draft.font.families[args.id];
           });
           break;
         }
 
         case "toggle": {
-          setFont((draft) => {
-            draft.families[args.id].meta.isOpen = !draft.families[args.id].meta.isOpen;
+          update((draft) => {
+            draft.font.families[args.id].meta.isOpen =
+              !draft.font.families[args.id].meta.isOpen;
           });
           break;
         }
 
         case "addStyle": {
-          setFont((draft) => {
-            draft.families[args.id].styles[args.style] = {
+          update((draft) => {
+            draft.font.families[args.id].styles[args.style] = {
               display: manualFontStyles[args.style as keyof typeof manualFontStyles]
             };
           });
@@ -85,27 +86,27 @@ export function FontFamilyConfig() {
         }
 
         case "deleteStyle": {
-          setFont((draft) => {
-            delete draft.families[args.id].styles[args.style];
+          update((draft) => {
+            delete draft.font.families[args.id].styles[args.style];
           });
           break;
         }
 
         case "changeFamilyName":
-          setFont((draft) => {
-            draft.families[args.id].familyName = args.fontFamilyName;
+          update((draft) => {
+            draft.font.families[args.id].familyName = args.fontFamilyName;
           });
           break;
 
         case "changeTokenName":
-          setFont((draft) => {
-            draft.families[args.id].tokenName = args.token;
+          update((draft) => {
+            draft.font.families[args.id].tokenName = args.token;
           });
           break;
 
         case "changeFallback":
-          setFont((draft) => {
-            draft.families[args.id].fallback = args.fallback;
+          update((draft) => {
+            draft.font.families[args.id].fallback = args.fallback;
           });
           break;
 
@@ -113,7 +114,7 @@ export function FontFamilyConfig() {
           exhaustiveMatchGuard(args);
       }
     },
-    [setFont]
+    [update]
   );
 
   const handleAddFontFamily = useCallback(
@@ -121,8 +122,7 @@ export function FontFamilyConfig() {
     [handleAction]
   );
 
-  // Show an empty state if there are no families added
-  if (Object.entries(font.families).length === 0) {
+  if (Object.entries(state.font.families).length === 0) {
     return (
       <VariantEmpty
         dxMessage="No font families have been added yet"
@@ -134,12 +134,12 @@ export function FontFamilyConfig() {
 
   return (
     <ul className={styles}>
-      {Object.entries(font.families).map(([familyId, family]) => (
+      {Object.entries(state.font.families).map(([familyId, family]) => (
         <li key={familyId}>
           <FontFamilyConfigManual
             {...family}
             id={familyId}
-            source={font.source}
+            source={state.font.source}
             onAction={handleAction}
           />
         </li>

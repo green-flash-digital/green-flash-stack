@@ -4,7 +4,7 @@ import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@keystone-css/
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "../Config.context";
-import { getFontConfigFromState } from "../font/font.utils";
+import { getFontConfigFromState } from "../studio.state";
 import type { StyleGuideSharedProps } from "./style-guide.utils";
 import { StyleGuidePage } from "./StyleGuidePage";
 import { StyleGuidePageLeft } from "./StyleGuidePageLeft";
@@ -38,8 +38,8 @@ const styles = css`
 `;
 
 export function StyleGuideBasicTypography(props: StyleGuideSharedProps) {
-  const { font } = useConfigurationContext();
-  const fontConfig = getFontConfigFromState(font);
+  const { state } = useConfigurationContext();
+  const fontConfig = getFontConfigFromState(state.font);
   return (
     <StyleGuidePage>
       <StyleGuidePageLeft dxMarker={props.dxMarker} dxTitle={props.dxTitle}>
@@ -51,7 +51,7 @@ export function StyleGuideBasicTypography(props: StyleGuideSharedProps) {
       </StyleGuidePageLeft>
       <StyleGuidePageRight>
         <ul className={styles}>
-          {Object.entries(font.variants).map(([variantId, variant]) => {
+          {Object.entries(state.font.variants).map(([variantId, variant]) => {
             const fontFamily =
               // @ts-expect-error This is valid but the types don't match up
               fontConfig.families[variant.familyToken].familyName;

@@ -28,8 +28,8 @@ const styles = css`
 
 export function ConfigJSON() {
   const modal = useModal();
-  const { getConfigFromState } = useConfigurationContext();
-  const config = getConfigFromState();
+  const { getTokens } = useConfigurationContext();
+  const config = getTokens();
 
   return (
     <>

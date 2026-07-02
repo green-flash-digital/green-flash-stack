@@ -1,41 +1,11 @@
-import type {
-  KeystoneConfig,
-  KeystoneColorEntry,
-  KeystoneColorEntryHue,
-  KeystoneColorEntryHex,
-  KeystoneColorVibe,
-  VibeName
-} from "@keystone-css/core/schemas";
-import { vibePresets, ConfigSchema } from "@keystone-css/core/schemas";
+import type { KeystoneColorEntryHue, KeystoneColorEntryHex, VibeName } from "@keystone-css/core/schemas";
+import { vibePresets } from "@keystone-css/core/schemas";
 import { createColorVariants } from "@keystone-css/core/utils";
-import { generateGUID } from "ts-jolt/isomorphic";
-import type { Updater } from "use-immer";
-import { useImmer } from "use-immer";
+
+import type { ConfigurationStateColor } from "../studio.state";
 
 export { vibePresets };
 export type { VibeName };
-
-export const initConfig: KeystoneConfig = ConfigSchema.parse({});
-
-// ── State types ──────────────────────────────────────────────────────────────
-
-export type ConfigurationStateColorHueEntry = {
-  name: string;
-  hue: number;
-  variants: number | string[];
-};
-
-export type ConfigurationStateColorHexEntry = {
-  name: string;
-  hex: string;
-  variants: number | string[] | Record<string, string>;
-};
-
-export type ConfigurationStateColor = {
-  vibe: KeystoneColorVibe | undefined;
-  hue: { [id: string]: ConfigurationStateColorHueEntry };
-  hex: { [id: string]: ConfigurationStateColorHexEntry };
-};
 
 // ── Vibe presets formatted for InputRange (min/max per field) ────────────────
 
@@ -65,57 +35,12 @@ export const colorVibePresets: Record<
   }
 };
 
-// Default lightness/chroma for each vibe (midpoint of its range)
 export const vibeDefaults: Record<VibeName, { lightness: number; chroma: number }> = {
   earth: { lightness: 0.525, chroma: 0.075 },
   fluorescent: { lightness: 0.825, chroma: 0.23 },
   jewel: { lightness: 0.475, chroma: 0.18 },
   neutral: { lightness: 0.7, chroma: 0.01 },
   pastel: { lightness: 0.86, chroma: 0.07 }
-};
-
-// ── Config → state ───────────────────────────────────────────────────────────
-
-export function getInitColorStateFromConfig(config: KeystoneConfig): ConfigurationStateColor {
-  const hue: ConfigurationStateColor["hue"] = {};
-  const hex: ConfigurationStateColor["hex"] = {};
-
-  for (const [name, entry] of Object.entries(config.color.colors)) {
-    if ("hue" in entry) {
-      hue[generateGUID()] = { name, hue: entry.hue, variants: entry.variants };
-    } else {
-      hex[generateGUID()] = { name, hex: entry.hex, variants: entry.variants };
-    }
-  }
-
-  return { vibe: config.color.vibe, hue, hex };
-}
-
-// ── State → config ───────────────────────────────────────────────────────────
-
-export function getColorConfigFromState(
-  colorState: ConfigurationStateColor
-): KeystoneConfig["color"] {
-  const colors: Record<string, KeystoneColorEntry> = {};
-
-  for (const { name, hue, variants } of Object.values(colorState.hue)) {
-    colors[name] = { hue, variants } satisfies KeystoneColorEntryHue;
-  }
-  for (const { name, hex, variants } of Object.values(colorState.hex)) {
-    colors[name] = { hex, variants } satisfies KeystoneColorEntryHex;
-  }
-
-  return { vibe: colorState.vibe, colors };
-}
-
-// ── Hooks ────────────────────────────────────────────────────────────────────
-
-export function useConfigStateColor(initConfig: KeystoneConfig) {
-  return useImmer(getInitColorStateFromConfig(initConfig));
-}
-export type ConfigurationContextColorType = {
-  color: ConfigurationStateColor;
-  setColor: Updater<ConfigurationStateColor>;
 };
 
 // ── Preview helpers ──────────────────────────────────────────────────────────
@@ -137,7 +62,6 @@ export function convertHexColorsIntoVariants(color: ConfigurationStateColor) {
   return createColorVariants({ colors });
 }
 
-// kept for components that haven't been migrated yet
 export const convertBrandColorIntoVariants = convertHueColorsIntoVariants;
 export const convertNeutralColorIntoVariants = convertHexColorsIntoVariants;
 

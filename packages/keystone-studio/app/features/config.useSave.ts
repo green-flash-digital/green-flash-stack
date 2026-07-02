@@ -11,10 +11,10 @@ import { useConfigurationContext } from "./Config.context";
  */
 export function useSaveConfig() {
   const fetcher = useFetcher();
-  const { getConfigFromState } = useConfigurationContext();
+  const { getTokens } = useConfigurationContext();
 
   async function saveConfig() {
-    const config = getConfigFromState();
+    const config = getTokens();
 
     const res = await tryHandle(fetcher.submit)(
       { config: JSON.stringify(config) },

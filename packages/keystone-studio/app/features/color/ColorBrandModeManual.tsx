@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 
 import { generateGUID } from "ts-jolt/isomorphic";
+import type { Updater } from "use-immer";
 
 import { VariantAdd } from "~/components/VariantAdd";
 import { VariantEmpty } from "~/components/VariantEmpty";
@@ -8,28 +9,27 @@ import { VariantList } from "~/components/VariantList";
 
 import { InputLabel } from "../../components/InputLabel";
 import { InputSection } from "../../components/InputSection";
-import type { ConfigurationContextType } from "../Config.context";
-import type { ConfigurationStateColor } from "./color.utils";
+import type { ConfigurationStateColor, StudioState } from "../studio.state";
 import { ColorBrandModeManualVariant } from "./ColorBrandModeManualVariant";
 
 export function ColorBrandModeManual({
   state,
-  setColor
+  update
 }: {
   state: ConfigurationStateColor;
-  setColor: ConfigurationContextType["setColor"];
+  update: Updater<StudioState>;
 }) {
   const handleAdd = useCallback(() => {
     const totalColors = Object.keys(state.hex).length;
-    setColor((draft) => {
+    update((draft) => {
       const id = generateGUID();
-      draft.hex[id] = {
+      draft.color.hex[id] = {
         hex: "#000000",
         name: `brand${totalColors + 1}`,
         variants: 10
       };
     });
-  }, [setColor, state]);
+  }, [update, state]);
 
   const colorEntries = Object.entries(state.hex);
 
@@ -52,7 +52,7 @@ export function ColorBrandModeManual({
               <li key={colorId}>
                 <ColorBrandModeManualVariant
                   colorDef={{ [colorId]: colorNameAndDef }}
-                  setColor={setColor}
+                  update={update}
                 />
               </li>
             );

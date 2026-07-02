@@ -61,7 +61,9 @@ function variantProps(value: number): JSX.IntrinsicElements["div"] {
 
 export function StyleGuideBasicSpacing(props: StyleGuideSharedProps) {
   const {
-    sizing: { space }
+    state: {
+      sizing: { space }
+    }
   } = useConfigurationContext();
   return (
     <StyleGuidePage>

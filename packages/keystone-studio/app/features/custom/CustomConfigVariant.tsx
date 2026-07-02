@@ -19,7 +19,17 @@ import { VariantContainerBarText } from "~/components/VariantContainerBarText";
 import { VariantContainerBarTitle } from "~/components/VariantContainerBarTitle";
 import { VariantContainerContent } from "~/components/VariantContainerContent";
 
-import type { ConfigurationStateCustomValue, OnCustomAction } from "./custom.utils";
+import type { ConfigurationStateCustomValue } from "../studio.state";
+
+export type OnCustomAction = (
+  options:
+    | { action: "addToken" }
+    | { action: "deleteToken"; id: string }
+    | { action: "updateName"; id: string; name: string }
+    | { action: "updateDescription"; id: string; description: string }
+    | { action: "updateType"; id: string; type: ConfigurationStateCustomValue["type"] }
+    | { action: "updateValue"; id: string; value: ConfigurationStateCustomValue["value"] }
+) => void;
 
 const barStyles = css`
   grid-template-columns: auto auto 1fr !important;

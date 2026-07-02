@@ -14,9 +14,20 @@ import { VariantContainerContent } from "~/components/VariantContainerContent";
 
 import type {
   ConfigurationStateFont,
-  ConfigurationStateFontFamilyValuesMeta,
-  OnFontFamilyAction
-} from "./font.utils";
+  ConfigurationStateFontFamilyValuesMeta
+} from "../studio.state";
+
+export type OnFontFamilyAction = (
+  options:
+    | { action: "addFontFamily" }
+    | { action: "deleteFontFamily"; id: string }
+    | { action: "toggle"; id: string }
+    | { action: "addStyle"; id: string; style: string }
+    | { action: "deleteStyle"; id: string; style: string }
+    | { action: "changeTokenName"; id: string; token: string }
+    | { action: "changeFamilyName"; id: string; fontFamilyName: string }
+    | { action: "changeFallback"; id: string; fallback: string | undefined }
+) => void;
 
 const variantStyles = css`
   grid-template-columns: ${makeRem(100)} 1fr 1fr !important;
@@ -42,37 +53,6 @@ export function FontFamilyConfigVariant(
     children: ReactNode;
   }
 ) {
-  // const fallbackRef = useRef<HTMLInputElement | null>(null);
-
-  // const handleToggleFallback = useCallback<
-  //   ChangeEventHandler<HTMLInputElement>
-  // >(
-  //   ({ currentTarget: { checked } }) => {
-  //     props.onAction({
-  //       action: "changeFallback",
-  //       id: props.id,
-  //       fallback: checked ? "" : undefined,
-  //     });
-  //     if (checked) {
-  //       setTimeout(() => fallbackRef.current?.focus(), 100);
-  //     }
-  //   },
-  //   [props]
-  // );
-
-  // const handleChangeFallback = useCallback<
-  //   ChangeEventHandler<HTMLInputElement>
-  // >(
-  //   ({ currentTarget: { value } }) => {
-  //     props.onAction({
-  //       action: "changeFallback",
-  //       id: props.id,
-  //       fallback: value,
-  //     });
-  //   },
-  //   [props]
-  // );
-
   const handleToggle = useCallback(() => {
     props.onAction({
       action: "toggle",
@@ -100,30 +80,7 @@ export function FontFamilyConfigVariant(
       </VariantContainerBar>
       {props.meta.isOpen && (
         <VariantContainerContent>
-          <InputGroup>
-            {props.children}
-
-            {/* <InputLabel
-              dxLabel="Include a fallback?"
-              dxSize="dense"
-              dxHelp="Customize the fallback font if the font-family fails to load"
-            >
-              <div className={inlineField}>
-                <InputCheckbox
-                  checked={typeof props.fallback !== "undefined"}
-                  onChange={handleToggleFallback}
-                />
-                <InputText
-                  ref={fallbackRef}
-                  dxSize="dense"
-                  dxType="text"
-                  disabled={typeof props.fallback === "undefined"}
-                  value={props.fallback}
-                  onChange={handleChangeFallback}
-                />
-              </div>
-            </InputLabel> */}
-          </InputGroup>
+          <InputGroup>{props.children}</InputGroup>
         </VariantContainerContent>
       )}
     </VariantContainer>

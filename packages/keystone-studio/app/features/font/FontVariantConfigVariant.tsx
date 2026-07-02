@@ -17,10 +17,18 @@ import { VariantContainerContent } from "~/components/VariantContainerContent";
 
 import type {
   ConfigurationStateFont,
-  ConfigurationStateFontManualFamilyValues,
-  ConfigurationStateFontVariantValue,
-  OnFontVariantAction
-} from "./font.utils";
+  ConfigurationStateFontVariantValue
+} from "../studio.state";
+
+export type OnFontVariantAction = (
+  options:
+    | { action: "addVariant" }
+    | { action: "deleteVariant"; id: string }
+    | { action: "changeVariantName"; id: string; name: string }
+    | { action: "changeVariantFamilyToken"; id: string; familyToken: string }
+    | { action: "changeVariantSize"; id: string; size: number }
+    | { action: "changeVariantWeightAndStyle"; id: string; weightAndStyle: string }
+) => void;
 
 const barStyles = css`
   grid-template-columns: ${makeRem(80)} 1fr auto !important;

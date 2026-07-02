@@ -16,64 +16,64 @@ import type { SizeConfigVariantPropsCustom } from "./SizeConfigVariant";
 import { useRecalculateSpaceVariants } from "./space.useRecalculateSpaceVariants";
 
 export function SizeConfig() {
-  const { sizing, setSizing } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
   const { recalculateSpaceVariants } = useRecalculateSpaceVariants();
 
-  const sizeVariantEntries = Object.entries(sizing.size.variants);
+  const sizeVariantEntries = Object.entries(state.sizing.size.variants);
 
   const handleAddSizeVariant = useCallback(() => {
     const totalSizeVariants = sizeVariantEntries.length;
-    setSizing((draft) => {
-      draft.size.variants[generateGUID()] = {
+    update((draft) => {
+      draft.sizing.size.variants[generateGUID()] = {
         name: `size${totalSizeVariants + 1}`,
-        value: (sizeVariantEntries[0]?.[1].value ?? 0) + sizing.baselineGrid
+        value: (sizeVariantEntries[0]?.[1].value ?? 0) + state.sizing.baselineGrid
       };
     });
-  }, [setSizing, sizeVariantEntries, sizing.baselineGrid]);
+  }, [update, sizeVariantEntries, state.sizing.baselineGrid]);
 
   const handleDelete = useCallback<(id: string) => void>(
     (id) => {
-      setSizing((draft) => {
-        delete draft.size.variants[id];
+      update((draft) => {
+        delete draft.sizing.size.variants[id];
       });
     },
-    [setSizing]
+    [update]
   );
 
   const handleChangeDocumentFontSize = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setSizing((draft) => {
-        draft.baseFontSize = Number(value);
+      update((draft) => {
+        draft.sizing.baseFontSize = Number(value);
       });
     },
-    [setSizing]
+    [update]
   );
 
   const handleChangeBaselineGrid = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setSizing((draft) => {
+      update((draft) => {
         const newBaselineGrid = Number(value);
         if (!newBaselineGrid) return; // return if the baseline grid is 0
 
-        const mathFn = newBaselineGrid < draft.baselineGrid ? Math.floor : Math.ceil;
-        draft.baselineGrid = newBaselineGrid;
+        const mathFn = newBaselineGrid < draft.sizing.baselineGrid ? Math.floor : Math.ceil;
+        draft.sizing.baselineGrid = newBaselineGrid;
 
         // Go through all of the size variants and adjust their values
         // to multiples of the `newBaselineGrid`
-        const sizeVariantEntries = Object.entries(draft.size.variants);
+        const sizeVariantEntries = Object.entries(draft.sizing.size.variants);
         for (const [variantId, variant] of sizeVariantEntries) {
           const nearestValue = mathFn(variant.value / newBaselineGrid) * newBaselineGrid;
-          draft.size.variants[variantId].value = nearestValue;
+          draft.sizing.size.variants[variantId].value = nearestValue;
         }
       });
     },
-    [setSizing]
+    [update]
   );
 
   // recalculate the size variants when the baseline grid changes
   useEffect(() => {
     recalculateSpaceVariants();
-  }, [recalculateSpaceVariants, sizing.baselineGrid]);
+  }, [recalculateSpaceVariants, state.sizing.baselineGrid]);
 
   const handleChangeVariantProperties = useCallback<
     SizeConfigVariantPropsCustom["dxOnChangeVariantProperties"]
@@ -81,14 +81,14 @@ export function SizeConfig() {
     (id, options) => {
       switch (options.property) {
         case "name":
-          setSizing((draft) => {
-            draft.size.variants[id].name = options.name;
+          update((draft) => {
+            draft.sizing.size.variants[id].name = options.name;
           });
           break;
 
         case "value":
-          setSizing((draft) => {
-            draft.size.variants[id].value = options.value;
+          update((draft) => {
+            draft.sizing.size.variants[id].value = options.value;
           });
           break;
 
@@ -96,7 +96,7 @@ export function SizeConfig() {
           exhaustiveMatchGuard(options);
       }
     },
-    [setSizing]
+    [update]
   );
 
   return (
@@ -108,7 +108,7 @@ export function SizeConfig() {
       >
         <InputNumber
           dxSize="dense"
-          value={sizing.baseFontSize}
+          value={state.sizing.baseFontSize}
           onChange={handleChangeDocumentFontSize}
         />
       </InputLabel>
@@ -120,7 +120,7 @@ export function SizeConfig() {
         <InputNumber
           dxSize="dense"
           step={4}
-          value={sizing.baselineGrid}
+          value={state.sizing.baselineGrid}
           onChange={handleChangeBaselineGrid}
         />
       </InputLabel>
@@ -128,12 +128,12 @@ export function SizeConfig() {
         <InputLabel
           dxLabel="Variants"
           dxSize="dense"
-          dxHelp="Create named variants to align the vertical sizing of adjacent elements such as inputs, buttons and icons"
+          dxHelp="Create named variants to align the vertical size of adjacent elements such as inputs, buttons and icons"
         />
         {sizeVariantEntries.length === 0 ? (
           <VariantEmpty
-            dxMessage="No sizing variants have been added yet"
-            dxActionMessage="Click to add a sizing variant color"
+            dxMessage="No size variants have been added yet"
+            dxActionMessage="Click to add a size variant"
             dxOnAdd={handleAddSizeVariant}
           />
         ) : (
@@ -144,14 +144,14 @@ export function SizeConfig() {
                   dxVariantId={variantId}
                   dxName={name}
                   dxValue={value}
-                  dxBaselineGrid={sizing.baselineGrid}
+                  dxBaselineGrid={state.sizing.baselineGrid}
                   dxOnDelete={handleDelete}
                   dxOnChangeVariantProperties={handleChangeVariantProperties}
                 />
               </li>
             ))}
             <li>
-              <VariantAdd onAdd={handleAddSizeVariant}>Add another sizing variant</VariantAdd>
+              <VariantAdd onAdd={handleAddSizeVariant}>Add another size variant</VariantAdd>
             </li>
           </VariantList>
         )}

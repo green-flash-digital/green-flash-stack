@@ -6,6 +6,7 @@ import type { ColorVariantTypes } from "@keystone-css/core/schemas";
 import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
+import type { Updater } from "use-immer";
 
 import { ColorBlob, useColorBlob } from "~/components/ColorBlob";
 import { InputGroup } from "~/components/InputGroup";
@@ -16,8 +17,7 @@ import { VariantContainerBarText } from "~/components/VariantContainerBarText";
 import { VariantContainerBarTitle } from "~/components/VariantContainerBarTitle";
 import { VariantContainerContent } from "~/components/VariantContainerContent";
 
-import type { ConfigurationContextType } from "../Config.context";
-import type { ConfigurationStateColorHueEntry } from "./color.utils";
+import type { ConfigurationStateColorHueEntry, StudioState } from "../studio.state";
 import { ColorSwatchHue } from "./ColorSwatchHue";
 import { ColorSwatchName } from "./ColorSwatchName";
 import { ColorSwatchVariants } from "./ColorSwatchVariants";
@@ -29,51 +29,51 @@ const barStyles = css`
 
 export function ColorBrandModeAutoVariant<
   T extends { [id: string]: ConfigurationStateColorHueEntry }
->({ colorDef, setColor }: { colorDef: T; setColor: ConfigurationContextType["setColor"] }) {
+>({ colorDef, update }: { colorDef: T; update: Updater<StudioState> }) {
   const { colorBlobRef, setHue } = useColorBlob();
   const [id, { name, hue, variants }] = Object.entries(colorDef)[0];
   const [isOpen, toggle] = useToggle();
 
   const handleChangeHue = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setColor((draft) => {
-        const color = draft.hue[id];
+      update((draft) => {
+        const color = draft.color.hue[id];
         const hue = Number(value);
         color.hue = hue;
         setHue(hue);
       });
     },
-    [id, setColor, setHue]
+    [id, update, setHue]
   );
 
   const handleChangeName = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setColor((draft) => {
-        const color = draft.hue[id];
+      update((draft) => {
+        const color = draft.color.hue[id];
         color.name = value;
       });
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleRemove = useCallback<MouseEventHandler<HTMLButtonElement>>(() => {
-    setColor((draft) => {
-      delete draft.hue[id];
+    update((draft) => {
+      delete draft.color.hue[id];
     });
-  }, [id, setColor]);
+  }, [id, update]);
 
   const handleChangeVariantType = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
       const type = value as ColorVariantTypes["type"];
       switch (type) {
         case "auto":
-          setColor((draft) => {
-            draft.hue[id].variants = 10;
+          update((draft) => {
+            draft.color.hue[id].variants = 10;
           });
           break;
         case "auto-named":
-          setColor((draft) => {
-            draft.hue[id].variants = ["light", "dark"];
+          update((draft) => {
+            draft.color.hue[id].variants = ["light", "dark"];
           });
           break;
         case "key-value":
@@ -83,18 +83,18 @@ export function ColorBrandModeAutoVariant<
           exhaustiveMatchGuard(type);
       }
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleChangeVariantAuto = useCallback<
     ColorSwatchVariantsPropsCustom["onChangeVariantAuto"]
   >(
     (variant) => {
-      setColor((draft) => {
-        draft.hue[id].variants = variant;
+      update((draft) => {
+        draft.color.hue[id].variants = variant;
       });
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleChangeVariantNamed = useCallback<
@@ -103,24 +103,24 @@ export function ColorBrandModeAutoVariant<
     (params) => {
       switch (params.mode) {
         case "change":
-          setColor((draft) => {
-            const variants = draft.hue[id].variants;
+          update((draft) => {
+            const variants = draft.color.hue[id].variants;
             if (!Array.isArray(variants)) return;
             variants[params.index] = params.value;
           });
           break;
 
         case "add":
-          setColor((draft) => {
-            const variants = draft.hue[id].variants;
+          update((draft) => {
+            const variants = draft.color.hue[id].variants;
             if (!Array.isArray(variants)) return;
             variants.push(params.newValue);
           });
           break;
 
         case "remove":
-          setColor((draft) => {
-            const variants = draft.hue[id].variants;
+          update((draft) => {
+            const variants = draft.color.hue[id].variants;
             if (!Array.isArray(variants)) return;
             variants.splice(params.index, 1);
           });
@@ -130,21 +130,20 @@ export function ColorBrandModeAutoVariant<
           exhaustiveMatchGuard(params);
       }
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleChangeVariantManual = useCallback<
     ColorSwatchVariantsPropsCustom["onChangeVariantManual"]
   >(
     (variants) => {
-      setColor((draft) => {
-        // only handle the number and array
+      update((draft) => {
         if (typeof variants === "number" || Array.isArray(variants)) {
-          draft.hue[id].variants = variants;
+          draft.color.hue[id].variants = variants;
         }
       });
     },
-    [id, setColor]
+    [id, update]
   );
 
   return (

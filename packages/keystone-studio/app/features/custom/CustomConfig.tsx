@@ -8,8 +8,8 @@ import { VariantAdd } from "~/components/VariantAdd";
 import { VariantEmpty } from "~/components/VariantEmpty";
 
 import { useConfigurationContext } from "../Config.context";
-import type { OnCustomAction } from "./custom.utils";
 import { CustomConfigVariant } from "./CustomConfigVariant";
+import type { OnCustomAction } from "./CustomConfigVariant";
 
 const styles = css`
   ${makeReset("ul")};
@@ -25,16 +25,16 @@ const styles = css`
 `;
 
 export function CustomConfig() {
-  const { custom, setCustom } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
 
   const onCustomAction = useCallback<OnCustomAction>(
     (args) => {
       switch (args.action) {
         case "addToken":
-          setCustom((draft) => {
-            const numOfTokens = Object.keys(draft).length;
+          update((draft) => {
+            const numOfTokens = Object.keys(draft.custom).length;
             const newTokenNum = numOfTokens + 1;
-            draft[generateGUID()] = {
+            draft.custom[generateGUID()] = {
               type: "string",
               name: `token_${newTokenNum}`,
               description: `token_description_${newTokenNum}`,
@@ -44,32 +44,32 @@ export function CustomConfig() {
           break;
 
         case "deleteToken":
-          setCustom((draft) => {
-            delete draft[args.id];
+          update((draft) => {
+            delete draft.custom[args.id];
           });
           break;
 
         case "updateName":
-          setCustom((draft) => {
-            draft[args.id].name = args.name;
+          update((draft) => {
+            draft.custom[args.id].name = args.name;
           });
           break;
 
         case "updateDescription":
-          setCustom((draft) => {
-            draft[args.id].description = args.description;
+          update((draft) => {
+            draft.custom[args.id].description = args.description;
           });
           break;
 
         case "updateValue":
-          setCustom((draft) => {
-            draft[args.id].value = args.value;
+          update((draft) => {
+            draft.custom[args.id].value = args.value;
           });
           break;
 
         case "updateType": {
-          setCustom((draft) => {
-            const token = draft[args.id];
+          update((draft) => {
+            const token = draft.custom[args.id];
             token.type = args.type;
             switch (args.type) {
               case "string":
@@ -92,14 +92,14 @@ export function CustomConfig() {
           exhaustiveMatchGuard(args);
       }
     },
-    [setCustom]
+    [update]
   );
 
   const handleAdd = useCallback(() => {
     onCustomAction({ action: "addToken" });
   }, [onCustomAction]);
 
-  const customEntires = Object.entries(custom);
+  const customEntires = Object.entries(state.custom);
   if (customEntires.length === 0) {
     return (
       <VariantEmpty

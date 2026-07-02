@@ -1,4 +1,4 @@
-import type { ConfigurationStateFontManualFamilyValues } from "./font.utils";
+import type { ConfigurationStateFontManualFamilyValues } from "../studio.state";
 import type { FontFamilyConfigVariantProps } from "./FontFamilyConfigVariant";
 import { FontFamilyConfigVariant } from "./FontFamilyConfigVariant";
 

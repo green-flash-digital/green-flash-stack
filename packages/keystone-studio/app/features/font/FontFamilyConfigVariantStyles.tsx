@@ -6,7 +6,7 @@ import { css } from "@linaria/core";
 import { InputCheckbox } from "~/components/InputCheckbox";
 import { InputLabel } from "~/components/InputLabel";
 
-import type { OnFontFamilyAction } from "./font.utils";
+import type { OnFontFamilyAction } from "./FontFamilyConfigVariant";
 
 const ulStyles = css`
   ${makeReset("ul")};

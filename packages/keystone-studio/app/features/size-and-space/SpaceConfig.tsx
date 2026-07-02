@@ -25,15 +25,15 @@ const groupStyles = css`
 `;
 
 export function SpaceConfig() {
-  const { sizing, setSizing } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
 
   const handleOnChange = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setSizing((draft) => {
-        draft.space.mode = value === "auto" ? "auto" : "manual";
+      update((draft) => {
+        draft.sizing.space.mode = value === "auto" ? "auto" : "manual";
       });
     },
-    [setSizing]
+    [update]
   );
 
   return (
@@ -50,7 +50,7 @@ export function SpaceConfig() {
                 dxHelp="Best when starting from scratch without design assets"
                 value="auto"
                 name="mode"
-                defaultChecked={sizing.space.mode === "auto"}
+                defaultChecked={state.sizing.space.mode === "auto"}
                 onChange={handleOnChange}
               />
               <InputRadioCard
@@ -60,28 +60,28 @@ export function SpaceConfig() {
                 dxHelp="Best when configuring spacing definitions provided by a design / product team"
                 value="manual"
                 name="mode"
-                defaultChecked={sizing.space.mode === "manual"}
+                defaultChecked={state.sizing.space.mode === "manual"}
                 onChange={handleOnChange}
               />
             </div>
           </InputSection>
         ),
-        [handleOnChange, sizing.space.mode]
+        [handleOnChange, state.sizing.space.mode]
       )}
       <InputSection>
-        {match(sizing.space)
-          .with({ mode: "manual" }, (state) => (
+        {match(state.sizing.space)
+          .with({ mode: "manual" }, (spaceState) => (
             <SpaceConfigManual
-              baseFontSize={sizing.baseFontSize}
-              state={state.manual}
-              setSizing={setSizing}
+              baseFontSize={state.sizing.baseFontSize}
+              state={spaceState.manual}
+              update={update}
             />
           ))
-          .with({ mode: "auto" }, (state) => (
+          .with({ mode: "auto" }, (spaceState) => (
             <SpaceConfigAuto
-              baseFontSize={sizing.baseFontSize}
-              state={state.auto}
-              setSizing={setSizing}
+              baseFontSize={state.sizing.baseFontSize}
+              state={spaceState.auto}
+              update={update}
             />
           ))
           .exhaustive()}

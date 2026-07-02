@@ -30,7 +30,7 @@ const diffStyles = css`
 `;
 
 export function ConfigSaveDiff() {
-  const { getConfigFromState, originalConfig } = useConfigurationContext();
+  const { getTokens, originalConfig } = useConfigurationContext();
 
   return (
     <>
@@ -51,7 +51,7 @@ export function ConfigSaveDiff() {
         theme="vs-dark"
         height="100%"
         original={JSON.stringify(originalConfig, null, 2)}
-        modified={JSON.stringify(getConfigFromState(), null, 2)}
+        modified={JSON.stringify(getTokens(), null, 2)}
         language="json"
         options={{
           fontSize: 16

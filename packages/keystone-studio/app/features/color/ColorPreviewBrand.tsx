@@ -4,8 +4,8 @@ import { ColorPreviewBlocks } from "./ColorPreviewBlocks";
 import { ColorPreviewContainer } from "./ColorPreviewContainer";
 
 export function ColorPreviewBrand() {
-  const { color } = useConfigurationContext();
-  const variants = convertBrandColorIntoVariants(color);
+  const { state } = useConfigurationContext();
+  const variants = convertBrandColorIntoVariants(state.color);
 
   return (
     <ColorPreviewContainer>

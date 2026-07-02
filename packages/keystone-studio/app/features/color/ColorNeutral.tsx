@@ -12,21 +12,21 @@ import { useConfigurationContext } from "../Config.context";
 import { ColorNeutralVariant } from "./ColorNeutralVariant";
 
 export function ColorNeutral() {
-  const { color, setColor } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
 
-  const colorEntries = Object.entries(color.hex);
+  const colorEntries = Object.entries(state.color.hex);
 
   const handleAdd = useCallback(() => {
     const totalColors = colorEntries.length;
-    setColor((draft) => {
+    update((draft) => {
       const id = generateGUID();
-      draft.hex[id] = {
+      draft.color.hex[id] = {
         hex: "#000000",
         name: `neutral${totalColors + 1}`,
         variants: 10
       };
     });
-  }, [colorEntries.length, setColor]);
+  }, [colorEntries.length, update]);
 
   return (
     <InputSection>
@@ -47,7 +47,7 @@ export function ColorNeutral() {
               <li key={colorId}>
                 <ColorNeutralVariant
                   colorDef={{ [colorId]: colorNameAndDef }}
-                  setColor={setColor}
+                  update={update}
                 />
               </li>
             );

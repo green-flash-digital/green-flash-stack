@@ -5,6 +5,7 @@ import { classes, useToggle } from "react-hook-primitives";
 import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { debounce } from "ts-jolt/browser";
+import type { Updater } from "use-immer";
 
 import { Button } from "~/components/Button";
 import { InputLabel } from "~/components/InputLabel";
@@ -18,12 +19,12 @@ import { VariantList } from "~/components/VariantList";
 import { IconPencilEdit01 } from "~/icons/IconPencilEdit01";
 import { IconTick01 } from "~/icons/IconTick01";
 
-import type { ConfigurationContextType } from "../Config.context.js";
-import {
-  type ConfigurationStateSizeAndSpace,
-  orderSpaceVariants,
-  type ConfigurationStateSizeAndSpace_SpaceVariants
-} from "./size-and-space.utils.js";
+import type {
+  StudioState,
+  ConfigurationStateSizeAndSpace,
+  ConfigurationStateSizeAndSpace_SpaceVariants
+} from "../studio.state";
+import { orderSpaceVariants } from "./size-and-space.utils.js";
 import { useRecalculateSpaceVariants } from "./space.useRecalculateSpaceVariants.js";
 
 const styles = css`
@@ -149,12 +150,12 @@ export function SpaceConfigVariants({
   baseFontSize,
   variants,
   mode,
-  setSizing
+  update
 }: {
   baseFontSize: number;
   variants: ConfigurationStateSizeAndSpace_SpaceVariants;
   mode: ConfigurationStateSizeAndSpace["space"]["mode"];
-  setSizing: ConfigurationContextType["setSizing"];
+  update: Updater<StudioState>;
 }) {
   const { recalculateSpaceVariants } = useRecalculateSpaceVariants();
 
@@ -165,11 +166,11 @@ export function SpaceConfigVariants({
 
   const handleChangeVariantName = useCallback<SpaceConfigVariantItemProps["onChangeVariantName"]>(
     (id, name) => {
-      setSizing((draft) => {
-        draft.space[mode].variants[id].name = name;
+      update((draft) => {
+        draft.sizing.space[mode].variants[id].name = name;
       });
     },
-    [mode, setSizing]
+    [mode, update]
   );
 
   const orderedVariants = orderSpaceVariants(variants);

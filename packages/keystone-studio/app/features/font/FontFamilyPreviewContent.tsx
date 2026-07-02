@@ -53,7 +53,7 @@ const styleStyles = css`
   }
 `;
 export function FontFamilyPreviewContent() {
-  const { font } = useConfigurationContext();
+  const { state } = useConfigurationContext();
   const { fontSize, sampleText, setSampleText, displayCustomTextarea } =
     useFontFamilyPreviewContext();
   return (
@@ -66,7 +66,7 @@ export function FontFamilyPreviewContent() {
         />
       )}
       <ul className={styles}>
-        {match(font)
+        {match(state.font)
           .with({ source: "manual" }, (state) =>
             Object.entries(state.families).map(([familyId, family]) => {
               const style = {

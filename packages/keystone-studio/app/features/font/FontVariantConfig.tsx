@@ -7,23 +7,23 @@ import { VariantEmpty } from "~/components/VariantEmpty";
 import { VariantList } from "~/components/VariantList";
 
 import { useConfigurationContext } from "../Config.context";
-import type { OnFontVariantAction } from "./font.utils";
+import type { OnFontVariantAction } from "./FontVariantConfigVariant";
 import { FontVariantConfigVariant } from "./FontVariantConfigVariant";
 
 export function FontVariantConfig() {
-  const { font, setFont } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
 
   const handleAction = useCallback<OnFontVariantAction>(
     (args) => {
       switch (args.action) {
         case "addVariant":
-          setFont((draft) => {
-            const nextVariantNum = Object.values(draft.variants).length + 1;
+          update((draft) => {
+            const nextVariantNum = Object.values(draft.font.variants).length + 1;
             const family =
-              draft.source === "manual"
-                ? Object.values(draft.families)[0]
-                : Object.values(draft.families)[0];
-            draft.variants[generateGUID()] = {
+              draft.font.source === "manual"
+                ? Object.values(draft.font.families)[0]
+                : Object.values(draft.font.families)[0];
+            draft.font.variants[generateGUID()] = {
               familyToken: family.tokenName,
               lineHeight: 1.3,
               size: 16,
@@ -35,36 +35,36 @@ export function FontVariantConfig() {
           break;
 
         case "deleteVariant": {
-          setFont((draft) => {
-            delete draft.variants[args.id];
+          update((draft) => {
+            delete draft.font.variants[args.id];
           });
           break;
         }
 
         case "changeVariantName": {
-          setFont((draft) => {
-            draft.variants[args.id].variantName = args.name;
+          update((draft) => {
+            draft.font.variants[args.id].variantName = args.name;
           });
           break;
         }
 
         case "changeVariantFamilyToken": {
-          setFont((draft) => {
-            draft.variants[args.id].familyToken = args.familyToken;
+          update((draft) => {
+            draft.font.variants[args.id].familyToken = args.familyToken;
           });
           break;
         }
 
         case "changeVariantSize": {
-          setFont((draft) => {
-            draft.variants[args.id].size = args.size;
+          update((draft) => {
+            draft.font.variants[args.id].size = args.size;
           });
           break;
         }
 
         case "changeVariantWeightAndStyle": {
-          setFont((draft) => {
-            draft.variants[args.id].weight = args.weightAndStyle;
+          update((draft) => {
+            draft.font.variants[args.id].weight = args.weightAndStyle;
           });
           break;
         }
@@ -73,7 +73,7 @@ export function FontVariantConfig() {
           exhaustiveMatchGuard(args);
       }
     },
-    [setFont]
+    [update]
   );
 
   const handleAddTypographyVariant = useCallback(
@@ -81,8 +81,7 @@ export function FontVariantConfig() {
     [handleAction]
   );
 
-  // Show an empty state if there are no families added
-  if (Object.entries(font.variants).length === 0) {
+  if (Object.entries(state.font.variants).length === 0) {
     return (
       <VariantEmpty
         dxMessage="No typographical variants have been added yet"
@@ -94,11 +93,11 @@ export function FontVariantConfig() {
 
   return (
     <VariantList>
-      {Object.entries(font.variants).map(([variantId, variant]) => (
+      {Object.entries(state.font.variants).map(([variantId, variant]) => (
         <li key={variantId}>
           <FontVariantConfigVariant
             variantId={variantId}
-            state={font}
+            state={state.font}
             onAction={handleAction}
             {...variant}
           />

@@ -8,7 +8,7 @@ import { VariantEmpty } from "~/components/VariantEmpty";
 
 import { useConfigurationContext } from "../Config.context";
 import { BreakpointConfigVariant } from "./BreakpointConfigVariant";
-import type { OnResponseBreakpointAction } from "./response.utils";
+import type { OnResponseBreakpointAction } from "./BreakpointConfigVariant";
 
 const styles = css`
   ${makeReset("ul")};
@@ -18,17 +18,15 @@ const styles = css`
 `;
 
 export function BreakpointConfig() {
-  const {
-    setResponse,
-    response: { breakpoints }
-  } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
+  const breakpoints = state.response.breakpoints;
 
   const handleAction = useCallback<OnResponseBreakpointAction>(
     (args) => {
       switch (args.action) {
         case "addBreakpointDirection":
-          setResponse((draft) => {
-            const entires = Object.entries(draft.breakpoints);
+          update((draft) => {
+            const entires = Object.entries(draft.response.breakpoints);
             const newIndex =
               args.direction === "above" ? args.referenceIndex : args.referenceIndex + 1;
 
@@ -44,29 +42,29 @@ export function BreakpointConfig() {
                 value: newValue
               }
             ]);
-            draft.breakpoints = Object.fromEntries(entires);
+            draft.response.breakpoints = Object.fromEntries(entires);
           });
           break;
 
         case "addBreakpoint":
-          setResponse((draft) => {
-            draft.breakpoints = {
-              ...draft.breakpoints,
+          update((draft) => {
+            draft.response.breakpoints = {
+              ...draft.response.breakpoints,
               [generateGUID()]: { name: `mobile`, value: 480 }
             };
           });
           break;
 
         case "deleteBreakpoint":
-          setResponse((draft) => {
-            delete draft.breakpoints[args.id];
+          update((draft) => {
+            delete draft.response.breakpoints[args.id];
           });
           break;
 
         case "updateBreakpoint":
-          setResponse((draft) => {
-            draft.breakpoints[args.id].name = args.name;
-            draft.breakpoints[args.id].value = args.value;
+          update((draft) => {
+            draft.response.breakpoints[args.id].name = args.name;
+            draft.response.breakpoints[args.id].value = args.value;
           });
           break;
 
@@ -74,7 +72,7 @@ export function BreakpointConfig() {
           return exhaustiveMatchGuard(args);
       }
     },
-    [setResponse]
+    [update]
   );
 
   const handleAddBreakpoint = useCallback(() => {

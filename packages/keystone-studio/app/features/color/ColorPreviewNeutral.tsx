@@ -3,8 +3,8 @@ import { convertNeutralColorIntoVariants } from "./color.utils";
 import { ColorPreviewBlocks } from "./ColorPreviewBlocks";
 
 export function ColorPreviewNeutral() {
-  const { color } = useConfigurationContext();
-  const variants = convertNeutralColorIntoVariants(color);
+  const { state } = useConfigurationContext();
+  const variants = convertNeutralColorIntoVariants(state.color);
 
   return Object.entries(variants).map(
     ([colorName, { base: baseVariantHex, ...restVariants }], i) => {

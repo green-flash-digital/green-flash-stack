@@ -6,6 +6,7 @@ import type { ColorVariantTypes } from "@keystone-css/core/schemas";
 import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { exhaustiveMatchGuard } from "ts-jolt/isomorphic";
+import type { Updater } from "use-immer";
 
 import { ColorBlob, useColorBlob } from "~/components/ColorBlob";
 import { InputGroup } from "~/components/InputGroup";
@@ -16,8 +17,7 @@ import { VariantContainerBarText } from "~/components/VariantContainerBarText";
 import { VariantContainerBarTitle } from "~/components/VariantContainerBarTitle";
 import { VariantContainerContent } from "~/components/VariantContainerContent";
 
-import type { ConfigurationContextType } from "../Config.context";
-import type { ConfigurationStateColorHexEntry } from "./color.utils";
+import type { ConfigurationStateColorHexEntry, StudioState } from "../studio.state";
 import { ColorSwatchHex } from "./ColorSwatchHex";
 import { ColorSwatchName } from "./ColorSwatchName";
 import { ColorSwatchVariants } from "./ColorSwatchVariants";
@@ -29,10 +29,10 @@ const barStyles = css`
 
 export function ColorNeutralVariant<T extends { [id: string]: ConfigurationStateColorHexEntry }>({
   colorDef,
-  setColor
+  update
 }: {
   colorDef: T;
-  setColor: ConfigurationContextType["setColor"];
+  update: Updater<StudioState>;
 }) {
   const [id, { name, hex, variants }] = Object.entries(colorDef)[0];
   const { colorBlobRef, setHex } = useColorBlob();
@@ -40,48 +40,48 @@ export function ColorNeutralVariant<T extends { [id: string]: ConfigurationState
 
   const handleChangeHex = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setColor((draft) => {
-        const color = draft.hex[id];
+      update((draft) => {
+        const color = draft.color.hex[id];
         color.hex = value;
       });
       setHex(value);
     },
-    [id, setColor, setHex]
+    [id, update, setHex]
   );
 
   const handleChangeName = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setColor((draft) => {
-        const color = draft.hex[id];
+      update((draft) => {
+        const color = draft.color.hex[id];
         color.name = value;
       });
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleRemove = useCallback<MouseEventHandler<HTMLButtonElement>>(() => {
-    setColor((draft) => {
-      delete draft.hex[id];
+    update((draft) => {
+      delete draft.color.hex[id];
     });
-  }, [id, setColor]);
+  }, [id, update]);
 
   const handleChangeVariantType = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
       const type = value as ColorVariantTypes["type"];
       switch (type) {
         case "auto":
-          setColor((draft) => {
-            draft.hex[id].variants = 10;
+          update((draft) => {
+            draft.color.hex[id].variants = 10;
           });
           break;
         case "auto-named":
-          setColor((draft) => {
-            draft.hex[id].variants = ["light", "dark"];
+          update((draft) => {
+            draft.color.hex[id].variants = ["light", "dark"];
           });
           break;
         case "key-value":
-          setColor((draft) => {
-            draft.hex[id].variants = {
+          update((draft) => {
+            draft.color.hex[id].variants = {
               light: "#cccccc",
               dark: "#525252"
             };
@@ -92,18 +92,18 @@ export function ColorNeutralVariant<T extends { [id: string]: ConfigurationState
           exhaustiveMatchGuard(type);
       }
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleChangeVariantAuto = useCallback<
     ColorSwatchVariantsPropsCustom["onChangeVariantAuto"]
   >(
     (variant) => {
-      setColor((draft) => {
-        draft.hex[id].variants = variant;
+      update((draft) => {
+        draft.color.hex[id].variants = variant;
       });
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleChangeVariantNamed = useCallback<
@@ -112,24 +112,24 @@ export function ColorNeutralVariant<T extends { [id: string]: ConfigurationState
     (params) => {
       switch (params.mode) {
         case "change":
-          setColor((draft) => {
-            const variants = draft.hex[id].variants;
+          update((draft) => {
+            const variants = draft.color.hex[id].variants;
             if (!Array.isArray(variants)) return;
             variants[params.index] = params.value;
           });
           break;
 
         case "add":
-          setColor((draft) => {
-            const variants = draft.hex[id].variants;
+          update((draft) => {
+            const variants = draft.color.hex[id].variants;
             if (!Array.isArray(variants)) return;
             variants.push(params.newValue);
           });
           break;
 
         case "remove":
-          setColor((draft) => {
-            const variants = draft.hex[id].variants;
+          update((draft) => {
+            const variants = draft.color.hex[id].variants;
             if (!Array.isArray(variants)) return;
             variants.splice(params.index, 1);
           });
@@ -139,18 +139,18 @@ export function ColorNeutralVariant<T extends { [id: string]: ConfigurationState
           exhaustiveMatchGuard(params);
       }
     },
-    [id, setColor]
+    [id, update]
   );
 
   const handleChangeVariantManual = useCallback<
     ColorSwatchVariantsPropsCustom["onChangeVariantManual"]
   >(
     (variants) => {
-      setColor((draft) => {
-        draft.hex[id].variants = variants;
+      update((draft) => {
+        draft.color.hex[id].variants = variants;
       });
     },
-    [id, setColor]
+    [id, update]
   );
 
   return (

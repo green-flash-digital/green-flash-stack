@@ -106,9 +106,9 @@ export function StyleGuideBasicColor({
 }: {
   bgColor?: string;
 } & StyleGuideSharedProps) {
-  const { color } = useConfigurationContext();
-  const bVariants = convertBrandColorIntoVariants(color);
-  const nVariants = convertNeutralColorIntoVariants(color);
+  const { state } = useConfigurationContext();
+  const bVariants = convertBrandColorIntoVariants(state.color);
+  const nVariants = convertNeutralColorIntoVariants(state.color);
   const variants = Object.assign(bVariants, nVariants);
   const pageRef = useRef<HTMLElement | null>(null);
 

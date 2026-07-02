@@ -14,7 +14,8 @@ import { InputLabel } from "~/components/InputLabel";
 import { IconTick01 } from "~/icons/IconTick01";
 import { IconTickDouble01 } from "~/icons/IconTickDouble01";
 
-import type { ConfigurationStateColor, VibeName } from "./color.utils";
+import type { ConfigurationStateColor, StudioState } from "../studio.state";
+import type { VibeName } from "./color.utils";
 import { vibePresets, vibeDefaults } from "./color.utils";
 import {
   ColorBrandModeAutoCategorySelect,
@@ -118,11 +119,11 @@ const categoryContainerStyles = css`
 `;
 
 export type ColorBrandModeAutoCategoryProps = {
-  setColor: Updater<ConfigurationStateColor>;
+  update: Updater<StudioState>;
   state: ConfigurationStateColor;
 };
 
-export function ColorBrandModeAutoCategory({ setColor, state }: ColorBrandModeAutoCategoryProps) {
+export function ColorBrandModeAutoCategory({ update, state }: ColorBrandModeAutoCategoryProps) {
   const timeoutRef = useRef<NodeJS.Timeout | null>(null);
   const [matchType, setMatchType] = useState<
     { category: VibeName; matchType: "exact" | "close" } | undefined
@@ -132,11 +133,11 @@ export function ColorBrandModeAutoCategory({ setColor, state }: ColorBrandModeAu
 
   const handleSelectVibe = useCallback(
     (type: VibeName) => {
-      setColor((draft) => {
-        draft.vibe = { type, ...vibeDefaults[type] };
+      update((draft) => {
+        draft.color.vibe = { type, ...vibeDefaults[type] };
       });
     },
-    [setColor]
+    [update]
   );
 
   const handlePickColorForCategory = useCallback<ChangeEventHandler<HTMLInputElement>>(

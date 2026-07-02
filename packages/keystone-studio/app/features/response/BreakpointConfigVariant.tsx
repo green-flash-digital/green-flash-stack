@@ -19,10 +19,15 @@ import { VariantContainerContent } from "~/components/VariantContainerContent";
 import { IconInsertRow } from "~/icons/IconInsertRow";
 import { IconPlusSign } from "~/icons/IconPlusSign";
 
-import type {
-  ConfigurationStateResponseBreakpointValue,
-  OnResponseBreakpointAction
-} from "./response.utils";
+import type { ConfigurationStateResponseBreakpointValue } from "../studio.state";
+
+export type OnResponseBreakpointAction = (
+  options:
+    | { action: "addBreakpoint" }
+    | { action: "addBreakpointDirection"; direction: "above" | "below"; referenceIndex: number }
+    | { action: "deleteBreakpoint"; id: string }
+    | { action: "updateBreakpoint"; id: string; name: string; value: number }
+) => void;
 
 const barStyles = css`
   grid-template-columns: ${makeRem(100)} 1fr auto !important;

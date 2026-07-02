@@ -10,7 +10,7 @@ import {
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "../Config.context";
-import { getFontConfigFromState } from "./font.utils";
+import { getFontConfigFromState } from "../studio.state";
 
 const styles = css`
   ${makeReset("ul")};
@@ -57,13 +57,13 @@ const styles = css`
 `;
 
 export function FontVariantPreviewContent() {
-  const { font } = useConfigurationContext();
+  const { state } = useConfigurationContext();
 
-  const fontConfig = getFontConfigFromState(font);
+  const fontConfig = getFontConfigFromState(state.font);
 
   return (
     <ul className={styles}>
-      {Object.entries(font.variants).map(([variantId, variant]) => {
+      {Object.entries(state.font.variants).map(([variantId, variant]) => {
         const fontFamily = fontConfig.families[variant.familyToken]?.family;
         return (
           <li key={variantId}>

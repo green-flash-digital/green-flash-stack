@@ -22,7 +22,7 @@ const codeStyles = css`
 `;
 
 export function CustomPreviewContent() {
-  const { custom } = useConfigurationContext();
+  const { state } = useConfigurationContext();
   return (
     <Table>
       <TableHead>
@@ -34,7 +34,7 @@ export function CustomPreviewContent() {
         </tr>
       </TableHead>
       <tbody>
-        {Object.entries(custom).map(([tokenId, tokenDev]) => (
+        {Object.entries(state.custom).map(([tokenId, tokenDev]) => (
           <tr key={tokenId}>
             <TableBodyCell>
               <span className={codeStyles}>{tokenDev.name}</span>

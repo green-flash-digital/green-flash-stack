@@ -89,7 +89,9 @@ const styles = css`
 
 export function StyleGuideBasicSize(props: StyleGuideSharedProps) {
   const {
-    sizing: { size }
+    state: {
+      sizing: { size }
+    }
   } = useConfigurationContext();
   return (
     <StyleGuidePage>

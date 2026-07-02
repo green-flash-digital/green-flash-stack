@@ -13,7 +13,7 @@ import {
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "../Config.context";
-import type { ConfigurationStateResponseBreakpointValue } from "./response.utils";
+import type { ConfigurationStateResponseBreakpointValue } from "../studio.state";
 
 const styles = css`
   /* background: #272727; */
@@ -146,7 +146,8 @@ type State = ConfigurationStateResponseBreakpointValue & {
 };
 
 export function BreakpointPreviewContent() {
-  const { response } = useConfigurationContext();
+  const { state } = useConfigurationContext();
+  const response = state.response;
   const gridRef = useRef<HTMLDivElement | null>(null);
   const pageRef = useRef<HTMLDivElement | null>(null);
   const [activeBreakpoint, setActiveBreakpoint] = useState<State | undefined>(undefined);

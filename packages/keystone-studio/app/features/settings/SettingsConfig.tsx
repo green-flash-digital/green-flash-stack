@@ -6,7 +6,7 @@ import { InputText } from "~/components/InputText";
 import { useConfigurationContext } from "../Config.context";
 
 export function SettingsConfig() {
-  const { settings, setSettings } = useConfigurationContext();
+  const { state, update } = useConfigurationContext();
 
   return (
     <>
@@ -17,11 +17,11 @@ export function SettingsConfig() {
         >
           <InputText
             dxSize="normal"
-            value={settings.prefix}
+            value={state.settings.prefix}
             onChange={({ currentTarget: { value } }) =>
-              setSettings((draft) => {
+              update((draft) => {
                 if (!value) return;
-                draft.prefix = value;
+                draft.settings.prefix = value;
               })
             }
           />
@@ -34,10 +34,10 @@ export function SettingsConfig() {
         >
           <InputCheckbox
             dxSize="normal"
-            checked={settings.strict}
+            checked={state.settings.strict}
             onChange={({ currentTarget: { checked } }) =>
-              setSettings((draft) => {
-                draft.strict = checked;
+              update((draft) => {
+                draft.settings.strict = checked;
               })
             }
           />

@@ -9,7 +9,7 @@ import { InputGroup } from "~/components/InputGroup";
 import { InputLabel } from "~/components/InputLabel";
 import { InputText } from "~/components/InputText";
 
-import type { ConfigurationStateFontManualFamilyValues } from "./font.utils";
+import type { ConfigurationStateFontManualFamilyValues } from "../studio.state";
 import { FontFamilyConfigVariant } from "./FontFamilyConfigVariant";
 import type { FontFamilyConfigVariantProps } from "./FontFamilyConfigVariant";
 import type { FontFamilyConfigVariantStylesProps } from "./FontFamilyConfigVariantStyles";

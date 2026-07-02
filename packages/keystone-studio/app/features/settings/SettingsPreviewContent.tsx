@@ -15,7 +15,9 @@ const styles = css`
 
 export function SettingsPreviewContent() {
   const {
-    settings: { prefix }
+    state: {
+      settings: { prefix }
+    }
   } = useConfigurationContext();
 
   const prefixCode = useMemo(() => {

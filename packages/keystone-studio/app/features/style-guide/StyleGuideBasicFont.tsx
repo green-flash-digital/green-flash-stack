@@ -46,7 +46,7 @@ function getRandomNumber(min: number, max: number) {
 }
 
 export function StyleGuideBasicFont(props: StyleGuideSharedProps) {
-  const { font } = useConfigurationContext();
+  const { state } = useConfigurationContext();
   return (
     <StyleGuidePage>
       <StyleGuidePageLeft dxMarker={props.dxMarker} dxTitle={props.dxTitle}>
@@ -58,7 +58,7 @@ export function StyleGuideBasicFont(props: StyleGuideSharedProps) {
       </StyleGuidePageLeft>
       <StyleGuidePageRight>
         <div className={styles}>
-          {Object.entries(font.families).map(([familyId, familyDef]) => (
+          {Object.entries(state.font.families).map(([familyId, familyDef]) => (
             <div
               key={familyId}
               className="family"

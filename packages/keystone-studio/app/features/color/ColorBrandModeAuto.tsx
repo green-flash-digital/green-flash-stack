@@ -4,6 +4,7 @@ import { useCallback } from "react";
 import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { generateGUID } from "ts-jolt/isomorphic";
+import type { Updater } from "use-immer";
 
 import { VariantAdd } from "~/components/VariantAdd";
 import { VariantEmpty } from "~/components/VariantEmpty";
@@ -12,8 +13,8 @@ import { VariantList } from "~/components/VariantList";
 import { InputLabel } from "../../components/InputLabel";
 import { InputRange } from "../../components/InputRange";
 import { InputSection } from "../../components/InputSection";
-import type { ConfigurationContextType } from "../Config.context";
-import type { ConfigurationStateColor } from "./color.utils";
+import type { StudioState } from "../studio.state";
+import type { ConfigurationStateColor } from "../studio.state";
 import { colorVibePresets, vibeDefaults } from "./color.utils";
 import { ColorBrandModeAutoCategory } from "./ColorBrandModeAutoCategory";
 import { ColorBrandModeAutoVariant } from "./ColorBrandModeAutoVariant";
@@ -25,49 +26,49 @@ const inputLabelStyles = css`
 
 export function ColorBrandModeAuto({
   state,
-  setColor
+  update
 }: {
   state: ConfigurationStateColor;
-  setColor: ConfigurationContextType["setColor"];
+  update: Updater<StudioState>;
 }) {
   const vibeType = state.vibe?.type ?? "fluorescent";
   const presets = colorVibePresets[vibeType];
 
   const handleChangeLightness = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setColor((draft) => {
-        if (!draft.vibe) {
-          draft.vibe = { type: vibeType, ...vibeDefaults[vibeType] };
+      update((draft) => {
+        if (!draft.color.vibe) {
+          draft.color.vibe = { type: vibeType, ...vibeDefaults[vibeType] };
         }
-        (draft.vibe as { lightness: number }).lightness = Number(value);
+        (draft.color.vibe as { lightness: number }).lightness = Number(value);
       });
     },
-    [setColor, vibeType]
+    [update, vibeType]
   );
 
   const handleChangeChroma = useCallback<ChangeEventHandler<HTMLInputElement>>(
     ({ currentTarget: { value } }) => {
-      setColor((draft) => {
-        if (!draft.vibe) {
-          draft.vibe = { type: vibeType, ...vibeDefaults[vibeType] };
+      update((draft) => {
+        if (!draft.color.vibe) {
+          draft.color.vibe = { type: vibeType, ...vibeDefaults[vibeType] };
         }
-        (draft.vibe as { chroma: number }).chroma = Number(value);
+        (draft.color.vibe as { chroma: number }).chroma = Number(value);
       });
     },
-    [setColor, vibeType]
+    [update, vibeType]
   );
 
   const handleAddVariant = useCallback(() => {
     const totalColors = Object.keys(state.hue).length;
-    setColor((draft) => {
+    update((draft) => {
       const id = generateGUID();
-      draft.hue[id] = {
+      draft.color.hue[id] = {
         hue: 180,
         name: `brand${totalColors + 1}`,
         variants: 10
       };
     });
-  }, [setColor, state.hue]);
+  }, [update, state.hue]);
 
   const colorEntries = Object.entries(state.hue);
 
@@ -78,7 +79,7 @@ export function ColorBrandModeAuto({
           dxLabel="Determine the color category"
           dxHelp="Select a vibe or pick a color to auto-detect it"
         />
-        <ColorBrandModeAutoCategory state={state} setColor={setColor} />
+        <ColorBrandModeAutoCategory state={state} update={update} />
       </InputSection>
       <InputSection>
         <InputLabel
@@ -129,7 +130,7 @@ export function ColorBrandModeAuto({
                 <li key={colorId}>
                   <ColorBrandModeAutoVariant
                     colorDef={{ [colorId]: colorNameAndDef }}
-                    setColor={setColor}
+                    update={update}
                   />
                 </li>
               ))}

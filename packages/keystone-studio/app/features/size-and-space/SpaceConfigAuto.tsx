@@ -1,20 +1,21 @@
-import type { ConfigurationContextType } from "../Config.context.js";
-import { type ConfigurationStateSizeAndSpace_SpaceAuto } from "./size-and-space.utils.js";
+import type { Updater } from "use-immer";
+
+import type { StudioState, ConfigurationStateSizeAndSpace_SpaceAuto } from "../studio.state";
 import { SpaceConfigVariants } from "./SpaceConfigVariants.js";
 
 export function SpaceConfigAuto({
   baseFontSize,
   state,
-  setSizing
+  update
 }: {
   baseFontSize: number;
   state: ConfigurationStateSizeAndSpace_SpaceAuto;
-  setSizing: ConfigurationContextType["setSizing"];
+  update: Updater<StudioState>;
 }) {
   return (
     <SpaceConfigVariants
       mode="auto"
-      setSizing={setSizing}
+      update={update}
       variants={state.variants}
       baseFontSize={baseFontSize}
     />
