@@ -27,9 +27,13 @@ The studio package itself uses `packages/keystone-studio/.keystone/tokens.json` 
 
 `fetchify` and `http-errors` are already on Zod v4. `keystone-core` and `keystone-studio` are on v3.25.x and should stay there for now. The core package has 10 schema files with deep v3 usage (`z.infer`, `safeParse`, discriminated unions, `.default()`) and `zod-to-json-schema` 3.24.x is built specifically for v3. Upgrading for no feature gain with real migration risk isn't worth it until the v4 ecosystem (especially `zod-to-json-schema`) is fully settled. Track as a standalone future upgrade.
 
-### Linaria — keep but watch
+### Linaria — required, not optional
 
-The studio uses Linaria (`@wyw-in-js/vite`) which requires Babel at build time. It works but occasionally lags behind React and Vite version bumps. Don't migrate now, but if a dep upgrade breaks the build, consider moving to vanilla-extract or CSS modules at that point rather than fighting Linaria compatibility.
+The studio's own UI is styled using `@keystone-css/studio-tokens` — the design token package built specifically for the studio itself. Components call the make functions from that package (e.g. `makeColor`, `makeSpace`) to produce CSS-in-JS class names, which is exactly the same pattern end-users get from their own token builds. Linaria (`@wyw-in-js/vite`) is the extraction layer that turns those make function calls into static CSS at build time.
+
+This means Linaria is load-bearing: removing it would require rewriting all studio component styles to a different CSS-in-JS mechanism. Keep it. If a future dep upgrade breaks the build, migrate styles to vanilla-extract at that point (it has the same static extraction model) — don't fight Linaria compatibility, just swap the mechanism and keep the `@keystone-css/studio-tokens` make function calls.
+
+**Implication for phases:** Before Phase 2 (sidebar) and Phase 3 (previews), confirm `@keystone-css/studio-tokens` is built and linked. New components must use its make functions, not inline styles or arbitrary CSS classes.
 
 ### StudioServer pre-built artifacts
 
