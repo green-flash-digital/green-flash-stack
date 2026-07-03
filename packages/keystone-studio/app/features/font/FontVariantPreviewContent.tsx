@@ -1,94 +1,129 @@
-import type { ManualFontStylesValue } from "@keystone-css/core/schemas";
-import { manualFontStyles } from "@keystone-css/core/schemas";
-import {
-  makeSpace,
-  makeColor,
-  makeFontWeight,
-  makeRem,
-  makeReset
-} from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeFontWeight, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "../Config.context";
-import { getFontConfigFromState } from "../studio.state";
 
-const styles = css`
+const listStyles = css`
   ${makeReset("ul")};
   display: flex;
   flex-direction: column;
-  gap: ${makeSpace(16)};
+`;
 
-  li {
-    display: grid;
-    grid-template-columns: ${makeRem(232)} 60%;
+const rowStyles = css`
+  display: grid;
+  grid-template-columns: ${makeRem(200)} 1fr;
+  padding: ${makeSpace(24)} 0;
+  border-bottom: 1px solid ${makeColor("neutral-light", { opacity: 0.08 })};
 
-    padding: ${makeSpace(32)} 0;
+  &:first-child {
+    padding-top: 0;
+  }
 
-    &:first-of-type {
-      padding-top: 0;
+  &:last-child {
+    border-bottom: none;
+  }
+
+  .meta {
+    padding-right: ${makeSpace(24)};
+    border-right: 1px solid ${makeColor("neutral-light", { opacity: 0.08 })};
+
+    h4 {
+      margin: 0 0 ${makeSpace(12)} 0;
+      font-size: ${makeRem(14)};
+      font-weight: ${makeFontWeight("mulish-semiBold")};
+      color: ${makeColor("neutral-light", { opacity: 0.9 })};
     }
 
-    &:not(:first-of-type) {
-      border-top: 1px solid ${makeColor("neutral-light", { opacity: 0.1 })};
-    }
+    dl {
+      margin: 0;
+      display: grid;
+      grid-template-columns: auto 1fr;
+      column-gap: ${makeSpace(12)};
+      row-gap: ${makeSpace(4)};
 
-    .heading {
-      padding-right: ${makeSpace(16)};
-      border-right: 1px solid ${makeColor("neutral-light", { opacity: 0.1 })};
-      margin-right: ${makeSpace(32)};
+      dt {
+        font-size: ${makeRem(11)};
+        color: ${makeColor("neutral-light", { opacity: 0.4 })};
+        font-weight: ${makeFontWeight("mulish-medium")};
+        text-transform: uppercase;
+        letter-spacing: 0.04em;
+        align-self: baseline;
+      }
 
-      h4 {
+      dd {
         margin: 0;
+        font-size: ${makeRem(12)};
+        color: ${makeColor("neutral-light", { opacity: 0.65 })};
+        font-family: "Consolas", monospace;
+        align-self: baseline;
       }
+    }
+  }
 
-      .sub {
-        font-size: ${makeRem(14)};
-        display: grid;
-        grid-template-columns: auto 1fr;
-        column-gap: ${makeSpace(16)};
-        font-weight: ${makeFontWeight("mulish-light")};
-        line-height: 1.3;
-        dd {
-          margin: 0;
-        }
-      }
+  .specimen {
+    padding-left: ${makeSpace(32)};
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    color: ${makeColor("neutral-light", { opacity: 0.9 })};
+
+    p {
+      margin: 0;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
   }
 `;
 
+function toKebab(name: string): string {
+  return name.toLowerCase().replace(/\s+/g, "-");
+}
+
 export function FontVariantPreviewContent() {
   const { state } = useConfigurationContext();
 
-  const fontConfig = getFontConfigFromState(state.font);
-
   return (
-    <ul className={styles}>
+    <ul className={listStyles}>
       {Object.entries(state.font.variants).map(([variantId, variant]) => {
-        const fontFamily = fontConfig.families[variant.familyToken]?.family;
+        const family = Object.values(state.font.families).find(
+          (f) => toKebab(f.tokenName) === variant.familyToken
+        );
+        const fontFamily = family ? `"${family.familyName}"` : undefined;
+
         return (
-          <li key={variantId}>
-            <div className="heading">
+          <li key={variantId} className={rowStyles}>
+            <div className="meta">
               <h4>{variant.variantName}</h4>
-              <dl className="sub">
+              <dl>
                 <dt>Family</dt>
                 <dd>{variant.familyToken}</dd>
                 <dt>Size</dt>
                 <dd>
-                  {variant.size}px / {variant.lineHeight}
+                  {variant.size}px / {variant.lineHeight} lh
                 </dd>
                 <dt>Weight</dt>
-                <dd>{manualFontStyles[variant.weight as keyof ManualFontStylesValue]}</dd>
+                <dd>{variant.weight}</dd>
+                {variant.letterSpacing !== 0 && (
+                  <>
+                    <dt>Tracking</dt>
+                    <dd>{variant.letterSpacing}px</dd>
+                  </>
+                )}
               </dl>
             </div>
-            <div
-              style={{
-                fontFamily: `"${fontFamily}"`,
-                fontSize: variant.size,
-                fontWeight: variant.weight.split("-")[1],
-                lineHeight: variant.lineHeight
-              }}
-            >
-              Curious minds discover joy in the beauty of everyday moments
+            <div className="specimen">
+              <p
+                style={{
+                  fontFamily,
+                  fontSize: variant.size,
+                  fontWeight: variant.weight,
+                  lineHeight: variant.lineHeight,
+                  letterSpacing: variant.letterSpacing
+                }}
+              >
+                Curious minds discover joy in the beauty of everyday moments
+              </p>
             </div>
           </li>
         );

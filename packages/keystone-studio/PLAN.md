@@ -330,12 +330,12 @@ Compact token list — name, type badge, value, copy CSS variable name to clipbo
 
 ### Tasks
 
-- [ ] Rewrite `SizePreviewContent.tsx` — baseline grid overlay
-- [ ] Rewrite `SpacePreviewContentVariants.tsx` — horizontal scale bars
-- [ ] Rewrite `FontFamilyPreviewContent.tsx` — family specimen grid
-- [ ] Rewrite `FontVariantPreviewContent.tsx` — variant text samples at exact token values
-- [ ] Create `BreakpointPreviewContent.tsx` — viewport width slider with threshold labels
-- [ ] Rewrite `CustomPreview.tsx` — token list with copy-to-clipboard
+- [x] Rewrite `SizePreviewContent.tsx` — baseline grid overlay
+- [x] Rewrite `SpacePreviewContentVariants.tsx` — horizontal scale bars
+- [x] Rewrite `FontFamilyPreviewContent.tsx` — family specimen grid
+- [x] Rewrite `FontVariantPreviewContent.tsx` — variant text samples at exact token values
+- [x] Create `BreakpointPreviewContent.tsx` — viewport width slider with threshold labels
+- [x] Rewrite `CustomPreview.tsx` — token list with copy-to-clipboard
 
 ---
 
