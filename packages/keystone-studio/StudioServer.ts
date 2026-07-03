@@ -7,8 +7,6 @@ import { createRequestHandler } from "@react-router/express";
 import type { Express, Response } from "express";
 import express from "express";
 
-import { TokensPathContext, VersionsDirContext, IsLocalContext } from "./app/context.js";
-
 export type StudioServerOptions = {
   port?: number;
   configPath: string;
@@ -27,6 +25,10 @@ export class StudioServer {
   }
 
   #init() {
+    process.env.STUDIO_TOKENS_PATH = this.#options.configPath;
+    process.env.STUDIO_VERSIONS_DIR = this.#options.versionsDir;
+    process.env.STUDIO_IS_LOCAL = "true";
+
     const buildDir = path.resolve(import.meta.dirname, "./build");
 
     const studioClientAssets = path.resolve(buildDir, "./client");
@@ -53,13 +55,7 @@ export class StudioServer {
       createRequestHandler({
         build: async () => import(studioServerEntry),
         mode: process.env.NODE_ENV,
-        getLoadContext: () => {
-          const ctx = new RouterContextProvider();
-          ctx.set(TokensPathContext, this.#options.configPath);
-          ctx.set(VersionsDirContext, this.#options.versionsDir);
-          ctx.set(IsLocalContext, true);
-          return ctx;
-        }
+        getLoadContext: () => new RouterContextProvider()
       })
     );
   }

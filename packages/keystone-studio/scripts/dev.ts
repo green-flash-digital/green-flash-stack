@@ -9,10 +9,12 @@ import type { Response } from "express";
 import express from "express";
 import { createServer } from "vite";
 
-import { TokensPathContext, VersionsDirContext, IsLocalContext } from "../app/context.js";
-
 const tokensPath = path.resolve(import.meta.dirname, "../.keystone/tokens.json");
 const versionsDir = path.resolve(import.meta.dirname, "../.keystone/_versions");
+
+process.env.STUDIO_TOKENS_PATH = tokensPath;
+process.env.STUDIO_VERSIONS_DIR = versionsDir;
+process.env.STUDIO_IS_LOCAL = "true";
 
 const app = express();
 const sseClients = new Set<Response>();
@@ -42,13 +44,7 @@ app.use(
   createRequestHandler({
     build: () =>
       viteServer.ssrLoadModule("virtual:react-router/server-build") as Promise<ServerBuild>,
-    getLoadContext: () => {
-      const ctx = new RouterContextProvider();
-      ctx.set(TokensPathContext, tokensPath);
-      ctx.set(VersionsDirContext, versionsDir);
-      ctx.set(IsLocalContext, true);
-      return ctx;
-    }
+    getLoadContext: () => new RouterContextProvider()
   })
 );
 

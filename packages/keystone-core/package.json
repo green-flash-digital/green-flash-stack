@@ -16,6 +16,7 @@
   "type": "module",
   "exports": {
     ".": "./dist/Keystone.js",
+    "./client": "./dist/client.js",
     "./bootstrap": "./dist/Keystone.js",
     "./token-utils": "./dist/createTokenUtils.js",
     "./templates": "./dist/templates/index.js",

@@ -21,7 +21,15 @@ import { LayoutFooter } from "./components/LayoutFooter";
 import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
 import { LayoutMain } from "./components/LayoutMain";
-import { IsLocalContext } from "./context";
+import { IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
+
+export const middleware: Route.MiddlewareFunction[] = [
+  ({ context }) => {
+    context.set(TokensPathContext, process.env.STUDIO_TOKENS_PATH ?? "");
+    context.set(VersionsDirContext, process.env.STUDIO_VERSIONS_DIR ?? "");
+    context.set(IsLocalContext, process.env.STUDIO_IS_LOCAL === "true");
+  }
+];
 
 export const links: LinksFunction = () => [
   { rel: "preconnect", href: "https://fonts.googleapis.com" },

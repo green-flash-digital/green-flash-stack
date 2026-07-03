@@ -1,19 +1,25 @@
+import path from "node:path";
+
 import wyw from "@wyw-in-js/vite";
-import { defineConfig, mergeConfig } from "vite";
-import tsconfigPaths from "vite-tsconfig-paths";
+import { defineConfig } from "vite";
 
 export default defineConfig({
   optimizeDeps: {
     exclude: ["globby"]
   },
+  resolve: {
+    tsconfigPaths: true,
+    // SEE IF THERE IS A BETTER WAY TO DO THIS with the package.json
+    alias: [
+      {
+        find: /^@keystone-css\/core$/,
+        replacement: path.resolve(import.meta.dirname, "../keystone-core/dist/client.js")
+      }
+    ]
+  },
   plugins: [
     wyw({
-      include: "/**/*.(ts|tsx)",
-      babelOptions: {
-        compact: false,
-        presets: ["@babel/preset-typescript", "@babel/preset-react"]
-      }
-    }),
-    tsconfigPaths()
+      include: "/**/*.(ts|tsx)"
+    })
   ]
 });
