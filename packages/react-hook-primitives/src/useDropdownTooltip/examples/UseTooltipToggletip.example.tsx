@@ -1,5 +1,6 @@
-import { css } from "@linaria/core";
 import type { FC } from "react";
+
+import { css } from "@linaria/core";
 
 import { useDropdownTooltip } from "../useDropdownTooltip.js";
 
@@ -58,22 +59,17 @@ const IconInfo: FC = () => (
 
 export default () => {
   const { setTargetRef, setTooltipRef } = useDropdownTooltip({
-    dxType: "toggletip",
+    dxType: "toggletip"
   });
 
   return (
     <>
-      <button
-        ref={setTargetRef}
-        className={buttonClass}
-        aria-label="description"
-      >
+      <button ref={setTargetRef} className={buttonClass} aria-label="description">
         <IconInfo />
       </button>
       <div ref={setTooltipRef} className={tooltipClass} id="description">
-        This field helps make things a little more clear or further explains
-        things that would otherwise not be as clear. Think of placeholder text
-        in inputs or help text in labels.
+        This field helps make things a little more clear or further explains things that would
+        otherwise not be as clear. Think of placeholder text in inputs or help text in labels.
       </div>
     </>
   );

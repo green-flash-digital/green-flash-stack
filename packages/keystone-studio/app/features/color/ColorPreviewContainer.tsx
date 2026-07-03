@@ -1,5 +1,6 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
+
 import { classes } from "@green-flash/ts-utils/isomorphic";
 
 export type ColorPreviewContainerPropsNative = JSX.IntrinsicElements["div"];

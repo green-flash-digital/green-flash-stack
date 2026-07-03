@@ -24,7 +24,12 @@ type AnalysisResult = {
 function normalizeToHex(color: string): string {
   const oklchMatch = color.match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/);
   if (oklchMatch) {
-    return chroma(parseFloat(oklchMatch[1]), parseFloat(oklchMatch[2]), parseFloat(oklchMatch[3]), "oklch").hex();
+    return chroma(
+      parseFloat(oklchMatch[1]),
+      parseFloat(oklchMatch[2]),
+      parseFloat(oklchMatch[3]),
+      "oklch"
+    ).hex();
   }
   return color;
 }

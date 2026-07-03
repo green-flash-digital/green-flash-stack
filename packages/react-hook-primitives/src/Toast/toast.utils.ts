@@ -14,9 +14,7 @@ export type ToastOptions = {
   closeToast: () => void;
 };
 
-export type ToastComponent<T extends Record<string, unknown>> = FC<
-  T & ToastOptions
->;
+export type ToastComponent<T extends Record<string, unknown>> = FC<T & ToastOptions>;
 
 export const getToasterOptionsMap = <T extends Record<string, unknown>>() => {
   if (!window.__rhp_toasts) {
@@ -41,21 +39,17 @@ export const getToastOptions = <T extends Record<string, unknown>>(
 
   return {
     id: toastId,
-    ...options,
+    ...options
   };
 };
 
-export const deleteToastOptions = <T extends Record<string, unknown>>(
-  toastId: string
-) => {
+export const deleteToastOptions = <T extends Record<string, unknown>>(toastId: string) => {
   const optionsMap = getToasterOptionsMap<T>();
   console.log("Deleting toast options", toastId);
   optionsMap.delete(toastId);
 };
 
-export const setToastOptions = <T>(
-  options: T & { closeToast: () => void }
-): string => {
+export const setToastOptions = <T>(options: T & { closeToast: () => void }): string => {
   const optionsMap = getToasterOptionsMap();
   const toastId = window.crypto.randomUUID();
 

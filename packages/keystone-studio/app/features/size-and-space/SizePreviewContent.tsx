@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 

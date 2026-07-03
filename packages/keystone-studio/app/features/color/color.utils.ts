@@ -1,4 +1,8 @@
-import type { KeystoneColorEntryHue, KeystoneColorEntryHex, VibeName } from "@keystone-css/core/schemas";
+import type {
+  KeystoneColorEntryHue,
+  KeystoneColorEntryHex,
+  VibeName
+} from "@keystone-css/core/schemas";
 import { vibePresets } from "@keystone-css/core/schemas";
 import { createColorVariants } from "@keystone-css/core/utils";
 

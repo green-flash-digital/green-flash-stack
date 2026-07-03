@@ -23,8 +23,8 @@ const schema = {
   ...zodSchema,
   properties: {
     $schema: { type: "string" },
-    ...zodSchema.properties,
-  },
+    ...zodSchema.properties
+  }
 };
 
 fs.writeFileSync(outPath, JSON.stringify(schema, null, 2) + "\n");

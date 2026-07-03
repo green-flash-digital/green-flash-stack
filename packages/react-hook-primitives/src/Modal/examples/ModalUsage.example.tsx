@@ -9,9 +9,7 @@ export default function ModalUsage() {
       <button type="button" onClick={openModal}>
         Open a bare bones example
       </button>
-      <Modal ref={modalRef}>
-        This is the simplest implementation of a modal
-      </Modal>
+      <Modal ref={modalRef}>This is the simplest implementation of a modal</Modal>
     </>
   );
 }

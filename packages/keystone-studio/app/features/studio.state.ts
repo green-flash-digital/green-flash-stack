@@ -1,3 +1,4 @@
+import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import type {
   KeystoneConfig,
   KeystoneColorEntry,
@@ -17,7 +18,6 @@ import type {
 import { fontFamilyFallback, manualFontStyles } from "@keystone-css/core/schemas";
 import type { SpaceVariantsRecord } from "@keystone-css/core/utils";
 import { calculateSpaceVariantsAuto, calculateSpaceVariantsManual } from "@keystone-css/core/utils";
-import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { match } from "ts-pattern";
 
 // ── Color state types ─────────────────────────────────────────────────────────
@@ -206,7 +206,9 @@ function convertSpaceVariantConfigIntoState(
     generateGUID(),
     { name, value, order: i }
   ]);
-  return Object.fromEntries(entries.sort((a, b) => (a[1] as { order: number }).order - (b[1] as { order: number }).order));
+  return Object.fromEntries(
+    entries.sort((a, b) => (a[1] as { order: number }).order - (b[1] as { order: number }).order)
+  );
 }
 
 function getInitStateSizeAndSpaceFromConfig(
@@ -270,7 +272,9 @@ function getInitStateSizeAndSpaceFromConfig(
 
 function getInitResponseStateFromConfig(config: KeystoneConfig): ConfigurationStateResponse {
   return {
-    breakpoints: Object.entries(config.response.breakpoints).reduce<ConfigurationStateResponseBreakpoints>(
+    breakpoints: Object.entries(
+      config.response.breakpoints
+    ).reduce<ConfigurationStateResponseBreakpoints>(
       (accum, [name, value]) => Object.assign(accum, { [generateGUID()]: { name, value } }),
       {}
     )
@@ -323,19 +327,16 @@ export function getFontConfigFromState(state: ConfigurationStateFont): KeystoneC
   return {
     source: state.source,
     families,
-    variants: Object.values(state.variants).reduce(
-      (accum, variant) => {
-        accum[variant.variantName] = {
-          familyToken: variant.familyToken,
-          lineHeight: variant.lineHeight,
-          size: variant.size,
-          weight: variant.weight,
-          letterSpacing: variant.letterSpacing
-        };
-        return accum;
-      },
-      {} as FontVariant
-    )
+    variants: Object.values(state.variants).reduce((accum, variant) => {
+      accum[variant.variantName] = {
+        familyToken: variant.familyToken,
+        lineHeight: variant.lineHeight,
+        size: variant.size,
+        weight: variant.weight,
+        letterSpacing: variant.letterSpacing
+      };
+      return accum;
+    }, {} as FontVariant)
   };
 }
 
@@ -372,9 +373,7 @@ function getSizeAndSpaceConfigFromState(
 
 function getResponseConfigFromState(state: ConfigurationStateResponse): KeystoneConfig["response"] {
   return {
-    breakpoints: Object.values(state.breakpoints).reduce<
-      KeystoneConfig["response"]["breakpoints"]
-    >(
+    breakpoints: Object.values(state.breakpoints).reduce<KeystoneConfig["response"]["breakpoints"]>(
       (accum, { name, value }) => Object.assign(accum, { [name]: value }),
       {}
     )

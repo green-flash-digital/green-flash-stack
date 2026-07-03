@@ -1,11 +1,6 @@
+import { type FC, type ReactNode, type RefCallback, useCallback, useEffect } from "react";
+
 import { css } from "@linaria/core";
-import {
-  type FC,
-  type ReactNode,
-  type RefCallback,
-  useCallback,
-  useEffect,
-} from "react";
 
 import { classes } from "#/_utils/public/index.js";
 
@@ -33,9 +28,10 @@ const divCSS = css`
   }
 `;
 
-export const Toast: FC<
-  ToastProps & { className?: string; children: ReactNode }
-> = ({ children, id }) => {
+export const Toast: FC<ToastProps & { className?: string; children: ReactNode }> = ({
+  children,
+  id
+}) => {
   const ref = useCallback<RefCallback<HTMLDivElement>>((node) => {
     if (!node) return;
     node.popover = "manual";
@@ -47,9 +43,7 @@ export const Toast: FC<
 
   useEffect(() => {
     if (typeof window === "undefined") return;
-    const allToasts = document.querySelectorAll(
-      ".toast"
-    ) as NodeListOf<HTMLElement>;
+    const allToasts = document.querySelectorAll(".toast") as NodeListOf<HTMLElement>;
 
     for (let i = allToasts.length - 1; i >= 0; i--) {
       const toast = allToasts[i];

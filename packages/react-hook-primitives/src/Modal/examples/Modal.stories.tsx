@@ -5,7 +5,7 @@ import ModalBasicExample from "./ModalBasic.example.js";
 // import ModalWithNestedFormsExample from "./ModalWithNestedForms.example.js";
 
 const meta: Meta = {
-  title: "Modals / Modal",
+  title: "Modals / Modal"
 } satisfies Meta<typeof meta>;
 
 export default meta;

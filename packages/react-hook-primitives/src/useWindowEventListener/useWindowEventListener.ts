@@ -53,22 +53,23 @@ export function useWindowEventListener() {
     // set it to a ref
     removeEventRef.current = {
       ...removeEventRef.current,
-      [eventName]: cleanupFn,
+      [eventName]: cleanupFn
     };
     return cleanupFn;
   }, []);
 
   // Return a function that can remove the event listener
   // and then remove it's reference from the ref
-  const removeWindowEventListener = useCallback<
-    (eventName: keyof WindowEventMap) => void
-  >((eventName) => {
-    const cleanupFn = removeEventRef.current[eventName];
-    cleanupFn();
+  const removeWindowEventListener = useCallback<(eventName: keyof WindowEventMap) => void>(
+    (eventName) => {
+      const cleanupFn = removeEventRef.current[eventName];
+      cleanupFn();
 
-    // remove the handler
-    delete removeEventRef.current[eventName];
-  }, []);
+      // remove the handler
+      delete removeEventRef.current[eventName];
+    },
+    []
+  );
 
   return { addWindowEventListener, removeWindowEventListener };
 }

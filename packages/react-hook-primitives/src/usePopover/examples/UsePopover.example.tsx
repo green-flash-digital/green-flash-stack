@@ -2,7 +2,7 @@ import { usePopover } from "../usePopover.js";
 
 export default () => {
   const { setPopoverRef, setTargetRef, showPopover, hidePopover } = usePopover({
-    id: "use-popover",
+    id: "use-popover"
   });
 
   return (
@@ -13,7 +13,7 @@ export default () => {
       <article
         ref={setPopoverRef}
         style={{
-          border: "1px solid red",
+          border: "1px solid red"
         }}
       >
         this is some popover content

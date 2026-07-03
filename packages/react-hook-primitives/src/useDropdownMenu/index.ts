@@ -1,4 +1,1 @@
-export {
-  useDropdownMenu,
-  type UseDropdownMenuArgs,
-} from "./useDropdownMenu.js";
+export { useDropdownMenu, type UseDropdownMenuArgs } from "./useDropdownMenu.js";

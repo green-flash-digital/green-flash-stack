@@ -1,4 +1,4 @@
 export {
   type UseDropdownInputArgs as UseDropdownInputOptions,
-  useDropdownInput,
+  useDropdownInput
 } from "./useDropdownInput.js";

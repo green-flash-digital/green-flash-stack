@@ -23,14 +23,14 @@ export default defineTokens({
   tokens: {
     runtime: { prefix: "ds" },
     color: {
-      brand: { hue: 220, variants: 9 },
+      brand: { hue: 220, variants: 9 }
     },
     sizeAndSpace: {
       baselineGrid: 4,
       baseFontSize: 16,
-      space: { mode: "auto", variants: 10 },
-    },
-  },
+      space: { mode: "auto", variants: 10 }
+    }
+  }
 });
 ```
 
@@ -39,8 +39,8 @@ export default defineTokens({
 import { makeColor, makeSpace } from "./.keystone/index.js";
 
 const styles = {
-  background: makeColor("brand", 600),  // "var(--ds-color-brand-600)"
-  padding: makeSpace(16),               // "var(--ds-space-16-rem)"
+  background: makeColor("brand", 600), // "var(--ds-color-brand-600)"
+  padding: makeSpace(16) // "var(--ds-space-16-rem)"
 };
 ```
 
@@ -84,19 +84,19 @@ export default defineTokens({
 
 ### Built-in token types
 
-| Category     | Utility function   | Example output                          |
-|--------------|--------------------|-----------------------------------------|
-| Color        | `makeColor`        | `var(--ds-color-brand-600)`             |
-| Space        | `makeSpace`        | `var(--ds-space-16-rem)`                |
-| Font family  | `makeFontFamily`   | `var(--ds-font-family-sans)`            |
-| Font weight  | `makeFontWeight`   | `var(--ds-font-weight-bold)`            |
-| Font variant | `makeFontVariant`  | `var(--ds-font-variant-heading-lg)`     |
-| Size         | `makeSize`         | `var(--ds-size-md)`                     |
-| Rem          | `makeRem`          | converts `px` → `rem` string           |
-| Px           | `makePx`           | appends `px` unit string               |
-| Responsive   | `makeResponsive`   | generates `@media` query string         |
-| Reset        | `makeReset`        | CSS reset string for a given element    |
-| Custom       | `makeCustom`       | `var(--ds-custom-<key>)`               |
+| Category     | Utility function  | Example output                       |
+| ------------ | ----------------- | ------------------------------------ |
+| Color        | `makeColor`       | `var(--ds-color-brand-600)`          |
+| Space        | `makeSpace`       | `var(--ds-space-16-rem)`             |
+| Font family  | `makeFontFamily`  | `var(--ds-font-family-sans)`         |
+| Font weight  | `makeFontWeight`  | `var(--ds-font-weight-bold)`         |
+| Font variant | `makeFontVariant` | `var(--ds-font-variant-heading-lg)`  |
+| Size         | `makeSize`        | `var(--ds-size-md)`                  |
+| Rem          | `makeRem`         | converts `px` → `rem` string         |
+| Px           | `makePx`          | appends `px` unit string             |
+| Responsive   | `makeResponsive`  | generates `@media` query string      |
+| Reset        | `makeReset`       | CSS reset string for a given element |
+| Custom       | `makeCustom`      | `var(--ds-custom-<key>)`             |
 
 ### Custom templates
 
@@ -164,11 +164,11 @@ const keystone = new Keystone({
   definition,
   cwd: path.resolve(import.meta.dirname, ".."),
   logLevel: "info",
-  env: "production",
+  env: "production"
 });
 
 await keystone.build();
-await keystone.dev();    // build + watch mode
+await keystone.dev(); // build + watch mode
 ```
 
 ---
@@ -177,11 +177,11 @@ await keystone.dev();    // build + watch mode
 
 Running `keystone build` produces three files inside `.keystone/_generated/`:
 
-| File          | Description                                              |
-|---------------|----------------------------------------------------------|
-| `_tokens.ts`  | A `const tokens` object — the typed manifest of all token values |
-| `root.css`    | A `:root {}` block with every CSS custom property        |
-| `makeUtils.ts`| Named exports for every utility function                 |
+| File           | Description                                                      |
+| -------------- | ---------------------------------------------------------------- |
+| `_tokens.ts`   | A `const tokens` object — the typed manifest of all token values |
+| `root.css`     | A `:root {}` block with every CSS custom property                |
+| `makeUtils.ts` | Named exports for every utility function                         |
 
 And one file at `.keystone/index.ts` that re-exports everything from `makeUtils.ts`.
 
@@ -191,10 +191,10 @@ And one file at `.keystone/index.ts` that re-exports everything from `makeUtils.
 
 ```json
 {
-  ".":           "@keystone-css/core  — Keystone class, defineTokens, defineTemplate",
+  ".": "@keystone-css/core  — Keystone class, defineTokens, defineTemplate",
   "./templates": "all built-in template objects",
-  "./schemas":   "Zod schemas and inferred TypeScript types",
-  "./utils":     "internal utility helpers"
+  "./schemas": "Zod schemas and inferred TypeScript types",
+  "./utils": "internal utility helpers"
 }
 ```
 

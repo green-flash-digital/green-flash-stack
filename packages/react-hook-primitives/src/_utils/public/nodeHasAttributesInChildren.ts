@@ -3,9 +3,7 @@ export function hasAttributesInChildren<T extends HTMLElement | Element>(
   attributes: { name: string; value: string }[]
 ): boolean {
   // Check if the current node has all specified attributes
-  const hasAllAttributes = attributes.every(
-    (attr) => node.getAttribute(attr.name) === attr.value
-  );
+  const hasAllAttributes = attributes.every((attr) => node.getAttribute(attr.name) === attr.value);
   if (hasAllAttributes) {
     return true;
   }

@@ -1,9 +1,9 @@
 import { useCallback } from "react";
 
+import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { manualFontStyles } from "@keystone-css/core/schemas";
 import { makeSpace, makeReset } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 
 import { VariantAdd } from "~/components/VariantAdd";
 import { VariantEmpty } from "~/components/VariantEmpty";
@@ -70,8 +70,7 @@ export function FontFamilyConfig() {
 
         case "toggle": {
           update((draft) => {
-            draft.font.families[args.id].meta.isOpen =
-              !draft.font.families[args.id].meta.isOpen;
+            draft.font.families[args.id].meta.isOpen = !draft.font.families[args.id].meta.isOpen;
           });
           break;
         }

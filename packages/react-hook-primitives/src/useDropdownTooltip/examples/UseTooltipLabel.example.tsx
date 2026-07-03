@@ -23,16 +23,12 @@ const targetCss = css`
 
 export default () => {
   const { setTargetRef, setTooltipRef } = useDropdownTooltip({
-    dxType: "tooltip",
+    dxType: "tooltip"
   });
 
   return (
     <>
-      <button
-        ref={setTargetRef}
-        className={targetCss}
-        onClick={() => alert("Saved!!")}
-      >
+      <button ref={setTargetRef} className={targetCss} onClick={() => alert("Saved!!")}>
         Save
       </button>
       <div ref={setTooltipRef} className={tooltipCss}>

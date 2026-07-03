@@ -1,5 +1,6 @@
-import { css } from "@linaria/core";
 import { type FormEventHandler, useCallback } from "react";
+
+import { css } from "@linaria/core";
 
 import { Modal } from "../Modal.js";
 import { useModal } from "../modal.useModal.js";
@@ -60,8 +61,9 @@ const styles = css`
   display: grid;
   border-radius: 0.25rem;
   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen,
-    Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans",
+    "Helvetica Neue", sans-serif;
 
   &::backdrop {
     transition: backdrop-filter 1s ease;

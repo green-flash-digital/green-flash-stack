@@ -11,27 +11,27 @@ class ButteryComponentLoggers {
     this.InputTextDropdown = new Isoscribe({
       name: "InputTextDropdown",
       pillColor: "#c2d600",
-      logLevel: options.defaultLevel,
+      logLevel: options.defaultLevel
     });
     this.UseInputDropdown = new Isoscribe({
       name: "UseInputDropdown",
       pillColor: "#fd954b",
-      logLevel: options.defaultLevel,
+      logLevel: options.defaultLevel
     });
     this.UseDropdownMenu = new Isoscribe({
       name: "useDropdownMenu",
       pillColor: "#05f7b9",
-      logLevel: options.defaultLevel,
+      logLevel: options.defaultLevel
     });
     this.UseDropdownNav = new Isoscribe({
       name: "useDropdownMenu",
       pillColor: "#568afc",
-      logLevel: options.defaultLevel,
+      logLevel: options.defaultLevel
     });
     this.UseDropdownTooltip = new Isoscribe({
       name: "useDropdownTooltip",
       pillColor: "#ffd36c",
-      logLevel: options.defaultLevel,
+      logLevel: options.defaultLevel
     });
 
     if (typeof window !== "undefined") {
@@ -46,7 +46,5 @@ const butteryLogLevel =
     : (process.env.BUTTERY_LOG_LEVEL as IsoScribeLogLevel | undefined);
 
 export const LOG = new ButteryComponentLoggers({
-  defaultLevel:
-    butteryLogLevel ??
-    (process.env.NODE_ENV === "development" ? "debug" : "error"),
+  defaultLevel: butteryLogLevel ?? (process.env.NODE_ENV === "development" ? "debug" : "error")
 });

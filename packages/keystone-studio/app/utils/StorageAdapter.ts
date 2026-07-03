@@ -1,9 +1,10 @@
 import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
+import type { D1Database } from "@cloudflare/workers-types";
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 import type { KeystoneTokens } from "@keystone-css/core/schemas";
 import { TokensSchema } from "@keystone-css/core/schemas";
-import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
 export interface StorageAdapter {
   read(): Promise<KeystoneTokens>;
@@ -79,15 +80,4 @@ export class D1Adapter implements StorageAdapter {
   }
 }
 
-// Minimal D1 type — matches the Cloudflare Workers runtime API.
-// Replace with `import type { D1Database } from "@cloudflare/workers-types"` once
-// @cloudflare/workers-types is added as a dev dependency.
-export type D1Database = {
-  prepare(query: string): D1PreparedStatement;
-};
-
-type D1PreparedStatement = {
-  bind(...values: unknown[]): D1PreparedStatement;
-  first<T = unknown>(): Promise<T | null>;
-  run(): Promise<void>;
-};
+export type { D1Database };

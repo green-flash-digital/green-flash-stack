@@ -415,10 +415,10 @@ Deferred to Phase 5b — do the storage/worker infrastructure first, add auth on
 
 ### Tasks — Phase 5b: BetterAuth
 
-- [ ] Install `better-auth` and configure with D1 session storage
-- [ ] Add `UserContext` to `context.ts`; worker `getLoadContext` populates it from BetterAuth session
-- [ ] Add login/signup routes (active only when `isLocal === false`)
-- [ ] Add user menu to header (renders only when `isLocal === false`)
+- [x] Install `better-auth` and configure with D1 session storage
+- [x] Add `UserContext` to `context.ts`; worker `getLoadContext` populates it from BetterAuth session
+- [x] Add login/signup routes (active only when `isLocal === false`)
+- [x] Add user menu to header (renders only when `isLocal === false`)
 - [ ] Add project picker — lists design systems per logged-in user
 - [ ] Enforce the parity rule: add an ESLint rule or comment convention flagging direct `node:fs` imports in route files
 
@@ -438,11 +438,11 @@ The color system already generates `oklch()` values. `ColorAccessibilityChecker`
 
 ```ts
 // Accepts the same typed token names as makeColor
-makeLightDark("neutral-light", "neutral-dark")
+makeLightDark("neutral-light", "neutral-dark");
 // → light-dark(var(--color-neutral-light), var(--color-neutral-dark))
 
 // With opacity
-makeLightDark(["neutral-light", { opacity: 0.9 }], ["neutral-dark", { opacity: 0.9 }])
+makeLightDark(["neutral-light", { opacity: 0.9 }], ["neutral-dark", { opacity: 0.9 }]);
 // → light-dark(color-mix(in srgb, var(--color-neutral-light) 90%, transparent), ...)
 ```
 
@@ -493,6 +493,7 @@ The canvas is a `<div>` with `transform: scale(zoom) translate(panX, panY)` appl
 ```
 
 Interactions:
+
 - **Scroll** — zoom in/out (same as Figma / browser devtools)
 - **Drag** — pan the canvas
 - **Cmd/Ctrl + 0** — reset to fit-all view
@@ -502,13 +503,13 @@ Interactions:
 
 Token specimens are arranged in a loose grid on the canvas surface — not a strict CSS grid, more like a Figma frame with manual placement. Each section gets a labeled frame:
 
-| Frame          | Content                                      |
-| -------------- | -------------------------------------------- |
-| Color          | Swatch grid, one row per color entry         |
-| Typography     | Type specimen at each variant's exact values |
-| Size & Space   | Baseline grid overlay + spacing scale bars   |
-| Breakpoints    | Horizontal ruler with breakpoint markers     |
-| Custom tokens  | Token list with CSS variable names           |
+| Frame         | Content                                      |
+| ------------- | -------------------------------------------- |
+| Color         | Swatch grid, one row per color entry         |
+| Typography    | Type specimen at each variant's exact values |
+| Size & Space  | Baseline grid overlay + spacing scale bars   |
+| Breakpoints   | Horizontal ruler with breakpoint markers     |
+| Custom tokens | Token list with CSS variable names           |
 
 ### Implementation approach
 

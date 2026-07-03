@@ -21,7 +21,7 @@ export const useDynamicNode = () => {
   return useMemo(
     () => ({
       getDynamicNode,
-      destroyNode,
+      destroyNode
     }),
     [destroyNode, getDynamicNode]
   );

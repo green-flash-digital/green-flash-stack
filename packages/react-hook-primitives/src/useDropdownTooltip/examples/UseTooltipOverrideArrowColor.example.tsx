@@ -1,5 +1,6 @@
-import { css } from "@linaria/core";
 import type { FC } from "react";
+
+import { css } from "@linaria/core";
 
 import { useDropdownTooltip } from "../useDropdownTooltip.js";
 
@@ -55,26 +56,21 @@ export default () => {
     dxLabeledBy: "likes-count likes-label",
     dxPosition: "top-center",
     dxArrow: {
-      size: 8,
-    },
+      size: 8
+    }
   });
 
   return (
     <div style={{ maxWidth: 300, margin: "0 auto" }}>
       <div>
-        It&apos;s possible to override the arrow color without statical
-        defininig it in the hook. The hook provides a programmatic way to color
-        the arrow, but most times you&apos;re going to want to color it using
-        CSS or some form of styling methodolgy. In order to do so, you can
+        It&apos;s possible to override the arrow color without statical defininig it in the hook.
+        The hook provides a programmatic way to color the arrow, but most times you&apos;re going to
+        want to color it using CSS or some form of styling methodolgy. In order to do so, you can
         override the `--arrow-color` custom propertry by adding important to it
       </div>
       <br />
       <br />
-      <button
-        ref={setTargetRef}
-        className={buttonClass}
-        onClick={() => alert("Liked!")}
-      >
+      <button ref={setTargetRef} className={buttonClass} onClick={() => alert("Liked!")}>
         <span id="likes-count" className={burstClass}>
           3
         </span>

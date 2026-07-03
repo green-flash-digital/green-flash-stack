@@ -1,5 +1,5 @@
-import { Isoscribe } from "isoscribe";
 import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
+import { Isoscribe } from "isoscribe";
 
 import type { SetAsyncStateQueueState } from "./AsyncStateQueue";
 import { AsyncStateQueue } from "./AsyncStateQueue";

@@ -4,7 +4,7 @@ import { useDropdownMenu } from "../useDropdownMenu.js";
 
 const options = [...new Array(10)].map(() => ({
   id: randUuid(),
-  animal: randAnimal(),
+  animal: randAnimal()
 }));
 
 export default () => {

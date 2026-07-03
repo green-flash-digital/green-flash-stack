@@ -4,7 +4,12 @@ export function getAccessibleTextColor(color: string): "white" | "black" {
   let hex: string;
   const oklchMatch = color.match(/^oklch\(\s*([\d.]+)\s+([\d.]+)\s+([\d.]+)\s*\)$/);
   if (oklchMatch) {
-    hex = chroma(parseFloat(oklchMatch[1]), parseFloat(oklchMatch[2]), parseFloat(oklchMatch[3]), "oklch").hex();
+    hex = chroma(
+      parseFloat(oklchMatch[1]),
+      parseFloat(oklchMatch[2]),
+      parseFloat(oklchMatch[3]),
+      "oklch"
+    ).hex();
   } else {
     hex = color;
   }

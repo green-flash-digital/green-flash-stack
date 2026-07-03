@@ -1,7 +1,8 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
+import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,
@@ -10,7 +11,6 @@ import {
   makeReset
 } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 
 import type { IconCopy } from "~/icons/IconCopy";
 

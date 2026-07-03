@@ -4,12 +4,10 @@ import type {
   DropdownOptionArrow,
   DropdownOptionOrigin,
   DropdownOptionPosition,
-  DropdownOptions,
+  DropdownOptions
 } from "./useDropdown.types.js";
 
-export function isDropdownOpen<T extends HTMLElement = HTMLElement>(
-  node: T | undefined | null
-) {
+export function isDropdownOpen<T extends HTMLElement = HTMLElement>(node: T | undefined | null) {
   return node?.classList.contains("open");
 }
 
@@ -73,7 +71,7 @@ export const arrowClassNames: { [key in DropdownOptionPosition]: string } = {
   "left-bottom": arrowRight,
   "right-top": arrowLeft,
   "right-middle": arrowLeft,
-  "right-bottom": arrowLeft,
+  "right-bottom": arrowLeft
 };
 
 export const useDropdownPositions: DropdownOptionPosition[] = [
@@ -88,7 +86,7 @@ export const useDropdownPositions: DropdownOptionPosition[] = [
   "right-top",
   "left-bottom",
   "left-middle",
-  "left-top",
+  "left-top"
 ];
 
 export const processDropdownOptions = (
@@ -97,10 +95,10 @@ export const processDropdownOptions = (
   dxPosition: options?.dxPosition || "bottom-left",
   dxArrow: {
     size: options?.dxArrow?.size ?? 0,
-    color: options?.dxArrow?.color ?? "transparent",
+    color: options?.dxArrow?.color ?? "transparent"
   },
   dxOffset: options?.dxOffset ?? 0,
-  dxOrigin: options?.dxOrigin ?? "top-left",
+  dxOrigin: options?.dxOrigin ?? "top-left"
 });
 
 export function setDropdownPositionStyles<
@@ -113,7 +111,7 @@ export function setDropdownPositionStyles<
     arrow,
     dropdownNode,
     targetNode,
-    alignmentNode,
+    alignmentNode
   }: {
     arrow: DropdownOptionArrow;
     origin: DropdownOptionOrigin;
@@ -147,17 +145,16 @@ export function setDropdownPositionStyles<
     dropdownNode.style.removeProperty("display");
   }
 
-  const { popoverTop, popoverLeft, resolvedPosition } =
-    calculateDropdownPosition(position, {
-      targetBox,
-      offset: offset || arrow.size,
-      popover: {
-        // using offsets here to ignore any scaling while also
-        // factoring in padding, margin, border and possible scroll bars
-        height: dropdownHeight,
-        width: dropdownWidth,
-      },
-    });
+  const { popoverTop, popoverLeft, resolvedPosition } = calculateDropdownPosition(position, {
+    targetBox,
+    offset: offset || arrow.size,
+    popover: {
+      // using offsets here to ignore any scaling while also
+      // factoring in padding, margin, border and possible scroll bars
+      height: dropdownHeight,
+      width: dropdownWidth
+    }
+  });
 
   dropdownNode.style.setProperty("top", `${popoverTop}px`);
   dropdownNode.style.setProperty("left", `${popoverLeft}px`);
@@ -168,7 +165,7 @@ export function setDropdownPositionStyles<
     targetBox,
     arrow: arrow.size,
     popoverLeft,
-    popoverTop,
+    popoverTop
   });
 
   dropdownNode.classList.add(arrowClassName);
@@ -184,7 +181,7 @@ function calculateDropdownPosition(
   {
     offset,
     targetBox,
-    popover,
+    popover
   }: {
     offset: number;
     targetBox: DOMRect;
@@ -286,7 +283,7 @@ function calculateArrowPosition(
     targetBox,
     arrow,
     popoverLeft,
-    popoverTop,
+    popoverTop
   }: {
     targetBox: DOMRect;
     arrow: number;

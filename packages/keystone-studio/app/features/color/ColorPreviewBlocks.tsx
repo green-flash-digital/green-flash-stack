@@ -1,6 +1,6 @@
 import type { JSX } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { ColorAccessibilityChecker, getAccessibleTextColor } from "@keystone-css/core/utils";
 import {
   makeSpace,

@@ -1,17 +1,15 @@
 import { useState } from "react";
 
 import { useDropdown } from "../useDropdown.js";
-import { useDropdownPositions } from "../useDropdown.utils.js";
 import type { DropdownOptionPosition } from "../useDropdown.types.js";
+import { useDropdownPositions } from "../useDropdown.utils.js";
 
 export default () => {
-  const [position, setPosition] =
-    useState<DropdownOptionPosition>("bottom-right");
-  const { openDropdown, closeDropdown, setDropdownRef, setTargetRef } =
-    useDropdown({
-      id: "use-dropdown",
-      dxPosition: position,
-    });
+  const [position, setPosition] = useState<DropdownOptionPosition>("bottom-right");
+  const { openDropdown, closeDropdown, setDropdownRef, setTargetRef } = useDropdown({
+    id: "use-dropdown",
+    dxPosition: position
+  });
 
   return (
     <>
@@ -19,9 +17,7 @@ export default () => {
         <div>Select a position</div>
         <select
           value={position}
-          onChange={({ currentTarget: { value } }) =>
-            setPosition(value as DropdownOptionPosition)
-          }
+          onChange={({ currentTarget: { value } }) => setPosition(value as DropdownOptionPosition)}
         >
           {useDropdownPositions.map((position) => (
             <option key={position}>{position}</option>
@@ -37,7 +33,7 @@ export default () => {
         <article
           ref={setDropdownRef}
           style={{
-            border: "1px solid red",
+            border: "1px solid red"
           }}
         >
           this is some dropdown where the top right is aligned

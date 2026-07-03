@@ -7,14 +7,12 @@ import {
   type ToastOptions,
   deleteToastOptions,
   getToastOptions,
-  toastContainerId,
+  toastContainerId
 } from "./toast.utils.js";
 
-export function Toaster<
-  ToastComponentProps extends { [key: string]: unknown }
->({
+export function Toaster<ToastComponentProps extends { [key: string]: unknown }>({
   ToastComponent,
-  id,
+  id
 }: {
   ToastComponent: ToastComponent<ToastComponentProps>;
   /**
@@ -38,12 +36,10 @@ export function Toaster<
 
         if (mutation.addedNodes.length) {
           for (const addedNode of mutation.addedNodes) {
-            const toastProps = getToastOptions<
-              ToastComponentProps & ToastOptions
-            >(addedNode);
+            const toastProps = getToastOptions<ToastComponentProps & ToastOptions>(addedNode);
             setToasts((prevState) => ({
               ...prevState,
-              [toastProps.id]: toastProps,
+              [toastProps.id]: toastProps
             }));
           }
         }
@@ -65,7 +61,7 @@ export function Toaster<
     mutationObserverRef.current.observe(toasterRef.current, {
       attributes: true,
       childList: true,
-      subtree: true,
+      subtree: true
     });
 
     // disconnect when the toaster is removed.
@@ -77,11 +73,7 @@ export function Toaster<
 
   return (
     <>
-      <div
-        id={id ?? toastContainerId}
-        style={{ display: "none" }}
-        ref={toasterRef}
-      />
+      <div id={id ?? toastContainerId} style={{ display: "none" }} ref={toasterRef} />
       {Object.values(toasts).length > 0 &&
         createPortal(
           Object.entries(toasts).map(([id, toastProps]) => {

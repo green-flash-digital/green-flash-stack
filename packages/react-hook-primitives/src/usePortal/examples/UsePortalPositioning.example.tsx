@@ -1,9 +1,4 @@
-import {
-  type MouseEventHandler,
-  type RefCallback,
-  useCallback,
-  useRef,
-} from "react";
+import { type MouseEventHandler, type RefCallback, useCallback, useRef } from "react";
 
 import { usePortal } from "../usePortal.js";
 
@@ -49,7 +44,7 @@ export default () => {
           style={{
             position: "fixed",
             padding: "1rem",
-            border: "1px solid red",
+            border: "1px solid red"
           }}
         >
           Portal Content

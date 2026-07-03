@@ -1,6 +1,4 @@
-export function ensurePopover<T extends HTMLElement>(
-  node: T | null
-): node is T {
+export function ensurePopover<T extends HTMLElement>(node: T | null): node is T {
   if (node === null) {
     console.warn(
       "The `popoverRef` has not been correctly initialized. Ensure that you run the `setPopoverRef` as a RefCallback"

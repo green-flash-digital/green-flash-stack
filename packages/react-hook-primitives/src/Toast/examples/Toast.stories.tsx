@@ -5,7 +5,7 @@ import ToastBestPracticeExample from "./ToastBestPractice.example.js";
 import ToastMultipleToastersExample from "./ToastMultipleToasters.example.js";
 
 const meta: Meta = {
-  title: "Popovers / Toast",
+  title: "Popovers / Toast"
 } satisfies Meta<typeof meta>;
 
 export default meta;

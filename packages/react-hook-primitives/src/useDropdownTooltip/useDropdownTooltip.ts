@@ -1,4 +1,5 @@
 import { type RefCallback, useCallback, useId, useMemo } from "react";
+
 import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 
 import { type DropdownOptions, useDropdown } from "#/useDropdown/index.js";
@@ -48,9 +49,7 @@ export type UseTooltipOptionsToggleTip = DropdownOptions & {
   dxType: "toggletip";
 };
 
-export type UseTooltipOptions =
-  | UseTooltipOptionsTooltip
-  | UseTooltipOptionsToggleTip;
+export type UseTooltipOptions = UseTooltipOptionsTooltip | UseTooltipOptionsToggleTip;
 
 export const useDropdownTooltip = <
   DropdownNode extends HTMLElement,
@@ -62,7 +61,7 @@ export const useDropdownTooltip = <
   const memoOptions = useMemo(
     () => ({
       id,
-      ...options,
+      ...options
     }),
     [id, options]
   );
@@ -72,7 +71,7 @@ export const useDropdownTooltip = <
     setDropdownRef,
     setTargetRef: setDropdownTargetRef,
     openDropdown,
-    closeDropdown,
+    closeDropdown
   } = useDropdown<DropdownNode, TargetNode>(memoOptions);
 
   const setTargetRef = useCallback<RefCallback<TargetNode>>(
@@ -104,10 +103,7 @@ export const useDropdownTooltip = <
           target.addEventListener("blur", handleBlur);
           target.addEventListener("mouseenter", handleMouseEnter);
           target.addEventListener("mouseleave", handleMouseLeave);
-          target.setAttribute(
-            "aria-labelledby",
-            memoOptions.dxLabeledBy ?? memoOptions.id
-          );
+          target.setAttribute("aria-labelledby", memoOptions.dxLabeledBy ?? memoOptions.id);
 
           return () => {
             LOG_UDT.debug("Removing target event listeners");
@@ -180,14 +176,7 @@ export const useDropdownTooltip = <
           exhaustiveMatchGuard(memoOptions);
       }
     },
-    [
-      closeDropdown,
-      dropdownRef,
-      memoOptions,
-      openDropdown,
-      setDropdownTargetRef,
-      targetRef,
-    ]
+    [closeDropdown, dropdownRef, memoOptions, openDropdown, setDropdownTargetRef, targetRef]
   );
 
   const setTooltipRef = useCallback<RefCallback<DropdownNode>>(
@@ -213,7 +202,7 @@ export const useDropdownTooltip = <
       setTargetRef,
       setTooltipRef,
       tooltipRef: dropdownRef,
-      targetRef,
+      targetRef
     }),
     [dropdownRef, setTargetRef, setTooltipRef, targetRef]
   );

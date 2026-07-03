@@ -1,6 +1,7 @@
+import { type FC, useCallback } from "react";
+
 import { css } from "@linaria/core";
 import { randBoolean, randSentence } from "@ngneat/falso";
-import { type FC, useCallback } from "react";
 
 import { classes } from "#/_utils/public/index.js";
 import { Toaster, useToast } from "#/Toast/index.js";
@@ -35,7 +36,7 @@ export default () => {
   const createRandomToast = useCallback(() => {
     create({
       variant: randBoolean() ? "success" : "error",
-      message: randSentence({ length: 1 }).toString(),
+      message: randSentence({ length: 1 }).toString()
     });
   }, [create]);
 

@@ -1,19 +1,18 @@
 import type { ChangeEventHandler } from "react";
 import { useCallback, useState } from "react";
+
 import { randAirline, randUuid } from "@ngneat/falso";
 
 import { useDropdownMenu } from "../useDropdownMenu.js";
 
 const options = [...new Array(10)].map(() => ({
   id: randUuid(),
-  airline: randAirline(),
+  airline: randAirline()
 }));
 
 export default () => {
   const { setDropdownRef, setTargetRef } = useDropdownMenu<HTMLUListElement>();
-  const [selectedOption, setSelectedOption] = useState<
-    (typeof options)[0] | undefined
-  >(undefined);
+  const [selectedOption, setSelectedOption] = useState<(typeof options)[0] | undefined>(undefined);
 
   const createHandleSelect = useCallback<
     (option: (typeof options)[0]) => ChangeEventHandler<HTMLInputElement>

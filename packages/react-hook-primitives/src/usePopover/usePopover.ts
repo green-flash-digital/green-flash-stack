@@ -20,7 +20,7 @@ export const usePopover = <
   PopoverNode extends HTMLElement,
   TargetNode extends FocusableElement = FocusableElement
 >({
-  id,
+  id
 }: PopoverOptions) => {
   const popoverRef = useRef<PopoverNode | null>(null);
   const targetRef = useRef<TargetNode | null>(null);
@@ -72,7 +72,7 @@ export const usePopover = <
 
     popover.classList.replace("open", "close");
     const animations = popover.getAnimations({
-      subtree: true,
+      subtree: true
     });
     await Promise.allSettled(animations.map((animation) => animation.finished));
 
@@ -87,6 +87,6 @@ export const usePopover = <
     setPopoverRef,
     setTargetRef,
     showPopover,
-    hidePopover,
+    hidePopover
   };
 };

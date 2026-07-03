@@ -2,9 +2,7 @@ import { useCallback, useMemo } from "react";
 
 import { setToastOptions, toastContainerId } from "./toast.utils.js";
 
-export const useToast = <
-  ToastOptions extends Record<string, unknown>
->(params?: {
+export const useToast = <ToastOptions extends Record<string, unknown>>(params?: {
   /**
    * An optional ID that should be supplied to the toaster and this hook
    * to customize what container the toasts get mounted to. This should be used
@@ -49,7 +47,7 @@ export const useToast = <
       // set the toast options to a window context
       const toastId = setToastOptions({
         ...options,
-        closeToast: removeToast,
+        closeToast: removeToast
       });
       toast.setAttribute("id", toastId);
       toastContainer.appendChild(toast);
@@ -66,7 +64,7 @@ export const useToast = <
 
   return useMemo(
     () => ({
-      create,
+      create
     }),
     [create]
   );

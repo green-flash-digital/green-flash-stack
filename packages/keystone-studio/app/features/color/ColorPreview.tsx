@@ -1,6 +1,6 @@
 import { useMemo, type ReactNode } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { LayoutConfigSectionPreview } from "~/components/LayoutConfigSectionPreview";

@@ -6,16 +6,13 @@ import {
   useImperativeHandle,
   useMemo,
   useRef,
-  useState,
+  useState
 } from "react";
 
 export type ModalDefaultState = Record<string, unknown>;
 
 export type ModalRef<T extends ModalDefaultState = ModalDefaultState> = {
-  handleOpen: (
-    e: React.MouseEvent<HTMLElement> | undefined,
-    initialData?: T
-  ) => void;
+  handleOpen: (e: React.MouseEvent<HTMLElement> | undefined, initialData?: T) => void;
   handleClose: () => void;
   nodeRef: MutableRefObject<HTMLDialogElement | null>;
 };
@@ -116,8 +113,7 @@ export const useModalDialog = <T extends ModalDefaultState = ModalDefaultState>(
 
       // Reconcile some params
       const closeOnBackdropClick = params.closeOnBackdropClick ?? false;
-      const disableCloseOnEscapePress =
-        params.disableCloseOnEscapePress ?? false;
+      const disableCloseOnEscapePress = params.disableCloseOnEscapePress ?? false;
 
       // show the dialog as a modal dialog
       dialogNode.showModal();
@@ -148,11 +144,7 @@ export const useModalDialog = <T extends ModalDefaultState = ModalDefaultState>(
         }
       });
     },
-    [
-      handleCloseModal,
-      params.closeOnBackdropClick,
-      params.disableCloseOnEscapePress,
-    ]
+    [handleCloseModal, params.closeOnBackdropClick, params.disableCloseOnEscapePress]
   );
 
   /**
@@ -166,7 +158,7 @@ export const useModalDialog = <T extends ModalDefaultState = ModalDefaultState>(
         setIsOpen(true);
       },
       handleClose: handleCloseModal,
-      nodeRef: modalRef,
+      nodeRef: modalRef
     };
   });
 
@@ -175,7 +167,7 @@ export const useModalDialog = <T extends ModalDefaultState = ModalDefaultState>(
       isOpen,
       dialogRef,
       dialogState,
-      closeModal: handleCloseModal,
+      closeModal: handleCloseModal
     }),
     [handleCloseModal, dialogRef, dialogState, isOpen]
   );

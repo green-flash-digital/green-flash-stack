@@ -1,5 +1,6 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
+
 import { classes } from "@green-flash/ts-utils/isomorphic";
 
 import { InputText, type InputTextPropsCustom } from "./InputText";

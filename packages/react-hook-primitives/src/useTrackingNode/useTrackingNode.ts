@@ -77,7 +77,7 @@ export function useTrackingNode<
     Observer.observe(parentRef.current, {
       attributes: true,
       subtree: true,
-      attributeFilter: options?.attributeFilter,
+      attributeFilter: options?.attributeFilter
     });
 
     // run the callback on the first render
@@ -86,13 +86,7 @@ export function useTrackingNode<
     return () => {
       Observer.disconnect();
     };
-  }, [
-    querySelector,
-    callback,
-    options?.attributeFilter,
-    parentRef,
-    runCallback,
-  ]);
+  }, [querySelector, callback, options?.attributeFilter, parentRef, runCallback]);
 
   return trackingRef;
 }

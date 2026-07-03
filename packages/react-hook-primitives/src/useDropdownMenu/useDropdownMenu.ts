@@ -1,14 +1,10 @@
 import type { RefCallback } from "react";
 import { useId, useRef, useCallback, useMemo } from "react";
 
-
-
 import { useDropdown } from "#/useDropdown/useDropdown.js";
 import type { DropdownOptions } from "#/useDropdown/useDropdown.types.js";
 
 import { LOG_UDM } from "./use-dropdown-menu.utils.js";
-
-
 
 export type UseDropdownMenuArgs = DropdownOptions;
 /**
@@ -31,14 +27,14 @@ export function useDropdownMenu<
     setTargetRef: iSetTargetRef,
     targetRef,
     dropdownRef,
-    alignmentRef,
+    alignmentRef
   } = useDropdown<DropdownNode, HTMLButtonElement, AlignmentNode>(
     useMemo(
       () => ({
         id,
         dxArrow: options?.dxArrow,
         dxOffset: options?.dxOffset,
-        dxPosition: options?.dxPosition,
+        dxPosition: options?.dxPosition
       }),
       [id, options?.dxArrow, options?.dxOffset, options?.dxPosition]
     )
@@ -148,15 +144,8 @@ export function useDropdownMenu<
       setDropdownRef,
       setTargetRef,
       closeMenu: handleClose,
-      alignmentRef,
+      alignmentRef
     }),
-    [
-      alignmentRef,
-      dropdownRef,
-      handleClose,
-      setDropdownRef,
-      setTargetRef,
-      targetRef,
-    ]
+    [alignmentRef, dropdownRef, handleClose, setDropdownRef, setTargetRef, targetRef]
   );
 }

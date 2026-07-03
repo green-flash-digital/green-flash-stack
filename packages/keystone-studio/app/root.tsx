@@ -5,6 +5,7 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  redirect,
   useLoaderData,
   useRevalidator
 } from "react-router";
@@ -20,8 +21,15 @@ import { Label } from "./components/Label";
 import { LayoutFooter } from "./components/LayoutFooter";
 import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
+import { LayoutHeaderUserMenu } from "./components/LayoutHeaderUserMenu";
 import { LayoutMain } from "./components/LayoutMain";
-import { AdapterContext, IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
+import {
+  AdapterContext,
+  IsLocalContext,
+  TokensPathContext,
+  UserContext,
+  VersionsDirContext
+} from "./context";
 import { FileSystemAdapter } from "./utils/StorageAdapter";
 
 export const middleware: Route.MiddlewareFunction[] = [
@@ -37,6 +45,16 @@ export const middleware: Route.MiddlewareFunction[] = [
     if (tokensPath) {
       context.set(AdapterContext, new FileSystemAdapter(tokensPath, versionsDir));
     }
+  },
+  ({ context, request }) => {
+    if (context.get(IsLocalContext)) return;
+
+    const url = new URL(request.url);
+    const isAuthPath = url.pathname === "/login" || url.pathname.startsWith("/api/auth");
+
+    const user = context.get(UserContext);
+    if (!user && !isAuthPath) throw redirect("/login");
+    if (user && url.pathname === "/login") throw redirect("/config");
   }
 ];
 
@@ -100,11 +118,14 @@ export function Layout({ children }: { children: React.ReactNode }) {
 }
 
 export async function loader({ context }: Route.LoaderArgs) {
-  return { isLocal: context.get(IsLocalContext) };
+  return {
+    isLocal: context.get(IsLocalContext),
+    user: context.get(UserContext)
+  };
 }
 
 export default function App() {
-  const { isLocal } = useLoaderData<typeof loader>();
+  const { isLocal, user } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
 
   useEffect(() => {
@@ -133,7 +154,7 @@ export default function App() {
           Keystone CSS
         </LayoutHeaderLogo>
         <div />
-        {/* <LayoutHeaderMenu /> */}
+        {!isLocal && user && <LayoutHeaderUserMenu user={user} />}
       </LayoutHeader>
       <LayoutMain>
         <Outlet />

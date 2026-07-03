@@ -1,6 +1,6 @@
 import { forwardRef } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 

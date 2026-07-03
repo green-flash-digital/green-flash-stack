@@ -15,10 +15,7 @@ import { VariantContainerBarActions } from "~/components/VariantContainerBarActi
 import { VariantContainerBarTitle } from "~/components/VariantContainerBarTitle";
 import { VariantContainerContent } from "~/components/VariantContainerContent";
 
-import type {
-  ConfigurationStateFont,
-  ConfigurationStateFontVariantValue
-} from "../studio.state";
+import type { ConfigurationStateFont, ConfigurationStateFontVariantValue } from "../studio.state";
 
 export type OnFontVariantAction = (
   options:

@@ -14,7 +14,7 @@ export default () => {
             zIndex: 10,
             position: "fixed",
             background: "red",
-            top: 0,
+            top: 0
           }}
         >
           Portal Content

@@ -1,12 +1,8 @@
 import { type ForwardedRef, forwardRef } from "react";
 
-import {
-  Modal,
-  type ModalPropsCustom,
-  type ModalPropsNative,
-} from "#/Modal/index.js";
-import type { ModalDefaultState, ModalRef } from "#/useModalDialog/index.js";
 import { classes } from "#/_utils/public/index.js";
+import { Modal, type ModalPropsCustom, type ModalPropsNative } from "#/Modal/index.js";
+import type { ModalDefaultState, ModalRef } from "#/useModalDialog/index.js";
 
 export type DrawerPropsNative = ModalPropsNative;
 export type DrawerPropsCustom = ModalPropsCustom & {
@@ -15,12 +11,7 @@ export type DrawerPropsCustom = ModalPropsCustom & {
 export type DrawerProps = DrawerPropsNative & DrawerPropsCustom;
 
 export const Drawer = forwardRef(function Drawer<T extends ModalDefaultState>(
-  {
-    children,
-    dxOrientation = "slide-left",
-    className,
-    ...restProps
-  }: DrawerProps,
+  { children, dxOrientation = "slide-left", className, ...restProps }: DrawerProps,
   ref: ForwardedRef<ModalRef<T>>
 ) {
   return (

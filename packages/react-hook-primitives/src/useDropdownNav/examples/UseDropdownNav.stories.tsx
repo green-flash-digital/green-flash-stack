@@ -5,8 +5,8 @@ import UseDropdownNavExample from "./UseDropdownNav.example.js";
 const meta: Meta = {
   title: "Hooks / useDropdownNav",
   parameters: {
-    layout: "centered",
-  },
+    layout: "centered"
+  }
 } satisfies Meta<typeof meta>;
 
 export default meta;

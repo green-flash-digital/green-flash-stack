@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeFontFamily, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import type { CodeToHastOptions, BundledLanguage, BundledTheme } from "shiki";

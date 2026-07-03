@@ -1,4 +1,5 @@
 import { type JSX, type RefCallback, useCallback, useId } from "react";
+
 import { classes } from "@green-flash/ts-utils/isomorphic";
 
 import type { ModalState } from "./Modal.engine";

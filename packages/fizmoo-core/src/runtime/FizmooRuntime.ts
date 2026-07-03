@@ -87,8 +87,8 @@ export class FizmooRuntime {
    */
   private _parseExpression() {
     const commandParts = process.argv.slice(2);
-    let commandPath: string[] = [];
-    let remainingArgs = [...commandParts];
+    const commandPath: string[] = [];
+    const remainingArgs = [...commandParts];
     let commandId = "";
 
     while (remainingArgs.length > 0) {

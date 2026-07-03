@@ -1,18 +1,14 @@
 import { forwardRef, type JSX, type ForwardedRef, type ReactNode } from "react";
 
-
-
+import { classes } from "#/_utils/public/index.js";
 import {
   type ModalDefaultState,
   type ModalRef,
   type UseModalOptions,
-  useModalDialog,
+  useModalDialog
 } from "#/useModalDialog/index.js";
-import { classes } from "#/_utils/public/index.js";
 
 import { ModalProvider } from "./Modal.provider.js";
-
-
 
 export type ModalPropsNative = Omit<JSX.IntrinsicElements["dialog"], "ref">;
 export type ModalPropsCustom = UseModalOptions & {
@@ -27,17 +23,13 @@ export const Modal = forwardRef(function Modal<T extends ModalDefaultState>(
 ) {
   const { isOpen, dialogRef, dialogState, closeModal } = useModalDialog<T>({
     ref,
-    ...restProps,
+    ...restProps
   });
 
   if (!isOpen) return;
 
   return (
-    <dialog
-      id={restProps.id}
-      ref={dialogRef}
-      className={classes("modal", dxSize, className)}
-    >
+    <dialog id={restProps.id} ref={dialogRef} className={classes("modal", dxSize, className)}>
       <ModalProvider initialState={dialogState} closeModal={closeModal}>
         {children}
       </ModalProvider>

@@ -14,9 +14,7 @@ import { useImperativeHandle, useRef } from "react";
  *   return <input ref={internalRef} />;
  * });
  */
-export function useForwardedRef<T extends HTMLElement>(
-  forwardedRef: ForwardedRef<T>
-) {
+export function useForwardedRef<T extends HTMLElement>(forwardedRef: ForwardedRef<T>) {
   const internalRef = useRef<T | null>(null);
 
   // @ts-expect-error mismatch in the internals

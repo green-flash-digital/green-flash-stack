@@ -1,7 +1,7 @@
 import { css } from "@linaria/core";
 
-import { Drawer } from "../ModalDrawer.js";
 import { useDrawer } from "../modal-drawer.useDrawer.js";
+import { Drawer } from "../ModalDrawer.js";
 
 const drawerStyles = css`
   --drawer-height: 40%;
@@ -89,11 +89,7 @@ export default () => {
       <button type="button" onClick={openDrawer}>
         Slide down
       </button>
-      <Drawer
-        ref={drawerRef}
-        dxOrientation="slide-down"
-        className={drawerStyles}
-      >
+      <Drawer ref={drawerRef} dxOrientation="slide-down" className={drawerStyles}>
         This is some drawer content!
       </Drawer>
     </>

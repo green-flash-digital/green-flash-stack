@@ -19,7 +19,7 @@ export function useDrawer<T extends ModalDefaultState>() {
     () => ({
       drawerRef: drawerRef as unknown as MutableRefObject<ModalRef>,
       openDrawer,
-      closeDrawer,
+      closeDrawer
     }),
     [closeDrawer, openDrawer]
   );

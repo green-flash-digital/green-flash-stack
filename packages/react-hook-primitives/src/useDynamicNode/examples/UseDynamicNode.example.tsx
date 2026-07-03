@@ -13,10 +13,7 @@ export default () => {
 
   return (
     <>
-      <button
-        type="button"
-        onClick={() => setIsOpen((prevState) => !prevState)}
-      >
+      <button type="button" onClick={() => setIsOpen((prevState) => !prevState)}>
         toggle
       </button>
       {isOpen &&
@@ -27,7 +24,7 @@ export default () => {
               background: "limegreen",
               top: "30%",
               left: "30%",
-              padding: "2rem",
+              padding: "2rem"
             }}
           >
             I&apos;m in a dynamic Node

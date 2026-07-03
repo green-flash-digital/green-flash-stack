@@ -1,20 +1,14 @@
 import type { RefCallback } from "react";
 import { useCallback, useId, useMemo, useRef } from "react";
 
-
-
-import type { DropdownOptions } from "#/useDropdown/useDropdown.types.js";
 import { useDropdown } from "#/useDropdown/useDropdown.js";
+import type { DropdownOptions } from "#/useDropdown/useDropdown.types.js";
 
 import { LOG_UDN } from "./use-dropdown-nav.utils.js";
 
-
-
 export type UseDropdownNavArgs = DropdownOptions;
 
-export function useDropdownNav<DropdownNode extends HTMLElement>(
-  options?: UseDropdownNavArgs
-) {
+export function useDropdownNav<DropdownNode extends HTMLElement>(options?: UseDropdownNavArgs) {
   const id = useId();
   const onWindowClickRef = useRef<((e: MouseEvent) => void) | null>(null);
   const onWindowKeydownRef = useRef<((e: KeyboardEvent) => void) | null>(null);
@@ -26,14 +20,14 @@ export function useDropdownNav<DropdownNode extends HTMLElement>(
     setDropdownRef,
     setTargetRef: setDropdownTargetRef,
     dropdownRef,
-    targetRef,
+    targetRef
   } = useDropdown<DropdownNode, HTMLButtonElement>(
     useMemo(
       () => ({
         id,
         dxArrow: options?.dxArrow,
         dxOffset: options?.dxOffset,
-        dxPosition: options?.dxPosition,
+        dxPosition: options?.dxPosition
       }),
       [id, options?.dxArrow, options?.dxOffset, options?.dxPosition]
     )
@@ -83,9 +77,7 @@ export function useDropdownNav<DropdownNode extends HTMLElement>(
 
       // Check if the clicked element an anchor tag or is
       // an element that is a descendent of an anchor tag
-      const anchorTags = Array.from(
-        dropdownRef.current?.getElementsByTagName("a") ?? []
-      );
+      const anchorTags = Array.from(dropdownRef.current?.getElementsByTagName("a") ?? []);
       for (const anchorTag of anchorTags) {
         if (anchorTag === clickedNode || anchorTag.contains(clickedNode)) {
           return closeNavMenu();
@@ -172,6 +164,6 @@ export function useDropdownNav<DropdownNode extends HTMLElement>(
     targetRef,
     navMenuRef: dropdownRef,
     setTargetRef,
-    setNavMenuRef: setDropdownRef,
+    setNavMenuRef: setDropdownRef
   };
 }

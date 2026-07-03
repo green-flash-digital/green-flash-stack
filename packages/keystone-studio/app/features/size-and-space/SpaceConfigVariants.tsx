@@ -1,11 +1,11 @@
 import type { ChangeEventHandler, FormEventHandler, RefCallback } from "react";
 import { useCallback, useMemo, useRef } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { useToggle } from "react-hook-primitives";
 
+import { debounce } from "@green-flash/ts-utils/browser";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
-import { debounce } from "@green-flash/ts-utils/browser";
 import type { Updater } from "use-immer";
 
 import { Button } from "~/components/Button";

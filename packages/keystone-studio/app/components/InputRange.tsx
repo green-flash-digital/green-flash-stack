@@ -1,8 +1,8 @@
 import type { ChangeEventHandler, JSX } from "react";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { useForwardedRef } from "react-hook-primitives";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,

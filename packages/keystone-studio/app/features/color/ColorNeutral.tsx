@@ -45,10 +45,7 @@ export function ColorNeutral() {
           {colorEntries.map(([colorId, colorNameAndDef]) => {
             return (
               <li key={colorId}>
-                <ColorNeutralVariant
-                  colorDef={{ [colorId]: colorNameAndDef }}
-                  update={update}
-                />
+                <ColorNeutralVariant colorDef={{ [colorId]: colorNameAndDef }} update={update} />
               </li>
             );
           })}

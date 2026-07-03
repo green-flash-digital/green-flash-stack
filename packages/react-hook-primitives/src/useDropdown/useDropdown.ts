@@ -4,14 +4,7 @@ import type { FocusableElement } from "#/usePopover/usePopover.js";
 import { usePopover } from "#/usePopover/usePopover.js";
 
 import type { DropdownOptions } from "./useDropdown.types.js";
-import {
-  processDropdownOptions,
-  setDropdownPositionStyles,
-} from "./useDropdown.utils.js";
-
-
-
-
+import { processDropdownOptions, setDropdownPositionStyles } from "./useDropdown.utils.js";
 
 export type UseDropdownHandleOpen = (e?: React.MouseEvent) => void;
 
@@ -29,14 +22,8 @@ export const useDropdown = <
 >(
   options: UseDropdownOptions
 ) => {
-  const {
-    popoverRef,
-    targetRef,
-    setPopoverRef,
-    setTargetRef,
-    showPopover,
-    hidePopover,
-  } = usePopover<DropdownNode, TargetNode>({ id: options.id });
+  const { popoverRef, targetRef, setPopoverRef, setTargetRef, showPopover, hidePopover } =
+    usePopover<DropdownNode, TargetNode>({ id: options.id });
   const alignmentRef = useRef<AlignmentNode | null>(null);
 
   const memoOptions = useMemo(() => options, [options]);
@@ -69,7 +56,7 @@ export const useDropdown = <
       origin: parsedOptions.dxOrigin,
       dropdownNode: popover,
       targetNode: target,
-      alignmentNode: alignmentRef.current,
+      alignmentNode: alignmentRef.current
     });
 
     // show the popover
@@ -84,15 +71,8 @@ export const useDropdown = <
       targetRef,
       setTargetRef,
       closeDropdown: hidePopover,
-      openDropdown,
+      openDropdown
     }),
-    [
-      hidePopover,
-      openDropdown,
-      popoverRef,
-      setDropdownRef,
-      setTargetRef,
-      targetRef,
-    ]
+    [hidePopover, openDropdown, popoverRef, setDropdownRef, setTargetRef, targetRef]
   );
 };

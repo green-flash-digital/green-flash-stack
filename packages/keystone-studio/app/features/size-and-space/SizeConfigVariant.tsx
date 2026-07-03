@@ -1,8 +1,8 @@
 import type { JSX } from "react";
 import { forwardRef, useCallback } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { useToggle } from "react-hook-primitives";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 

@@ -13,9 +13,7 @@ export const useCarousel = <T extends Record<string, unknown>>(items: T[]) => {
   }, [items.length]);
 
   const prev = useCallback(() => {
-    setCurrentIndex((prevIndex) =>
-      prevIndex === 0 ? items.length - 1 : prevIndex - 1
-    );
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? items.length - 1 : prevIndex - 1));
   }, [items.length]);
 
   const currentItem = items[currentIndex];

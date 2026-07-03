@@ -22,7 +22,9 @@ const styles = css`
     font-size: ${makeRem(14)};
     font-weight: ${makeFontWeight("mulish-medium")};
     color: ${makeColor("neutral-light", { opacity: 0.6 })};
-    transition: background 0.15s ease-in-out, color 0.15s ease-in-out;
+    transition:
+      background 0.15s ease-in-out,
+      color 0.15s ease-in-out;
 
     &:hover {
       background: ${makeColor("neutral-light", { opacity: 0.06 })};

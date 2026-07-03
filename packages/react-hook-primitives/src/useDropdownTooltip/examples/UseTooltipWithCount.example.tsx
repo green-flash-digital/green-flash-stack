@@ -1,5 +1,6 @@
-import { css } from "@linaria/core";
 import type { FC } from "react";
+
+import { css } from "@linaria/core";
 
 import { useDropdownTooltip } from "../useDropdownTooltip.js";
 
@@ -55,17 +56,13 @@ export default () => {
     dxPosition: "top-center",
     dxArrow: {
       size: 8,
-      color: "black",
-    },
+      color: "black"
+    }
   });
 
   return (
     <>
-      <button
-        ref={setTargetRef}
-        className={buttonClass}
-        onClick={() => alert("Liked!")}
-      >
+      <button ref={setTargetRef} className={buttonClass} onClick={() => alert("Liked!")}>
         <span id="likes-count" className={burstClass}>
           3
         </span>

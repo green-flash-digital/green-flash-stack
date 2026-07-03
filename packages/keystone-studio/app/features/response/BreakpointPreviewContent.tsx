@@ -1,7 +1,7 @@
 import type { MouseEventHandler, RefCallback } from "react";
 import { useCallback, useMemo, useRef, useState } from "react";
-import { classes } from "@green-flash/ts-utils/isomorphic";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,

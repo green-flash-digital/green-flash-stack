@@ -1,10 +1,9 @@
 import { useDropdown } from "../useDropdown.js";
 
 export default () => {
-  const { openDropdown, closeDropdown, setDropdownRef, setTargetRef } =
-    useDropdown({
-      id: "use-dropdown",
-    });
+  const { openDropdown, closeDropdown, setDropdownRef, setTargetRef } = useDropdown({
+    id: "use-dropdown"
+  });
 
   return (
     <>
@@ -14,7 +13,7 @@ export default () => {
       <article
         ref={setDropdownRef}
         style={{
-          border: "1px solid red",
+          border: "1px solid red"
         }}
       >
         this is some dropdown content

@@ -4,7 +4,7 @@ import ExampleUsePortal from "./UsePortal.example.js";
 import ExampleUsePortalPositioning from "./UsePortalPositioning.example.js";
 
 const meta: Meta = {
-  title: "Hooks / usePortal",
+  title: "Hooks / usePortal"
 } satisfies Meta<typeof meta>;
 
 export default meta;

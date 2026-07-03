@@ -1,8 +1,8 @@
 import path from "node:path";
 
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 import { Keystone } from "@keystone-css/core";
 import { defineCommand } from "fizmoo";
-import { writeFileRecursive } from "@green-flash/ts-utils/node";
 
 export default defineCommand({
   name: "template",

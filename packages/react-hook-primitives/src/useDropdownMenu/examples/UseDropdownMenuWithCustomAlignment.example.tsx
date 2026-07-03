@@ -4,7 +4,7 @@ import { useDropdownMenu } from "../useDropdownMenu.js";
 
 const options = [...new Array(10)].map(() => ({
   id: randUuid(),
-  animal: randAnimal(),
+  animal: randAnimal()
 }));
 
 // By default the dropdown will be aligned to the target. The hook exports
@@ -17,10 +17,7 @@ export default () => {
   >();
 
   return (
-    <div
-      ref={alignmentRef}
-      style={{ padding: "3rem", border: "1px solid green" }}
-    >
+    <div ref={alignmentRef} style={{ padding: "3rem", border: "1px solid green" }}>
       <button ref={setTargetRef}>open the menu</button>
       <ul ref={setDropdownRef}>
         {options.map((option) => (

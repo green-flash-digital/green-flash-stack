@@ -1,11 +1,4 @@
-import {
-  type ReactNode,
-  memo,
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from "react";
+import { type ReactNode, memo, useCallback, useEffect, useMemo, useState } from "react";
 import { createPortal } from "react-dom";
 
 import { useDynamicNode } from "#/useDynamicNode/useDynamicNode.js";
@@ -38,7 +31,7 @@ export const usePortal = () => {
 
   const Portal = memo(function Portal({
     children,
-    disabled = false,
+    disabled = false
   }: {
     children: ReactNode;
     disabled?: boolean;

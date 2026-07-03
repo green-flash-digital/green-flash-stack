@@ -1,9 +1,9 @@
 import type { RefCallback } from "react";
 import { useId, useRef, useMemo, useCallback, useState } from "react";
 
-import type { DropdownOptions } from "#/useDropdown/useDropdown.types.js";
 import type { UseDropdownOptions } from "#/useDropdown/useDropdown.js";
 import { useDropdown } from "#/useDropdown/useDropdown.js";
+import type { DropdownOptions } from "#/useDropdown/useDropdown.types.js";
 
 export type UseDropdownInputArgs = DropdownOptions & {
   /**
@@ -30,14 +30,14 @@ export function useDropdownInput<
     setTargetRef: setInnerTargetRef,
     closeDropdown,
     dropdownRef,
-    targetRef,
+    targetRef
   } = useDropdown<DropdownNode, TargetNode>(
     useMemo<UseDropdownOptions>(
       () => ({
         id: options?.dxId ?? id,
         dxPosition: options.dxPosition,
         dxArrow: options.dxArrow,
-        dxOffset: options.dxOffset,
+        dxOffset: options.dxOffset
       }),
       [id, options.dxId, options.dxArrow, options.dxOffset, options.dxPosition]
     )
@@ -103,20 +103,12 @@ export function useDropdownInput<
           const isDropdownOpen = isDropdownOpenRef.current;
           if (!container || !isDropdownOpen) return;
 
-          const containsClickedNode = container.contains(
-            clickedNodeRef.current
-          ); // click events
+          const containsClickedNode = container.contains(clickedNodeRef.current); // click events
           const containsActiveNode = container.contains(document.activeElement); // all browsers
-          const containsRelatedNode = container.contains(
-            e.relatedTarget as Node
-          ); // chrome || webkit browsers
+          const containsRelatedNode = container.contains(e.relatedTarget as Node); // chrome || webkit browsers
 
           // Don't do anything. The focus still remains within the container
-          if (
-            containsClickedNode ||
-            containsActiveNode ||
-            containsRelatedNode
-          ) {
+          if (containsClickedNode || containsActiveNode || containsRelatedNode) {
             return;
           }
 
@@ -163,6 +155,6 @@ export function useDropdownInput<
     setTargetRef,
     closeInputMenu,
     openInputMenu,
-    isOpen,
+    isOpen
   };
 }

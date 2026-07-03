@@ -1,19 +1,12 @@
-import { css } from "@linaria/core";
-import {
-  randBoolean,
-  randProductDescription,
-  randSentence,
-} from "@ngneat/falso";
 import type { FC } from "react";
 
-
+import { css } from "@linaria/core";
+import { randBoolean, randProductDescription, randSentence } from "@ngneat/falso";
 
 import { classes } from "#/_utils/public/index.js";
 
-import { Toaster } from "../Toaster.js";
 import { useToast } from "../toast.useToast.js";
-
-
+import { Toaster } from "../Toaster.js";
 
 const divCSS = css`
   width: 400px;
@@ -103,7 +96,7 @@ export default () => {
         onClick={() =>
           createComponentsToast({
             variant: randBoolean() ? "success" : "error",
-            message: randSentence({ length: 1 }).toString(),
+            message: randSentence({ length: 1 }).toString()
           })
         }
       >
@@ -116,7 +109,7 @@ export default () => {
           createFeaturesToast({
             variant: randBoolean() ? "info" : "warning",
             feature: randProductDescription(),
-            message: randSentence({ length: 1 }).toString(),
+            message: randSentence({ length: 1 }).toString()
           })
         }
       >
