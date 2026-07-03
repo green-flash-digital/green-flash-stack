@@ -454,6 +454,66 @@ These are additive — don't change the existing per-color WCAG table.
 
 ---
 
+## Phase 7 — Interactive Preview Canvas
+
+**Goal:** Replace the static preview panel with a Figma-style infinite canvas — pannable, zoomable, with interactive token specimens pinned to the canvas surface. Lets designers zoom in to inspect spacing, type scales, and color at real pixel density rather than reading numbers off a form.
+
+### Why Figma is the right reference
+
+Figma cracked this interaction model: the canvas is the source of truth, the sidebar is context. Copying that pattern gives studio users an immediately familiar mental model — scroll to zoom, drag to pan, click a specimen to select it. Nothing to learn.
+
+### Canvas primitives
+
+The canvas is a `<div>` with `transform: scale(zoom) translate(panX, panY)` applied to an inner container. All token specimens live inside that container at natural pixel sizes — scaling happens at the canvas level, not per-element.
+
+```
+┌─ canvas viewport (overflow: hidden) ──────────────────────┐
+│  ┌─ canvas surface (transform: scale + translate) ───────┐ │
+│  │  [Color swatches]   [Type specimen]   [Spacing bars]  │ │
+│  │                                                        │ │
+│  │  [Size grid]        [Breakpoint ruler]                 │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                                          [+] [-] [Reset]    │
+└────────────────────────────────────────────────────────────┘
+```
+
+Interactions:
+- **Scroll** — zoom in/out (same as Figma / browser devtools)
+- **Drag** — pan the canvas
+- **Cmd/Ctrl + 0** — reset to fit-all view
+- **Click specimen** — highlight corresponding config section in the left panel (stretch)
+
+### Canvas layout
+
+Token specimens are arranged in a loose grid on the canvas surface — not a strict CSS grid, more like a Figma frame with manual placement. Each section gets a labeled frame:
+
+| Frame          | Content                                      |
+| -------------- | -------------------------------------------- |
+| Color          | Swatch grid, one row per color entry         |
+| Typography     | Type specimen at each variant's exact values |
+| Size & Space   | Baseline grid overlay + spacing scale bars   |
+| Breakpoints    | Horizontal ruler with breakpoint markers     |
+| Custom tokens  | Token list with CSS variable names           |
+
+### Implementation approach
+
+- **No raster canvas library** — Konva/Pixi are for pixel rendering; DOM + CSS transform keeps the existing React component tree intact and lets all existing preview components render as-is.
+- **`@use-gesture/react`** for gesture handling — covers wheel zoom, drag-to-pan, and pinch (mobile) with full cross-browser/trackpad normalization. Owns gesture detection only; transform state stays in the hook below. Prefer this over `react-zoom-pan-pinch` (more plug-and-play but less control over behavior and HUD integration).
+- **`useCanvasTransform` hook** — owns `zoom` and `pan` state, calls `@use-gesture/react` internally, exposes the bind function and transform string to the canvas viewport div.
+- **Zoom bounds** — clamp between 0.1× and 4×. Default fit-to-viewport on mount.
+- **HUD controls** — zoom in/out buttons and percentage readout, pinned to the viewport with `position: absolute`. Save button stays here too (was floating in preview area header).
+
+### Tasks
+
+- [ ] Create `useCanvasTransform.ts` — wheel zoom, pointer drag-to-pan, clamp + reset
+- [ ] Create `PreviewCanvas.tsx` — viewport div + surface div, attaches transform hook
+- [ ] Create `PreviewCanvasHud.tsx` — zoom %, +/-, reset, save button; `position: absolute` in viewport
+- [ ] Port existing preview components (color swatches, type specimen, etc.) into canvas frames
+- [ ] Add per-frame labels (styled like Figma's layer name above a frame)
+- [ ] Keyboard shortcut: Cmd+0 resets zoom/pan
+
+---
+
 ## Conventions to Adopt
 
 ### Error handling — `http-errors` + loader/action data shape

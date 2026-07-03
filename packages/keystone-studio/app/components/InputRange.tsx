@@ -234,7 +234,7 @@ export const InputRange = forwardRef<HTMLInputElement, InputRangeProps>(function
           // @ts-expect-error Custom properties are allowed but cannot be recognized by the compiler
           "--percentage": calculatePercentage(localValue, min, max).percent
         }}
-        onInput={handleOnChange}
+        onChange={handleOnChange}
         ref={inputRangeRef}
       />
       {dxDisplayMax && <span className="range-label">{max}</span>}

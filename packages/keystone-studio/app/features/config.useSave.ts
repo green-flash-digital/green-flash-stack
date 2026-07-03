@@ -20,7 +20,7 @@ export function useSaveConfig() {
       { config: JSON.stringify(config) },
       { method: "POST", action: "/api/save-config" }
     );
-    if (res.hasError) {
+    if (!res.success) {
       throw res.error;
     }
   }

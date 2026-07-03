@@ -19,7 +19,10 @@
   "type": "module",
   "exports": {
     ".": "./dist/index.js",
-    "./styles": "./dist/react-hook-primitives.css"
+    "./styles": {
+      "types": "./dist/react-hook-primitives.css.d.ts",
+      "default": "./dist/react-hook-primitives.css"
+    }
   },
   "publishConfig": {
     "access": "public"

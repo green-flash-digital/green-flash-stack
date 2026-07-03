@@ -301,12 +301,9 @@ export class Popover {
     // Handle positioning using CSS
     if (supportsCSS) {
       const anchorName = `--${generateGUID()}`;
-      // @ts-expect-error This API isn't baseline and should also be used with a Polyfill
       popoverTarget.style.anchorName = anchorName;
       popover.style.position = "fixed";
-      // @ts-expect-error This API isn't baseline and should also be used with a Polyfill
       popover.style.positionAnchor = anchorName;
-      // @ts-expect-error This API isn't baseline and should also be used with a Polyfill
       popover.style.positionArea = positionArea;
       popover.style.margin = `${this._currentState.offset}px`;
 
