@@ -26,7 +26,9 @@
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "server:build": "yarn tsc --project tsconfig.server.json",
-    "serve": "yarn tsx ./scripts/serve.ts"
+    "serve": "yarn tsx ./scripts/serve.ts",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "dependencies": {
     "@green-flash/ts-utils": "workspace:*",
@@ -84,6 +86,7 @@
     "tsx": "4.22.4",
     "typescript": "6.0.3",
     "vite": "8.1.2",
+    "vitest": "4.1.9",
     "wrangler": "4.106.0"
   }
 }

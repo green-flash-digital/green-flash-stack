@@ -250,7 +250,7 @@ If init→serialize is a perfect round-trip, the refactor is correct.
 - [x] Define `StudioState` and entry types in `app/features/studio.state.ts`
 - [x] Write `initStudioState(tokens: KeystoneTokens): StudioState`
 - [x] Write `getTokensFromState(state: StudioState): KeystoneTokens`
-- [ ] Add round-trip unit tests
+- [x] Add round-trip unit tests
 - [x] Rewrite `Config.context.tsx` — single `useImmer<StudioState>`, four-value context
 - [x] Update all feature components to use `update(draft => { ... })`
 - [x] Delete `font.utils.ts`, `response.utils.ts`, `settings.utils.ts`, `custom.utils.ts`; trim `color.utils.ts` and `size-and-space.utils.ts`
@@ -296,7 +296,7 @@ Fixed sidebar ~220px. Route structure unchanged — only the shell layout compon
 - [x] Create `LayoutSidebar.tsx` — fixed left nav with icon + label per section
 - [x] Create `LayoutSidebarItem.tsx` — NavLink with active highlight
 - [x] Update config layout route to use sidebar instead of top tabs
-- [ ] Verify narrow viewport fallback (icon-only collapse or hamburger)
+- [x] Verify narrow viewport fallback (icon-only collapse or hamburger)
 
 ---
 

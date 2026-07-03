@@ -35,6 +35,16 @@ const styles = css`
       background: ${makeColor("primary-500", { opacity: 0.12 })};
       color: ${makeColor("primary-400")};
     }
+
+    @media (max-width: 900px) {
+      justify-content: center;
+      padding: ${makeSpace(10)};
+      margin: ${makeRem(2)} ${makeSpace(4)};
+
+      .label {
+        display: none;
+      }
+    }
   }
 `;
 
@@ -51,9 +61,9 @@ export function LayoutSidebarItem({
 }) {
   return (
     <div className={styles}>
-      <NavLink to={to} end={end}>
+      <NavLink to={to} end={end} title={label}>
         <DXIcon dxSize={18} />
-        {label}
+        <span className="label">{label}</span>
       </NavLink>
     </div>
   );

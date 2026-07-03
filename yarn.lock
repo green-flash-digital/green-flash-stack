@@ -2983,6 +2983,7 @@ __metadata:
     use-immer: "npm:0.11.0"
     vite: "npm:8.1.2"
     vite-plugin-monaco-editor: "npm:1.1.0"
+    vitest: "npm:4.1.9"
     wrangler: "npm:4.106.0"
     zod: "npm:4.4.3"
   languageName: unknown

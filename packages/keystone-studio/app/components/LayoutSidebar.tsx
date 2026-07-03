@@ -13,7 +13,13 @@ const styles = css`
   flex-shrink: 0;
   border-right: ${makeRem(1)} solid ${makeColor("neutral-dark", { opacity: 0.08 })};
   padding: ${makeSpace(8)} 0;
+  overflow-x: hidden;
   overflow-y: auto;
+  transition: width 0.2s ease-in-out;
+
+  @media (max-width: 900px) {
+    width: ${makeRem(56)};
+  }
 `;
 
 export const LayoutSidebar = forwardRef<HTMLElement, LayoutSidebarProps>(function LayoutSidebar(

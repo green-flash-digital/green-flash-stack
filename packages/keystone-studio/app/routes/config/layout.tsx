@@ -34,6 +34,10 @@ const sidebarFooterStyles = css`
   display: flex;
   flex-direction: column;
   gap: ${makeSpace(8)};
+
+  @media (max-width: 900px) {
+    display: none;
+  }
 `;
 
 const contentStyles = css`
