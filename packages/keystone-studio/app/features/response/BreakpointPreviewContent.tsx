@@ -231,10 +231,31 @@ export function BreakpointPreviewContent() {
     [response.breakpoints]
   );
 
+  const breakpointLines = useMemo(
+    () => (
+      <div>
+        {breakpointEntires.map(([breakpointId, breakpoint], i) => (
+          <div
+            className="line"
+            key={breakpointId}
+            ref={createBreakpointSection(breakpointId, breakpoint, i === 0)}
+            // @ts-expect-error custom properties are valid
+            style={{ "--color": colors[i] }}
+          >
+            <button onClick={createHandleClick(breakpointId, breakpoint)}>
+              <span>{makePx(breakpoint.value)}</span>
+            </button>
+          </div>
+        ))}
+      </div>
+    ),
+    [breakpointEntires, createBreakpointSection, createHandleClick]
+  );
+
   return (
     <div className={styles}>
       <ul className="points">
-        {breakpointEntires.reverse().map(([breakpointId, breakpoint]) => (
+        {[...breakpointEntires].reverse().map(([breakpointId, breakpoint]) => (
           <li key={breakpointId}>
             <button
               onClick={createHandleClick(breakpointId, breakpoint)}
@@ -249,26 +270,7 @@ export function BreakpointPreviewContent() {
         ))}
       </ul>
       <div className="grid" ref={gridRef}>
-        {useMemo(
-          () => (
-            <div>
-              {breakpointEntires.map(([breakpointId, breakpoint], i) => (
-                <div
-                  className="line"
-                  key={breakpointId}
-                  ref={createBreakpointSection(breakpointId, breakpoint, i === 0)}
-                  // @ts-expect-error custom properties are valid
-                  style={{ "--color": colors[i] }}
-                >
-                  <button onClick={createHandleClick(breakpointId, breakpoint)}>
-                    <span>{makePx(breakpoint.value)}</span>
-                  </button>
-                </div>
-              ))}
-            </div>
-          ),
-          [breakpointEntires, createBreakpointSection, createHandleClick]
-        )}
+        {breakpointLines}
         <div
           className="page"
           ref={pageRef}

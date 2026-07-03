@@ -9,11 +9,9 @@ import { useSizePreviewContext } from "./SizePreview.context";
 
 const styles = css`
   position: relative;
-  min-height: 100%;
   width: calc(var(--container-width) + 1);
   height: calc(var(--container-min-height) + 1);
-  /* min-height: calc(var(--container-min-height) + 1); */
-  margin: 0 auto auto auto;
+  margin: 0 auto;
   background-color: #fff;
   overflow: hidden;
   font-size: var(--base-font-size);
@@ -27,12 +25,6 @@ const styles = css`
       left: 0;
       width: 100%;
       height: 100%;
-      /* background-image: linear-gradient(
-          to right,
-          rgba(0, 0, 0, 0.1) 1px,
-          transparent 1px
-        ),
-        linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px); */
       background-image: linear-gradient(to bottom, rgba(0, 0, 0, 0.1) 1px, transparent 1px);
       background-size: var(--baseline-grid) var(--baseline-grid);
       z-index: 1;
@@ -99,30 +91,28 @@ export function SizePreviewContent() {
   }, [baselineGrid]);
 
   return (
-    <div style={{ height: "400px" }}>
-      <div
-        ref={ref}
-        style={{
-          // @ts-expect-error custom properties are OK
-          "--base-font-size": `${baseFontSize}px`,
-          "--baseline-grid": `${baselineGrid}px`
-        }}
-        className={classes(styles, {
-          grid: showGrid
-        })}
-      >
-        <ul className={ulStyles}>
-          {Object.entries(size.variants).map(([variantId, variant]) => (
-            <li key={variantId}>
-              <button style={{ height: variant.value }}>btn - {variant.name}</button>
-              <input style={{ height: variant.value }} defaultValue={`input - ${variant.name}`} />
-              <div className="icon" style={{ height: variant.value, aspectRatio: "1 / 1" }}>
-                icon
-              </div>
-            </li>
-          ))}
-        </ul>
-      </div>
+    <div
+      ref={ref}
+      style={{
+        // @ts-expect-error custom properties are OK
+        "--base-font-size": `${baseFontSize}px`,
+        "--baseline-grid": `${baselineGrid}px`
+      }}
+      className={classes(styles, {
+        grid: showGrid
+      })}
+    >
+      <ul className={ulStyles}>
+        {Object.entries(size.variants).map(([variantId, variant]) => (
+          <li key={variantId}>
+            <button style={{ height: variant.value }}>btn - {variant.name}</button>
+            <input style={{ height: variant.value }} defaultValue={`input - ${variant.name}`} />
+            <div className="icon" style={{ height: variant.value, aspectRatio: "1 / 1" }}>
+              icon
+            </div>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
