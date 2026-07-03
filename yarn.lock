@@ -2631,6 +2631,7 @@ __metadata:
     "@linaria/core": "npm:8.0.0"
     "@linaria/server": "npm:8.0.0"
     "@monaco-editor/react": "npm:4.7.0"
+    "@react-router/cloudflare": "npm:8.1.0"
     "@react-router/dev": "npm:8.1.0"
     "@react-router/express": "npm:8.1.0"
     "@react-router/node": "npm:8.1.0"
@@ -3964,6 +3965,20 @@ __metadata:
     "@types/react":
       optional: true
   checksum: 10c0/c7fc76744a4d37b5010eac33eda6439db2ac4d657e2bb5f596236e60aa4384ac88a7b2e3ebc1c88312c5c536a40081cc85ae6d70c0bba4bb8702d302b8ff07f7
+  languageName: node
+  linkType: hard
+
+"@react-router/cloudflare@npm:8.1.0":
+  version: 8.1.0
+  resolution: "@react-router/cloudflare@npm:8.1.0"
+  peerDependencies:
+    "@cloudflare/workers-types": ^4.0.0
+    react-router: ^8.1.0
+    typescript: ^5.1.0 || ^6.0.0
+  peerDependenciesMeta:
+    typescript:
+      optional: true
+  checksum: 10c0/854d7e398f96a0bb4bdb974da59592382fcab61c86ccb26f76ac9229bdbf44c3f662b51518a98896c6e35c9047f62acbb6766837d81fd35982e7bd867f5ea324
   languageName: node
   linkType: hard
 

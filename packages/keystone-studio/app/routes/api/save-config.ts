@@ -1,7 +1,6 @@
 import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
-import { IsLocalContext, TokensPathContext, VersionsDirContext } from "~/context";
-import { FileSystemAdapter } from "~/utils/StorageAdapter";
+import { AdapterContext, IsLocalContext } from "~/context";
 import { errors } from "~/utils/util.error-modes";
 import { LOG } from "~/utils/util.logger";
 
@@ -16,10 +15,10 @@ export async function action({ request, context }: Route.ActionArgs) {
     return { config: null };
   }
 
-  const tokensPath = context.get(TokensPathContext);
-  const adapter = new FileSystemAdapter(tokensPath, context.get(VersionsDirContext));
+  const adapter = context.get(AdapterContext);
+  if (!adapter) throw errors.API_ERROR(500, new Error("No storage adapter configured"));
 
-  LOG.debug(`Saving tokens to: ${tokensPath}`);
+  LOG.debug("Saving tokens via storage adapter");
   const res = await tryHandle(adapter.save.bind(adapter))(newConfigJson);
   if (res.success === false) {
     return errors.API_ERROR(500, res.error, "Unable to save the tokens configuration");

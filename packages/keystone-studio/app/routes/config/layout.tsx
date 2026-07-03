@@ -7,7 +7,7 @@ import { css } from "@linaria/core";
 import { ButtonGroup } from "~/components/ButtonGroup";
 import { LayoutSidebar } from "~/components/LayoutSidebar";
 import { LayoutSidebarItem } from "~/components/LayoutSidebarItem";
-import { TokensPathContext } from "~/context";
+import { AdapterContext } from "~/context";
 import { ConfigurationProvider } from "~/features/Config.context";
 import { ConfigJSON } from "~/features/ConfigJSON";
 import { ConfigSave } from "~/features/ConfigSave";
@@ -19,7 +19,6 @@ import { IconLayout2Column } from "~/icons/IconLayout2Column";
 import { IconSettings05 } from "~/icons/IconSettings05";
 import { IconTextFont } from "~/icons/IconTextFont";
 import { errors } from "~/utils/util.error-modes";
-import { readTokensConfig } from "~/utils/util.getLocalConfig";
 
 import type { Route } from "./+types/layout";
 
@@ -43,7 +42,10 @@ const contentStyles = css`
 `;
 
 export async function loader({ context }: Route.LoaderArgs) {
-  const config = await tryHandle(readTokensConfig)(context.get(TokensPathContext));
+  const adapter = context.get(AdapterContext);
+  if (!adapter) throw errors.API_ERROR(500, new Error("No storage adapter configured"));
+
+  const config = await tryHandle(adapter.read.bind(adapter))();
   if (config.success === false) {
     throw errors.API_ERROR(500, config.error);
   }

@@ -48,3 +48,46 @@ export class FileSystemAdapter implements StorageAdapter {
     await writeFile(this.tokensPath, JSON.stringify(toWrite, null, 2) + "\n", "utf8");
   }
 }
+
+/**
+ * Reads and writes tokens from a Cloudflare D1 database.
+ * Each project's tokens are stored as a JSON blob keyed by projectId.
+ */
+export class D1Adapter implements StorageAdapter {
+  constructor(
+    private readonly db: D1Database,
+    private readonly projectId: string = "default"
+  ) {}
+
+  async read(): Promise<KeystoneTokens> {
+    const row = await this.db
+      .prepare("SELECT config_json FROM tokens WHERE project_id = ?")
+      .bind(this.projectId)
+      .first<{ config_json: string }>();
+
+    if (!row) throw new Error(`No tokens found for project: ${this.projectId}`);
+    return TokensSchema.parse(JSON.parse(row.config_json));
+  }
+
+  async save(tokens: KeystoneTokens): Promise<void> {
+    await this.db
+      .prepare(
+        "INSERT OR REPLACE INTO tokens (project_id, config_json, updated_at) VALUES (?, ?, ?)"
+      )
+      .bind(this.projectId, JSON.stringify(tokens), new Date().toISOString())
+      .run();
+  }
+}
+
+// Minimal D1 type — matches the Cloudflare Workers runtime API.
+// Replace with `import type { D1Database } from "@cloudflare/workers-types"` once
+// @cloudflare/workers-types is added as a dev dependency.
+export type D1Database = {
+  prepare(query: string): D1PreparedStatement;
+};
+
+type D1PreparedStatement = {
+  bind(...values: unknown[]): D1PreparedStatement;
+  first<T = unknown>(): Promise<T | null>;
+  run(): Promise<void>;
+};

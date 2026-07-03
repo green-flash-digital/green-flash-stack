@@ -21,13 +21,22 @@ import { LayoutFooter } from "./components/LayoutFooter";
 import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
 import { LayoutMain } from "./components/LayoutMain";
-import { IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
+import { AdapterContext, IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
+import { FileSystemAdapter } from "./utils/StorageAdapter";
 
 export const middleware: Route.MiddlewareFunction[] = [
   ({ context }) => {
-    context.set(TokensPathContext, process.env.STUDIO_TOKENS_PATH ?? "");
-    context.set(VersionsDirContext, process.env.STUDIO_VERSIONS_DIR ?? "");
+    const tokensPath = process.env.STUDIO_TOKENS_PATH ?? "";
+    const versionsDir = process.env.STUDIO_VERSIONS_DIR ?? "";
+    context.set(TokensPathContext, tokensPath);
+    context.set(VersionsDirContext, versionsDir);
     context.set(IsLocalContext, process.env.STUDIO_IS_LOCAL === "true");
+
+    // Local path: create FileSystemAdapter from env vars.
+    // Worker production path: adapter is pre-set by getLoadContext in worker.ts — skip.
+    if (tokensPath) {
+      context.set(AdapterContext, new FileSystemAdapter(tokensPath, versionsDir));
+    }
   }
 ];
 

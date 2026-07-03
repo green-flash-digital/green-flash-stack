@@ -388,20 +388,35 @@ keystone studio    → Express serving the built app — end user, filesystem
 
 No route file may import from `node:fs`, `node:path`, or any Cloudflare binding directly. All I/O goes through the `StorageAdapter` received from `context`. This is the single rule that makes both entry points work with identical app code.
 
+### RR v8 context note
+
+The plan was written before the RR v8 upgrade. `getLoadContext` no longer returns a plain object — it returns a `RouterContextProvider`. However the module identity mismatch between Node (entry points) and Vite's SSR module graph (routes) means context set in `getLoadContext` can't be read by loaders in dev mode.
+
+The fix: middleware. `root.tsx` middleware runs inside the same module graph as loaders and sets `AdapterContext` from `process.env` for the local path. The worker production build has no Vite boundary, so `getLoadContext` can set `AdapterContext` directly there.
+
 ### BetterAuth
 
 BetterAuth supports Cloudflare Workers and has React bindings. Session data → D1. Token data per user/project → D1. Version snapshots → R2.
 
 Auth UI (login, user menu, project picker) only renders when `context.isLocal === false`.
 
-### Tasks
+Deferred to Phase 5b — do the storage/worker infrastructure first, add auth on top.
 
-- [ ] Create `worker.ts` — Cloudflare Pages Function entry point with `getLoadContext` returning D1 adapter + user
-- [ ] Add `@react-router/cloudflare` adapter
-- [ ] Create `D1Adapter` implementing `StorageAdapter` interface
-- [ ] Configure BetterAuth with D1 session storage
-- [ ] Add `yarn dev:worker` script — `wrangler dev` targeting `worker.ts`
-- [ ] Configure `wrangler.toml` with D1 database and R2 bucket bindings
+### Tasks — Phase 5a: Storage + Worker infrastructure
+
+- [x] `AdapterContext` added to `context.ts`; `root.tsx` middleware sets it with `FileSystemAdapter` for local path (guarded by `process.env.STUDIO_TOKENS_PATH`)
+- [x] `save-config.ts` uses `context.get(AdapterContext)` — no more direct `FileSystemAdapter` import in route files
+- [x] `config/layout.tsx` uses `context.get(AdapterContext).read()` — no more `readTokensConfig` call in route files
+- [x] `D1Adapter` added to `StorageAdapter.ts` — implements `StorageAdapter` against Cloudflare D1
+- [x] `@react-router/cloudflare` installed
+- [x] `worker.ts` created — Cloudflare Pages Function entry; `getLoadContext` sets `AdapterContext` with `D1Adapter`
+- [x] `wrangler.toml` configured — D1 binding, Pages project name, build output dir
+- [x] `yarn dev:worker` script added — `wrangler dev` targeting `worker.ts`
+
+### Tasks — Phase 5b: BetterAuth
+
+- [ ] Install `better-auth` and configure with D1 session storage
+- [ ] Add `UserContext` to `context.ts`; worker `getLoadContext` populates it from BetterAuth session
 - [ ] Add login/signup routes (active only when `isLocal === false`)
 - [ ] Add user menu to header (renders only when `isLocal === false`)
 - [ ] Add project picker — lists design systems per logged-in user
