@@ -18,6 +18,7 @@ export { defineTokens } from "./defineTokens.js";
 export type { KeystoneConfigInput, KeystoneDefinition } from "./defineTokens.js";
 import { colorTemplate } from "./templates/Template.make-color.js";
 import { customTemplate } from "./templates/Template.make-custom.js";
+import { lightDarkTemplate } from "./templates/Template.make-light-dark.js";
 import { fontFamilyTemplate } from "./templates/Template.make-font-family.js";
 import { fontVariantTemplate } from "./templates/Template.make-font-variant.js";
 import { fontWeightTemplate } from "./templates/Template.make-font-weight.js";
@@ -247,6 +248,7 @@ export class Keystone {
 
       const builtinTemplates: TokenTemplate[] = [
         colorTemplate,
+        lightDarkTemplate,
         customTemplate,
         fontFamilyTemplate,
         fontWeightTemplate,
@@ -337,6 +339,7 @@ export class Keystone {
 
       const builtinVarMap = new Map<TokenTemplate, string>([
         [colorTemplate, "colorTemplate"],
+        [lightDarkTemplate, "lightDarkTemplate"],
         [customTemplate, "customTemplate"],
         [fontFamilyTemplate, "fontFamilyTemplate"],
         [fontWeightTemplate, "fontWeightTemplate"],
@@ -352,6 +355,7 @@ export class Keystone {
       const importLines: string[] = [
         `import {`,
         `  colorTemplate,`,
+        `  lightDarkTemplate,`,
         `  customTemplate,`,
         `  fontFamilyTemplate,`,
         `  fontWeightTemplate,`,

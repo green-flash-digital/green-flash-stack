@@ -1,4 +1,5 @@
 export { colorTemplate } from "./Template.make-color.js";
+export { lightDarkTemplate } from "./Template.make-light-dark.js";
 export { customTemplate } from "./Template.make-custom.js";
 export { fontFamilyTemplate } from "./Template.make-font-family.js";
 export { fontWeightTemplate } from "./Template.make-font-weight.js";

@@ -18,12 +18,12 @@ function createColorManifest(config: TokensConfig): Record<string, string> {
   return flatManifest;
 }
 
-function makeColorUtil<T extends { prefix: string; color: Record<string, string> }>(tokens: T) {
+export function makeColorUtil<T extends { prefix: string; color: Record<string, string> }>(tokens: T) {
   return {
     makeColor(tokenName: keyof T["color"] & string, options?: { opacity?: number }): string {
       const opacity = options?.opacity ?? 1;
       if (opacity === 1) return `var(--${tokens.prefix}-color-${tokenName})`;
-      return `color-mix(in oklch, var(--${tokens.prefix}-color-${tokenName}), transparent ${(1 - opacity) * 100}%)`;
+      return `color-mix(in oklch, var(--${tokens.prefix}-color-${tokenName}), transparent ${parseFloat(((1 - opacity) * 100).toFixed(4))}%)`;
     }
   };
 }
