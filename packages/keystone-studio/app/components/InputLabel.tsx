@@ -5,6 +5,7 @@ import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,
+  makeSemanticColor,
   makeFontFamily,
   makeFontWeight,
   makeRem
@@ -37,7 +38,7 @@ const styles = css`
     font-size: ${makeSpace(16)};
     font-family: ${makeFontFamily("mulish")};
     font-weight: ${makeFontWeight("mulish-semiBold")};
-    color: ${makeColor("neutral-dark")};
+    color: ${makeSemanticColor("on-surface")};
     margin-bottom: ${makeSpace(8)};
 
     &.dense {

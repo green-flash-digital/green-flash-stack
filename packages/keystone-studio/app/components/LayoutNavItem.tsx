@@ -16,9 +16,8 @@ const styles = css`
     display: flex;
     align-items: center;
     gap: ${makeSpace(12)};
-    padding: ${makeSpace(10)} ${makeSpace(12)};
-    margin: ${makeRem(2)} ${makeSpace(8)};
-    border-radius: ${makeSpace(6)};
+    padding: ${makeSpace(8)} ${makeSpace(12)};
+    border-radius: ${makeSpace(8)};
     font-size: ${makeRem(14)};
     font-weight: ${makeFontWeight("mulish-medium")};
     color: ${makeColor("neutral-light", { opacity: 0.6 })};
@@ -48,7 +47,7 @@ const styles = css`
   }
 `;
 
-export function LayoutSidebarItem({
+export function LayoutNavItem({
   to,
   label,
   DXIcon,

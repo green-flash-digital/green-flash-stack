@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeSemanticColor, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { IconPlusSign } from "~/icons/IconPlusSign";
@@ -40,7 +40,7 @@ const styles = css`
 
   .message {
     padding: ${makeSpace(8)};
-    color: ${makeColor("neutral-dark")};
+    color: ${makeSemanticColor("on-surface")};
     font-size: ${makeRem(14)};
   }
 `;

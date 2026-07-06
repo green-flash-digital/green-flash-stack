@@ -5,6 +5,7 @@ import { CustomSchema } from "./schema.custom.js";
 import { FontSchema } from "./schema.font.js";
 import { ResponseSchema } from "./schema.response.js";
 import { RuntimeSchema } from "./schema.runtime.js";
+import { SemanticSchema } from "./schema.semantic.js";
 import { SizeAndSpaceSchema } from "./schema.size-and-space.js";
 
 export const ConfigSchema = z.object({
@@ -13,6 +14,7 @@ export const ConfigSchema = z.object({
   font: FontSchema,
   response: ResponseSchema,
   color: ColorSchema,
+  semantic: SemanticSchema,
   custom: CustomSchema
 });
 export type KeystoneConfig = z.infer<typeof ConfigSchema>;

@@ -20,7 +20,9 @@ const app = express();
 const sseClients = new Set<Response>();
 
 const viteServer = await createServer({
-  server: { middlewareMode: true }
+  server: { middlewareMode: true },
+  // Required for correct middleware mode — tells Vite this app handles its own HTML/routing
+  appType: "custom"
 });
 
 app.use(viteServer.middlewares);

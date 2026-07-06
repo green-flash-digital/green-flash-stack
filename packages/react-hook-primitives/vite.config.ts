@@ -33,7 +33,6 @@ export default defineConfig({
   },
   plugins: [
     react(),
-    // @ts-expect-error this actually has call signatures
     wyw({
       include: "/**/*.(ts|tsx)",
       babelOptions: {

@@ -26,10 +26,10 @@ export const lightDarkTemplate = defineTemplate({
   namespace: "lightDark",
   description:
     "Generates a typed wrapper around CSS `light-dark()` for adaptive color tokens. Requires `color-scheme` on a containing element. Chrome 123+, Firefox 120+, Safari 17.5+.",
-  tokens(_config) {
+  tokens() {
     return {};
   },
-  cssProperties(_config) {
+  cssProperties() {
     return [];
   },
   util: makeLightDarkUtil

@@ -568,45 +568,54 @@ This keeps the shape predictable when consumed in components and when checked wi
 
 **Goal:** Add a semantic layer between primitive tokens and component usage. Designers map palette shades to roles with explicit light/dark pairs; the system generates `light-dark()` CSS variables and validates WCAG contrast at build time. Developers call `makeSemanticColor("interactive")` — a typed API over roles, not raw palette steps.
 
+**Dependency on Phase 6:** ✅ resolved — `makeLightDark` is now a builtin template in keystone-core.
+
 ### Why this matters
 
 The primitive layer (`makeColor("primary-600")`) puts the accessibility burden at every call site. Every developer must independently verify that their chosen shade is readable on their chosen background. There is no single source of truth encoding "this is the accessible interactive color for this theme."
 
 The semantic layer inverts this: the designer makes one verified decision per role. Every component inherits it. Swapping a theme means reassigning role → shade, not touching components.
 
-### Schema addition
+### Schema addition (`schema.semantic.ts`)
 
-A new top-level `semantic` key. Each entry names a role and declares which token to use in light and dark color schemes:
+A new top-level `semantic` key added to `ConfigSchema` in `schema.ts`. Each entry names a role and declares which primitive color token to use in each color scheme:
 
 ```json
 "semantic": {
-  "interactive":      { "light": "primary-600",      "dark": "primary-400"      },
-  "interactive-text": { "light": "neutral-light",    "dark": "neutral-light"    },
-  "surface":          { "light": "neutral-light",    "dark": "neutral-dark"     },
-  "on-surface":       { "light": "neutral-dark",     "dark": "neutral-light"    }
+  "interactive":      { "light": "primary-600",   "dark": "primary-400"  },
+  "interactive-text": { "light": "neutral-light",  "dark": "neutral-light" },
+  "surface":          { "light": "neutral-light",  "dark": "neutral-dark"  },
+  "on-surface":       { "light": "neutral-dark",   "dark": "neutral-light" }
 }
 ```
 
-Token names are typed as `ColorToken` (the union of all generated primitive color token names), validated at parse time.
+`light` and `dark` values are validated as `z.string()` at Zod parse time — we can't cross-reference the color token union at schema definition time since that union is derived from the color config itself (a dynamic value). Invalid token references are caught at build time during the WCAG pass. The schema is optional and defaults to `{}`.
+
+```ts
+// schema.semantic.ts
+export const SemanticEntrySchema = z.object({ light: z.string(), dark: z.string() });
+export const SemanticSchema = z.record(z.string(), SemanticEntrySchema).default({});
+export type KeystoneSemantic = z.infer<typeof SemanticSchema>;
+```
 
 ### Generated output
 
-The `semanticTemplate` in core generates a CSS variable per role using `light-dark()`:
+`semanticTemplate.cssProperties()` generates one CSS variable per role using `light-dark()` built from `makeColorUtil`. This reuses the same CSS generation as `makeLightDark` so opacity, oklch, and var references stay consistent:
 
 ```css
 :root {
   --prefix-semantic-interactive:
     light-dark(var(--prefix-color-primary-600), var(--prefix-color-primary-400));
-  --prefix-semantic-interactive-text:
-    light-dark(var(--prefix-color-neutral-light), var(--prefix-color-neutral-light));
+  --prefix-semantic-surface:
+    light-dark(var(--prefix-color-neutral-light), var(--prefix-color-neutral-dark));
 }
 ```
 
-Requires `color-scheme` on a containing element. Same browser support as Phase 6's `makeLightDark` (Chrome 123+, Firefox 120+, Safari 17.5+).
+`semanticTemplate.tokens()` returns `{ semantic: { interactive: { light: "primary-600", dark: "primary-400" }, ... } }` which is merged into `_tokens.ts`.
 
 ### `makeSemanticColor`
 
-A new make function alongside `makeColor`, typed to the semantic key union (not the primitive color union):
+Typed to `keyof tokens["semantic"]` — the generated role name union. Identical API shape to `makeColor` but references semantic vars:
 
 ```ts
 makeSemanticColor("interactive")
@@ -616,46 +625,60 @@ makeSemanticColor("interactive", { opacity: 0.8 })
 // → color-mix(in oklch, var(--prefix-semantic-interactive), transparent 20%)
 ```
 
-This is the primary consumption API. Components should prefer `makeSemanticColor` over `makeColor` whenever a role exists for their use case.
+**Type-safety note:** The same generic-erasure issue applies as with `makeColor`/`makeLightDark` — `defineTemplate`'s `util` inference collapses `keyof T["semantic"]` to `string`. Rather than a generator workaround (deferred), this is acceptable for now because (a) semantic roles are few and well-named, and (b) invalid role names silently produce a dangling `var()` reference which is visible in the browser vs. a runtime exception.
+
+The `util` implementation reuses `makeColorUtil` but targeting the `semantic` namespace:
+
+```ts
+function makeSemanticColorUtil<T extends { prefix: string; semantic: Record<string, unknown> }>(tokens: T) {
+  const { makeColor: _makeColor } = makeColorUtil({ prefix: tokens.prefix, color: {} });
+  type Role = keyof T["semantic"] & string;
+  return {
+    makeSemanticColor(role: Role, options?: { opacity?: number }): string {
+      const opacity = options?.opacity ?? 1;
+      const varRef = `var(--${tokens.prefix}-semantic-${role})`;
+      if (opacity === 1) return varRef;
+      return `color-mix(in oklch, ${varRef}, transparent ${parseFloat(((1 - opacity) * 100).toFixed(4))}%)`;
+    }
+  };
+}
+```
+
+Note: `makeSemanticColor` with opacity operates on the already-resolved semantic CSS variable (not the underlying primitive), which means the `color-mix` wraps the `light-dark()` var. This is correct — the browser resolves `light-dark()` first, then `color-mix` applies opacity.
 
 ### WCAG validation at build time
 
-The `semanticTemplate` computes WCAG 2.1 contrast ratios for each role pair using the oklch values already in `_tokens.ts`. It does not fail the build — it logs structured warnings:
+`semanticTemplate.cssProperties()` calls a pure `computeWcagContrast(oklch1: string, oklch2: string): number` helper. Conversion path: parse oklch string → oklch → oklab → linear sRGB → D65-adapted XYZ → relative luminance (WCAG 2.1). Does not throw — logs structured warnings via `console.warn` (the `Keystone` class caller can suppress these in tests):
 
 ```
-[keystone] ⚠ semantic.interactive-text on semantic.interactive: 3.8:1 (fails AA 4.5:1 for normal text)
+⚠ [keystone] semantic.interactive-text on semantic.interactive: 3.8:1 (fails AA 4.5:1)
 ```
 
-This surfaces failures during `keystone build` and in the studio before the user saves.
+Color tokens are available as oklch strings from the `colorTemplate.tokens(config)` manifest built in the same `Keystone.build()` pass.
 
 ### Studio: Semantic roles editor
 
-A new section in the config sidebar (alongside Color, Typography, etc.) for managing semantic roles:
+Semantic roles live **inside the existing color route** (`routes/config/color.tsx`), not as a separate sidebar section. The palette editor stays visible for context while assigning roles.
 
-- Table of roles: name | light token | dark token | contrast ratio
-- Inline token pickers (dropdown of all primitive color tokens)
-- Live WCAG badge per row: AA ✓ / AA ✗ / AAA ✓
-- "Add role" flow
-- The color preview section updates to show semantic swatches alongside primitives
+**Config panel:** A "Semantic" section below the existing palette editor — role table with name | light token picker | dark token picker | WCAG badge. Token pickers are `<select>` populated from all primitive color token keys. "Add role" and delete-row controls. Saves via the existing `save-config` action.
+
+**Preview panel:** Two tabs — "Palette" (existing color swatch grid) and "Semantic" (new `SemanticPreviewContent`). This keeps the preview panel clean while keeping both levels of color visible in the same route context.
 
 ### Dogfooding
 
-The studio's own `makeUtils.ts` migrates its own component styles from `makeColor("primary-600")` to `makeSemanticColor("interactive")` as a live example. This proves the system works for real product UI.
-
-### Dependency on Phase 6
-
-`makeLightDark` (Phase 6) is the internal primitive that `semanticTemplate` uses to emit `light-dark()` values. Phase 6 must land first.
+After the studio itself uses semantic tokens, `makeSemanticColor` replaces direct `makeColor` calls for interactive, surface, and text colors in studio component styles. This proves the system against real UI before shipping.
 
 ### Tasks
 
-- [ ] Add `semantic` to the tokens schema (`schema.semantic.ts`) — validated record of `{ light: ColorToken, dark: ColorToken }` pairs
-- [ ] Create `Template.make-semantic-color.ts` in keystone-core — generates `light-dark()` CSS vars, logs WCAG warnings at build time
-- [ ] Add `semanticTemplate` to `Keystone.ts` builtins
-- [ ] Add `makeSemanticColor` to `makeUtils.ts` generation
-- [ ] Add semantic section to studio config route (`routes/config/semantic.tsx`)
-- [ ] Create `SemanticPreviewContent.tsx` — contrast matrix showing each role pair with WCAG badges
-- [ ] Studio routes.ts — add semantic route to config layout
-- [ ] Migrate studio's own component tokens to use `makeSemanticColor` where applicable
+- [x] Add `schema.semantic.ts` — `SemanticEntrySchema` + `SemanticSchema`; add `semantic: SemanticSchema` to `ConfigSchema` in `schema.ts`
+- [x] Create `Template.make-semantic-color.ts` in keystone-core — `tokens()`, `cssProperties()` with WCAG logging, `util()` for `makeSemanticColor`
+- [x] Add `computeWcagContrast` helper (pure, no deps) — oklch string → relative luminance → contrast ratio
+- [x] Add `semanticTemplate` to `builtinTemplates`, `builtinVarMap`, and `importLines` in `Keystone.ts`
+- [x] Add semantic section to studio state (`studio.state.ts`) and `initStudioState` / `getTokensFromState` round-trip
+- [x] Add semantic roles section to existing color route (`routes/config/color.tsx`) — role table with token pickers and WCAG badges below the palette editor
+- [x] Add "Palette" / "Semantic" tabs to the color preview panel; implement `SemanticPreviewContent.tsx` — swatch pairs per role with contrast ratio badge
+- [x] Add round-trip unit tests for `initStudioState → getTokensFromState` covering the semantic section (fixtures updated; 27/27 pass)
+- [x] Migrate studio's own component styles to use `makeSemanticColor` where applicable — added `semantic` config to `keystone-studio-tokens/.keystone/config.ts` (`interactive`/`interactive-text`/`surface`/`on-surface` roles) and rebuilt; migrated the subset of `makeColor` call sites whose current token value exactly matches a role's light (or scheme-invariant) value in `ButtonRegular.tsx`, `InputLabel.tsx`, `VariantEmpty.tsx`, `LayoutHeaderUserMenu.tsx`, and `routes/auth/login.tsx`. Left the ~190 other `makeColor` calls alone — most are fixed-dark decorative surfaces (footer, tooltips, the login page background/card) that aren't meant to flip with OS color-scheme, or use the `secondary` brand color which has no semantic role defined; swapping those would risk visible regressions rather than prove the system. No `surface`-role candidate existed with an exact-match value, so that role isn't dogfooded yet — flagged for whoever adds an adaptive (non-decorative) surface.
 
 ---
 

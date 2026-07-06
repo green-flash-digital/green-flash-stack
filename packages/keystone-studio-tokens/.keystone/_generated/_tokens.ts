@@ -53,6 +53,24 @@ export const tokens = {
     "neutral-dark": "oklch(0.2077 0.0398 265.76)",
     "neutral-light": "oklch(0.9683 0.0068 247.86)",
   },
+  semantic: {
+    interactive: {
+      light: "primary-600",
+      dark: "primary-400",
+    },
+    "interactive-text": {
+      light: "neutral-light",
+      dark: "neutral-light",
+    },
+    surface: {
+      light: "background",
+      dark: "neutral-dark",
+    },
+    "on-surface": {
+      light: "neutral-dark",
+      dark: "neutral-light",
+    },
+  },
   custom: {
     "layout-header-height": "6.25rem",
     "layout-max-width": "100rem",

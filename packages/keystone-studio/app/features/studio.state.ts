@@ -13,7 +13,8 @@ import type {
   KeystoneConfigSizeAndSpace,
   CustomVariantNumber,
   CustomVariantRem,
-  CustomVariantString
+  CustomVariantString,
+  KeystoneSemanticEntry
 } from "@keystone-css/core/schemas";
 import { fontFamilyFallback, manualFontStyles } from "@keystone-css/core/schemas";
 import type { SpaceVariantsRecord } from "@keystone-css/core/utils";
@@ -123,6 +124,11 @@ export type ConfigurationStateResponse = {
   breakpoints: ConfigurationStateResponseBreakpoints;
 };
 
+// ── Semantic state types ──────────────────────────────────────────────────────
+
+export type ConfigurationStateSemanticEntry = KeystoneSemanticEntry & { role: string };
+export type ConfigurationStateSemantic = { [id: string]: ConfigurationStateSemanticEntry };
+
 // ── Custom state types ────────────────────────────────────────────────────────
 
 export type ConfigurationStateCustomValueRem = { name: string } & CustomVariantRem;
@@ -145,6 +151,7 @@ export type ConfigurationStateSettings = KeystoneConfig["runtime"];
 
 export type StudioState = {
   color: ConfigurationStateColor;
+  semantic: ConfigurationStateSemantic;
   font: ConfigurationStateFont;
   sizing: ConfigurationStateSizeAndSpace;
   response: ConfigurationStateResponse;
@@ -288,9 +295,18 @@ function getInitCustomStateFromConfig(config: KeystoneConfig): ConfigurationStat
   );
 }
 
+function getInitSemanticStateFromConfig(config: KeystoneConfig): ConfigurationStateSemantic {
+  return Object.entries(config.semantic).reduce<ConfigurationStateSemantic>(
+    (accum, [role, entry]) =>
+      Object.assign(accum, { [generateGUID()]: { role, light: entry.light, dark: entry.dark } }),
+    {}
+  );
+}
+
 export function initStudioState(config: KeystoneConfig): StudioState {
   return {
     color: getInitColorStateFromConfig(config),
+    semantic: getInitSemanticStateFromConfig(config),
     font: getInitStateFontFromConfig(config),
     sizing: getInitStateSizeAndSpaceFromConfig(config),
     response: getInitResponseStateFromConfig(config),
@@ -387,9 +403,19 @@ function getCustomConfigFromState(state: ConfigurationStateCustom): KeystoneConf
   );
 }
 
+function getSemanticConfigFromState(
+  state: ConfigurationStateSemantic
+): KeystoneConfig["semantic"] {
+  return Object.values(state).reduce<KeystoneConfig["semantic"]>(
+    (accum, { role, light, dark }) => Object.assign(accum, { [role]: { light, dark } }),
+    {}
+  );
+}
+
 export function getTokensFromState(state: StudioState): KeystoneConfig {
   return {
     color: getColorConfigFromState(state.color),
+    semantic: getSemanticConfigFromState(state.semantic),
     sizeAndSpace: getSizeAndSpaceConfigFromState(state.sizing),
     font: getFontConfigFromState(state.font),
     response: getResponseConfigFromState(state.response),

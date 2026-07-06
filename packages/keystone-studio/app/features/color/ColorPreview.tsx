@@ -1,14 +1,12 @@
-import { useMemo, type ReactNode } from "react";
+import type { ReactNode } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { LayoutConfigSectionPreview } from "~/components/LayoutConfigSectionPreview";
-import { LayoutConfigSectionPreviewTitle } from "~/components/LayoutConfigSectionPreviewTitle";
 
 import { colorThemeMap } from "./color.utils";
 import { ColorPreviewProvider, useColorPreviewContext } from "./ColorPreview.context";
-import { ColorPreviewControls } from "./ColorPreviewControls";
 
 const styles = css`
   position: relative;
@@ -31,11 +29,6 @@ const styles = css`
   }
 `;
 
-const stylesTitle = css`
-  justify-content: flex-end;
-  background: inherit;
-`;
-
 function ColorPreviewContent({ children }: { children: ReactNode }) {
   const { wcagValues } = useColorPreviewContext();
   return (
@@ -45,14 +38,6 @@ function ColorPreviewContent({ children }: { children: ReactNode }) {
       }}
       className={classes(styles)}
     >
-      {useMemo(
-        () => (
-          <LayoutConfigSectionPreviewTitle className={stylesTitle}>
-            <ColorPreviewControls />
-          </LayoutConfigSectionPreviewTitle>
-        ),
-        []
-      )}
       {children}
     </LayoutConfigSectionPreview>
   );

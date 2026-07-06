@@ -5,6 +5,7 @@ import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,
+  makeSemanticColor,
   makeFontWeight,
   makeRem,
   makeReset
@@ -68,8 +69,8 @@ const styles = css`
       line-height: 1;
       &.c {
         &-primary {
-          border: ${makeRem(1)} solid ${makeColor("primary-600")};
-          color: ${makeColor("primary-600")};
+          border: ${makeRem(1)} solid ${makeSemanticColor("interactive")};
+          color: ${makeSemanticColor("interactive")};
           &:hover {
             color: ${makeColor("primary-900")};
           }

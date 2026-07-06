@@ -12,6 +12,28 @@ const bodyStyles = css`
   margin: 0;
   padding: 0;
   overflow-x: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+  height: 100dvh;
+  overflow: hidden;
+
+  :global() {
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: ${makeFontFamily("mulish")};
+
+      &::after,
+      &::before {
+        box-sizing: border-box;
+      }
+    }
+  }
 
   * {
     box-sizing: border-box;

@@ -1,7 +1,13 @@
 import { useCallback } from "react";
 import { useNavigate } from "react-router";
 
-import { makeSpace, makeColor, makeRem, makeReset } from "@keystone-css/studio-tokens";
+import {
+  makeSpace,
+  makeColor,
+  makeSemanticColor,
+  makeRem,
+  makeReset
+} from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { signOut } from "~/auth.client";
@@ -37,7 +43,7 @@ const styles = css`
     transition: all 0.1s ease-in-out;
 
     &:hover {
-      color: ${makeColor("neutral-light")};
+      color: ${makeSemanticColor("interactive-text")};
       border-color: ${makeColor("neutral-light", { opacity: 0.3 })};
     }
   }

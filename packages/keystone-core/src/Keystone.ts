@@ -19,6 +19,7 @@ export type { KeystoneConfigInput, KeystoneDefinition } from "./defineTokens.js"
 import { colorTemplate } from "./templates/Template.make-color.js";
 import { customTemplate } from "./templates/Template.make-custom.js";
 import { lightDarkTemplate } from "./templates/Template.make-light-dark.js";
+import { semanticTemplate } from "./templates/Template.make-semantic-color.js";
 import { fontFamilyTemplate } from "./templates/Template.make-font-family.js";
 import { fontVariantTemplate } from "./templates/Template.make-font-variant.js";
 import { fontWeightTemplate } from "./templates/Template.make-font-weight.js";
@@ -249,6 +250,7 @@ export class Keystone {
       const builtinTemplates: TokenTemplate[] = [
         colorTemplate,
         lightDarkTemplate,
+        semanticTemplate,
         customTemplate,
         fontFamilyTemplate,
         fontWeightTemplate,
@@ -266,46 +268,6 @@ export class Keystone {
         ...(this._inlineDefinition?.templates ?? []),
         ...(options?.extraTemplates ?? [])
       ];
-
-      // Auto-discover file-based user templates from .keystone/templates/
-      type FileTemplate = { template: TokenTemplate; relPath: string };
-      const fileTemplates: FileTemplate[] = [];
-      const userTemplatesDir = path.resolve(config.meta.dirPath, "templates");
-      if (existsSync(userTemplatesDir)) {
-        const userTemplateFiles = await globby(`${userTemplatesDir}/**/*.{ts,js}`, {
-          absolute: true
-        });
-        for (const file of userTemplateFiles) {
-          try {
-            const mod = await import(file);
-            const template = (mod.default ?? mod) as TokenTemplate;
-            if (
-              typeof template.name === "string" &&
-              typeof template.namespace === "string" &&
-              typeof template.tokens === "function" &&
-              typeof template.cssProperties === "function"
-            ) {
-              const relPath = path
-                .relative(config.dirs.generated, file)
-                .replace(/\\/g, "/")
-                .replace(/\.ts$/, ".js");
-              fileTemplates.push({ template, relPath });
-              templates.push(template);
-              this._log.debug(
-                `Loaded user template "${template.name}" from ${path.relative(config.meta.dirPath, file)}`
-              );
-            } else {
-              this._log.warn(
-                `Skipping ${path.relative(config.meta.dirPath, file)}: default export is not a valid TokenTemplate`
-              );
-            }
-          } catch (err) {
-            this._log.warn(
-              `Failed to load user template at ${path.relative(config.meta.dirPath, file)}: ${err instanceof Error ? err.message : String(err)}`
-            );
-          }
-        }
-      }
 
       // 1. Collect token data from all templates into a single manifest
       this._log.debug("Collecting token manifest...");
@@ -340,6 +302,7 @@ export class Keystone {
       const builtinVarMap = new Map<TokenTemplate, string>([
         [colorTemplate, "colorTemplate"],
         [lightDarkTemplate, "lightDarkTemplate"],
+        [semanticTemplate, "semanticTemplate"],
         [customTemplate, "customTemplate"],
         [fontFamilyTemplate, "fontFamilyTemplate"],
         [fontWeightTemplate, "fontWeightTemplate"],
@@ -356,6 +319,7 @@ export class Keystone {
         `import {`,
         `  colorTemplate,`,
         `  lightDarkTemplate,`,
+        `  semanticTemplate,`,
         `  customTemplate,`,
         `  fontFamilyTemplate,`,
         `  fontWeightTemplate,`,
@@ -390,16 +354,6 @@ export class Keystone {
               `export const { ${keys.join(", ")} } = _def.templates[${i}].util(tokens);`
             );
           }
-        }
-      }
-
-      for (let i = 0; i < fileTemplates.length; i++) {
-        const { template, relPath } = fileTemplates[i];
-        const varName = `_fileTemplate${i}`;
-        importLines.push(`import ${varName} from "${relPath}";`);
-        const keys = Object.keys(template.util(manifest as unknown as TokenManifest));
-        if (keys.length > 0) {
-          exportLines.push(`export const { ${keys.join(", ")} } = ${varName}.util(tokens);`);
         }
       }
 

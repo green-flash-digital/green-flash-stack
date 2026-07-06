@@ -1,7 +1,13 @@
 import { type FormEventHandler, useCallback, useState } from "react";
 import { redirect, useNavigate } from "react-router";
 
-import { makeSpace, makeColor, makeRem, makeFontFamily } from "@keystone-css/studio-tokens";
+import {
+  makeSpace,
+  makeColor,
+  makeSemanticColor,
+  makeRem,
+  makeFontFamily
+} from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { signIn } from "~/auth.client";
@@ -77,7 +83,7 @@ const formStyles = css`
   button[type="submit"] {
     height: ${makeSpace(36)};
     background: ${makeColor("secondary-500")};
-    color: ${makeColor("neutral-light")};
+    color: ${makeSemanticColor("interactive-text")};
     border: none;
     border-radius: ${makeSpace(4)};
     font-size: ${makeRem(14)};

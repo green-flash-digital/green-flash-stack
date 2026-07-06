@@ -13,12 +13,9 @@ import {
 import "@keystone-css/studio-tokens/root.css";
 import type { LinksFunction } from "react-router";
 
-import { makeFontFamily } from "@keystone-css/studio-tokens";
-import { css } from "@linaria/core";
-
 import type { Route } from "./+types/root";
 import { Label } from "./components/Label";
-import { LayoutFooter } from "./components/LayoutFooter";
+import { Layout as LayoutBody } from "./components/Layout";
 import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
 import { LayoutHeaderUserMenu } from "./components/LayoutHeaderUserMenu";
@@ -79,26 +76,6 @@ export const links: LinksFunction = () => [
   }
 ];
 
-const styles = css`
-  :global() {
-    html,
-    body {
-      margin: 0;
-      padding: 0;
-    }
-
-    * {
-      box-sizing: border-box;
-      font-family: ${makeFontFamily("mulish")};
-
-      &::after,
-      &::before {
-        box-sizing: border-box;
-      }
-    }
-  }
-`;
-
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -108,11 +85,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className={styles}>
+      <>
         {children}
         <ScrollRestoration />
         <Scripts />
-      </body>
+      </>
     </html>
   );
 }
@@ -133,10 +110,10 @@ export default function App() {
     const es = new EventSource("/api/tokens-watch");
     es.onmessage = () => revalidator.revalidate();
     return () => es.close();
-  }, [isLocal]);
+  }, [isLocal, revalidator]);
 
   return (
-    <>
+    <LayoutBody>
       <LayoutHeader>
         <LayoutHeaderLogo
           dxSrc="/images/keystone-logo.png"
@@ -159,8 +136,7 @@ export default function App() {
       <LayoutMain>
         <Outlet />
       </LayoutMain>
-      <LayoutFooter>footer</LayoutFooter>
-    </>
+    </LayoutBody>
   );
   return;
 }

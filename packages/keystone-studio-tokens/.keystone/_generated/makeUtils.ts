@@ -2,6 +2,7 @@
 import {
   colorTemplate,
   lightDarkTemplate,
+  semanticTemplate,
   customTemplate,
   fontFamilyTemplate,
   fontWeightTemplate,
@@ -18,6 +19,7 @@ import _def from "../config.js";
 
 export const { makeColor } = colorTemplate.util(tokens);
 export const { makeLightDark } = lightDarkTemplate.util(tokens);
+export const { makeSemanticColor } = semanticTemplate.util(tokens);
 export const { makeCustom } = customTemplate.util(tokens);
 export const { makeFontFamily } = fontFamilyTemplate.util(tokens);
 export const { makeFontWeight } = fontWeightTemplate.util(tokens);

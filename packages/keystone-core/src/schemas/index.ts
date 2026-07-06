@@ -5,3 +5,4 @@ export * from "./schema.response.js";
 export * from "./schema.custom.js";
 export * from "./schema.font.js";
 export * from "./schema.runtime.js";
+export * from "./schema.semantic.js";

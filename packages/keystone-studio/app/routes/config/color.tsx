@@ -1,14 +1,25 @@
 import type { MetaFunction } from "react-router";
 
+import { LayoutConfig } from "~/components/LayoutConfig";
 import { LayoutConfigSection } from "~/components/LayoutConfigSection";
 import { LayoutConfigSectionControls } from "~/components/LayoutConfigSectionControls";
 import { LayoutConfigSectionControlsContent } from "~/components/LayoutConfigSectionControlsContent";
 import { LayoutConfigSectionControlsTitle } from "~/components/LayoutConfigSectionControlsTitle";
+import { LayoutPreview } from "~/components/LayoutPreview";
+import { LayoutPreviewHeader } from "~/components/LayoutPreviewHeader";
+import { LayoutPreviewSection } from "~/components/LayoutPreviewSection";
+import { NavTab } from "~/components/NavTab";
+import { NavTabContent } from "~/components/NavTabContent";
+import { NavTabLabel } from "~/components/NavTabLabel";
 import { ColorBrandMode } from "~/features/color/ColorBrandMode";
 import { ColorNeutral } from "~/features/color/ColorNeutral";
 import { ColorPreview } from "~/features/color/ColorPreview";
 import { ColorPreviewBrand } from "~/features/color/ColorPreviewBrand";
+import { ColorPreviewControls } from "~/features/color/ColorPreviewControls";
 import { ColorPreviewNeutral } from "~/features/color/ColorPreviewNeutral";
+import { ColorSemanticRoles } from "~/features/color/ColorSemanticRoles";
+import { ColorSwatchTabs } from "~/features/color/ColorSwatchTabs";
+import { SemanticPreviewContent } from "~/features/color/SemanticPreviewContent";
 
 export const meta: MetaFunction = () => {
   return [
@@ -24,37 +35,77 @@ export const meta: MetaFunction = () => {
 export default function ColorsRoute() {
   return (
     <>
-      <LayoutConfigSection>
-        <LayoutConfigSectionControls>
-          <LayoutConfigSectionControlsTitle dxTitle="Brand Colors" />
-          <LayoutConfigSectionControlsContent>
-            <ColorBrandMode />
-          </LayoutConfigSectionControlsContent>
-        </LayoutConfigSectionControls>
-        <ColorPreview>
-          <ColorPreviewBrand />
-        </ColorPreview>
-      </LayoutConfigSection>
-      <LayoutConfigSection>
-        <LayoutConfigSectionControls>
-          <LayoutConfigSectionControlsTitle
-            dxTitle="Neutral Colors"
-            data-description="Brand colors are an essential part of your application's
+      <LayoutConfig>
+        <LayoutConfigSection>
+          <LayoutConfigSectionControls>
+            <LayoutConfigSectionControlsTitle dxTitle="Brand Colors" />
+            <LayoutConfigSectionControlsContent>
+              <ColorBrandMode />
+            </LayoutConfigSectionControlsContent>
+          </LayoutConfigSectionControls>
+        </LayoutConfigSection>
+        <LayoutConfigSection>
+          <LayoutConfigSectionControls>
+            <LayoutConfigSectionControlsTitle
+              dxTitle="Neutral Colors"
+              data-description="Brand colors are an essential part of your application's
               design system, providing consistency and harmony across all visual
               elements. This configuration allows you to generate a cohesive
               color palette using harmonious fluorescent tones by defining
               parameters for saturation, brightness, and hue variations."
-          >
-            test
-          </LayoutConfigSectionControlsTitle>
-          <LayoutConfigSectionControlsContent>
-            <ColorNeutral />
-          </LayoutConfigSectionControlsContent>
-        </LayoutConfigSectionControls>
+            >
+              test
+            </LayoutConfigSectionControlsTitle>
+            <LayoutConfigSectionControlsContent>
+              <ColorNeutral />
+            </LayoutConfigSectionControlsContent>
+          </LayoutConfigSectionControls>
+        </LayoutConfigSection>
+        <LayoutConfigSection>
+          <LayoutConfigSectionControls>
+            <LayoutConfigSectionControlsTitle dxTitle="Semantic Roles" />
+            <LayoutConfigSectionControlsContent>
+              <ColorSemanticRoles />
+            </LayoutConfigSectionControlsContent>
+          </LayoutConfigSectionControls>
+        </LayoutConfigSection>
+      </LayoutConfig>
+      <LayoutPreview>
         <ColorPreview>
-          <ColorPreviewNeutral />
+          <LayoutPreviewHeader>
+            <ColorPreviewControls />
+          </LayoutPreviewHeader>
+          <LayoutPreviewSection title="Brand colors">
+            <ColorPreviewBrand />
+          </LayoutPreviewSection>
+          <LayoutPreviewSection title="Neutral colors">
+            <ColorPreviewNeutral />
+          </LayoutPreviewSection>
+          <LayoutPreviewSection title="Semantic roles">
+            <ColorSwatchTabs dxInitActiveTab="palette">
+              <ul>
+                <li>
+                  <NavTab id="palette">
+                    <NavTabLabel>Palette</NavTabLabel>
+                    <NavTabContent>
+                      <ColorPreviewBrand />
+                      <ColorPreviewNeutral />
+                    </NavTabContent>
+                  </NavTab>
+                </li>
+                <li>
+                  <NavTab id="semantic">
+                    <NavTabLabel>Semantic</NavTabLabel>
+                    <NavTabContent>
+                      <SemanticPreviewContent />
+                    </NavTabContent>
+                  </NavTab>
+                </li>
+              </ul>
+            </ColorSwatchTabs>
+          </LayoutPreviewSection>
         </ColorPreview>
-      </LayoutConfigSection>
+      </LayoutPreview>
     </>
   );
 }

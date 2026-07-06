@@ -95,6 +95,12 @@ export default defineTokens({
         neutral: { hex: "#64748b", variants: { dark: "#0f172a", light: "#f1f5f9" } }
       }
     },
+    semantic: {
+      interactive: { light: "primary-600", dark: "primary-400" },
+      "interactive-text": { light: "neutral-light", dark: "neutral-light" },
+      surface: { light: "background", dark: "neutral-dark" },
+      "on-surface": { light: "neutral-dark", dark: "neutral-light" }
+    },
     custom: {
       "layout-header-height": {
         type: "rem",

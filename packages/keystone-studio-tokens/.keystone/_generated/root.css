@@ -49,6 +49,22 @@
   --studio-color-neutral: oklch(0.5544 0.0407 257.42);
   --studio-color-neutral-dark: oklch(0.2077 0.0398 265.76);
   --studio-color-neutral-light: oklch(0.9683 0.0068 247.86);
+  --studio-semantic-interactive: light-dark(
+    var(--studio-color-primary-600),
+    var(--studio-color-primary-400)
+  );
+  --studio-semantic-interactive-text: light-dark(
+    var(--studio-color-neutral-light),
+    var(--studio-color-neutral-light)
+  );
+  --studio-semantic-surface: light-dark(
+    var(--studio-color-background),
+    var(--studio-color-neutral-dark)
+  );
+  --studio-semantic-on-surface: light-dark(
+    var(--studio-color-neutral-dark),
+    var(--studio-color-neutral-light)
+  );
   --studio-custom-layout-header-height: 6.25rem;
   --studio-custom-layout-max-width: 100rem;
   --studio-custom-layout-gutters: 2rem;

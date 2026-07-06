@@ -1,17 +1,14 @@
 import { Outlet, useLoaderData } from "react-router";
 
-import { tryHandle } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
+import { classes, tryHandle } from "@green-flash/ts-utils/isomorphic";
+import { makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
-import { ButtonGroup } from "~/components/ButtonGroup";
-import { LayoutSidebar } from "~/components/LayoutSidebar";
-import { LayoutSidebarItem } from "~/components/LayoutSidebarItem";
+import { layoutSidebarSectionStyles, layoutSidebarStyles } from "~/components/layout.styles";
+import { LayoutNavItem } from "~/components/LayoutNavItem";
+import { LayoutSidebarTitle } from "~/components/LayoutSidebarTitle";
 import { AdapterContext } from "~/context";
 import { ConfigurationProvider } from "~/features/Config.context";
-import { ConfigJSON } from "~/features/ConfigJSON";
-import { ConfigSave } from "~/features/ConfigSave";
-import { ConfigStyleGuide } from "~/features/ConfigStyleGuide";
 import { IconCode } from "~/icons/IconCode";
 import { IconColors } from "~/icons/IconColors";
 import { IconGrid } from "~/icons/IconGrid";
@@ -23,26 +20,12 @@ import { errors } from "~/utils/util.error-modes";
 import type { Route } from "./+types/layout";
 
 const shellStyles = css`
-  display: flex;
-  height: 100%;
-`;
-
-const sidebarFooterStyles = css`
-  margin-top: auto;
-  padding: ${makeSpace(12)} ${makeSpace(8)};
-  border-top: ${makeRem(1)} solid ${makeColor("neutral-dark", { opacity: 0.08 })};
-  display: flex;
-  flex-direction: column;
-  gap: ${makeSpace(8)};
-
-  @media (max-width: 900px) {
-    display: none;
-  }
-`;
-
-const contentStyles = css`
-  flex: 1;
-  overflow-y: auto;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto 1fr;
+  grid-template-areas:
+    "nav preview"
+    "config preview";
 `;
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -57,30 +40,38 @@ export async function loader({ context }: Route.LoaderArgs) {
   return { config: config.data };
 }
 
+const sidebarNav = css`
+  grid-area: nav;
+  background: white;
+  padding-bottom: ${makeRem(12)};
+`;
+
 export default function AppConfigRoute() {
   const { config } = useLoaderData<typeof loader>();
 
   return (
     <ConfigurationProvider originalConfig={config}>
       <div className={shellStyles}>
-        <LayoutSidebar>
-          <LayoutSidebarItem to="/config" label="Color" DXIcon={IconColors} end />
-          <LayoutSidebarItem to="/config/size-and-spacing" label="Size & Space" DXIcon={IconGrid} />
-          <LayoutSidebarItem to="/config/typography" label="Typography" DXIcon={IconTextFont} />
-          <LayoutSidebarItem to="/config/response" label="Response" DXIcon={IconLayout2Column} />
-          <LayoutSidebarItem to="/config/custom" label="Custom" DXIcon={IconCode} />
-          <LayoutSidebarItem to="/config/settings" label="Settings" DXIcon={IconSettings05} />
-          <div className={sidebarFooterStyles}>
+        {/* Nav */}
+        <aside className={classes(layoutSidebarStyles, sidebarNav)}>
+          <LayoutSidebarTitle>Pages</LayoutSidebarTitle>
+          <nav className={layoutSidebarSectionStyles}>
+            <LayoutNavItem to="/config" label="Color" DXIcon={IconColors} end />
+            <LayoutNavItem to="/config/size-and-spacing" label="Size & Space" DXIcon={IconGrid} />
+            <LayoutNavItem to="/config/typography" label="Typography" DXIcon={IconTextFont} />
+            <LayoutNavItem to="/config/response" label="Response" DXIcon={IconLayout2Column} />
+            <LayoutNavItem to="/config/custom" label="Custom" DXIcon={IconCode} />
+            <LayoutNavItem to="/config/settings" label="Settings" DXIcon={IconSettings05} />
+          </nav>
+        </aside>
+        {/* <div className={sidebarFooterStyles}>
             <ButtonGroup>
               <ConfigStyleGuide />
               <ConfigJSON />
             </ButtonGroup>
             <ConfigSave />
-          </div>
-        </LayoutSidebar>
-        <div className={contentStyles}>
-          <Outlet />
-        </div>
+          </div> */}
+        <Outlet />
       </div>
     </ConfigurationProvider>
   );

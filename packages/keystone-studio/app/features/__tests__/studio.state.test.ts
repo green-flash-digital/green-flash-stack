@@ -37,6 +37,10 @@ const BASE: KeystoneConfig = {
   custom: {
     "header-height": { type: "rem", value: 52, description: "Header height" },
     "grid-columns": { type: "number", value: 12, description: "Grid column count" }
+  },
+  semantic: {
+    interactive: { light: "primary-600", dark: "primary-400" },
+    surface: { light: "accent", dark: "accent-3" }
   }
 };
 

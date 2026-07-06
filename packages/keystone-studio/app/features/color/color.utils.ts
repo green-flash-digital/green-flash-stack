@@ -73,3 +73,18 @@ export const colorThemeMap: Record<string, string> = {
   dark: "#1e1e1e",
   light: "#ffffff"
 };
+
+/** Flat map of token name → oklch string, matching the shape of `_tokens.ts`. */
+export function buildFlatColorManifest(color: ConfigurationStateColor): Record<string, string> {
+  const manifest: Record<string, string> = {};
+  const allVariants = {
+    ...convertHueColorsIntoVariants(color),
+    ...convertHexColorsIntoVariants(color)
+  };
+  for (const [colorKey, variantMap] of Object.entries(allVariants)) {
+    for (const [variant, value] of Object.entries(variantMap)) {
+      manifest[variant === "base" ? colorKey : `${colorKey}-${variant}`] = value;
+    }
+  }
+  return manifest;
+}
