@@ -36,6 +36,12 @@ app.get("/api/tokens-watch", (req, res) => {
   req.on("close", () => sseClients.delete(res));
 });
 
+// Chrome DevTools probes this on every page load; short-circuit before the
+// React Router catch-all so it doesn't log as an unmatched-route error.
+app.get("/.well-known/*splat", (_req, res) => {
+  res.status(204).end();
+});
+
 watch(tokensPath, () => {
   for (const client of sseClients) {
     client.write("data: change\n\n");

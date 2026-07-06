@@ -4,6 +4,8 @@ import { css } from "@linaria/core";
 
 const styles = css`
   grid-area: config;
+  height: 100%;
+  overflow-y: auto;
 `;
 
 export function LayoutConfig({ children }: { children: ReactNode }) {

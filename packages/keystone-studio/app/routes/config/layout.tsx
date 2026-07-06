@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData } from "react-router";
 
 import { classes, tryHandle } from "@green-flash/ts-utils/isomorphic";
-import { makeRem } from "@keystone-css/studio-tokens";
+import { makeCustom, makeRem } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { layoutSidebarSectionStyles, layoutSidebarStyles } from "~/components/layout.styles";
@@ -26,6 +26,7 @@ const shellStyles = css`
   grid-template-areas:
     "nav preview"
     "config preview";
+  height: ${`calc(100dvh - ${makeCustom("layout-header-height")})`};
 `;
 
 export async function loader({ context }: Route.LoaderArgs) {

@@ -11,6 +11,8 @@ import {
 } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
+import { InputLabel } from "~/components/InputLabel";
+import { InputSection } from "~/components/InputSection";
 import { InputSelect } from "~/components/InputSelect";
 import { InputText } from "~/components/InputText";
 import { useConfigurationContext } from "~/features/Config.context";
@@ -123,7 +125,11 @@ export function ColorSemanticRoles() {
   );
 
   return (
-    <div>
+    <InputSection>
+      <InputLabel
+        dxLabel="Map palette colors to reusable roles"
+        dxHelp='Give a role a name (e.g. "interactive" or "surface"), then pick which token it uses in light mode and which it uses in dark mode. Components reference the role instead of a raw shade, so the color automatically switches with the OS color scheme.'
+      />
       <table className={tableStyles}>
         <thead>
           <tr>
@@ -187,6 +193,6 @@ export function ColorSemanticRoles() {
       <button type="button" className={addButtonStyles} onClick={handleAdd}>
         + Add role
       </button>
-    </div>
+    </InputSection>
   );
 }

@@ -8,17 +8,12 @@ import { LayoutConfigSectionControlsTitle } from "~/components/LayoutConfigSecti
 import { LayoutPreview } from "~/components/LayoutPreview";
 import { LayoutPreviewHeader } from "~/components/LayoutPreviewHeader";
 import { LayoutPreviewSection } from "~/components/LayoutPreviewSection";
-import { NavTab } from "~/components/NavTab";
-import { NavTabContent } from "~/components/NavTabContent";
-import { NavTabLabel } from "~/components/NavTabLabel";
 import { ColorBrandMode } from "~/features/color/ColorBrandMode";
 import { ColorNeutral } from "~/features/color/ColorNeutral";
 import { ColorPreview } from "~/features/color/ColorPreview";
-import { ColorPreviewBrand } from "~/features/color/ColorPreviewBrand";
 import { ColorPreviewControls } from "~/features/color/ColorPreviewControls";
-import { ColorPreviewNeutral } from "~/features/color/ColorPreviewNeutral";
+import { ColorPreviewPalette } from "~/features/color/ColorPreviewPalette";
 import { ColorSemanticRoles } from "~/features/color/ColorSemanticRoles";
-import { ColorSwatchTabs } from "~/features/color/ColorSwatchTabs";
 import { SemanticPreviewContent } from "~/features/color/SemanticPreviewContent";
 
 export const meta: MetaFunction = () => {
@@ -75,34 +70,11 @@ export default function ColorsRoute() {
           <LayoutPreviewHeader>
             <ColorPreviewControls />
           </LayoutPreviewHeader>
-          <LayoutPreviewSection title="Brand colors">
-            <ColorPreviewBrand />
-          </LayoutPreviewSection>
-          <LayoutPreviewSection title="Neutral colors">
-            <ColorPreviewNeutral />
+          <LayoutPreviewSection title="Brand & neutral colors">
+            <ColorPreviewPalette />
           </LayoutPreviewSection>
           <LayoutPreviewSection title="Semantic roles">
-            <ColorSwatchTabs dxInitActiveTab="palette">
-              <ul>
-                <li>
-                  <NavTab id="palette">
-                    <NavTabLabel>Palette</NavTabLabel>
-                    <NavTabContent>
-                      <ColorPreviewBrand />
-                      <ColorPreviewNeutral />
-                    </NavTabContent>
-                  </NavTab>
-                </li>
-                <li>
-                  <NavTab id="semantic">
-                    <NavTabLabel>Semantic</NavTabLabel>
-                    <NavTabContent>
-                      <SemanticPreviewContent />
-                    </NavTabContent>
-                  </NavTab>
-                </li>
-              </ul>
-            </ColorSwatchTabs>
+            <SemanticPreviewContent />
           </LayoutPreviewSection>
         </ColorPreview>
       </LayoutPreview>

@@ -14,6 +14,8 @@ const styles = css`
   z-index: 10;
   justify-content: flex-end;
   background: inherit;
+  border-bottom: 1px solid #e8e8e8;
+  padding: 0 ${makeCustom("layout-gutters")};
 `;
 
 export function LayoutPreviewHeader({ children }: { children: ReactNode }) {

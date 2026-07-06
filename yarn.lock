@@ -2982,6 +2982,7 @@ __metadata:
     typescript: "npm:6.0.3"
     use-immer: "npm:0.11.0"
     vite: "npm:8.1.2"
+    vite-plugin-devtools-json: "npm:^1.0.0"
     vite-plugin-monaco-editor: "npm:1.1.0"
     vitest: "npm:4.1.9"
     wrangler: "npm:4.106.0"
@@ -14420,6 +14421,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"uuid@npm:^11.1.0":
+  version: 11.1.1
+  resolution: "uuid@npm:11.1.1"
+  bin:
+    uuid: dist/esm/bin/uuid
+  checksum: 10c0/9e3af58eba872ece5a5e76f4773a94fc78a0ef2c2444c38dbe6b42f41dadf76c01850fd783604f27986f6195e6286aef064d45987d401b2a33127b98ddf7c0c5
+  languageName: node
+  linkType: hard
+
 "uuid@npm:^9.0.0":
   version: 9.0.1
   resolution: "uuid@npm:9.0.1"
@@ -14465,6 +14475,17 @@ __metadata:
     "@types/unist": "npm:^3.0.0"
     vfile-message: "npm:^4.0.0"
   checksum: 10c0/e5d9eb4810623f23758cfc2205323e33552fb5972e5c2e6587babe08fe4d24859866277404fb9e2a20afb71013860d96ec806cb257536ae463c87d70022ab9ef
+  languageName: node
+  linkType: hard
+
+"vite-plugin-devtools-json@npm:^1.0.0":
+  version: 1.0.0
+  resolution: "vite-plugin-devtools-json@npm:1.0.0"
+  dependencies:
+    uuid: "npm:^11.1.0"
+  peerDependencies:
+    vite: ^5.0.0 || ^6.0.0 || ^7.0.0
+  checksum: 10c0/9b5c0666b9609306d230e0e2e637ab6c73e0323afc8aed39582d2ca486af90a0bc52162f5579cb684f4e2fcdedd460932c57ff8d5aa2cdce1a2a98374d8c94d4
   languageName: node
   linkType: hard
 

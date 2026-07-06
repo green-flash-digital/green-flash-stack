@@ -116,7 +116,7 @@ export default function App() {
     <LayoutBody>
       <LayoutHeader>
         <LayoutHeaderLogo
-          dxSrc="/images/keystone-logo.png"
+          dxSrc="/images/buttery-logo-tokens.png"
           dxAlt="keystone-css-logo"
           dxLabel={
             isLocal && (

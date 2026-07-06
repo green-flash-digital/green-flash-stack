@@ -1,5 +1,6 @@
 import wyw from "@wyw-in-js/vite";
 import { defineConfig } from "vite";
+import devtoolsJson from "vite-plugin-devtools-json";
 
 export default defineConfig({
   server: {
@@ -32,6 +33,7 @@ export default defineConfig({
       // TypeScript files on the filesystem including node_modules
       include: ["**/*.{ts,tsx}"],
       exclude: ["node_modules"]
-    })
+    }),
+    devtoolsJson()
   ]
 });

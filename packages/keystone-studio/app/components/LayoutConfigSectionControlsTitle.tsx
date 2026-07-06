@@ -2,13 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import {
-  makeSpace,
-  makeRem,
-  makeCustom,
-  makeReset,
-  makeFontWeight
-} from "@keystone-css/studio-tokens";
+import { makeSpace, makeCustom, makeReset, makeFontWeight } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InformationCircleIcon } from "~/icons/IconInformationCircle";
@@ -23,7 +17,7 @@ export type LayoutConfigSectionControlsTitleProps = LayoutConfigSectionControlsT
 const styles = css`
   display: flex;
   align-items: center;
-  top: ${makeRem(133)};
+  top: 0;
   position: sticky;
   background: inherit;
   height: ${makeCustom("layout-section-title-height")};
