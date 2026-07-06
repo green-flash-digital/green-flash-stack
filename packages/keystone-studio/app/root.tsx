@@ -21,6 +21,7 @@ import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
 import { LayoutHeaderUserMenu } from "./components/LayoutHeaderUserMenu";
 import { LayoutMain } from "./components/LayoutMain";
 import {
+  ActiveProjectContext,
   AdapterContext,
   IsLocalContext,
   TokensPathContext,
@@ -48,10 +49,14 @@ export const middleware: Route.MiddlewareFunction[] = [
 
     const url = new URL(request.url);
     const isAuthPath = url.pathname === "/login" || url.pathname.startsWith("/api/auth");
+    const isProjectsPath = url.pathname === "/projects";
 
     const user = context.get(UserContext);
     if (!user && !isAuthPath) throw redirect("/login");
     if (user && url.pathname === "/login") throw redirect("/config");
+    if (user && !isAuthPath && !isProjectsPath && !context.get(ActiveProjectContext)) {
+      throw redirect("/projects");
+    }
   }
 ];
 

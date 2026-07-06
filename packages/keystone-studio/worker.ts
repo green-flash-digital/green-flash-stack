@@ -2,10 +2,17 @@ import { RouterContextProvider } from "react-router";
 
 import type { PagesFunction } from "@cloudflare/workers-types";
 import { createRequestHandler } from "@react-router/cloudflare";
-import { drizzle } from "drizzle-orm/d1";
 
 import { createAuth } from "./app/auth";
-import { AdapterContext, IsLocalContext, UserContext } from "./app/context";
+import {
+  ActiveProjectContext,
+  AdapterContext,
+  IsLocalContext,
+  ProjectsRepoContext,
+  UserContext
+} from "./app/context";
+import { activeProjectCookie } from "./app/utils/activeProjectCookie";
+import { D1ProjectsRepo } from "./app/utils/ProjectsRepo";
 import { D1Adapter, type D1Database } from "./app/utils/StorageAdapter";
 
 interface Env {
@@ -18,11 +25,25 @@ const rrHandler = createRequestHandler<Env>({
   getLoadContext: async ({ request, context: { cloudflare } }) => {
     const auth = createAuth(cloudflare.env.DB);
     const session = await auth.api.getSession({ headers: request.headers });
+    const projectsRepo = new D1ProjectsRepo(cloudflare.env.DB);
 
     const ctx = new RouterContextProvider();
-    ctx.set(AdapterContext, new D1Adapter(cloudflare.env.DB));
     ctx.set(IsLocalContext, false);
     ctx.set(UserContext, session?.user ?? null);
+    ctx.set(ProjectsRepoContext, projectsRepo);
+
+    let activeProject = null;
+    if (session?.user) {
+      const cookieProjectId = await activeProjectCookie.parse(request.headers.get("Cookie"));
+      if (cookieProjectId) {
+        activeProject = await projectsRepo.getOwned(cookieProjectId, session.user.id);
+      }
+    }
+    ctx.set(ActiveProjectContext, activeProject);
+    ctx.set(
+      AdapterContext,
+      activeProject ? new D1Adapter(cloudflare.env.DB, activeProject.id) : null
+    );
     return ctx;
   }
 });

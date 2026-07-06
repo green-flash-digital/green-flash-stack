@@ -419,8 +419,8 @@ Deferred to Phase 5b — do the storage/worker infrastructure first, add auth on
 - [x] Add `UserContext` to `context.ts`; worker `getLoadContext` populates it from BetterAuth session
 - [x] Add login/signup routes (active only when `isLocal === false`)
 - [x] Add user menu to header (renders only when `isLocal === false`)
-- [ ] Add project picker — lists design systems per logged-in user
-- [ ] Enforce the parity rule: add an ESLint rule or comment convention flagging direct `node:fs` imports in route files
+- [x] Add project picker — lists design systems per logged-in user. New `projects` Drizzle table (`app/db/schema.ts`, first real drizzle-kit usage in the repo — `tokens` and BetterAuth's own tables are deliberately left unmanaged since they already exist in prod out-of-band). `D1ProjectsRepo` (`app/utils/ProjectsRepo.ts`) does ownership-scoped queries (`WHERE id = ? AND owner_id = ?` baked into the SQL, not a JS-side check). Active project is resolved via a cookie (`app/utils/activeProjectCookie.ts`) re-verified against D1 on every request in `worker.ts`'s `getLoadContext` — chosen over a `:projectId` URL param because every existing config route already pulls storage generically via `AdapterContext`, so this needed zero changes to any of them. New `/projects` route reuses the existing `InputLabel`/`InputSection`/`VariantEmpty`/`VariantList`/`VariantAdd` pattern from `ColorBrandModeManual.tsx`. Also fixed a pre-existing bug found during this work: `save-config.ts` was silently no-op'ing every save outside local mode, which would've made the picker pointless. Known accepted tradeoff: the cookie is per-browser not per-tab, so a stale second tab could save to the wrong project after switching elsewhere — not a security issue (ownership is re-verified per request) but worth surfacing the active project's name in the header as a follow-up so a stale tab is visually obvious. Rename/delete of projects is out of scope here.
+- [x] Enforce the parity rule — the repo moved from ESLint to oxlint monorepo-wide, so this used oxlint's native `import/no-nodejs-modules` rule (a better fit than a hand-written "no node:fs" rule since it blocks *any* Node builtin) scoped via an override in the root `.oxlintrc.json` to `packages/keystone-studio/app/routes/**/*.{ts,tsx}`. Verified it fires on a test `node:fs` import and that the route tree is currently clean.
 
 ---
 
@@ -690,3 +690,9 @@ Fix opportunistically — not introduced by this refactor:
 - ~~`StyleGuideBasicFont.tsx:87`~~ — fixed (Phase 0)
 - `color.utils.ts` — still imports `ConfigSchema` directly; should use `TokensSchema`
 - ~~`env.ts` — `AppLoadContext { whatever: string }` placeholder~~ — fixed (Phase 0)
+
+---
+
+## Naming
+
+- [ ] Rename the project away from "Keystone" — keep the `-css` suffix, new word TBD (to be workshopped). This is a real rename, not just a label swap: it touches the npm scope (`@keystone-css/*`), the CLI binary name (`keystone studio`, `keystone build`, etc.), every package directory (`keystone-core`, `keystone-cli`, `keystone-studio`, `keystone-studio-tokens`), the `.keystone/` project-folder convention baked into how the tool discovers config, and user-facing UI text ("Keystone CSS" header, `KEYSTONE TOKENS` studio branding). Scope out a migration plan before starting — likely its own phase.

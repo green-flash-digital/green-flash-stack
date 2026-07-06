@@ -1,6 +1,6 @@
 import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
-import { AdapterContext, IsLocalContext } from "~/context";
+import { AdapterContext } from "~/context";
 import { errors } from "~/utils/util.error-modes";
 import { LOG } from "~/utils/util.logger";
 
@@ -10,10 +10,6 @@ export async function action({ request, context }: Route.ActionArgs) {
   const formData = await request.formData();
   const formConfig = String(formData.get("config"));
   const newConfigJson = JSON.parse(formConfig);
-
-  if (!context.get(IsLocalContext)) {
-    return { config: null };
-  }
 
   const adapter = context.get(AdapterContext);
   if (!adapter) throw errors.API_ERROR(500, new Error("No storage adapter configured"));
