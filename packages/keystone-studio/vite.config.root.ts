@@ -31,7 +31,7 @@ export default defineConfig({
     wyw({
       // Scope to app source files only — the previous "/**/*" pattern matched all
       // TypeScript files on the filesystem including node_modules
-      include: ["**/*.{ts,tsx}"],
+      include: ["app/**/*.{ts,tsx}"],
       exclude: ["node_modules"]
     }),
     devtoolsJson()

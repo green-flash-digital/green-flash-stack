@@ -2,32 +2,31 @@
   "name": "@keystone-css/studio",
   "version": "0.3.6",
   "files": [
-    "build",
+    "build-local",
     "StudioServer.js",
     "StudioServer.d.ts"
   ],
   "type": "module",
   "sideEffects": false,
   "exports": {
-    "./server": "./StudioServer.js"
+    "./server": "./studio-server/StudioServer.js"
   },
   "publishConfig": {
     "access": "public"
   },
   "scripts": {
-    "build": "react-router build && yarn server:build",
-    "deploy": "wrangler pages deploy ./build/client",
-    "dev": "NODE_ENV=development yarn tsx ./scripts/dev.ts",
-    "dev:worker": "wrangler pages dev --compatibility-flag nodejs_compat",
+    "build": "yarn build:local && yarn build:sass",
+    "build:local": "STUDIO_IS_LOCAL=true react-router build --config vite.config.local.ts && yarn tsc --project tsconfig.studio-server.json",
+    "build:sass": "STUDIO_IS_LOCAL=false react-router build --config vite.config.cloudflare.ts",
+    "deploy:sass": "wrangler deploy",
+    "dev:local": "NODE_ENV=development yarn tsx ./scripts/dev.ts",
+    "dev:sass": "vite dev",
     "db:generate": "drizzle-kit generate",
-    "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
-    "start": "wrangler pages dev ./build/client",
+    "start": "vite preview",
     "typecheck": "react-router typegen && tsc",
     "typegen": "wrangler types",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
-    "server:build": "yarn tsc --project tsconfig.server.json",
-    "serve": "yarn tsx ./scripts/serve.ts",
     "test": "vitest run",
     "test:watch": "vitest"
   },
@@ -35,7 +34,6 @@
     "@green-flash/ts-utils": "workspace:*",
     "@linaria/server": "8.0.0",
     "@monaco-editor/react": "4.7.0",
-    "@react-router/cloudflare": "8.1.0",
     "@react-router/express": "8.1.0",
     "@react-router/node": "8.1.0",
     "@react-router/serve": "8.1.0",
@@ -62,7 +60,7 @@
     "@babel/preset-react": "8.0.1",
     "@babel/preset-typescript": "8.0.1",
     "@chromatic-com/storybook": "5.2.1",
-    "@cloudflare/workers-types": "^4.20260702.1",
+    "@cloudflare/vite-plugin": "1.43.0",
     "@gfdigital/tsconfig": "0.3.1",
     "@linaria/core": "8.0.0",
     "@react-router/dev": "8.1.0",
@@ -89,6 +87,6 @@
     "vite": "8.1.2",
     "vite-plugin-devtools-json": "^1.0.0",
     "vitest": "4.1.9",
-    "wrangler": "4.106.0"
+    "wrangler": "^4.107.0"
   }
 }

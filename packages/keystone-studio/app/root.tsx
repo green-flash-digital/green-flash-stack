@@ -18,16 +18,11 @@ import { Label } from "./components/Label";
 import { Layout as LayoutBody } from "./components/Layout";
 import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
-import { LayoutHeaderUserMenu } from "./components/LayoutHeaderUserMenu";
 import { LayoutMain } from "./components/LayoutMain";
-import {
-  ActiveProjectContext,
-  AdapterContext,
-  IsLocalContext,
-  TokensPathContext,
-  UserContext,
-  VersionsDirContext
-} from "./context";
+import { AdapterContext, IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
+import { ActiveProjectContext, UserContext } from "./saas/context.saas";
+import { LayoutHeaderUserMenu } from "./saas/LayoutHeaderUserMenu";
+import { saasMiddleware } from "./saas/middleware.saas";
 import { FileSystemAdapter } from "./utils/StorageAdapter";
 
 export const middleware: Route.MiddlewareFunction[] = [
@@ -39,17 +34,37 @@ export const middleware: Route.MiddlewareFunction[] = [
     context.set(IsLocalContext, process.env.STUDIO_IS_LOCAL === "true");
 
     // Local path: create FileSystemAdapter from env vars.
-    // Worker production path: adapter is pre-set by getLoadContext in worker.ts — skip.
+    // SaaS path: saasMiddleware (below) sets AdapterContext instead, from the
+    // active project resolved via the Cloudflare env workers/app.ts seeds.
     if (tokensPath) {
       context.set(AdapterContext, new FileSystemAdapter(tokensPath, versionsDir));
     }
   },
+  saasMiddleware,
   ({ context, request }) => {
-    if (context.get(IsLocalContext)) return;
-
     const url = new URL(request.url);
-    const isAuthPath = url.pathname === "/login" || url.pathname.startsWith("/api/auth");
     const isProjectsPath = url.pathname === "/projects";
+    const isSaasPagePath =
+      url.pathname === "/login" ||
+      url.pathname === "/signup" ||
+      url.pathname === "/forgot-password" ||
+      url.pathname === "/reset-password" ||
+      isProjectsPath;
+
+    // Local CLI mode has no accounts/projects concept — send any of these SaaS
+    // pages straight to /config instead of each route guarding for IsLocalContext
+    // individually.
+    if (context.get(IsLocalContext)) {
+      if (isSaasPagePath) throw redirect("/config");
+      return;
+    }
+
+    const isAuthPath =
+      url.pathname === "/login" ||
+      url.pathname === "/signup" ||
+      url.pathname === "/forgot-password" ||
+      url.pathname === "/reset-password" ||
+      url.pathname.startsWith("/api/auth");
 
     const user = context.get(UserContext);
     if (!user && !isAuthPath) throw redirect("/login");

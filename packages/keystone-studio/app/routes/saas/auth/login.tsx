@@ -10,13 +10,14 @@ import {
 } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
-import { signIn } from "~/auth.client";
-import { IsLocalContext, UserContext } from "~/context";
+import { signIn } from "~/saas/auth.client";
+import { UserContext } from "~/saas/context.saas";
 
 import type { Route } from "./+types/login";
 
+// root.tsx's middleware already redirects local-CLI-mode requests to /config
+// before this loader ever runs — only the already-authed case needs handling here.
 export async function loader({ context }: Route.LoaderArgs) {
-  if (context.get(IsLocalContext)) throw redirect("/config");
   if (context.get(UserContext)) throw redirect("/config");
   return null;
 }
@@ -106,6 +107,18 @@ const errorStyles = css`
   color: ${makeColor("error-400", { opacity: 0.9 })};
 `;
 
+const footerStyles = css`
+  font-size: ${makeRem(13)};
+  color: ${makeColor("neutral-light", { opacity: 0.6 })};
+  text-align: center;
+  display: flex;
+  justify-content: space-between;
+
+  a {
+    color: ${makeColor("neutral-light")};
+  }
+`;
+
 export default function LoginPage() {
   const navigate = useNavigate();
   const [pending, setPending] = useState(false);
@@ -152,6 +165,10 @@ export default function LoginPage() {
             {pending ? "Signing in…" : "Sign in"}
           </button>
         </form>
+        <div className={footerStyles}>
+          <a href="/signup">Create an account</a>
+          <a href="/forgot-password">Forgot password?</a>
+        </div>
       </div>
     </div>
   );

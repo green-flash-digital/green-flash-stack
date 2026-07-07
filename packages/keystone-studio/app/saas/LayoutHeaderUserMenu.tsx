@@ -10,8 +10,8 @@ import {
 } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
-import { signOut } from "~/auth.client";
-import type { StudioUser } from "~/context";
+import { signOut } from "./auth.client";
+import type { StudioUser } from "./context.saas";
 
 export type LayoutHeaderUserMenuProps = {
   user: StudioUser;

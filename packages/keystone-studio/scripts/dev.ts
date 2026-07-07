@@ -20,6 +20,9 @@ const app = express();
 const sseClients = new Set<Response>();
 
 const viteServer = await createServer({
+  // vite.config.ts (default) is the SaaS/Cloudflare config now — this local dev
+  // server needs the plain, no-Cloudflare-plugin config explicitly.
+  configFile: path.resolve(import.meta.dirname, "../vite.config.local.ts"),
   server: { middlewareMode: true },
   // Required for correct middleware mode — tells Vite this app handles its own HTML/routing
   appType: "custom"
@@ -34,12 +37,6 @@ app.get("/api/tokens-watch", (req, res) => {
   res.flushHeaders();
   sseClients.add(res);
   req.on("close", () => sseClients.delete(res));
-});
-
-// Chrome DevTools probes this on every page load; short-circuit before the
-// React Router catch-all so it doesn't log as an unmatched-route error.
-app.get("/.well-known/*splat", (_req, res) => {
-  res.status(204).end();
 });
 
 watch(tokensPath, () => {

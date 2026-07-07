@@ -10,8 +10,8 @@ import { VariantAdd } from "~/components/VariantAdd";
 import { VariantContainer } from "~/components/VariantContainer";
 import { VariantEmpty } from "~/components/VariantEmpty";
 import { VariantList } from "~/components/VariantList";
-import { ProjectsRepoContext, UserContext } from "~/context";
-import { activeProjectCookie } from "~/utils/activeProjectCookie";
+import { activeProjectCookie } from "~/saas/activeProjectCookie";
+import { ProjectsRepoContext, UserContext } from "~/saas/context.saas";
 import { errors } from "~/utils/util.error-modes";
 
 import type { Route } from "./+types/projects";

@@ -9,6 +9,7 @@ import { LayoutNavItem } from "~/components/LayoutNavItem";
 import { LayoutSidebarTitle } from "~/components/LayoutSidebarTitle";
 import { AdapterContext } from "~/context";
 import { ConfigurationProvider } from "~/features/Config.context";
+import { ConfigSave } from "~/features/ConfigSave";
 import { IconCode } from "~/icons/IconCode";
 import { IconColors } from "~/icons/IconColors";
 import { IconGrid } from "~/icons/IconGrid";
@@ -64,14 +65,8 @@ export default function AppConfigRoute() {
             <LayoutNavItem to="/config/custom" label="Custom" DXIcon={IconCode} />
             <LayoutNavItem to="/config/settings" label="Settings" DXIcon={IconSettings05} />
           </nav>
+          <ConfigSave />
         </aside>
-        {/* <div className={sidebarFooterStyles}>
-            <ButtonGroup>
-              <ConfigStyleGuide />
-              <ConfigJSON />
-            </ButtonGroup>
-            <ConfigSave />
-          </div> */}
         <Outlet />
       </div>
     </ConfigurationProvider>

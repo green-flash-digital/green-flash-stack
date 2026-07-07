@@ -29,7 +29,7 @@ export class StudioServer {
     process.env.STUDIO_VERSIONS_DIR = this.#options.versionsDir;
     process.env.STUDIO_IS_LOCAL = "true";
 
-    const buildDir = path.resolve(import.meta.dirname, "./build");
+    const buildDir = path.resolve(import.meta.dirname, "./build-local");
 
     const studioClientAssets = path.resolve(buildDir, "./client");
     this.#app.use(express.static(studioClientAssets));

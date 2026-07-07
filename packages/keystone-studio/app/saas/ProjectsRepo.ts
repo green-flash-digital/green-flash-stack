@@ -1,11 +1,11 @@
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 
+import type { D1Database } from "@cloudflare/workers-types";
 import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { TokensSchema } from "@keystone-css/core/schemas";
 
-import { projects } from "../db/schema";
-import type { D1Database } from "./StorageAdapter";
+import { projects } from "./db/schema";
 
 export type ProjectSummary = {
   id: string;

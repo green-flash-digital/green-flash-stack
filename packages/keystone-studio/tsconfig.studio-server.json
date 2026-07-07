@@ -1,0 +1,11 @@
+{
+  "extends": "@gfdigital/tsconfig/library",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "./studio-server",
+    "declarationDir": "./studio-server",
+    "declaration": true,
+    "rootDir": "."
+  },
+  "include": ["./studio-server/StudioServer.ts"]
+}

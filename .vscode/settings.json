@@ -25,5 +25,8 @@
   },
   "[jsonc]": {
     "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "files.associations": {
+    "wrangler.json": "jsonc"
   }
 }

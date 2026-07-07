@@ -1,10 +1,11 @@
 import { index, sqliteTable, text } from "drizzle-orm/sqlite-core";
 
 /**
- * Only `projects` is Drizzle-managed. The `tokens` table (see StorageAdapter.ts)
- * and BetterAuth's user/session/account/verification tables already exist in
- * production out-of-band — declaring them here would make `drizzle-kit generate`
- * try to (re)create tables that already exist.
+ * BetterAuth's tables are Drizzle-managed too (see ./auth-schema.ts, generated —
+ * do not hand-edit). The `tokens` table (see ../D1Adapter.ts) is deliberately
+ * NOT declared here — its shape is dictated by D1Adapter's raw SQL, not Drizzle.
+ * See migrations/0001_*.sql and 0002_tokens.sql for the "verify before --remote"
+ * caveat and docs/database.md for the full migration convention.
  */
 export const projects = sqliteTable(
   "projects",
