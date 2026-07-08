@@ -1,0 +1,105 @@
+name: Keystone Studio - Deploy
+
+on:
+  push:
+    branches:
+      - main
+    # Broad pre-filter across all workspace packages — the detect-changes job
+    # below narrows this down to "does keystone-studio itself need a rebuild",
+    # since it depends on other workspace packages (e.g. ts-utils) that live
+    # outside packages/keystone-studio/.
+    paths:
+      - "packages/**"
+
+defaults:
+  run:
+    working-directory: packages/keystone-studio
+
+jobs:
+  detect-changes:
+    name: Detect Keystone Studio Changes
+    runs-on: ubuntu-latest
+    outputs:
+      affected: ${{ steps.check.outputs.affected }}
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          # turbo --affected needs full history to diff against a base ref —
+          # a shallow checkout makes it fail open (treats everything as
+          # affected), which is safe but defeats the point of this job.
+          fetch-depth: 0
+
+      - name: Read Node.js Version
+        working-directory: .
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Install Dependencies
+        working-directory: .
+        run: yarn install --immutable
+
+      - name: Check if keystone-studio is affected
+        id: check
+        working-directory: .
+        run: |
+          # main == HEAD right after this push, so the default main...HEAD
+          # comparison would show zero diff. Compare against the pre-push
+          # SHA GitHub gives us instead (falling back to the default for a
+          # branch's first-ever push, where "before" is the all-zero SHA).
+          if [ "${{ github.event.before }}" != "0000000000000000000000000000000000000000" ]; then
+            export TURBO_SCM_BASE="${{ github.event.before }}"
+          fi
+          npx turbo run build --affected --dry=json > /tmp/turbo-affected.json
+          AFFECTED=$(jq '.packages | index("@keystone-css/studio") != null' /tmp/turbo-affected.json)
+          echo "Affected packages: $(jq -c '.packages' /tmp/turbo-affected.json)"
+          echo "affected=$AFFECTED" >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: detect-changes
+    if: needs.detect-changes.outputs.affected == 'true'
+    name: Migrate and Deploy to Production
+    runs-on: ubuntu-latest
+    env:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Read Node.js Version
+        working-directory: .
+        run: echo "NODE_VERSION=$(cat .nvmrc)" >> $GITHUB_ENV
+
+      - name: Enable Corepack
+        run: corepack enable
+
+      - name: Set Up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: "yarn"
+
+      - name: Install Dependencies
+        working-directory: .
+        run: yarn install --immutable
+
+      - name: Apply migrations to production
+        run: npx wrangler d1 migrations apply keystone-studio --remote
+
+      - name: Deploy to production
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          workingDirectory: packages/keystone-studio
+          command: deploy
