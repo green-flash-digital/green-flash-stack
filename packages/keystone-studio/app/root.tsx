@@ -13,6 +13,9 @@ import {
 import "@keystone-css/studio-tokens/root.css";
 import type { LinksFunction } from "react-router";
 
+import { makeFontFamily } from "@keystone-css/studio-tokens";
+import { css } from "@linaria/core";
+
 import type { Route } from "./+types/root";
 import { Label } from "./components/Label";
 import { Layout as LayoutBody } from "./components/Layout";
@@ -44,12 +47,18 @@ export const middleware: Route.MiddlewareFunction[] = [
   ...saasMiddlewares,
   ({ context, request }) => {
     const url = new URL(request.url);
-    const isProjectsPath = url.pathname === "/projects";
+    // React Router's single-fetch protocol requests route data via
+    // `<path>.data` (e.g. /projects.data) instead of the bare pathname —
+    // strip that suffix before comparing, or every data-only fetch to one of
+    // these paths fails the checks below and gets redirected right back to
+    // itself, forming an infinite client-side redirect loop.
+    const pathname = url.pathname.replace(/\.data$/, "");
+    const isProjectsPath = pathname === "/projects";
     const isSaasPagePath =
-      url.pathname === "/login" ||
-      url.pathname === "/signup" ||
-      url.pathname === "/forgot-password" ||
-      url.pathname === "/reset-password" ||
+      pathname === "/login" ||
+      pathname === "/signup" ||
+      pathname === "/forgot-password" ||
+      pathname === "/reset-password" ||
       isProjectsPath;
 
     // Local CLI mode has no accounts/projects concept — send any of these SaaS
@@ -61,15 +70,15 @@ export const middleware: Route.MiddlewareFunction[] = [
     }
 
     const isAuthPath =
-      url.pathname === "/login" ||
-      url.pathname === "/signup" ||
-      url.pathname === "/forgot-password" ||
-      url.pathname === "/reset-password" ||
-      url.pathname.startsWith("/api/auth");
+      pathname === "/login" ||
+      pathname === "/signup" ||
+      pathname === "/forgot-password" ||
+      pathname === "/reset-password" ||
+      pathname.startsWith("/api/auth");
 
     const user = context.get(UserContext);
     if (!user && !isAuthPath) throw redirect("/login");
-    if (user && url.pathname === "/login") throw redirect("/config");
+    if (user && pathname === "/login") throw redirect("/config");
     if (user && !isAuthPath && !isProjectsPath && !context.get(ActiveProjectContext)) {
       throw redirect("/projects");
     }
@@ -97,6 +106,31 @@ export const links: LinksFunction = () => [
   }
 ];
 
+const bodyStyles = css`
+:global() {
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    * {
+      box-sizing: border-box;
+      font-family: ${makeFontFamily("mulish")};
+
+      &::after,
+      &::before {
+        box-sizing: border-box;
+      }
+    }
+  }
+
+  * {
+    box-sizing: border-box;
+    font-family: ${makeFontFamily("mulish")};
+  }
+`;
+
 export function Layout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
@@ -106,11 +140,11 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <>
+      <body className={bodyStyles}>
         {children}
         <ScrollRestoration />
         <Scripts />
-      </>
+      </body>
     </html>
   );
 }
@@ -159,5 +193,4 @@ export default function App() {
       </LayoutMain>
     </LayoutBody>
   );
-  return;
 }
