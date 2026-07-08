@@ -173,33 +173,6 @@ const cardStyles = css`
   }
 `;
 
-function OptionCard({
-  to,
-  dxColor,
-  DXIcon,
-  title,
-  description
-}: {
-  to: string;
-  dxColor: "primary" | "secondary";
-  DXIcon: (props: { dxSize: number }) => JSX.Element;
-  title: string;
-  description: string;
-}) {
-  return (
-    <Link to={to} className={classes(cardStyles, `c-${dxColor}`)}>
-      <div className="icon">
-        <DXIcon dxSize={22} />
-      </div>
-      <div className="title">{title}</div>
-      <div className="description">{description}</div>
-      <div className="arrow">
-        <IconArrowDown dxSize={16} />
-      </div>
-    </Link>
-  );
-}
-
 export default function Index() {
   return (
     <div className={styles}>
@@ -228,5 +201,32 @@ export default function Index() {
         />
       </div>
     </div>
+  );
+}
+
+function OptionCard({
+  to,
+  dxColor,
+  DXIcon,
+  title,
+  description
+}: {
+  to: string;
+  dxColor: "primary" | "secondary";
+  DXIcon: (props: { dxSize: number }) => JSX.Element;
+  title: string;
+  description: string;
+}) {
+  return (
+    <Link to={to} className={classes(cardStyles, `c-${dxColor}`)}>
+      <div className="icon">
+        <DXIcon dxSize={22} />
+      </div>
+      <div className="title">{title}</div>
+      <div className="description">{description}</div>
+      <div className="arrow">
+        <IconArrowDown dxSize={16} />
+      </div>
+    </Link>
   );
 }
