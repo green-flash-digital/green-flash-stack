@@ -1,8 +1,8 @@
-// Generated via `npx auth@latest generate --config e2e/better-auth-cli.config.ts
-// --output app/saas/database/database.schema.auth.ts -y`. Regenerate when
-// app/saas/auth/auth.server.ts's config changes; do not hand-edit. See
-// docs/database.md for the "verify before --remote" caveat — production's real
-// current state for these tables is unverified.
+// Generated via `npx @better-auth/cli generate --output
+// app/saas/database/database.schema.auth.ts -y`. Regenerate when
+// app/saas/auth/auth.server.ts's config changes; do not hand-edit. Production's
+// real current state for these tables is unverified — apply migrations to
+// --remote deliberately, not as a matter of course.
 import { relations, sql } from "drizzle-orm";
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 

@@ -1,18 +1,18 @@
 import type { D1Database } from "@cloudflare/workers-types";
 
-import { ProjectsClient } from "../projects/projects.repo";
-import { TokensClient } from "../tokens/tokens.repo";
+import { ProjectsController } from "../projects/projects.controller";
+import { TokensController } from "../tokens/tokens.controller";
 
 /**
  * Single facade over D1 for the deployed Worker. Constructed once per request
- * from the raw binding; exposes feature-scoped clients as properties.
+ * from the raw binding; exposes feature-scoped controllers as properties.
  */
 export class DBController {
-  readonly projects: ProjectsClient;
-  readonly tokens: TokensClient;
+  readonly projects: ProjectsController;
+  readonly tokens: TokensController;
 
   constructor(db: D1Database) {
-    this.projects = new ProjectsClient(db);
-    this.tokens = new TokensClient(db);
+    this.projects = new ProjectsController(db);
+    this.tokens = new TokensController(db);
   }
 }

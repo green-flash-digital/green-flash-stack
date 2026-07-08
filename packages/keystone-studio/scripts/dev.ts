@@ -10,7 +10,7 @@ import express from "express";
 import { createServer } from "vite";
 
 const tokensPath = path.resolve(import.meta.dirname, "../.keystone/tokens.json");
-const versionsDir = path.resolve(import.meta.dirname, "../.keystone/_versions");
+const versionsDir = path.resolve(import.meta.dirname, "../.keystone/versions");
 
 process.env.STUDIO_TOKENS_PATH = tokensPath;
 process.env.STUDIO_VERSIONS_DIR = versionsDir;

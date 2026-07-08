@@ -1,5 +1,5 @@
 node_modules
-.keystone/_versions/
+.keystone/versions/
 
 /.cache
 /build
