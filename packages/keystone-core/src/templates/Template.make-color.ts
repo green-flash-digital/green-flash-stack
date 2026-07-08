@@ -18,7 +18,9 @@ function createColorManifest(config: TokensConfig): Record<string, string> {
   return flatManifest;
 }
 
-export function makeColorUtil<T extends { prefix: string; color: Record<string, string> }>(tokens: T) {
+export function makeColorUtil<T extends { prefix: string; color: Record<string, string> }>(
+  tokens: T
+) {
   return {
     makeColor(tokenName: keyof T["color"] & string, options?: { opacity?: number }): string {
       const opacity = options?.opacity ?? 1;

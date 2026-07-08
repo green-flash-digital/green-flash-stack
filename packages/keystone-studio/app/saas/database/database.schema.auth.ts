@@ -1,7 +1,8 @@
 // Generated via `npx auth@latest generate --config e2e/better-auth-cli.config.ts
-// --output app/saas/db/auth-schema.ts -y`. Regenerate when app/saas/auth.ts's
-// config changes; do not hand-edit. See docs/database.md for the "verify before
-// --remote" caveat — production's real current state for these tables is unverified.
+// --output app/saas/database/database.schema.auth.ts -y`. Regenerate when
+// app/saas/auth/auth.server.ts's config changes; do not hand-edit. See
+// docs/database.md for the "verify before --remote" caveat — production's real
+// current state for these tables is unverified.
 import { relations, sql } from "drizzle-orm";
 import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core";
 
@@ -9,9 +10,7 @@ export const user = sqliteTable("user", {
   id: text("id").primaryKey(),
   name: text("name").notNull(),
   email: text("email").notNull().unique(),
-  emailVerified: integer("email_verified", { mode: "boolean" })
-    .default(false)
-    .notNull(),
+  emailVerified: integer("email_verified", { mode: "boolean" }).default(false).notNull(),
   image: text("image"),
   createdAt: integer("created_at", { mode: "timestamp_ms" })
     .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
@@ -19,7 +18,7 @@ export const user = sqliteTable("user", {
   updatedAt: integer("updated_at", { mode: "timestamp_ms" })
     .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
     .$onUpdate(() => /* @__PURE__ */ new Date())
-    .notNull(),
+    .notNull()
 });
 
 export const session = sqliteTable(
@@ -38,9 +37,9 @@ export const session = sqliteTable(
     userAgent: text("user_agent"),
     userId: text("user_id")
       .notNull()
-      .references(() => user.id, { onDelete: "cascade" }),
+      .references(() => user.id, { onDelete: "cascade" })
   },
-  (table) => [index("session_userId_idx").on(table.userId)],
+  (table) => [index("session_userId_idx").on(table.userId)]
 );
 
 export const account = sqliteTable(
@@ -56,10 +55,10 @@ export const account = sqliteTable(
     refreshToken: text("refresh_token"),
     idToken: text("id_token"),
     accessTokenExpiresAt: integer("access_token_expires_at", {
-      mode: "timestamp_ms",
+      mode: "timestamp_ms"
     }),
     refreshTokenExpiresAt: integer("refresh_token_expires_at", {
-      mode: "timestamp_ms",
+      mode: "timestamp_ms"
     }),
     scope: text("scope"),
     password: text("password"),
@@ -68,9 +67,9 @@ export const account = sqliteTable(
       .notNull(),
     updatedAt: integer("updated_at", { mode: "timestamp_ms" })
       .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
+      .notNull()
   },
-  (table) => [index("account_userId_idx").on(table.userId)],
+  (table) => [index("account_userId_idx").on(table.userId)]
 );
 
 export const verification = sqliteTable(
@@ -86,26 +85,26 @@ export const verification = sqliteTable(
     updatedAt: integer("updated_at", { mode: "timestamp_ms" })
       .default(sql`(cast(unixepoch('subsecond') * 1000 as integer))`)
       .$onUpdate(() => /* @__PURE__ */ new Date())
-      .notNull(),
+      .notNull()
   },
-  (table) => [index("verification_identifier_idx").on(table.identifier)],
+  (table) => [index("verification_identifier_idx").on(table.identifier)]
 );
 
 export const userRelations = relations(user, ({ many }) => ({
   sessions: many(session),
-  accounts: many(account),
+  accounts: many(account)
 }));
 
 export const sessionRelations = relations(session, ({ one }) => ({
   user: one(user, {
     fields: [session.userId],
-    references: [user.id],
-  }),
+    references: [user.id]
+  })
 }));
 
 export const accountRelations = relations(account, ({ one }) => ({
   user: one(user, {
     fields: [account.userId],
-    references: [user.id],
-  }),
+    references: [user.id]
+  })
 }));

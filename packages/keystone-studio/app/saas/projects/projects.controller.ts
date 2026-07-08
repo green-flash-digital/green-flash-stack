@@ -1,11 +1,10 @@
-import { and, eq } from "drizzle-orm";
-import { drizzle } from "drizzle-orm/d1";
-
 import type { D1Database } from "@cloudflare/workers-types";
 import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { TokensSchema } from "@keystone-css/core/schemas";
+import { and, eq } from "drizzle-orm";
+import { drizzle } from "drizzle-orm/d1";
 
-import { projects } from "./db/schema";
+import { projects } from "../database/database.schema";
 
 export type ProjectSummary = {
   id: string;
@@ -13,23 +12,19 @@ export type ProjectSummary = {
   createdAt: string;
 };
 
-export interface ProjectsRepo {
-  listForOwner(ownerId: string): Promise<ProjectSummary[]>;
-  create(ownerId: string, name: string): Promise<ProjectSummary>;
-  getOwned(projectId: string, ownerId: string): Promise<ProjectSummary | null>;
-}
-
 /**
- * `projects` is Drizzle-managed; `tokens` is not (see schema.ts) — so seeding a new
- * project's tokens row uses the same raw-SQL shape D1Adapter reads from.
+ * `projects` is Drizzle-managed; `tokens` is not (see ../database/database.schema.ts)
+ * — so seeding a new project's tokens row uses the same raw-SQL shape
+ * ../tokens/tokens.repo.ts reads from. The insert stays a single raw `batch()`
+ * call across both tables to keep it atomic.
  */
-export class D1ProjectsRepo implements ProjectsRepo {
+export class ProjectsClient {
   #db: ReturnType<typeof drizzle>;
   #raw: D1Database;
 
-  constructor(db: D1Database) {
-    this.#raw = db;
-    this.#db = drizzle(db);
+  constructor(raw: D1Database) {
+    this.#raw = raw;
+    this.#db = drizzle(raw);
   }
 
   async listForOwner(ownerId: string): Promise<ProjectSummary[]> {
@@ -52,9 +47,7 @@ export class D1ProjectsRepo implements ProjectsRepo {
         )
         .bind(id, ownerId, name, now, now),
       this.#raw
-        .prepare(
-          "INSERT INTO tokens (project_id, config_json, updated_at) VALUES (?, ?, ?)"
-        )
+        .prepare("INSERT INTO tokens (project_id, config_json, updated_at) VALUES (?, ?, ?)")
         .bind(id, JSON.stringify(seedTokens), now)
     ]);
 

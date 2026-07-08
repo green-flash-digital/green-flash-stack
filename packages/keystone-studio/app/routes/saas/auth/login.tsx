@@ -10,8 +10,8 @@ import {
 } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
-import { signIn } from "~/saas/auth.client";
-import { UserContext } from "~/saas/context.saas";
+import { signIn } from "~/saas/auth/auth.client";
+import { UserContext } from "~/saas/auth/auth.context";
 
 import type { Route } from "./+types/login";
 

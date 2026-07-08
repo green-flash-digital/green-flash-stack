@@ -1,4 +1,10 @@
-import { makeSpace, makeColor, makeFontWeight, makeRem, makeReset } from "@keystone-css/studio-tokens";
+import {
+  makeSpace,
+  makeColor,
+  makeFontWeight,
+  makeRem,
+  makeReset
+} from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

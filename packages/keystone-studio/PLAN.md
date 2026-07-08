@@ -420,7 +420,7 @@ Deferred to Phase 5b — do the storage/worker infrastructure first, add auth on
 - [x] Add login/signup routes (active only when `isLocal === false`)
 - [x] Add user menu to header (renders only when `isLocal === false`)
 - [x] Add project picker — lists design systems per logged-in user. New `projects` Drizzle table (`app/db/schema.ts`, first real drizzle-kit usage in the repo — `tokens` and BetterAuth's own tables are deliberately left unmanaged since they already exist in prod out-of-band). `D1ProjectsRepo` (`app/utils/ProjectsRepo.ts`) does ownership-scoped queries (`WHERE id = ? AND owner_id = ?` baked into the SQL, not a JS-side check). Active project is resolved via a cookie (`app/utils/activeProjectCookie.ts`) re-verified against D1 on every request in `worker.ts`'s `getLoadContext` — chosen over a `:projectId` URL param because every existing config route already pulls storage generically via `AdapterContext`, so this needed zero changes to any of them. New `/projects` route reuses the existing `InputLabel`/`InputSection`/`VariantEmpty`/`VariantList`/`VariantAdd` pattern from `ColorBrandModeManual.tsx`. Also fixed a pre-existing bug found during this work: `save-config.ts` was silently no-op'ing every save outside local mode, which would've made the picker pointless. Known accepted tradeoff: the cookie is per-browser not per-tab, so a stale second tab could save to the wrong project after switching elsewhere — not a security issue (ownership is re-verified per request) but worth surfacing the active project's name in the header as a follow-up so a stale tab is visually obvious. Rename/delete of projects is out of scope here.
-- [x] Enforce the parity rule — the repo moved from ESLint to oxlint monorepo-wide, so this used oxlint's native `import/no-nodejs-modules` rule (a better fit than a hand-written "no node:fs" rule since it blocks *any* Node builtin) scoped via an override in the root `.oxlintrc.json` to `packages/keystone-studio/app/routes/**/*.{ts,tsx}`. Verified it fires on a test `node:fs` import and that the route tree is currently clean.
+- [x] Enforce the parity rule — the repo moved from ESLint to oxlint monorepo-wide, so this used oxlint's native `import/no-nodejs-modules` rule (a better fit than a hand-written "no node:fs" rule since it blocks _any_ Node builtin) scoped via an override in the root `.oxlintrc.json` to `packages/keystone-studio/app/routes/**/*.{ts,tsx}`. Verified it fires on a test `node:fs` import and that the route tree is currently clean.
 
 ---
 
@@ -604,10 +604,14 @@ export type KeystoneSemantic = z.infer<typeof SemanticSchema>;
 
 ```css
 :root {
-  --prefix-semantic-interactive:
-    light-dark(var(--prefix-color-primary-600), var(--prefix-color-primary-400));
-  --prefix-semantic-surface:
-    light-dark(var(--prefix-color-neutral-light), var(--prefix-color-neutral-dark));
+  --prefix-semantic-interactive: light-dark(
+    var(--prefix-color-primary-600),
+    var(--prefix-color-primary-400)
+  );
+  --prefix-semantic-surface: light-dark(
+    var(--prefix-color-neutral-light),
+    var(--prefix-color-neutral-dark)
+  );
 }
 ```
 
@@ -618,10 +622,10 @@ export type KeystoneSemantic = z.infer<typeof SemanticSchema>;
 Typed to `keyof tokens["semantic"]` — the generated role name union. Identical API shape to `makeColor` but references semantic vars:
 
 ```ts
-makeSemanticColor("interactive")
+makeSemanticColor("interactive");
 // → var(--prefix-semantic-interactive)
 
-makeSemanticColor("interactive", { opacity: 0.8 })
+makeSemanticColor("interactive", { opacity: 0.8 });
 // → color-mix(in oklch, var(--prefix-semantic-interactive), transparent 20%)
 ```
 
@@ -630,7 +634,9 @@ makeSemanticColor("interactive", { opacity: 0.8 })
 The `util` implementation reuses `makeColorUtil` but targeting the `semantic` namespace:
 
 ```ts
-function makeSemanticColorUtil<T extends { prefix: string; semantic: Record<string, unknown> }>(tokens: T) {
+function makeSemanticColorUtil<T extends { prefix: string; semantic: Record<string, unknown> }>(
+  tokens: T
+) {
   const { makeColor: _makeColor } = makeColorUtil({ prefix: tokens.prefix, color: {} });
   type Role = keyof T["semantic"] & string;
   return {

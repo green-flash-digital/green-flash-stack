@@ -12,10 +12,11 @@ import {
   pxTemplate,
   remTemplate,
   resetTemplate,
-  responsiveTemplate,
+  responsiveTemplate
 } from "@keystone-css/core/templates";
-import { tokens } from "./_tokens.js";
+
 import _def from "../config.js";
+import { tokens } from "./_tokens.js";
 
 export const { makeColor } = colorTemplate.util(tokens);
 export const { makeLightDark } = lightDarkTemplate.util(tokens);

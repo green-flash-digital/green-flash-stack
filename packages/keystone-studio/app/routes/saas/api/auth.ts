@@ -1,4 +1,4 @@
-import { AuthContext } from "~/saas/context.saas";
+import { AuthContext } from "~/saas/auth/auth.context";
 import { errors } from "~/utils/util.error-modes";
 
 import type { Route } from "./+types/auth";

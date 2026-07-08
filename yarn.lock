@@ -1410,6 +1410,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@cloudflare/workers-types@npm:^4.20260101.0":
+  version: 4.20260702.1
+  resolution: "@cloudflare/workers-types@npm:4.20260702.1"
+  checksum: 10c0/2dbd1d8d99285b49f90457321cc6f3668ac2fb89c9e24b36539e60f67925611078724093176bfbe06c8ab8d98eafd4902e4faa2e96a1378f96b14498c28ccdda
+  languageName: node
+  linkType: hard
+
 "@cspotcode/source-map-support@npm:0.8.1":
   version: 0.8.1
   resolution: "@cspotcode/source-map-support@npm:0.8.1"
@@ -2982,6 +2989,7 @@ __metadata:
     "@babel/preset-typescript": "npm:8.0.1"
     "@chromatic-com/storybook": "npm:5.2.1"
     "@cloudflare/vite-plugin": "npm:1.43.0"
+    "@cloudflare/workers-types": "npm:^4.20260101.0"
     "@gfdigital/tsconfig": "npm:0.3.1"
     "@green-flash/ts-utils": "workspace:*"
     "@linaria/core": "npm:8.0.0"

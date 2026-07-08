@@ -4,8 +4,8 @@ import { redirect } from "react-router";
 import { makeSpace, makeColor, makeRem, makeFontFamily } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
-import { requestPasswordReset } from "~/saas/auth.client";
-import { UserContext } from "~/saas/context.saas";
+import { requestPasswordReset } from "~/saas/auth/auth.client";
+import { UserContext } from "~/saas/auth/auth.context";
 
 import type { Route } from "./+types/forgot-password";
 

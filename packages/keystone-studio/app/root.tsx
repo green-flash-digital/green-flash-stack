@@ -20,9 +20,10 @@ import { LayoutHeader } from "./components/LayoutHeader";
 import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
 import { LayoutMain } from "./components/LayoutMain";
 import { AdapterContext, IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
-import { ActiveProjectContext, UserContext } from "./saas/context.saas";
-import { LayoutHeaderUserMenu } from "./saas/LayoutHeaderUserMenu";
-import { saasMiddleware } from "./saas/middleware.saas";
+import { UserContext } from "./saas/auth/auth.context";
+import { LayoutHeaderUserMenu } from "./saas/auth/LayoutHeaderUserMenu";
+import { ActiveProjectContext } from "./saas/projects/projects.context";
+import { saasMiddlewares } from "./saas/saas.middleware";
 import { FileSystemAdapter } from "./utils/StorageAdapter";
 
 export const middleware: Route.MiddlewareFunction[] = [
@@ -40,7 +41,7 @@ export const middleware: Route.MiddlewareFunction[] = [
       context.set(AdapterContext, new FileSystemAdapter(tokensPath, versionsDir));
     }
   },
-  saasMiddleware,
+  ...saasMiddlewares,
   ({ context, request }) => {
     const url = new URL(request.url);
     const isProjectsPath = url.pathname === "/projects";

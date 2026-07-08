@@ -403,9 +403,7 @@ function getCustomConfigFromState(state: ConfigurationStateCustom): KeystoneConf
   );
 }
 
-function getSemanticConfigFromState(
-  state: ConfigurationStateSemantic
-): KeystoneConfig["semantic"] {
+function getSemanticConfigFromState(state: ConfigurationStateSemantic): KeystoneConfig["semantic"] {
   return Object.values(state).reduce<KeystoneConfig["semantic"]>(
     (accum, { role, light, dark }) => Object.assign(accum, { [role]: { light, dark } }),
     {}

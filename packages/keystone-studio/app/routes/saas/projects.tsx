@@ -10,8 +10,9 @@ import { VariantAdd } from "~/components/VariantAdd";
 import { VariantContainer } from "~/components/VariantContainer";
 import { VariantEmpty } from "~/components/VariantEmpty";
 import { VariantList } from "~/components/VariantList";
-import { activeProjectCookie } from "~/saas/activeProjectCookie";
-import { ProjectsRepoContext, UserContext } from "~/saas/context.saas";
+import { UserContext } from "~/saas/auth/auth.context";
+import { DBControllerContext } from "~/saas/database/database.context";
+import { activeProjectCookie } from "~/saas/projects/projects.activeProjectCookie";
 import { errors } from "~/utils/util.error-modes";
 
 import type { Route } from "./+types/projects";
@@ -32,29 +33,29 @@ const rowButtonStyles = css`
 `;
 
 export async function loader({ context }: Route.LoaderArgs) {
-  const projectsRepo = context.get(ProjectsRepoContext);
+  const db = context.get(DBControllerContext);
   const user = context.get(UserContext);
-  if (!projectsRepo || !user) {
-    throw errors.API_ERROR(500, new Error("No projects repo or user configured"));
+  if (!db || !user) {
+    throw errors.API_ERROR(500, new Error("No database or user configured"));
   }
 
-  const projects = await projectsRepo.listForOwner(user.id);
+  const projects = await db.projects.listForOwner(user.id);
   return { projects };
 }
 
 export async function action({ request, context }: Route.ActionArgs) {
-  const projectsRepo = context.get(ProjectsRepoContext);
+  const db = context.get(DBControllerContext);
   const user = context.get(UserContext);
-  if (!projectsRepo || !user) {
-    throw errors.API_ERROR(500, new Error("No projects repo or user configured"));
+  if (!db || !user) {
+    throw errors.API_ERROR(500, new Error("No database or user configured"));
   }
 
   const formData = await request.formData();
   const intent = String(formData.get("intent"));
 
   if (intent === "create") {
-    const existing = await projectsRepo.listForOwner(user.id);
-    const project = await projectsRepo.create(user.id, `Design System ${existing.length + 1}`);
+    const existing = await db.projects.listForOwner(user.id);
+    const project = await db.projects.create(user.id, `Design System ${existing.length + 1}`);
     return redirect("/config", {
       headers: { "Set-Cookie": await activeProjectCookie.serialize(project.id) }
     });
@@ -63,7 +64,7 @@ export async function action({ request, context }: Route.ActionArgs) {
   if (intent === "select") {
     const projectId = String(formData.get("projectId"));
     // Never trust the posted id blindly, even though it came from this user's own list.
-    const project = await projectsRepo.getOwned(projectId, user.id);
+    const project = await db.projects.getOwned(projectId, user.id);
     if (!project) {
       return data({ error: "That design system could not be found." }, { status: 404 });
     }

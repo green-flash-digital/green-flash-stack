@@ -34,7 +34,9 @@ export default function ConfigSizeAndSpacingRoute() {
       <LayoutConfig>
         <LayoutConfigSection>
           <LayoutConfigSectionControls>
-            <LayoutConfigSectionControlsTitle dxTitle="Sizing">test</LayoutConfigSectionControlsTitle>
+            <LayoutConfigSectionControlsTitle dxTitle="Sizing">
+              test
+            </LayoutConfigSectionControlsTitle>
             <LayoutConfigSectionControlsContent>
               <SizeConfig />
             </LayoutConfigSectionControlsContent>

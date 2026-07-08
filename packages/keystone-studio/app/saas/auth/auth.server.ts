@@ -5,9 +5,14 @@ import { drizzle } from "drizzle-orm/d1";
 
 import { LOG } from "~/utils/util.logger";
 
+import * as authSchema from "../database/database.schema.auth";
+
 export function createAuth(db: D1Database) {
   return betterAuth({
-    database: drizzleAdapter(drizzle(db), { provider: "sqlite" }),
+    database: drizzleAdapter(drizzle(db, { schema: authSchema }), {
+      provider: "sqlite",
+      schema: authSchema
+    }),
     emailAndPassword: {
       enabled: true,
       // Dev/test only — production needs a real email provider (Resend, Postmark,

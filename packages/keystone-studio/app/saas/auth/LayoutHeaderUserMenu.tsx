@@ -11,7 +11,7 @@ import {
 import { css } from "@linaria/core";
 
 import { signOut } from "./auth.client";
-import type { StudioUser } from "./context.saas";
+import type { StudioUser } from "./auth.context";
 
 export type LayoutHeaderUserMenuProps = {
   user: StudioUser;

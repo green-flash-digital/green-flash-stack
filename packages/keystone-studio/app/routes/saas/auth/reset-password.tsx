@@ -4,8 +4,8 @@ import { redirect, useNavigate, useSearchParams } from "react-router";
 import { makeSpace, makeColor, makeRem, makeFontFamily } from "@keystone-css/studio-tokens";
 import { css } from "@linaria/core";
 
-import { resetPassword } from "~/saas/auth.client";
-import { UserContext } from "~/saas/context.saas";
+import { resetPassword } from "~/saas/auth/auth.client";
+import { UserContext } from "~/saas/auth/auth.context";
 
 import type { Route } from "./+types/reset-password";
 
@@ -149,21 +149,11 @@ export default function ResetPasswordPage() {
           <form className={formStyles} onSubmit={handleSubmit}>
             <label>
               New password
-              <input
-                type="password"
-                name="newPassword"
-                required
-                autoComplete="new-password"
-              />
+              <input type="password" name="newPassword" required autoComplete="new-password" />
             </label>
             <label>
               Confirm password
-              <input
-                type="password"
-                name="confirmPassword"
-                required
-                autoComplete="new-password"
-              />
+              <input type="password" name="confirmPassword" required autoComplete="new-password" />
             </label>
             {error && <div className={errorStyles}>{error}</div>}
             <button type="submit" disabled={pending}>

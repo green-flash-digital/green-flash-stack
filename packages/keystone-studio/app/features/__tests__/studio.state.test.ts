@@ -1,6 +1,5 @@
-import { describe, expect, it } from "vitest";
-
 import type { KeystoneConfig } from "@keystone-css/core/schemas";
+import { describe, expect, it } from "vitest";
 
 import { getTokensFromState, initStudioState } from "../studio.state";
 
@@ -22,7 +21,13 @@ const BASE: KeystoneConfig = {
     },
     variants: {
       body: { familyToken: "inter", weight: "400", size: 16, lineHeight: 1.5, letterSpacing: 0 },
-      heading: { familyToken: "inter", weight: "700", size: 32, lineHeight: 1.2, letterSpacing: -0.5 }
+      heading: {
+        familyToken: "inter",
+        weight: "700",
+        size: 32,
+        lineHeight: 1.2,
+        letterSpacing: -0.5
+      }
     }
   },
   sizeAndSpace: {

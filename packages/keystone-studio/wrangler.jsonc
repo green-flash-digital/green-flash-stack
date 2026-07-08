@@ -14,7 +14,14 @@
     "enabled": true
   },
   "upload_source_maps": true,
-  "compatibility_flags": ["nodejs_compat"]
+  "compatibility_flags": ["nodejs_compat"],
+  "d1_databases": [
+    {
+      "binding": "keystone_studio",
+      "database_name": "keystone-studio",
+      "database_id": "71b9b2a0-9d70-4b97-9ce4-bfb9d8d97c7f"
+    }
+  ]
   /**
    * Smart Placement
    * https://developers.cloudflare.com/workers/configuration/smart-placement/#smart-placement

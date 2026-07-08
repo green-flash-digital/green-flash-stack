@@ -131,10 +131,7 @@ function SemanticSwatch({
   const { compliance } = checker.analyze(textHex, oklch, 14);
 
   return (
-    <div
-      className={swatchStyles}
-      style={{ background: oklch, color: textHex }}
-    >
+    <div className={swatchStyles} style={{ background: oklch, color: textHex }}>
       <span className="scheme">{scheme}</span>
       <span className="token">{label}</span>
       <span className={classes("badge", compliance.AA ? "pass" : "fail")}>
@@ -171,11 +168,7 @@ export function SemanticPreviewContent() {
                 oklch={colorManifest[entry.light]}
                 scheme="light"
               />
-              <SemanticSwatch
-                label={entry.dark}
-                oklch={colorManifest[entry.dark]}
-                scheme="dark"
-              />
+              <SemanticSwatch label={entry.dark} oklch={colorManifest[entry.dark]} scheme="dark" />
             </div>
           </li>
         ))}

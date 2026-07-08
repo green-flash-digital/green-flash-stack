@@ -61,6 +61,7 @@
     "@babel/preset-typescript": "8.0.1",
     "@chromatic-com/storybook": "5.2.1",
     "@cloudflare/vite-plugin": "1.43.0",
+    "@cloudflare/workers-types": "^4.20260101.0",
     "@gfdigital/tsconfig": "0.3.1",
     "@linaria/core": "8.0.0",
     "@react-router/dev": "8.1.0",

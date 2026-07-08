@@ -51,32 +51,32 @@ export const tokens = {
     surface: "oklch(0.9842 0.0034 247.80)",
     neutral: "oklch(0.5544 0.0407 257.42)",
     "neutral-dark": "oklch(0.2077 0.0398 265.76)",
-    "neutral-light": "oklch(0.9683 0.0068 247.86)",
+    "neutral-light": "oklch(0.9683 0.0068 247.86)"
   },
   semantic: {
     interactive: {
       light: "primary-600",
-      dark: "primary-400",
+      dark: "primary-400"
     },
     "interactive-text": {
       light: "neutral-light",
-      dark: "neutral-light",
+      dark: "neutral-light"
     },
     surface: {
       light: "background",
-      dark: "neutral-dark",
+      dark: "neutral-dark"
     },
     "on-surface": {
       light: "neutral-dark",
-      dark: "neutral-light",
-    },
+      dark: "neutral-light"
+    }
   },
   custom: {
     "layout-header-height": "6.25rem",
     "layout-max-width": "100rem",
     "layout-gutters": "2rem",
     "layout-section-title-height": "4.5rem",
-    "modal-gutters": "2rem",
+    "modal-gutters": "2rem"
   },
   font: {
     families: {
@@ -87,7 +87,7 @@ export const tokens = {
       mulish:
         '"Mulish", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
       consolas:
-        '"Consolas", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+        '"Consolas", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"'
     },
     weights: {
       "poppins-bold": 700,
@@ -109,7 +109,7 @@ export const tokens = {
       "consolas-semiBold": 600,
       "consolas-medium": 500,
       "consolas-regular": 400,
-      "consolas-light": 300,
+      "consolas-light": 300
     },
     variants: {
       logo: {
@@ -117,63 +117,63 @@ export const tokens = {
         weight: "poppins-bold",
         size: 1.5,
         lineHeight: 1.2,
-        letterSpacing: 0,
+        letterSpacing: 0
       },
       heading: {
         family: "poppins",
         weight: "poppins-semiBold",
         size: 1.125,
         lineHeight: 1.3,
-        letterSpacing: 0,
+        letterSpacing: 0
       },
       body: {
         family: "mulish",
         weight: "mulish-regular",
         size: 0.875,
         lineHeight: 1.5,
-        letterSpacing: 0,
+        letterSpacing: 0
       },
       "body-sm": {
         family: "mulish",
         weight: "mulish-regular",
         size: 0.75,
         lineHeight: 1.5,
-        letterSpacing: 0,
+        letterSpacing: 0
       },
       label: {
         family: "mulish",
         weight: "mulish-medium",
         size: 0.75,
         lineHeight: 1.4,
-        letterSpacing: 0,
+        letterSpacing: 0
       },
       code: {
         family: "consolas",
         weight: "consolas-regular",
         size: 0.8125,
         lineHeight: 1.6,
-        letterSpacing: 0,
-      },
-    },
+        letterSpacing: 0
+      }
+    }
   },
   space: [4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44],
   size: {
     dense: 24,
     normal: 32,
-    big: 44,
+    big: 44
   },
   baseFontSize: 16,
   breakpoints: {
     phone: 375,
     tablet: 768,
-    desktop: 1280,
+    desktop: 1280
   },
   border: {
     radius: {
       sm: 4,
       md: 8,
       lg: 16,
-      full: 9999,
-    },
-  },
+      full: 9999
+    }
+  }
 } as const;
