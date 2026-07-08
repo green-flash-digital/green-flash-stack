@@ -1,10 +1,12 @@
-import { useEffect } from "react";
+import { useEffect, type ReactNode } from "react";
 import {
+  Link,
   Links,
   Meta,
   Outlet,
   Scripts,
   ScrollRestoration,
+  href,
   redirect,
   useLoaderData,
   useRevalidator
@@ -13,18 +15,16 @@ import {
 import "@chamfer-css/studio-tokens/root.css";
 import type { LinksFunction } from "react-router";
 
-import { makeFontFamily } from "@chamfer-css/studio-tokens";
+import { makeColor, makeFontFamily, makeRem, makeReset } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import type { Route } from "./+types/root";
-import { Label } from "./components/Label";
-import { Layout as LayoutBody } from "./components/Layout";
-import { LayoutHeader } from "./components/LayoutHeader";
-import { LayoutHeaderLogo } from "./components/LayoutHeaderLogo";
-import { LayoutMain } from "./components/LayoutMain";
 import { AdapterContext, IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
+import { IconGridView } from "./icons/IconGridView";
+import { IconPlusSign } from "./icons/IconPlusSign";
+import { IconSettings04 } from "./icons/IconSettings04";
+import { IconUserCircle } from "./icons/IconUserCircle";
 import { UserContext } from "./saas/auth/auth.context";
-import { LayoutHeaderUserMenu } from "./saas/auth/LayoutHeaderUserMenu";
 import { ActiveProjectContext } from "./saas/projects/projects.context";
 import { saasMiddlewares } from "./saas/saas.middleware";
 import { FileSystemAdapter } from "./utils/StorageAdapter";
@@ -107,7 +107,14 @@ export const links: LinksFunction = () => [
 ];
 
 const bodyStyles = css`
-:global() {
+  height: 100dvh;
+  width: 100dvw;
+  overflow: hidden;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: ${makeRem(16)};
+
+  :global() {
     html,
     body {
       margin: 0;
@@ -156,6 +163,125 @@ export async function loader({ context }: Route.LoaderArgs) {
   };
 }
 
+const navStyles = css`
+  height: 100%;
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+  border-right: 1px solid #e7e7e7;
+  width: ${makeRem(64)};
+  padding: ${makeRem(8)};
+
+  a {
+    ${makeReset("anchor")};
+  }
+
+  button {
+    ${makeReset("button")};
+  }
+
+  a,
+  button {
+    width: 100%;
+    display: grid;
+    place-content: center;
+    aspect-ratio: 1 / 1;
+    padding: ${makeRem(8)};
+    cursor: pointer;
+
+    img,
+    svg {
+      scale: 1;
+    }
+
+    &:hover {
+      img,
+      svg {
+        scale: 1.2;
+        transition: all 0.1s ease-in-out;
+      }
+    }
+  }
+
+  img {
+    width: 100%;
+    aspect-ratio: 1 / 1;
+  }
+
+  .root {
+    border-bottom: 1px solid #e7e7e7;
+  }
+
+  ul {
+    ${makeReset("ul")};
+    display: flex;
+    flex-direction: column;
+    gap: ${makeRem(8)};
+    padding: ${makeRem(8)} 0;
+
+    li {
+      width: 100%;
+    }
+
+    a,
+    button {
+      background: transparent;
+      transition: background 0.15s ease-in-out;
+      border-radius: ${makeRem(4)};
+
+      &:hover {
+        background: ${makeColor("secondary-100", { opacity: 0.3 })};
+      }
+    }
+  }
+
+  .account {
+    border-top: 1px solid #e7e7e7;
+    align-self: end;
+  }
+`;
+
+function LayoutNav() {
+  return (
+    <nav className={navStyles}>
+      <div className="root">
+        <Link to={href("/")}>
+          <img alt="logo" src="/images/chamfer-logo.png" />
+        </Link>
+      </div>
+      <div>
+        <ul>
+          <li>
+            <Link to={href("/config")}>
+              <IconSettings04 dxSize={20} />
+            </Link>
+          </li>
+          <li>
+            <Link to={href("/projects")}>
+              <IconGridView dxSize={20} />
+            </Link>
+          </li>
+          <li>
+            <button>
+              <IconPlusSign dxSize={20} />
+            </button>
+          </li>
+        </ul>
+      </div>
+      <div className="account">
+        <button>
+          <IconUserCircle dxSize={20} />
+        </button>
+      </div>
+    </nav>
+  );
+}
+
+const mainStyles = css``;
+
+function LayoutMain({ children }: { children?: ReactNode }) {
+  return <main className={mainStyles}>{children}</main>;
+}
+
 export default function App() {
   const { isLocal, user } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
@@ -168,29 +294,11 @@ export default function App() {
   }, [isLocal, revalidator]);
 
   return (
-    <LayoutBody>
-      <LayoutHeader>
-        <LayoutHeaderLogo
-          dxSrc="/images/buttery-logo-tokens.png"
-          dxAlt="chamfer-css-logo"
-          dxLabel={
-            isLocal && (
-              <div>
-                <Label dxSize="dense" dxColor="primary">
-                  LOCAL MODE
-                </Label>
-              </div>
-            )
-          }
-        >
-          Chamfer CSS
-        </LayoutHeaderLogo>
-        <div />
-        {!isLocal && user && <LayoutHeaderUserMenu user={user} />}
-      </LayoutHeader>
+    <>
+      <LayoutNav />
       <LayoutMain>
         <Outlet />
       </LayoutMain>
-    </LayoutBody>
+    </>
   );
 }
