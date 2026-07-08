@@ -103,6 +103,10 @@ export const links: LinksFunction = () => [
   {
     rel: "stylesheet",
     href: "/font/consolas.css"
+  },
+  {
+    rel: "stylesheet",
+    href: "/font/geist.css"
   }
 ];
 

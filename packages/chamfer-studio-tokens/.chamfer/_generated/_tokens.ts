@@ -88,6 +88,8 @@ export const tokens = {
         '"Mulish", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
       consolas:
         '"Consolas", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+      geist:
+        '"Geist", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
     },
     weights: {
       "poppins-bold": 700,
@@ -110,6 +112,11 @@ export const tokens = {
       "consolas-medium": 500,
       "consolas-regular": 400,
       "consolas-light": 300,
+      "geist-bold": 700,
+      "geist-semiBold": 600,
+      "geist-medium": 500,
+      "geist-regular": 400,
+      "geist-light": 300,
     },
     variants: {
       logo: {

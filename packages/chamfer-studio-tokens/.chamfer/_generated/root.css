@@ -82,6 +82,9 @@
   --studio-font-family-consolas:
     "Consolas", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
     "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
+  --studio-font-family-geist:
+    "Geist", system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol";
   --studio-font-weight-poppins-bold: 700;
   --studio-font-weight-poppins-semiBold: 600;
   --studio-font-weight-poppins-medium: 500;
@@ -102,6 +105,11 @@
   --studio-font-weight-consolas-medium: 500;
   --studio-font-weight-consolas-regular: 400;
   --studio-font-weight-consolas-light: 300;
+  --studio-font-weight-geist-bold: 700;
+  --studio-font-weight-geist-semiBold: 600;
+  --studio-font-weight-geist-medium: 500;
+  --studio-font-weight-geist-regular: 400;
+  --studio-font-weight-geist-light: 300;
   --studio-space-4-px: 4px;
   --studio-space-4-rem: 0.25rem;
   --studio-space-8-px: 8px;

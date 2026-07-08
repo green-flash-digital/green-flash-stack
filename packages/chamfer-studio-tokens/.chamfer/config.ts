@@ -68,6 +68,12 @@ export default defineTokens({
           fallback:
             'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
           styles: ["bold-700", "semiBold-600", "medium-500", "regular-400", "light-300"]
+        },
+        Geist: {
+          family: "Geist",
+          fallback:
+            'system-ui, "Segoe UI", Roboto, Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol"',
+          styles: ["bold-700", "semiBold-600", "medium-500", "regular-400", "light-300"]
         }
       },
       variants: {
