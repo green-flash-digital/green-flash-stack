@@ -4,7 +4,7 @@
  */
 {
   "$schema": "node_modules/wrangler/config-schema.json",
-  "name": "keystone-studio",
+  "name": "chamfer-studio",
   "compatibility_date": "2026-07-07",
   "main": "./workers/app.ts",
   "vars": {
@@ -17,9 +17,9 @@
   "compatibility_flags": ["nodejs_compat"],
   "d1_databases": [
     {
-      "binding": "keystone_studio",
-      "database_name": "keystone-studio",
-      "database_id": "71b9b2a0-9d70-4b97-9ce4-bfb9d8d97c7f"
+      "binding": "chamfer_studio",
+      "database_name": "chamfer-studio",
+      "database_id": "a18ec58f-837b-4469-837d-c0e8459360d2"
     }
   ]
   /**

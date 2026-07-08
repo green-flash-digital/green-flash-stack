@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeRem } from "@keystone-css/studio-tokens";
+import { makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type LayoutConfigSectionControlsDescriptionPropsNative = JSX.IntrinsicElements["p"];

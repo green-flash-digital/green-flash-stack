@@ -18,16 +18,16 @@ export default defineConfig({
         replacement: path.resolve(root, "packages/ts-utils/src/isomorphic/index.ts")
       },
       {
-        find: "@keystone-css/studio-tokens",
-        replacement: path.resolve(root, "packages/keystone-studio-tokens/.keystone/index.ts")
+        find: "@chamfer-css/studio-tokens",
+        replacement: path.resolve(root, "packages/chamfer-studio-tokens/.chamfer/index.ts")
       },
       {
-        find: "@keystone-css/core/schemas",
-        replacement: path.resolve(root, "packages/keystone-core/src/schemas/index.ts")
+        find: "@chamfer-css/core/schemas",
+        replacement: path.resolve(root, "packages/chamfer-core/src/schemas/index.ts")
       },
       {
-        find: "@keystone-css/core/utils",
-        replacement: path.resolve(root, "packages/keystone-core/src/utils/index.ts")
+        find: "@chamfer-css/core/utils",
+        replacement: path.resolve(root, "packages/chamfer-core/src/utils/index.ts")
       },
       // Strip .js extensions for NodeNext-style imports
       { find: /^(.*?)\.js$/, replacement: "$1" }

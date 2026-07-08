@@ -1,12 +1,12 @@
 import { readFile } from "node:fs/promises";
 
-import type { KeystoneConfig } from "@keystone-css/core/schemas";
-import { TokensSchema } from "@keystone-css/core/schemas";
+import type { ChamferConfig } from "@chamfer-css/core/schemas";
+import { TokensSchema } from "@chamfer-css/core/schemas";
 
 import { errors } from "./util.error-modes";
 import { LOG } from "./util.logger";
 
-export async function readTokensConfig(tokensPath: string): Promise<KeystoneConfig> {
+export async function readTokensConfig(tokensPath: string): Promise<ChamferConfig> {
   LOG.debug(`Fetching configuration from ${tokensPath}`);
   const raw = await readFile(tokensPath, "utf8");
   const parsed = TokensSchema.safeParse(JSON.parse(raw));

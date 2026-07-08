@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 
-import type { KeystoneColorVariantBase, ColorVariantTypeAuto } from "@keystone-css/core/schemas";
+import type { ChamferColorVariantBase, ColorVariantTypeAuto } from "@chamfer-css/core/schemas";
 
 import { InputLabel } from "../../components/InputLabel";
 import { InputNumber } from "../../components/InputNumber";
@@ -10,7 +10,7 @@ export function ColorSwatchVariantTypeAuto({
   onChangeVariantAuto
 }: {
   variant: ColorVariantTypeAuto;
-  onChangeVariantAuto: <T extends KeystoneColorVariantBase>(variant: T) => void;
+  onChangeVariantAuto: <T extends ChamferColorVariantBase>(variant: T) => void;
 }) {
   function handleChangeVariantTypeAuto({
     currentTarget: { value }

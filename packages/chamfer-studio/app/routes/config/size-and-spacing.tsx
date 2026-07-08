@@ -19,7 +19,7 @@ import { SpacePreviewControls } from "~/features/size-and-space/SpacePreviewCont
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Size & Spacing | Tokens Studio" },
+    { title: "Size & Spacing | Chamfer Studio" },
     {
       name: "description",
       content:

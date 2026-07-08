@@ -8,7 +8,7 @@ import {
   makeFontFamily,
   makeFontWeight,
   makeRem
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

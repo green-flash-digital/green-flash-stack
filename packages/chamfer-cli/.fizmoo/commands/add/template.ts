@@ -1,12 +1,12 @@
 import path from "node:path";
 
 import { writeFileRecursive } from "@green-flash/ts-utils/node";
-import { Keystone } from "@keystone-css/core";
+import { Chamfer } from "@chamfer-css/core";
 import { defineCommand } from "fizmoo";
 
 export default defineCommand({
   name: "template",
-  description: "Scaffolds a new custom token template in .keystone/templates/",
+  description: "Scaffolds a new custom token template in .chamfer/templates/",
   args: {
     name: {
       name: "name",
@@ -16,14 +16,14 @@ export default defineCommand({
     }
   },
   action: async ({ args }) => {
-    const tokens = new Keystone({ logLevel: "info", autoInit: true });
+    const tokens = new Chamfer({ logLevel: "info", autoInit: true });
     const config = await tokens.getConfig();
 
     const filePath = path.resolve(config.meta.dirPath, "templates", `${args.name}.ts`);
 
     await writeFileRecursive(
       filePath,
-      `import { defineTemplate } from "@keystone-css/core";
+      `import { defineTemplate } from "@chamfer-css/core";
 
 export default defineTemplate({
   name: "${args.name}",
@@ -42,6 +42,6 @@ export default defineTemplate({
 `
     );
 
-    console.log(`Created .keystone/templates/${args.name}.ts`);
+    console.log(`Created .chamfer/templates/${args.name}.ts`);
   }
 });

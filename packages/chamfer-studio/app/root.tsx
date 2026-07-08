@@ -10,10 +10,10 @@ import {
   useRevalidator
 } from "react-router";
 
-import "@keystone-css/studio-tokens/root.css";
+import "@chamfer-css/studio-tokens/root.css";
 import type { LinksFunction } from "react-router";
 
-import { makeFontFamily } from "@keystone-css/studio-tokens";
+import { makeFontFamily } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import type { Route } from "./+types/root";
@@ -172,7 +172,7 @@ export default function App() {
       <LayoutHeader>
         <LayoutHeaderLogo
           dxSrc="/images/buttery-logo-tokens.png"
-          dxAlt="keystone-css-logo"
+          dxAlt="chamfer-css-logo"
           dxLabel={
             isLocal && (
               <div>
@@ -183,7 +183,7 @@ export default function App() {
             )
           }
         >
-          Keystone CSS
+          Chamfer CSS
         </LayoutHeaderLogo>
         <div />
         {!isLocal && user && <LayoutHeaderUserMenu user={user} />}

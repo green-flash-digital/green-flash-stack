@@ -1,11 +1,11 @@
-import type { KeystoneConfig } from "@keystone-css/core/schemas";
+import type { ChamferConfig } from "@chamfer-css/core/schemas";
 import { describe, expect, it } from "vitest";
 
 import { getTokensFromState, initStudioState } from "../studio.state";
 
 // ── Fixtures ──────────────────────────────────────────────────────────────────
 
-const BASE: KeystoneConfig = {
+const BASE: ChamferConfig = {
   runtime: { prefix: "test", strict: true, suppressStrictWarnings: false },
   color: {
     vibe: { type: "jewel", lightness: 0.55, chroma: 0.18 },
@@ -49,7 +49,7 @@ const BASE: KeystoneConfig = {
   }
 };
 
-const MANUAL_SPACE: KeystoneConfig = {
+const MANUAL_SPACE: ChamferConfig = {
   ...BASE,
   sizeAndSpace: {
     ...BASE.sizeAndSpace,
@@ -59,7 +59,7 @@ const MANUAL_SPACE: KeystoneConfig = {
 
 // ── Helpers ───────────────────────────────────────────────────────────────────
 
-function roundTrip(config: KeystoneConfig): KeystoneConfig {
+function roundTrip(config: ChamferConfig): ChamferConfig {
   return getTokensFromState(initStudioState(config));
 }
 

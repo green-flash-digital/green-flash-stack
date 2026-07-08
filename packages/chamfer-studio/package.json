@@ -1,5 +1,5 @@
 {
-  "name": "@keystone-css/studio",
+  "name": "@chamfer-css/studio",
   "version": "0.3.6",
   "files": [
     "build-local",
@@ -31,6 +31,7 @@
     "test:watch": "vitest"
   },
   "dependencies": {
+    "@chamfer-css/core": "workspace:*",
     "@green-flash/ts-utils": "workspace:*",
     "@linaria/server": "8.0.0",
     "@monaco-editor/react": "4.7.0",

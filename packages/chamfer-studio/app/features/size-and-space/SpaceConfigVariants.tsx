@@ -4,7 +4,7 @@ import { useToggle } from "react-hook-primitives";
 
 import { debounce } from "@green-flash/ts-utils/browser";
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import type { Updater } from "use-immer";
 

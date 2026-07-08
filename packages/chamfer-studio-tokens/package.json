@@ -1,23 +1,23 @@
 {
-  "name": "@keystone-css/studio-tokens",
+  "name": "@chamfer-css/studio-tokens",
   "version": "0.3.6",
-  "description": "A standalone package to test the APIs in @keystone-css/core and to establish the tokens for the @keystone-css/studio",
-  "homepage": "https://github.com/keystone-css/keystone-css#readme",
+  "description": "A standalone package to test the APIs in @chamfer-css/core and to establish the tokens for the @chamfer-css/studio",
+  "homepage": "https://github.com/chamfer-css/chamfer-css#readme",
   "bugs": {
-    "url": "https://github.com/keystone-css/keystone-css/issues"
+    "url": "https://github.com/chamfer-css/chamfer-css/issues"
   },
   "license": "MIT",
   "author": "Drew DeCarme (drew@greenflash.digital)",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/keystone-css/keystone-css.git"
+    "url": "git+ssh://git@github.com/chamfer-css/chamfer-css.git"
   },
   "type": "module",
   "exports": {
-    ".": "./.keystone/index.ts",
-    "./ts": "./.keystone/index.ts",
+    ".": "./.chamfer/index.ts",
+    "./ts": "./.chamfer/index.ts",
     "./scss": "./dist/scss/_index.scss",
-    "./root.css": "./.keystone/_generated/root.css"
+    "./root.css": "./.chamfer/_generated/root.css"
   },
   "publishConfig": {
     "access": "public"
@@ -31,7 +31,7 @@
     "typescript": "6.0.3"
   },
   "devDependencies": {
-    "@keystone-css/core": "0.3.6",
+    "@chamfer-css/core": "0.3.6",
     "isoscribe": "0.2.0",
     "tsx": "4.22.4"
   }

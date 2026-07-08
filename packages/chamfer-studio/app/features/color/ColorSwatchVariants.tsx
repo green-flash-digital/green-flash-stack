@@ -3,11 +3,11 @@ import { useMemo, forwardRef } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import type {
-  KeystoneColorVariant,
-  KeystoneColorVariantBase,
+  ChamferColorVariant,
+  ChamferColorVariantBase,
   ColorVariantTypes
-} from "@keystone-css/core/schemas";
-import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
+} from "@chamfer-css/core/schemas";
+import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 
@@ -23,14 +23,14 @@ import { ColorSwatchVariantTypeNamed } from "./ColorSwatchVariantTypeNamed";
 
 export type ColorSwatchVariantsPropsNative = JSX.IntrinsicElements["div"];
 export type ColorSwatchVariantsPropsCustom = {
-  dxVariants: KeystoneColorVariant;
+  dxVariants: ChamferColorVariant;
   /**
    * An optional key to manually display only a sub-set of the
    * available variant options
    */
   dxAvailableOptions?: (typeof variantOptions)[0]["type"][];
   onChangeVariantType: ChangeEventHandler<HTMLInputElement>;
-  onChangeVariantAuto: <T extends KeystoneColorVariantBase>(variant: T) => void;
+  onChangeVariantAuto: <T extends ChamferColorVariantBase>(variant: T) => void;
   onChangeVariantNamed: ColorSwatchVariantTypeNamedProps["onChangeVariantNamed"];
   onChangeVariantManual: ColorSwatchVariantTypeManualProps["onChangeVariantManual"];
 };

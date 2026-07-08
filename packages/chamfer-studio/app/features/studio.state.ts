@@ -1,24 +1,24 @@
 import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import type {
-  KeystoneConfig,
-  KeystoneColorEntry,
-  KeystoneColorEntryHue,
-  KeystoneColorEntryHex,
-  KeystoneColorVibe,
+  ChamferConfig,
+  ChamferColorEntry,
+  ChamferColorEntryHue,
+  ChamferColorEntryHex,
+  ChamferColorVibe,
   FontVariant,
   ManualFontStyles,
   FontFamiliesManual,
   SpaceAuto,
   SpaceManual,
-  KeystoneConfigSizeAndSpace,
+  ChamferConfigSizeAndSpace,
   CustomVariantNumber,
   CustomVariantRem,
   CustomVariantString,
-  KeystoneSemanticEntry
-} from "@keystone-css/core/schemas";
-import { fontFamilyFallback, manualFontStyles } from "@keystone-css/core/schemas";
-import type { SpaceVariantsRecord } from "@keystone-css/core/utils";
-import { calculateSpaceVariantsAuto, calculateSpaceVariantsManual } from "@keystone-css/core/utils";
+  ChamferSemanticEntry
+} from "@chamfer-css/core/schemas";
+import { fontFamilyFallback, manualFontStyles } from "@chamfer-css/core/schemas";
+import type { SpaceVariantsRecord } from "@chamfer-css/core/utils";
+import { calculateSpaceVariantsAuto, calculateSpaceVariantsManual } from "@chamfer-css/core/utils";
 import { match } from "ts-pattern";
 
 // ── Color state types ─────────────────────────────────────────────────────────
@@ -36,7 +36,7 @@ export type ConfigurationStateColorHexEntry = {
 };
 
 export type ConfigurationStateColor = {
-  vibe: KeystoneColorVibe | undefined;
+  vibe: ChamferColorVibe | undefined;
   hue: { [id: string]: ConfigurationStateColorHueEntry };
   hex: { [id: string]: ConfigurationStateColorHexEntry };
 };
@@ -98,14 +98,14 @@ export type ConfigurationStateSizeAndSpace_SizeVariants = Record<
   { name: string; value: number }
 >;
 export type ConfigurationStateSizeAndSpace = Pick<
-  KeystoneConfigSizeAndSpace,
+  ChamferConfigSizeAndSpace,
   "baseFontSize" | "baselineGrid"
 > & {
   size: {
     variants: ConfigurationStateSizeAndSpace_SizeVariants;
   };
   space: {
-    mode: Required<KeystoneConfigSizeAndSpace>["space"]["mode"];
+    mode: Required<ChamferConfigSizeAndSpace>["space"]["mode"];
     manual: ConfigurationStateSizeAndSpace_SpaceManual;
     auto: ConfigurationStateSizeAndSpace_SpaceAuto;
   };
@@ -126,7 +126,7 @@ export type ConfigurationStateResponse = {
 
 // ── Semantic state types ──────────────────────────────────────────────────────
 
-export type ConfigurationStateSemanticEntry = KeystoneSemanticEntry & { role: string };
+export type ConfigurationStateSemanticEntry = ChamferSemanticEntry & { role: string };
 export type ConfigurationStateSemantic = { [id: string]: ConfigurationStateSemanticEntry };
 
 // ── Custom state types ────────────────────────────────────────────────────────
@@ -145,7 +145,7 @@ export type ConfigurationStateCustom = {
 
 // ── Settings state type ───────────────────────────────────────────────────────
 
-export type ConfigurationStateSettings = KeystoneConfig["runtime"];
+export type ConfigurationStateSettings = ChamferConfig["runtime"];
 
 // ── Unified state ─────────────────────────────────────────────────────────────
 
@@ -161,7 +161,7 @@ export type StudioState = {
 
 // ── Config → state ────────────────────────────────────────────────────────────
 
-function getInitColorStateFromConfig(config: KeystoneConfig): ConfigurationStateColor {
+function getInitColorStateFromConfig(config: ChamferConfig): ConfigurationStateColor {
   const hue: ConfigurationStateColor["hue"] = {};
   const hex: ConfigurationStateColor["hex"] = {};
   for (const [name, entry] of Object.entries(config.color.colors)) {
@@ -174,7 +174,7 @@ function getInitColorStateFromConfig(config: KeystoneConfig): ConfigurationState
   return { vibe: config.color.vibe, hue, hex };
 }
 
-function getInitStateFontFromConfig(config: KeystoneConfig): ConfigurationStateFont {
+function getInitStateFontFromConfig(config: ChamferConfig): ConfigurationStateFont {
   const variants = Object.entries(config.font.variants).reduce<ConfigurationStateFontVariant>(
     (accum, [variantName, variant]) =>
       Object.assign(accum, { [generateGUID()]: { variantName, ...variant } }),
@@ -219,10 +219,10 @@ function convertSpaceVariantConfigIntoState(
 }
 
 function getInitStateSizeAndSpaceFromConfig(
-  config: KeystoneConfig
+  config: ChamferConfig
 ): ConfigurationStateSizeAndSpace {
   const createSizeVariants = (
-    variants: KeystoneConfig["sizeAndSpace"]["size"]["variants"]
+    variants: ChamferConfig["sizeAndSpace"]["size"]["variants"]
   ): ConfigurationStateSizeAndSpace_SizeVariants =>
     Object.fromEntries(
       Object.entries(variants).map(([k, v]) => [generateGUID(), { name: k, value: v }])
@@ -277,7 +277,7 @@ function getInitStateSizeAndSpaceFromConfig(
   }
 }
 
-function getInitResponseStateFromConfig(config: KeystoneConfig): ConfigurationStateResponse {
+function getInitResponseStateFromConfig(config: ChamferConfig): ConfigurationStateResponse {
   return {
     breakpoints: Object.entries(
       config.response.breakpoints
@@ -288,14 +288,14 @@ function getInitResponseStateFromConfig(config: KeystoneConfig): ConfigurationSt
   };
 }
 
-function getInitCustomStateFromConfig(config: KeystoneConfig): ConfigurationStateCustom {
+function getInitCustomStateFromConfig(config: ChamferConfig): ConfigurationStateCustom {
   return Object.entries(config.custom).reduce<ConfigurationStateCustom>(
     (accum, [name, value]) => Object.assign(accum, { [generateGUID()]: { name, ...value } }),
     {}
   );
 }
 
-function getInitSemanticStateFromConfig(config: KeystoneConfig): ConfigurationStateSemantic {
+function getInitSemanticStateFromConfig(config: ChamferConfig): ConfigurationStateSemantic {
   return Object.entries(config.semantic).reduce<ConfigurationStateSemantic>(
     (accum, [role, entry]) =>
       Object.assign(accum, { [generateGUID()]: { role, light: entry.light, dark: entry.dark } }),
@@ -303,7 +303,7 @@ function getInitSemanticStateFromConfig(config: KeystoneConfig): ConfigurationSt
   );
 }
 
-export function initStudioState(config: KeystoneConfig): StudioState {
+export function initStudioState(config: ChamferConfig): StudioState {
   return {
     color: getInitColorStateFromConfig(config),
     semantic: getInitSemanticStateFromConfig(config),
@@ -317,18 +317,18 @@ export function initStudioState(config: KeystoneConfig): StudioState {
 
 // ── State → config ────────────────────────────────────────────────────────────
 
-function getColorConfigFromState(state: ConfigurationStateColor): KeystoneConfig["color"] {
-  const colors: Record<string, KeystoneColorEntry> = {};
+function getColorConfigFromState(state: ConfigurationStateColor): ChamferConfig["color"] {
+  const colors: Record<string, ChamferColorEntry> = {};
   for (const { name, hue, variants } of Object.values(state.hue)) {
-    colors[name] = { hue, variants } satisfies KeystoneColorEntryHue;
+    colors[name] = { hue, variants } satisfies ChamferColorEntryHue;
   }
   for (const { name, hex, variants } of Object.values(state.hex)) {
-    colors[name] = { hex, variants } satisfies KeystoneColorEntryHex;
+    colors[name] = { hex, variants } satisfies ChamferColorEntryHex;
   }
   return { vibe: state.vibe, colors };
 }
 
-export function getFontConfigFromState(state: ConfigurationStateFont): KeystoneConfig["font"] {
+export function getFontConfigFromState(state: ConfigurationStateFont): ChamferConfig["font"] {
   const families = Object.values(state.families).reduce(
     (accum, family) =>
       Object.assign<FontFamiliesManual, FontFamiliesManual>(accum, {
@@ -358,10 +358,10 @@ export function getFontConfigFromState(state: ConfigurationStateFont): KeystoneC
 
 function getSizeAndSpaceConfigFromState(
   state: ConfigurationStateSizeAndSpace
-): KeystoneConfig["sizeAndSpace"] {
+): ChamferConfig["sizeAndSpace"] {
   const space = match<
     ConfigurationStateSizeAndSpace["space"],
-    KeystoneConfig["sizeAndSpace"]["space"]
+    ChamferConfig["sizeAndSpace"]["space"]
   >(state.space)
     .with({ mode: "auto" }, (s) => ({
       mode: "auto" as const,
@@ -380,37 +380,37 @@ function getSizeAndSpaceConfigFromState(
     baselineGrid: state.baselineGrid,
     size: {
       variants: Object.values(state.size.variants).reduce<
-        KeystoneConfig["sizeAndSpace"]["size"]["variants"]
+        ChamferConfig["sizeAndSpace"]["size"]["variants"]
       >((accum, { name, value }) => Object.assign(accum, { [name]: value }), {})
     },
     space
   };
 }
 
-function getResponseConfigFromState(state: ConfigurationStateResponse): KeystoneConfig["response"] {
+function getResponseConfigFromState(state: ConfigurationStateResponse): ChamferConfig["response"] {
   return {
-    breakpoints: Object.values(state.breakpoints).reduce<KeystoneConfig["response"]["breakpoints"]>(
+    breakpoints: Object.values(state.breakpoints).reduce<ChamferConfig["response"]["breakpoints"]>(
       (accum, { name, value }) => Object.assign(accum, { [name]: value }),
       {}
     )
   };
 }
 
-function getCustomConfigFromState(state: ConfigurationStateCustom): KeystoneConfig["custom"] {
-  return Object.values(state).reduce<KeystoneConfig["custom"]>(
+function getCustomConfigFromState(state: ConfigurationStateCustom): ChamferConfig["custom"] {
+  return Object.values(state).reduce<ChamferConfig["custom"]>(
     (accum, { name, ...restDef }) => Object.assign(accum, { [name]: restDef }),
     {}
   );
 }
 
-function getSemanticConfigFromState(state: ConfigurationStateSemantic): KeystoneConfig["semantic"] {
-  return Object.values(state).reduce<KeystoneConfig["semantic"]>(
+function getSemanticConfigFromState(state: ConfigurationStateSemantic): ChamferConfig["semantic"] {
+  return Object.values(state).reduce<ChamferConfig["semantic"]>(
     (accum, { role, light, dark }) => Object.assign(accum, { [role]: { light, dark } }),
     {}
   );
 }
 
-export function getTokensFromState(state: StudioState): KeystoneConfig {
+export function getTokensFromState(state: StudioState): ChamferConfig {
   return {
     color: getColorConfigFromState(state.color),
     semantic: getSemanticConfigFromState(state.semantic),

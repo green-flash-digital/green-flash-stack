@@ -1,5 +1,5 @@
 import type { Preview } from "@storybook/react";
-import "@keystone-css/studio-tokens/root.css";
+import "@chamfer-css/studio-tokens/root.css";
 
 const preview: Preview = {
   parameters: {

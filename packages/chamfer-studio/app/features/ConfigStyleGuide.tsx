@@ -1,4 +1,4 @@
-import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { Button } from "~/components/Button";

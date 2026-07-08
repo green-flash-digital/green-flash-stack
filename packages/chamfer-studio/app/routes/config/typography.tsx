@@ -19,7 +19,7 @@ import { FontVariantPreviewControls } from "~/features/font/FontVariantPreviewCo
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Typography | Tokens Studio" },
+    { title: "Typography | Chamfer Studio" },
     {
       name: "description",
       content:

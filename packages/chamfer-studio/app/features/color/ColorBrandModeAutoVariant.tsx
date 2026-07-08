@@ -3,8 +3,8 @@ import type { ChangeEventHandler, MouseEventHandler } from "react";
 import { useToggle } from "react-hook-primitives";
 
 import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
-import type { ColorVariantTypes } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
+import type { ColorVariantTypes } from "@chamfer-css/core/schemas";
+import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import type { Updater } from "use-immer";
 

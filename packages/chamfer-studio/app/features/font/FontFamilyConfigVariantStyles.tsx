@@ -1,6 +1,6 @@
 import type { ChangeEvent } from "react";
 
-import { makeSpace, makeReset, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeReset, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputCheckbox } from "~/components/InputCheckbox";

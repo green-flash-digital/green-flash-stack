@@ -56,7 +56,7 @@ export const SizeAndSpaceSchema = withDescription(
           )
       })
       .describe(
-        "A key in which to describe the sizing constraints of the keystone-css utility system"
+        "A key in which to describe the sizing constraints of the chamfer-css utility system"
       ),
     space: z.discriminatedUnion("mode", [SpaceManualSchema, SpaceAutoSchema])
   })
@@ -71,4 +71,4 @@ export const SizeAndSpaceSchema = withDescription(
     variants: 10
   }
 });
-export type KeystoneConfigSizeAndSpace = z.infer<typeof SizeAndSpaceSchema>;
+export type ChamferConfigSizeAndSpace = z.infer<typeof SizeAndSpaceSchema>;

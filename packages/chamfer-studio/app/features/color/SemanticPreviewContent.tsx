@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { ColorAccessibilityChecker, getAccessibleTextColor } from "@keystone-css/core/utils";
+import { ColorAccessibilityChecker, getAccessibleTextColor } from "@chamfer-css/core/utils";
 import {
   makeColor,
   makeFontFamily,
   makeFontWeight,
   makeRem,
   makeSpace
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "~/features/Config.context";

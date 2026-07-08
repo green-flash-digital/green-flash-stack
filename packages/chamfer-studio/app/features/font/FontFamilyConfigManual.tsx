@@ -1,8 +1,8 @@
 import type { ChangeEventHandler } from "react";
 import { useCallback } from "react";
 
-import { manualFontStyles } from "@keystone-css/core/schemas";
-import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
+import { manualFontStyles } from "@chamfer-css/core/schemas";
+import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputGroup } from "~/components/InputGroup";

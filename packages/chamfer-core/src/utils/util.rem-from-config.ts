@@ -1,5 +1,5 @@
-import type { KeystoneConfig } from "../schemas/schema.js";
+import type { ChamferConfig } from "../schemas/schema.js";
 
-export function remFromConfig(config: KeystoneConfig, value: number): string {
+export function remFromConfig(config: ChamferConfig, value: number): string {
   return (value / config.sizeAndSpace.baseFontSize).toString();
 }

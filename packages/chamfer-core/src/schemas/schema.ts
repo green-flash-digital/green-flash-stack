@@ -17,10 +17,10 @@ export const ConfigSchema = z.object({
   semantic: SemanticSchema,
   custom: CustomSchema
 });
-export type KeystoneConfig = z.infer<typeof ConfigSchema>;
+export type ChamferConfig = z.infer<typeof ConfigSchema>;
 
 // TokensSchema is the studio-managed data layer — the same shape as ConfigSchema.
 // Stored in tokens.json and imported by config.ts. Kept as a named alias so
 // callers can reference the semantic intent without a breaking rename.
 export const TokensSchema = ConfigSchema;
-export type KeystoneTokens = KeystoneConfig;
+export type ChamferTokens = ChamferConfig;

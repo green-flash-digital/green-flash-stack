@@ -8,7 +8,7 @@ import {
   makeFontFamily,
   makeFontWeight,
   makeRem
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type LayoutHeaderLogoPropsNative = JSX.IntrinsicElements["div"];
@@ -78,7 +78,7 @@ export const LayoutHeaderLogo = forwardRef<HTMLDivElement, LayoutHeaderLogoProps
       <div {...restProps} className={classes(styles, className)} ref={ref}>
         <img src={dxSrc} alt={dxAlt} />
         <div className="wordmark">
-          <span>keystone</span>
+          <span>chamfer</span>
           <span>tokens</span>
         </div>
         <div>{dxLabel}</div>

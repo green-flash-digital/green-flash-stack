@@ -1,7 +1,7 @@
 import { type FormEventHandler, useCallback, useState } from "react";
 import { redirect, useNavigate, useSearchParams } from "react-router";
 
-import { makeSpace, makeColor, makeRem, makeFontFamily } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem, makeFontFamily } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { resetPassword } from "~/saas/auth/auth.client";
@@ -142,7 +142,7 @@ export default function ResetPasswordPage() {
     <div className={pageStyles}>
       <div className={cardStyles}>
         <div>
-          <h1>Keystone CSS</h1>
+          <h1>Chamfer CSS</h1>
           <p>Choose a new password</p>
         </div>
         {token ? (

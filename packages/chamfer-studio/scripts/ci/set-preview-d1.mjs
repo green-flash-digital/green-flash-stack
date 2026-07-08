@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Used by .github/workflows/keystone-studio-preview.yml to wire a PR's
+// Used by .github/workflows/chamfer-studio-preview.yml to wire a PR's
 // preview D1 database into a *throwaway* copy of wrangler.jsonc (never the
 // tracked file — CI copies wrangler.jsonc to a temp path outside the repo
 // before calling this, so the checked-in config stays untouched).
@@ -22,7 +22,7 @@ if (!configPath || !databaseName || !databaseId) {
 
 const original = readFileSync(configPath, "utf8");
 
-const d1Databases = [{ binding: "keystone_studio", database_name: databaseName, database_id: databaseId }];
+const d1Databases = [{ binding: "chamfer_studio", database_name: databaseName, database_id: databaseId }];
 const edits = modify(original, ["env", "preview", "d1_databases"], d1Databases, {
   formattingOptions: { insertSpaces: true, tabSize: 2 }
 });

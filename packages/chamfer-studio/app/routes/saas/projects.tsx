@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 import { data, redirect, useFetcher, useLoaderData } from "react-router";
 
-import { makeFontWeight, makeReset, makeRem, makeSpace } from "@keystone-css/studio-tokens";
+import { makeFontWeight, makeReset, makeRem, makeSpace } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputLabel } from "~/components/InputLabel";

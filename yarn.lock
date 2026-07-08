@@ -1055,6 +1055,108 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@chamfer-css/core@npm:0.3.6, @chamfer-css/core@workspace:*, @chamfer-css/core@workspace:packages/chamfer-core":
+  version: 0.0.0-use.local
+  resolution: "@chamfer-css/core@workspace:packages/chamfer-core"
+  dependencies:
+    "@gfdigital/tsconfig": "npm:0.3.1"
+    "@green-flash/ts-utils": "workspace:*"
+    "@inquirer/prompts": "npm:8.5.2"
+    "@types/chroma-js": "npm:3.1.2"
+    "@types/express": "npm:5.0.6"
+    "@types/node": "npm:26.1.0"
+    chokidar: "npm:5.0.0"
+    chroma-js: "npm:3.2.0"
+    express: "npm:5.2.1"
+    globby: "npm:16.2.0"
+    isoscribe: "npm:0.2.0"
+    prettier: "npm:3.9.4"
+    ts-pattern: "npm:5.9.0"
+    tsx: "npm:4.22.4"
+    typescript: "npm:6.0.3"
+    wrangler: "npm:4.106.0"
+    zod: "npm:4.4.3"
+    zod-to-json-schema: "npm:3.25.2"
+  languageName: unknown
+  linkType: soft
+
+"@chamfer-css/studio-tokens@workspace:packages/chamfer-studio-tokens":
+  version: 0.0.0-use.local
+  resolution: "@chamfer-css/studio-tokens@workspace:packages/chamfer-studio-tokens"
+  dependencies:
+    "@chamfer-css/core": "npm:0.3.6"
+    "@gfdigital/tsconfig": "npm:0.3.1"
+    isoscribe: "npm:0.2.0"
+    tsx: "npm:4.22.4"
+    typescript: "npm:6.0.3"
+  languageName: unknown
+  linkType: soft
+
+"@chamfer-css/studio@npm:0.3.6, @chamfer-css/studio@workspace:packages/chamfer-studio":
+  version: 0.0.0-use.local
+  resolution: "@chamfer-css/studio@workspace:packages/chamfer-studio"
+  dependencies:
+    "@babel/core": "npm:8.0.1"
+    "@babel/preset-react": "npm:8.0.1"
+    "@babel/preset-typescript": "npm:8.0.1"
+    "@chamfer-css/core": "workspace:*"
+    "@chromatic-com/storybook": "npm:5.2.1"
+    "@cloudflare/vite-plugin": "npm:1.43.0"
+    "@cloudflare/workers-types": "npm:^4.20260101.0"
+    "@gfdigital/tsconfig": "npm:0.3.1"
+    "@green-flash/ts-utils": "workspace:*"
+    "@linaria/core": "npm:8.0.0"
+    "@linaria/server": "npm:8.0.0"
+    "@monaco-editor/react": "npm:4.7.0"
+    "@react-router/dev": "npm:8.1.0"
+    "@react-router/express": "npm:8.1.0"
+    "@react-router/node": "npm:8.1.0"
+    "@react-router/serve": "npm:8.1.0"
+    "@storybook/addon-essentials": "npm:8.6.14"
+    "@storybook/addon-interactions": "npm:8.6.14"
+    "@storybook/addon-onboarding": "npm:10.4.6"
+    "@storybook/blocks": "npm:8.6.14"
+    "@storybook/react": "npm:10.4.6"
+    "@storybook/react-vite": "npm:10.4.6"
+    "@storybook/test": "npm:8.6.18"
+    "@types/babel__core": "npm:7.20.5"
+    "@types/chroma-js": "npm:3.1.2"
+    "@types/express": "npm:5.0.6"
+    "@types/node": "npm:26.1.0"
+    "@types/react": "npm:19.2.17"
+    "@types/react-dom": "npm:19.2.3"
+    "@wyw-in-js/vite": "npm:2.1.3"
+    better-auth: "npm:^1.6.23"
+    chroma-js: "npm:3.2.0"
+    drizzle-kit: "npm:^0.31.10"
+    drizzle-orm: "npm:^0.45.2"
+    eslint: "npm:10.6.0"
+    express: "npm:5.2.1"
+    immer: "npm:11.1.9"
+    isbot: "npm:5.1.44"
+    isoscribe: "npm:0.2.0"
+    jsonc-parser: "npm:^3.3.1"
+    monaco-editor: "npm:0.55.1"
+    react: "npm:19.2.7"
+    react-dom: "npm:19.2.7"
+    react-hook-primitives: "workspace:*"
+    react-router: "npm:8.1.0"
+    react-router-devtools: "npm:6.2.1"
+    shiki: "npm:4.3.0"
+    storybook: "npm:10.4.6"
+    ts-pattern: "npm:5.9.0"
+    tsx: "npm:4.22.4"
+    typescript: "npm:6.0.3"
+    use-immer: "npm:0.11.0"
+    vite: "npm:8.1.2"
+    vite-plugin-devtools-json: "npm:^1.0.0"
+    vite-plugin-monaco-editor: "npm:1.1.0"
+    vitest: "npm:4.1.9"
+    wrangler: "npm:^4.107.0"
+    zod: "npm:4.4.3"
+  languageName: unknown
+  linkType: soft
+
 "@changesets/apply-release-plan@npm:^7.1.1":
   version: 7.1.1
   resolution: "@changesets/apply-release-plan@npm:7.1.1"
@@ -2942,107 +3044,6 @@ __metadata:
   checksum: 10c0/4b30ec8cd56c5fd9a661f088230af01e0c1a3888d11ffb6b47639700f71225be21d1f7e168048d6d4f9449207b978a235c07c8f15c07705685d16dc06280e9d9
   languageName: node
   linkType: hard
-
-"@keystone-css/core@npm:0.3.6, @keystone-css/core@workspace:packages/keystone-core":
-  version: 0.0.0-use.local
-  resolution: "@keystone-css/core@workspace:packages/keystone-core"
-  dependencies:
-    "@gfdigital/tsconfig": "npm:0.3.1"
-    "@green-flash/ts-utils": "workspace:*"
-    "@inquirer/prompts": "npm:8.5.2"
-    "@types/chroma-js": "npm:3.1.2"
-    "@types/express": "npm:5.0.6"
-    "@types/node": "npm:26.1.0"
-    chokidar: "npm:5.0.0"
-    chroma-js: "npm:3.2.0"
-    express: "npm:5.2.1"
-    globby: "npm:16.2.0"
-    isoscribe: "npm:0.2.0"
-    prettier: "npm:3.9.4"
-    ts-pattern: "npm:5.9.0"
-    tsx: "npm:4.22.4"
-    typescript: "npm:6.0.3"
-    wrangler: "npm:4.106.0"
-    zod: "npm:4.4.3"
-    zod-to-json-schema: "npm:3.25.2"
-  languageName: unknown
-  linkType: soft
-
-"@keystone-css/studio-tokens@workspace:packages/keystone-studio-tokens":
-  version: 0.0.0-use.local
-  resolution: "@keystone-css/studio-tokens@workspace:packages/keystone-studio-tokens"
-  dependencies:
-    "@gfdigital/tsconfig": "npm:0.3.1"
-    "@keystone-css/core": "npm:0.3.6"
-    isoscribe: "npm:0.2.0"
-    tsx: "npm:4.22.4"
-    typescript: "npm:6.0.3"
-  languageName: unknown
-  linkType: soft
-
-"@keystone-css/studio@npm:0.3.6, @keystone-css/studio@workspace:packages/keystone-studio":
-  version: 0.0.0-use.local
-  resolution: "@keystone-css/studio@workspace:packages/keystone-studio"
-  dependencies:
-    "@babel/core": "npm:8.0.1"
-    "@babel/preset-react": "npm:8.0.1"
-    "@babel/preset-typescript": "npm:8.0.1"
-    "@chromatic-com/storybook": "npm:5.2.1"
-    "@cloudflare/vite-plugin": "npm:1.43.0"
-    "@cloudflare/workers-types": "npm:^4.20260101.0"
-    "@gfdigital/tsconfig": "npm:0.3.1"
-    "@green-flash/ts-utils": "workspace:*"
-    "@linaria/core": "npm:8.0.0"
-    "@linaria/server": "npm:8.0.0"
-    "@monaco-editor/react": "npm:4.7.0"
-    "@react-router/dev": "npm:8.1.0"
-    "@react-router/express": "npm:8.1.0"
-    "@react-router/node": "npm:8.1.0"
-    "@react-router/serve": "npm:8.1.0"
-    "@storybook/addon-essentials": "npm:8.6.14"
-    "@storybook/addon-interactions": "npm:8.6.14"
-    "@storybook/addon-onboarding": "npm:10.4.6"
-    "@storybook/blocks": "npm:8.6.14"
-    "@storybook/react": "npm:10.4.6"
-    "@storybook/react-vite": "npm:10.4.6"
-    "@storybook/test": "npm:8.6.18"
-    "@types/babel__core": "npm:7.20.5"
-    "@types/chroma-js": "npm:3.1.2"
-    "@types/express": "npm:5.0.6"
-    "@types/node": "npm:26.1.0"
-    "@types/react": "npm:19.2.17"
-    "@types/react-dom": "npm:19.2.3"
-    "@wyw-in-js/vite": "npm:2.1.3"
-    better-auth: "npm:^1.6.23"
-    chroma-js: "npm:3.2.0"
-    drizzle-kit: "npm:^0.31.10"
-    drizzle-orm: "npm:^0.45.2"
-    eslint: "npm:10.6.0"
-    express: "npm:5.2.1"
-    immer: "npm:11.1.9"
-    isbot: "npm:5.1.44"
-    isoscribe: "npm:0.2.0"
-    jsonc-parser: "npm:^3.3.1"
-    monaco-editor: "npm:0.55.1"
-    react: "npm:19.2.7"
-    react-dom: "npm:19.2.7"
-    react-hook-primitives: "workspace:*"
-    react-router: "npm:8.1.0"
-    react-router-devtools: "npm:6.2.1"
-    shiki: "npm:4.3.0"
-    storybook: "npm:10.4.6"
-    ts-pattern: "npm:5.9.0"
-    tsx: "npm:4.22.4"
-    typescript: "npm:6.0.3"
-    use-immer: "npm:0.11.0"
-    vite: "npm:8.1.2"
-    vite-plugin-devtools-json: "npm:^1.0.0"
-    vite-plugin-monaco-editor: "npm:1.1.0"
-    vitest: "npm:4.1.9"
-    wrangler: "npm:^4.107.0"
-    zod: "npm:4.4.3"
-  languageName: unknown
-  linkType: soft
 
 "@linaria/core@npm:8.0.0":
   version: 8.0.0
@@ -7601,6 +7602,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"chamfer-css@workspace:packages/chamfer-cli":
+  version: 0.0.0-use.local
+  resolution: "chamfer-css@workspace:packages/chamfer-cli"
+  dependencies:
+    "@chamfer-css/core": "npm:0.3.6"
+    "@chamfer-css/studio": "npm:0.3.6"
+    "@gfdigital/tsconfig": "npm:0.3.1"
+    "@types/node": "npm:26.1.0"
+    fizmoo: "workspace:*"
+    typescript: "npm:6.0.3"
+  bin:
+    chamfer: ./bin/index.js
+  languageName: unknown
+  linkType: soft
+
 "character-entities-html4@npm:^2.0.0":
   version: 2.1.0
   resolution: "character-entities-html4@npm:2.1.0"
@@ -10642,21 +10658,6 @@ __metadata:
   checksum: 10c0/a32679e9cb55469cb6d8bbc863f7d631b2c98b7fc7bf172629261751a6e7bc8da6ae374ddb74d5fbd8b06cf0eb4572287b259813d92b36e384024ed35e4c13e1
   languageName: node
   linkType: hard
-
-"keystone-css@workspace:packages/keystone-cli":
-  version: 0.0.0-use.local
-  resolution: "keystone-css@workspace:packages/keystone-cli"
-  dependencies:
-    "@gfdigital/tsconfig": "npm:0.3.1"
-    "@keystone-css/core": "npm:0.3.6"
-    "@keystone-css/studio": "npm:0.3.6"
-    "@types/node": "npm:26.1.0"
-    fizmoo: "workspace:*"
-    typescript: "npm:6.0.3"
-  bin:
-    keystone: ./bin/index.js
-  languageName: unknown
-  linkType: soft
 
 "keyv@npm:^4.5.4":
   version: 4.5.4

@@ -1,9 +1,9 @@
-# keystone-css
+# chamfer-css
 
-The CLI for [`@keystone-css/core`](../core/README.md).
+The CLI for [`@chamfer-css/core`](../core/README.md).
 
 ```sh
-npm install -g keystone-css
+npm install -g chamfer-css
 ```
 
 ---
@@ -11,15 +11,15 @@ npm install -g keystone-css
 ## Commands
 
 ```sh
-keystone build     # generate CSS custom properties and typed utilities
-keystone dev       # build + watch mode
-keystone studio    # launch the interactive token studio
-keystone add       # scaffold new .keystone/ assets
+chamfer build     # generate CSS custom properties and typed utilities
+chamfer dev       # build + watch mode
+chamfer studio    # launch the interactive token studio
+chamfer add       # scaffold new .chamfer/ assets
 ```
 
 ## How it works
 
-`keystone-css` reads your `.keystone/config.ts`, runs the build pipeline from `@keystone-css/core`, and writes the generated files into `.keystone/_generated/`. See the [`@keystone-css/core` README](../core/README.md) for the full token definition API and customization options.
+`chamfer-css` reads your `.chamfer/config.ts`, runs the build pipeline from `@chamfer-css/core`, and writes the generated files into `.chamfer/_generated/`. See the [`@chamfer-css/core` README](../core/README.md) for the full token definition API and customization options.
 
 ---
 

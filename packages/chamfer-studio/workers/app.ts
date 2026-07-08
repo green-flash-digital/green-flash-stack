@@ -10,7 +10,7 @@ const requestHandler = createRequestHandler(
 export default {
   async fetch(request, env) {
     const loadContext = new RouterContextProvider(
-      new Map([[CloudflareEnvContext, { DB: env.keystone_studio }]])
+      new Map([[CloudflareEnvContext, { DB: env.chamfer_studio }]])
     );
     return requestHandler(request, loadContext);
   }

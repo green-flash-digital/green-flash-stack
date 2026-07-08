@@ -8,7 +8,7 @@ import {
   makeRem,
   makeReset,
   makeSpace
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputLabel } from "~/components/InputLabel";

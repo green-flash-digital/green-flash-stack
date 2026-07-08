@@ -15,7 +15,7 @@ import { BreakpointPreviewControls } from "~/features/response/BreakpointPreview
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Response | Tokens Studio" },
+    { title: "Response | Chamfer Studio" },
     {
       name: "description",
       content:

@@ -9,7 +9,7 @@ import {
   makeFontFamily,
   makeRem,
   makeReset
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputNumber } from "./InputNumber";

@@ -7,7 +7,7 @@ import {
   makeSemanticColor,
   makeRem,
   makeFontFamily
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { signUp } from "~/saas/auth/auth.client";
@@ -147,7 +147,7 @@ export default function SignUpPage() {
     <div className={pageStyles}>
       <div className={cardStyles}>
         <div>
-          <h1>Keystone CSS</h1>
+          <h1>Chamfer CSS</h1>
           <p>Create an account</p>
         </div>
         <form className={formStyles} onSubmit={handleSubmit}>

@@ -56,4 +56,4 @@ export const CustomVariantSchema = z.discriminatedUnion("type", [
 export type CustomVariant = z.infer<typeof CustomVariantSchema>;
 
 export const CustomSchema = z.record(z.string(), CustomVariantSchema).default({});
-export type KeystoneConfigCustom = z.infer<typeof CustomSchema>;
+export type ChamferConfigCustom = z.infer<typeof CustomSchema>;

@@ -3,7 +3,7 @@ import { forwardRef, useCallback } from "react";
 import { useToggle } from "react-hook-primitives";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputGroup } from "~/components/InputGroup";

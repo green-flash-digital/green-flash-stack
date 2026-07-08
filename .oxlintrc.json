@@ -160,8 +160,8 @@
     },
     {
       "files": [
-        "packages/keystone-studio/app/routes/**/*.ts",
-        "packages/keystone-studio/app/routes/**/*.tsx"
+        "packages/chamfer-studio/app/routes/**/*.ts",
+        "packages/chamfer-studio/app/routes/**/*.tsx"
       ],
       "rules": {
         "import/no-nodejs-modules": ["error", { "allow": [] }]

@@ -1,8 +1,8 @@
 import { useCallback } from "react";
 
 import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
-import { manualFontStyles } from "@keystone-css/core/schemas";
-import { makeSpace, makeReset } from "@keystone-css/studio-tokens";
+import { manualFontStyles } from "@chamfer-css/core/schemas";
+import { makeSpace, makeReset } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { VariantAdd } from "~/components/VariantAdd";

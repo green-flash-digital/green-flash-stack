@@ -1,6 +1,6 @@
 import { useCallback, useRef, type ChangeEventHandler } from "react";
 
-import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputLabel } from "~/components/InputLabel";

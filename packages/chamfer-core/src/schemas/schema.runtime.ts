@@ -49,4 +49,4 @@ export const RuntimeSchema = withDescription(
 ).default({
   prefix: "new"
 });
-export type KeystoneConfigRuntime = z.infer<typeof RuntimeSchema>;
+export type ChamferConfigRuntime = z.infer<typeof RuntimeSchema>;

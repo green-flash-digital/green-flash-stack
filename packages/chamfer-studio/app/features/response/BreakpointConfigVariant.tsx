@@ -2,7 +2,7 @@ import type { FormEventHandler } from "react";
 import { useCallback } from "react";
 import { useDropdownMenu, useToggle } from "react-hook-primitives";
 
-import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { Button } from "~/components/Button";

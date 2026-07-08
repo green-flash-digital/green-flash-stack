@@ -1,14 +1,14 @@
-# @keystone-css/core
+# @chamfer-css/core
 
 > The missing piece between a design specification and developer tooling.
 
-In architecture, the **keystone** is the central wedge at the top of an arch — the last piece placed, and the one without which nothing holds. `keystone-css` is that piece for design systems. It sits between a designer's intent (token definitions) and a developer's implementation (typed CSS utilities), bridging the two sides so they stay in sync.
+In engineering, a **chamfer** is a bevel deliberately cut into a sharp edge so a part fits and functions once it's actually built — the design is reshaped, at design time, to match manufacturing reality. `chamfer-css` does the same job for design systems: it takes a designer's raw intent (token definitions) and reshapes it into a developer's implementation (typed CSS utilities), so the two sides stay in sync instead of drifting apart.
 
 ---
 
 ## What it does
 
-You define your design tokens once in TypeScript. `@keystone-css/core` generates:
+You define your design tokens once in TypeScript. `@chamfer-css/core` generates:
 
 - **CSS custom properties** in a `:root {}` block, ready to import
 - **Typed utility functions** (`makeColor`, `makeSpace`, `makeFontFamily`, etc.) that reference those properties with full type safety
@@ -16,8 +16,8 @@ You define your design tokens once in TypeScript. `@keystone-css/core` generates
 The result is a single source of truth your design system and your codebase both point to.
 
 ```ts
-// .keystone/config.ts
-import { defineTokens } from "@keystone-css/core";
+// .chamfer/config.ts
+import { defineTokens } from "@chamfer-css/core";
 
 export default defineTokens({
   tokens: {
@@ -36,7 +36,7 @@ export default defineTokens({
 
 ```ts
 // consuming code
-import { makeColor, makeSpace } from "./.keystone/index.js";
+import { makeColor, makeSpace } from "./.chamfer/index.js";
 
 const styles = {
   background: makeColor("brand", 600), // "var(--ds-color-brand-600)"
@@ -55,14 +55,14 @@ The `-css` suffix is intentional. Tokens live in `:root` as CSS custom propertie
 ## Installation
 
 ```sh
-npm install @keystone-css/core
+npm install @chamfer-css/core
 ```
 
 Or use the CLI (recommended for most projects):
 
 ```sh
-npm install -g keystone-css
-keystone build
+npm install -g chamfer-css
+chamfer build
 ```
 
 ---
@@ -74,7 +74,7 @@ keystone build
 Everything starts with `defineTokens`. It accepts your token configuration and an optional array of custom templates.
 
 ```ts
-import { defineTokens } from "@keystone-css/core";
+import { defineTokens } from "@chamfer-css/core";
 
 export default defineTokens({
   tokens: { ... },
@@ -103,7 +103,7 @@ export default defineTokens({
 Custom templates let you extend the token system with your own token categories and utility functions, fully typed.
 
 ```ts
-import { defineTemplate, defineTokens } from "@keystone-css/core";
+import { defineTemplate, defineTokens } from "@chamfer-css/core";
 
 const borderTemplate = defineTemplate({
   name: "makeBorder",
@@ -141,11 +141,11 @@ The generated `makeUtils.ts` will include `makeBorder` alongside all built-in ut
 
 ### File-based templates
 
-Drop any `.ts` file that exports a `defineTemplate` result into `.keystone/templates/` and it will be auto-discovered at build time — no registration needed.
+Drop any `.ts` file that exports a `defineTemplate` result into `.chamfer/templates/` and it will be auto-discovered at build time — no registration needed.
 
 ```
 your-project/
-└── .keystone/
+└── .chamfer/
     ├── config.ts
     └── templates/
         └── make-border.ts   ← auto-discovered
@@ -156,26 +156,26 @@ your-project/
 ## Programmatic API
 
 ```ts
-import { Keystone } from "@keystone-css/core";
-import definition from "./.keystone/config.js";
+import { Chamfer } from "@chamfer-css/core";
+import definition from "./.chamfer/config.js";
 import path from "node:path";
 
-const keystone = new Keystone({
+const chamfer = new Chamfer({
   definition,
   cwd: path.resolve(import.meta.dirname, ".."),
   logLevel: "info",
   env: "production"
 });
 
-await keystone.build();
-await keystone.dev(); // build + watch mode
+await chamfer.build();
+await chamfer.dev(); // build + watch mode
 ```
 
 ---
 
 ## Generated output
 
-Running `keystone build` produces three files inside `.keystone/_generated/`:
+Running `chamfer build` produces three files inside `.chamfer/_generated/`:
 
 | File           | Description                                                      |
 | -------------- | ---------------------------------------------------------------- |
@@ -183,7 +183,7 @@ Running `keystone build` produces three files inside `.keystone/_generated/`:
 | `root.css`     | A `:root {}` block with every CSS custom property                |
 | `makeUtils.ts` | Named exports for every utility function                         |
 
-And one file at `.keystone/index.ts` that re-exports everything from `makeUtils.ts`.
+And one file at `.chamfer/index.ts` that re-exports everything from `makeUtils.ts`.
 
 ---
 
@@ -191,7 +191,7 @@ And one file at `.keystone/index.ts` that re-exports everything from `makeUtils.
 
 ```json
 {
-  ".": "@keystone-css/core  — Keystone class, defineTokens, defineTemplate",
+  ".": "@chamfer-css/core  — Chamfer class, defineTokens, defineTemplate",
   "./templates": "all built-in template objects",
   "./schemas": "Zod schemas and inferred TypeScript types",
   "./utils": "internal utility helpers"

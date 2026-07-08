@@ -10,7 +10,7 @@
   },
   "include": [
     "src/*/index.ts",
-    "src/Keystone.ts",
+    "src/Chamfer.ts",
     "src/createTokenUtils.ts",
     "src/TokenManifest.ts",
     "src/defineTokens.ts"

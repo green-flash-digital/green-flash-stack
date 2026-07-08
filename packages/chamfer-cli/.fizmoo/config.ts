@@ -1,7 +1,7 @@
 import { command, defineConfig } from "fizmoo";
 
 export default defineConfig({
-  name: "keystone",
+  name: "chamfer",
   description:
     "Auto-generate TS functional utilities to easily recall & implement CSS design tokens",
   commands: [

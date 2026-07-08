@@ -1,6 +1,6 @@
 import chroma from "chroma-js";
 
-import type { KeystoneColor, KeystoneColorVariant } from "../schemas/schema.color.js";
+import type { ChamferColor, ChamferColorVariant } from "../schemas/schema.color.js";
 
 export type HEXValue = string;
 export type VariantMap = {
@@ -25,7 +25,7 @@ export function autoCreateVariantMap(variants: string[]): Omit<VariantMap, "base
 
 export function createVariantsFromBaseHex(
   baseHex: string,
-  variantDef: KeystoneColorVariant | undefined
+  variantDef: ChamferColorVariant | undefined
 ): VariantMap {
   const base = chroma(baseHex);
   const baseOklch = toOklchString(base);
@@ -52,7 +52,7 @@ export function createVariantsFromBaseHex(
   return result;
 }
 
-export function createColorVariants(colorConfig: KeystoneColor): VariantManifest {
+export function createColorVariants(colorConfig: ChamferColor): VariantManifest {
   const { vibe, colors } = colorConfig;
   return Object.entries(colors).reduce<VariantManifest>((accum, [name, entry]) => {
     if ("hue" in entry) {

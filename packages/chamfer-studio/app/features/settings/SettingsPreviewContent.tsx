@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { CodeBlock } from "~/components/CodeBlock";
@@ -23,7 +23,7 @@ export function SettingsPreviewContent() {
   const prefixCode = useMemo(() => {
     return `/* Prefix
 
-* When 'keystone build' is run, the values in the schema are read, compiled
+* When 'chamfer build' is run, the values in the schema are read, compiled
 * and built. Along with the creation of the utilities, the custom CSS properties
 * that correspond to those values are also created at the root and _prefixed_
 * with a string that will avoid clashing with other 3rd party CSS custom properties

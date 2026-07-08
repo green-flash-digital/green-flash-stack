@@ -18,7 +18,7 @@ import { SemanticPreviewContent } from "~/features/color/SemanticPreviewContent"
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Color | Tokens Studio" },
+    { title: "Color | Chamfer Studio" },
     {
       name: "description",
       content:

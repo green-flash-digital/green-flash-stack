@@ -1,4 +1,4 @@
-import { makeLightDark } from "@keystone-css/studio-tokens";
+import { makeLightDark } from "@chamfer-css/studio-tokens";
 import { describe, expect, it } from "vitest";
 
 // NOTE: makeLightDark currently accepts `string` at the TypeScript level — the

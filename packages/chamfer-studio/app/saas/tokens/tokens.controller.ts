@@ -3,8 +3,8 @@ import { drizzle } from "drizzle-orm/d1";
 
 import type { D1Database } from "@cloudflare/workers-types";
 import { generateGUID } from "@green-flash/ts-utils/isomorphic";
-import type { KeystoneTokens } from "@keystone-css/core/schemas";
-import { TokensSchema } from "@keystone-css/core/schemas";
+import type { ChamferTokens } from "@chamfer-css/core/schemas";
+import { TokensSchema } from "@chamfer-css/core/schemas";
 
 import { tokenVersions } from "../database/database.schema";
 
@@ -20,7 +20,7 @@ export class TokensController {
     this.#db = drizzle(raw);
   }
 
-  async read(projectId: string): Promise<KeystoneTokens> {
+  async read(projectId: string): Promise<ChamferTokens> {
     const [row] = await this.#db
       .select({ configJson: tokenVersions.configJson })
       .from(tokenVersions)
@@ -32,7 +32,7 @@ export class TokensController {
     return TokensSchema.parse(JSON.parse(row.configJson));
   }
 
-  async save(projectId: string, tokens: KeystoneTokens): Promise<void> {
+  async save(projectId: string, tokens: ChamferTokens): Promise<void> {
     await this.#db.insert(tokenVersions).values({
       id: generateGUID(),
       projectId,

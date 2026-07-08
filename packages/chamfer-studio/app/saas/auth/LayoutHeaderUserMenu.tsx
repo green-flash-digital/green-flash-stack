@@ -7,7 +7,7 @@ import {
   makeSemanticColor,
   makeRem,
   makeReset
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { signOut } from "./auth.client";

@@ -1,6 +1,6 @@
 import type { D1Database } from "@cloudflare/workers-types";
 import { generateGUID } from "@green-flash/ts-utils/isomorphic";
-import { TokensSchema } from "@keystone-css/core/schemas";
+import { TokensSchema } from "@chamfer-css/core/schemas";
 import { and, eq } from "drizzle-orm";
 import { drizzle } from "drizzle-orm/d1";
 

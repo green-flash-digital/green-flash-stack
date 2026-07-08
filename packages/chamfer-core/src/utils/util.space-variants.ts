@@ -1,7 +1,7 @@
 import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 
 import type {
-  KeystoneConfigSizeAndSpace,
+  ChamferConfigSizeAndSpace,
   SpaceAuto,
   SpaceManual
 } from "../schemas/schema.size-and-space.js";
@@ -27,7 +27,7 @@ export function calculateSpaceVariantsManual(
   );
 }
 
-export function createSpaceVariants(size: KeystoneConfigSizeAndSpace): SpaceVariantsRecord {
+export function createSpaceVariants(size: ChamferConfigSizeAndSpace): SpaceVariantsRecord {
   switch (size.space.mode) {
     case "auto":
       return calculateSpaceVariantsAuto(size.space.variants, size.baselineGrid);

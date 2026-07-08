@@ -47,7 +47,7 @@ export const semanticTemplate = defineTemplate({
           const level = wcagLevel(ratio);
           if (level === "Fail" || level === "AA Large") {
             console.warn(
-              `[keystone] ⚠ semantic.${role}: light(${entry.light}) vs dark(${entry.dark}) contrast ${ratio}:1 — ${level}`
+              `[chamfer] ⚠ semantic.${role}: light(${entry.light}) vs dark(${entry.dark}) contrast ${ratio}:1 — ${level}`
             );
           }
         }

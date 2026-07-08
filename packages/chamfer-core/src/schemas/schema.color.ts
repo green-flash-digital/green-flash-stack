@@ -28,10 +28,10 @@ export type ColorVariantTypes = z.infer<typeof ColorVariantTypesSchema>;
 
 const ColorVariantBaseSchema = z.union([ColorVariantTypeAutoSchema, ColorVariantTypeNamedSchema]);
 const ColorVariantAutoSchema = ColorVariantBaseSchema;
-export type KeystoneColorVariantBase = z.infer<typeof ColorVariantAutoSchema>;
+export type ChamferColorVariantBase = z.infer<typeof ColorVariantAutoSchema>;
 
 const ColorVariantManualSchema = ColorVariantBaseSchema.or(ColorVariantTypeKeyValueSchema);
-export type KeystoneColorVariant = z.infer<typeof ColorVariantManualSchema>;
+export type ChamferColorVariant = z.infer<typeof ColorVariantManualSchema>;
 
 // ── Color def schemas (kept for backward compat with studio utils) ────────────
 
@@ -42,7 +42,7 @@ export const ColorDefHueSchema = z.record(
     variants: ColorVariantAutoSchema
   })
 );
-export type KeystoneColorDefHue = z.infer<typeof ColorDefHueSchema>;
+export type ChamferColorDefHue = z.infer<typeof ColorDefHueSchema>;
 
 export const ColorDefHexSchema = z.record(
   z.string(),
@@ -51,7 +51,7 @@ export const ColorDefHexSchema = z.record(
     variants: ColorVariantManualSchema
   })
 );
-export type KeystoneColorDefHex = z.infer<typeof ColorDefHexSchema>;
+export type ChamferColorDefHex = z.infer<typeof ColorDefHexSchema>;
 
 // ── Vibe system (oklch perceptual constraints) ───────────────────────────────
 
@@ -86,7 +86,7 @@ export const VibeSchema = z.discriminatedUnion("type", [
   VibeNeutralSchema,
   VibeFluorescentSchema
 ]);
-export type KeystoneColorVibe = z.infer<typeof VibeSchema>;
+export type ChamferColorVibe = z.infer<typeof VibeSchema>;
 
 // ── Unified color entry schemas ──────────────────────────────────────────────
 
@@ -94,16 +94,16 @@ const ColorEntryHueSchema = z.object({
   hue: z.number().min(0).max(360),
   variants: ColorVariantAutoSchema
 });
-export type KeystoneColorEntryHue = z.infer<typeof ColorEntryHueSchema>;
+export type ChamferColorEntryHue = z.infer<typeof ColorEntryHueSchema>;
 
 const ColorEntryHexSchema = z.object({
   hex: z.string(),
   variants: ColorVariantManualSchema.default(0)
 });
-export type KeystoneColorEntryHex = z.infer<typeof ColorEntryHexSchema>;
+export type ChamferColorEntryHex = z.infer<typeof ColorEntryHexSchema>;
 
 export const ColorEntrySchema = z.union([ColorEntryHueSchema, ColorEntryHexSchema]);
-export type KeystoneColorEntry = z.infer<typeof ColorEntrySchema>;
+export type ChamferColorEntry = z.infer<typeof ColorEntrySchema>;
 
 // ── Root color schema ────────────────────────────────────────────────────────
 
@@ -113,4 +113,4 @@ export const ColorSchema = withDescription(
     colors: z.record(z.string(), ColorEntrySchema).default({})
   })
 ).default({ colors: {} });
-export type KeystoneColor = z.infer<typeof ColorSchema>;
+export type ChamferColor = z.infer<typeof ColorSchema>;

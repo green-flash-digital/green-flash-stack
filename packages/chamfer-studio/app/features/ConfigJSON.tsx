@@ -1,4 +1,4 @@
-import { makeCustom } from "@keystone-css/studio-tokens";
+import { makeCustom } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { Button } from "~/components/Button";
@@ -44,8 +44,8 @@ export function ConfigJSON() {
         dxSize="md"
         className={styles}
       >
-        <ModalHeader dxSubtitle="Below you'll find the code representation of the configuration. You can copy and paste this into your `keystone-css.config.json` file or you can use one of the other buttons to save it.">
-          Keystone CSS Configuration
+        <ModalHeader dxSubtitle="Below you'll find the code representation of the configuration. You can copy and paste this into your `chamfer-css.config.json` file or you can use one of the other buttons to save it.">
+          Chamfer CSS Configuration
         </ModalHeader>
         <CodeBlock
           className={codeStyles}

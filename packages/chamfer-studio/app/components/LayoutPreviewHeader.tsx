@@ -1,6 +1,6 @@
 import type { ReactNode } from "react";
 
-import { makeCustom } from "@keystone-css/studio-tokens";
+import { makeCustom } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 const styles = css`

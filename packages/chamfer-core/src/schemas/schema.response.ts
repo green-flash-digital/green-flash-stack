@@ -30,4 +30,4 @@ export const ResponseSchema = withDescription(
 ).default({
   breakpoints: { mobile: 480, tablet: 768, laptop: 1024, desktop: 1280, ultraWide: 1536 }
 });
-export type KeystoneConfigResponse = z.infer<typeof ResponseSchema>;
+export type ChamferConfigResponse = z.infer<typeof ResponseSchema>;

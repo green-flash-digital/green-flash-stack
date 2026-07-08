@@ -1,6 +1,6 @@
-name: Keystone Studio - Preview
+name: Chamfer Studio - Preview
 
-# First-cut CI/CD for keystone-studio's Cloudflare Worker. Not yet verified
+# First-cut CI/CD for chamfer-studio's Cloudflare Worker. Not yet verified
 # against a real run (no Cloudflare credentials available while authoring
 # this) — expect to fix up exact wrangler output parsing after the first PR.
 
@@ -9,25 +9,25 @@ on:
     branches:
       - main
     # Broad pre-filter across all workspace packages — the detect-changes job
-    # below narrows this down to "does keystone-studio itself need a rebuild",
+    # below narrows this down to "does chamfer-studio itself need a rebuild",
     # since it depends on other workspace packages (e.g. ts-utils) that live
-    # outside packages/keystone-studio/.
+    # outside packages/chamfer-studio/.
     paths:
       - "packages/**"
     types: [opened, synchronize, reopened, closed]
 
 concurrency:
-  group: keystone-studio-preview-${{ github.event.pull_request.number }}
+  group: chamfer-studio-preview-${{ github.event.pull_request.number }}
   cancel-in-progress: true
 
 defaults:
   run:
-    working-directory: packages/keystone-studio
+    working-directory: packages/chamfer-studio
 
 jobs:
   detect-changes:
     if: github.event.action != 'closed'
-    name: Detect Keystone Studio Changes
+    name: Detect Chamfer Studio Changes
     runs-on: ubuntu-latest
     outputs:
       affected: ${{ steps.check.outputs.affected }}
@@ -57,12 +57,12 @@ jobs:
         working-directory: .
         run: yarn install --immutable
 
-      - name: Check if keystone-studio is affected
+      - name: Check if chamfer-studio is affected
         id: check
         working-directory: .
         run: |
           npx turbo run build --affected --dry=json > /tmp/turbo-affected.json
-          AFFECTED=$(jq '.packages | index("@keystone-css/studio") != null' /tmp/turbo-affected.json)
+          AFFECTED=$(jq '.packages | index("@chamfer-css/studio") != null' /tmp/turbo-affected.json)
           echo "Affected packages: $(jq -c '.packages' /tmp/turbo-affected.json)"
           echo "affected=$AFFECTED" >> "$GITHUB_OUTPUT"
 
@@ -77,7 +77,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      DB_NAME: keystone-studio-pr-${{ github.event.pull_request.number }}
+      DB_NAME: chamfer-studio-pr-${{ github.event.pull_request.number }}
 
     steps:
       - name: Checkout Repository
@@ -123,7 +123,7 @@ jobs:
         # First push on this PR — also wires database_id into $PREVIEW_CONFIG
         # via --update-config, so the "point config" step below is skipped.
         if: steps.check.outputs.exists != 'true'
-        run: npx wrangler d1 create "$DB_NAME" --binding keystone_studio --env preview --update-config --config "$PREVIEW_CONFIG"
+        run: npx wrangler d1 create "$DB_NAME" --binding chamfer_studio --env preview --update-config --config "$PREVIEW_CONFIG"
 
       - name: Point the throwaway config at the existing database
         # A later push to the same PR — the database's already there, but
@@ -145,9 +145,9 @@ jobs:
       - name: Comment preview URL on the PR
         uses: marocchino/sticky-pull-request-comment@v2
         with:
-          header: keystone-studio-preview
+          header: chamfer-studio-preview
           message: |
-            ### 🔗 Keystone Studio preview
+            ### 🔗 Chamfer Studio preview
 
             ${{ steps.deploy.outputs.preview_url }}
 
@@ -160,7 +160,7 @@ jobs:
     env:
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-      DB_NAME: keystone-studio-pr-${{ github.event.pull_request.number }}
+      DB_NAME: chamfer-studio-pr-${{ github.event.pull_request.number }}
 
     steps:
       - name: Checkout Repository

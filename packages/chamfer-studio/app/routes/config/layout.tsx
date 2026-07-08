@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData } from "react-router";
 
 import { classes, tryHandle } from "@green-flash/ts-utils/isomorphic";
-import { makeCustom, makeRem } from "@keystone-css/studio-tokens";
+import { makeCustom, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { layoutSidebarSectionStyles, layoutSidebarStyles } from "~/components/layout.styles";

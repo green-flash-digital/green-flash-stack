@@ -1,14 +1,14 @@
 import { useRef } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { ColorAccessibilityChecker, getAccessibleTextColor } from "@keystone-css/core/utils";
+import { ColorAccessibilityChecker, getAccessibleTextColor } from "@chamfer-css/core/utils";
 import {
   makeSpace,
   makeColor,
   makeFontFamily,
   makeFontWeight,
   makeRem
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import { Fragment } from "react/jsx-runtime";
 

@@ -1,5 +1,5 @@
-import type { LogLevel } from "@keystone-css/core";
-import { Keystone } from "@keystone-css/core";
+import type { LogLevel } from "@chamfer-css/core";
+import { Chamfer } from "@chamfer-css/core";
 import { defineCommand } from "fizmoo";
 
 export default defineCommand({
@@ -14,7 +14,7 @@ export default defineCommand({
     }
   },
   action: async ({ options }) => {
-    const tokens = new Keystone({
+    const tokens = new Chamfer({
       logLevel: options["log-level"] as LogLevel,
       env: "development",
       autoInit: true

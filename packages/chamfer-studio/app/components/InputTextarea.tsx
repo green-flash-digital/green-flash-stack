@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeRem, makeColor, makeReset } from "@keystone-css/studio-tokens";
+import { makeSpace, makeRem, makeColor, makeReset } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type InputTextareaPropsNative = JSX.IntrinsicElements["textarea"];

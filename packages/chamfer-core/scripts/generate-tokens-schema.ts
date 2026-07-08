@@ -16,10 +16,10 @@ const zodSchema = zodToJsonSchema(TokensSchema, {
 
 const schema = {
   $schema: "http://json-schema.org/draft-07/schema#",
-  $id: "https://schemas.greenflash.digital/keystone-tokens.json",
-  title: "KeystoneTokens",
+  $id: "https://schemas.greenflash.digital/chamfer-tokens.json",
+  title: "ChamferTokens",
   description:
-    "Design token data for a keystone-css design system — stored in tokens.json and imported by config.ts.",
+    "Design token data for a chamfer-css design system — stored in tokens.json and imported by config.ts.",
   ...zodSchema,
   properties: {
     $schema: { type: "string" },

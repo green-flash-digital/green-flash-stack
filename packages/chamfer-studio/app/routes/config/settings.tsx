@@ -15,7 +15,7 @@ import { SettingsPreviewControls } from "~/features/settings/SettingsPreviewCont
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Settings | Tokens Studio" },
+    { title: "Settings | Chamfer Studio" },
     {
       name: "description",
       content: "Define the specifics of how the utilities can be imported and subsequently used"

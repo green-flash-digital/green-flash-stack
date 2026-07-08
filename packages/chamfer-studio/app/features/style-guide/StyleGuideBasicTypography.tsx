@@ -1,6 +1,6 @@
-import type { ManualFontStylesValue } from "@keystone-css/core/schemas";
-import { manualFontStyles } from "@keystone-css/core/schemas";
-import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@keystone-css/studio-tokens";
+import type { ManualFontStylesValue } from "@chamfer-css/core/schemas";
+import { manualFontStyles } from "@chamfer-css/core/schemas";
+import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "../Config.context";

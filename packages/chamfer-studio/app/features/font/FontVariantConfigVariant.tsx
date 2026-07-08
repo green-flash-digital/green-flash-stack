@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useToggle } from "react-hook-primitives";
 
-import { makeSpace, makeColor, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputGroup } from "~/components/InputGroup";

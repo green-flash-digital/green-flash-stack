@@ -1,7 +1,7 @@
 import type { ReactNode } from "react";
 import { useCallback } from "react";
 
-import { makeRem, makeColor } from "@keystone-css/studio-tokens";
+import { makeRem, makeColor } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { InputGroup } from "~/components/InputGroup";

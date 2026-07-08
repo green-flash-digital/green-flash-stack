@@ -1,23 +1,23 @@
-name: Keystone Studio - Deploy
+name: Chamfer Studio - Deploy
 
 on:
   push:
     branches:
       - main
     # Broad pre-filter across all workspace packages — the detect-changes job
-    # below narrows this down to "does keystone-studio itself need a rebuild",
+    # below narrows this down to "does chamfer-studio itself need a rebuild",
     # since it depends on other workspace packages (e.g. ts-utils) that live
-    # outside packages/keystone-studio/.
+    # outside packages/chamfer-studio/.
     paths:
       - "packages/**"
 
 defaults:
   run:
-    working-directory: packages/keystone-studio
+    working-directory: packages/chamfer-studio
 
 jobs:
   detect-changes:
-    name: Detect Keystone Studio Changes
+    name: Detect Chamfer Studio Changes
     runs-on: ubuntu-latest
     outputs:
       affected: ${{ steps.check.outputs.affected }}
@@ -47,7 +47,7 @@ jobs:
         working-directory: .
         run: yarn install --immutable
 
-      - name: Check if keystone-studio is affected
+      - name: Check if chamfer-studio is affected
         id: check
         working-directory: .
         run: |
@@ -59,7 +59,7 @@ jobs:
             export TURBO_SCM_BASE="${{ github.event.before }}"
           fi
           npx turbo run build --affected --dry=json > /tmp/turbo-affected.json
-          AFFECTED=$(jq '.packages | index("@keystone-css/studio") != null' /tmp/turbo-affected.json)
+          AFFECTED=$(jq '.packages | index("@chamfer-css/studio") != null' /tmp/turbo-affected.json)
           echo "Affected packages: $(jq -c '.packages' /tmp/turbo-affected.json)"
           echo "affected=$AFFECTED" >> "$GITHUB_OUTPUT"
 
@@ -94,12 +94,12 @@ jobs:
         run: yarn install --immutable
 
       - name: Apply migrations to production
-        run: npx wrangler d1 migrations apply keystone-studio --remote
+        run: npx wrangler d1 migrations apply chamfer-studio --remote
 
       - name: Deploy to production
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          workingDirectory: packages/keystone-studio
+          workingDirectory: packages/chamfer-studio
           command: deploy

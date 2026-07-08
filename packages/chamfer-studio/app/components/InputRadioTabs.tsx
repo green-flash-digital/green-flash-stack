@@ -4,7 +4,7 @@ import type { UseTrackingNodeCallback } from "react-hook-primitives";
 import { useForwardedRef, useTrackingNode } from "react-hook-primitives";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeColor, makePx, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makePx, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type InputRadioTabsPropsNative = JSX.IntrinsicElements["div"];

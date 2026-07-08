@@ -9,7 +9,7 @@ import {
   makeFontFamily,
   makeFontWeight,
   makeRem
-} from "@keystone-css/studio-tokens";
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type InputLabelPropsNative = JSX.IntrinsicElements["label"];

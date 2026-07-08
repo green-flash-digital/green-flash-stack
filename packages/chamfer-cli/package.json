@@ -1,19 +1,19 @@
 {
-  "name": "keystone-css",
+  "name": "chamfer-css",
   "version": "0.3.6",
   "description": "The missing piece between a design specification and developer tooling — typed CSS design tokens with generated utilities.",
-  "homepage": "https://github.com/keystone-css/keystone-css#readme",
+  "homepage": "https://github.com/chamfer-css/chamfer-css#readme",
   "bugs": {
-    "url": "https://github.com/keystone-css/keystone-css/issues"
+    "url": "https://github.com/chamfer-css/chamfer-css/issues"
   },
   "license": "Apache-2.0",
   "author": "Drew DeCarme (drew@greenflash.digital)",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/keystone-css/keystone-css.git"
+    "url": "git+ssh://git@github.com/chamfer-css/chamfer-css.git"
   },
   "bin": {
-    "keystone": "./bin/index.js"
+    "chamfer": "./bin/index.js"
   },
   "type": "module",
   "publishConfig": {
@@ -24,8 +24,8 @@
     "build": "yarn fizmoo build"
   },
   "dependencies": {
-    "@keystone-css/core": "0.3.6",
-    "@keystone-css/studio": "0.3.6",
+    "@chamfer-css/core": "0.3.6",
+    "@chamfer-css/studio": "0.3.6",
     "fizmoo": "workspace:*"
   },
   "devDependencies": {

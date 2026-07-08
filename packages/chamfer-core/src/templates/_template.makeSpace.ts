@@ -1,4 +1,4 @@
-// import { createSpaceVariants, remFromConfig } from "@keystone-css/core-utils";
+// import { createSpaceVariants, remFromConfig } from "@chamfer-css/core-utils";
 
 // import { type CompileFunction, MakeTemplate } from "./MakeTemplate.js";
 

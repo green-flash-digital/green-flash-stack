@@ -3,7 +3,7 @@ import { forwardRef, useCallback, useId } from "react";
 import { useForwardedRef } from "react-hook-primitives";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeColor, makeRem, makeReset } from "@keystone-css/studio-tokens";
+import { makeSpace, makeColor, makeRem, makeReset } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

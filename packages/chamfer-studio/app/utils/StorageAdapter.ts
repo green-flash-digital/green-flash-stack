@@ -2,12 +2,12 @@ import { readFile, writeFile } from "node:fs/promises";
 import path from "node:path";
 
 import { writeFileRecursive } from "@green-flash/ts-utils/node";
-import type { KeystoneTokens } from "@keystone-css/core/schemas";
-import { TokensSchema } from "@keystone-css/core/schemas";
+import type { ChamferTokens } from "@chamfer-css/core/schemas";
+import { TokensSchema } from "@chamfer-css/core/schemas";
 
 export interface StorageAdapter {
-  read(): Promise<KeystoneTokens>;
-  save(tokens: KeystoneTokens): Promise<void>;
+  read(): Promise<ChamferTokens>;
+  save(tokens: ChamferTokens): Promise<void>;
 }
 
 /**
@@ -20,12 +20,12 @@ export class FileSystemAdapter implements StorageAdapter {
     private readonly versionsDir: string
   ) {}
 
-  async read(): Promise<KeystoneTokens> {
+  async read(): Promise<ChamferTokens> {
     const raw = JSON.parse(await readFile(this.tokensPath, "utf8"));
     return TokensSchema.parse(raw);
   }
 
-  async save(tokens: KeystoneTokens): Promise<void> {
+  async save(tokens: ChamferTokens): Promise<void> {
     const current = await readFile(this.tokensPath, "utf8");
     const currentJson = JSON.parse(current) as Record<string, unknown>;
     const existingSchema = currentJson["$schema"] as string | undefined;

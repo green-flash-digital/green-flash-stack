@@ -1,4 +1,4 @@
-import type { TokensConfig } from "../Keystone.js";
+import type { TokensConfig } from "../Chamfer.js";
 import type { TokenManifest } from "../TokenManifest.js";
 
 export type TokenTemplate<

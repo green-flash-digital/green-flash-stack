@@ -2,7 +2,7 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeReset, makeRem, makeColor } from "@keystone-css/studio-tokens";
+import { makeSpace, makeReset, makeRem, makeColor } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 export type ColorSwatchVariantAddPropsNative = JSX.IntrinsicElements["button"];

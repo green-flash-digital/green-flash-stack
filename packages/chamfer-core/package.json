@@ -1,26 +1,26 @@
 {
-  "name": "@keystone-css/core",
+  "name": "@chamfer-css/core",
   "version": "0.3.6",
-  "description": "The JS API for the keystone-css package that is used to distribute schemas, utils, and the main Keystone class.",
-  "homepage": "https://github.com/keystone-css/keystone-css#readme",
+  "description": "The JS API for the chamfer-css package that is used to distribute schemas, utils, and the main Chamfer class.",
+  "homepage": "https://github.com/chamfer-css/chamfer-css#readme",
   "bugs": {
-    "url": "https://github.com/keystone-css/keystone-css/issues"
+    "url": "https://github.com/chamfer-css/chamfer-css/issues"
   },
   "license": "MIT",
   "author": "Drew DeCarme (drewdecarme@gmail.com)",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/keystone-css/keystone-css.git",
+    "url": "git+ssh://git@github.com/chamfer-css/chamfer-css.git",
     "directory": "packages/core"
   },
   "type": "module",
   "exports": {
     ".": {
       "browser": "./dist/client.js",
-      "default": "./dist/Keystone.js"
+      "default": "./dist/Chamfer.js"
     },
     "./client": "./dist/client.js",
-    "./bootstrap": "./dist/Keystone.js",
+    "./bootstrap": "./dist/Chamfer.js",
     "./token-utils": "./dist/createTokenUtils.js",
     "./templates": "./dist/templates/index.js",
     "./utils": "./dist/utils/index.js",

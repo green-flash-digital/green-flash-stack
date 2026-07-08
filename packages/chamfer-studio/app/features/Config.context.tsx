@@ -1,8 +1,8 @@
 import type { FC, ReactNode } from "react";
 import { useContext, useMemo, createContext, useCallback } from "react";
 
-import type { KeystoneConfig } from "@keystone-css/core/schemas";
-import { TokensSchema } from "@keystone-css/core/schemas";
+import type { ChamferConfig } from "@chamfer-css/core/schemas";
+import { TokensSchema } from "@chamfer-css/core/schemas";
 import type { Updater } from "use-immer";
 import { useImmer } from "use-immer";
 
@@ -12,15 +12,15 @@ import { initStudioState, getTokensFromState } from "./studio.state";
 export type ConfigurationContextType = {
   state: StudioState;
   update: Updater<StudioState>;
-  getTokens: () => KeystoneConfig;
-  originalConfig: KeystoneConfig;
+  getTokens: () => ChamferConfig;
+  originalConfig: ChamferConfig;
 };
 
 const ConfigurationContext = createContext<ConfigurationContextType | null>(null);
 
 export type ConfigurationProviderProps = {
   children: ReactNode;
-  originalConfig: KeystoneConfig;
+  originalConfig: ChamferConfig;
 };
 
 export const ConfigurationProvider: FC<ConfigurationProviderProps> = ({

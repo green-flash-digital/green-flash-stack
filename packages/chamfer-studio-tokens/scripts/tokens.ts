@@ -1,12 +1,12 @@
 import path from "node:path";
 
-import { Keystone } from "@keystone-css/core";
+import { Chamfer } from "@chamfer-css/core";
 
-import definition from "../.keystone/config.js";
+import definition from "../.chamfer/config.js";
 
 const cwd = path.resolve(import.meta.dirname, "..");
 
-export const StudioTokens = new Keystone({
+export const StudioTokens = new Chamfer({
   logLevel: "trace",
   env: "development",
   definition,

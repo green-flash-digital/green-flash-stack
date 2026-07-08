@@ -1,10 +1,10 @@
 import type {
-  KeystoneColorEntryHue,
-  KeystoneColorEntryHex,
+  ChamferColorEntryHue,
+  ChamferColorEntryHex,
   VibeName
-} from "@keystone-css/core/schemas";
-import { vibePresets } from "@keystone-css/core/schemas";
-import { createColorVariants } from "@keystone-css/core/utils";
+} from "@chamfer-css/core/schemas";
+import { vibePresets } from "@chamfer-css/core/schemas";
+import { createColorVariants } from "@chamfer-css/core/utils";
 
 import type { ConfigurationStateColor } from "../studio.state";
 
@@ -51,7 +51,7 @@ export const vibeDefaults: Record<VibeName, { lightness: number; chroma: number 
 
 export function convertHueColorsIntoVariants(color: ConfigurationStateColor) {
   if (!color.vibe) return {};
-  const colors: Record<string, KeystoneColorEntryHue> = Object.values(color.hue).reduce(
+  const colors: Record<string, ChamferColorEntryHue> = Object.values(color.hue).reduce(
     (acc, { name, hue, variants }) => Object.assign(acc, { [name]: { hue, variants } }),
     {}
   );
@@ -59,7 +59,7 @@ export function convertHueColorsIntoVariants(color: ConfigurationStateColor) {
 }
 
 export function convertHexColorsIntoVariants(color: ConfigurationStateColor) {
-  const colors: Record<string, KeystoneColorEntryHex> = Object.values(color.hex).reduce(
+  const colors: Record<string, ChamferColorEntryHex> = Object.values(color.hex).reduce(
     (acc, { name, hex, variants }) => Object.assign(acc, { [name]: { hex, variants } }),
     {}
   );

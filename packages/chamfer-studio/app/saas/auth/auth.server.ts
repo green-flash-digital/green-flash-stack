@@ -11,7 +11,7 @@ export function createAuth(db: D1Database) {
   return betterAuth({
     // A static baseURL can't cover every host this Worker actually serves
     // from: local dev (localhost:5173), per-PR ephemeral preview aliases
-    // (pr-<N>-keystone-studio.<subdomain>.workers.dev), and production. This
+    // (pr-<N>-chamfer-studio.<subdomain>.workers.dev), and production. This
     // derives it per-request instead, from the incoming Host header, and
     // rejects anything not matching the allowlist below. `protocol` is left
     // at its "auto" default — it reads the scheme off the request itself

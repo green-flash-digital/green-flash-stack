@@ -1,4 +1,4 @@
-import { defineTemplate, defineTokens } from "@keystone-css/core";
+import { defineTemplate, defineTokens } from "@chamfer-css/core";
 
 const makeBorderTemplate = defineTemplate({
   name: "makeBorder",

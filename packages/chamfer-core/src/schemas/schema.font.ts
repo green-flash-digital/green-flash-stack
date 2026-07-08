@@ -104,4 +104,4 @@ export const FontSchema = withDescription(
   })
   .default({ source: "manual", families: {}, variants: {} });
 
-export type KeystoneConfigFont = z.infer<typeof FontSchema>;
+export type ChamferConfigFont = z.infer<typeof FontSchema>;

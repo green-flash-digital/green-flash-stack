@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { findKeystoneTokensFile } from "@keystone-css/core";
-import { StudioServer } from "@keystone-css/studio/server";
+import { findChamferTokensFile } from "@chamfer-css/core";
+import { StudioServer } from "@chamfer-css/studio/server";
 import { defineCommand } from "fizmoo";
 
 export default defineCommand({
@@ -16,17 +16,17 @@ export default defineCommand({
     }
   },
   action: async ({ options }) => {
-    const tokensPath = await findKeystoneTokensFile(process.cwd());
+    const tokensPath = await findChamferTokensFile(process.cwd());
     if (!tokensPath) {
       throw new Error(
-        'Could not locate ".keystone/tokens.json". Run `keystone init` to create one.'
+        'Could not locate ".chamfer/tokens.json". Run `chamfer init` to create one.'
       );
     }
-    const keystoneDir = path.dirname(tokensPath);
+    const chamferDir = path.dirname(tokensPath);
     const server = new StudioServer({
       port: options.port,
       configPath: tokensPath,
-      versionsDir: path.resolve(keystoneDir, "_versions")
+      versionsDir: path.resolve(chamferDir, "_versions")
     });
     server.listen();
   }

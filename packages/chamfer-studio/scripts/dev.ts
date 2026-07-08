@@ -9,8 +9,8 @@ import type { Response } from "express";
 import express from "express";
 import { createServer } from "vite";
 
-const tokensPath = path.resolve(import.meta.dirname, "../.keystone/tokens.json");
-const versionsDir = path.resolve(import.meta.dirname, "../.keystone/versions");
+const tokensPath = path.resolve(import.meta.dirname, "../.chamfer/tokens.json");
+const versionsDir = path.resolve(import.meta.dirname, "../.chamfer/versions");
 
 process.env.STUDIO_TOKENS_PATH = tokensPath;
 process.env.STUDIO_VERSIONS_DIR = versionsDir;

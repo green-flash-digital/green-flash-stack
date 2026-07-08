@@ -1,7 +1,7 @@
 import type { ChangeEventHandler } from "react";
 import { useCallback, useMemo } from "react";
 
-import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

@@ -2,7 +2,7 @@ import type { ChangeEventHandler } from "react";
 import { useCallback } from "react";
 
 import { generateGUID } from "@green-flash/ts-utils/isomorphic";
-import { makeSpace, makeRem } from "@keystone-css/studio-tokens";
+import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 import type { Updater } from "use-immer";
 

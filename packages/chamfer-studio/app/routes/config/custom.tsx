@@ -15,7 +15,7 @@ import { CustomPreviewControls } from "~/features/custom/CustomPreviewControls";
 
 export const meta: MetaFunction = () => {
   return [
-    { title: "Custom | Tokens Studio" },
+    { title: "Custom | Chamfer Studio" },
     {
       name: "description",
       content:

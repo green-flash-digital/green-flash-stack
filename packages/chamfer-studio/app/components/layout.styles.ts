@@ -1,6 +1,6 @@
 import { css } from "@linaria/core";
 
-import { makeRem } from "../../../keystone-studio-tokens/.keystone/_generated/makeUtils";
+import { makeRem } from "../../../chamfer-studio-tokens/.chamfer/_generated/makeUtils";
 
 export const layoutSidebarStyles = css`
   border-right: 1px solid #ededed;

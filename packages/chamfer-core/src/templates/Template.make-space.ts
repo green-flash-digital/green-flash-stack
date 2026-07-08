@@ -1,4 +1,4 @@
-import type { TokensConfig } from "../Keystone.js";
+import type { TokensConfig } from "../Chamfer.js";
 import { createCSSProperty } from "../utils/index.js";
 import { defineTemplate } from "./types.js";
 

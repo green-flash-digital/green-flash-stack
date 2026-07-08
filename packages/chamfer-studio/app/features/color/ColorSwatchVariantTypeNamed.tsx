@@ -1,4 +1,4 @@
-import type { ColorVariantTypeNamed } from "@keystone-css/core/schemas";
+import type { ColorVariantTypeNamed } from "@chamfer-css/core/schemas";
 
 import { InputLabel } from "../../components/InputLabel";
 import { InputText } from "../../components/InputText";

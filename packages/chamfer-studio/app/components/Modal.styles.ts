@@ -1,4 +1,4 @@
-import { makeSpace, makeRem, makeColor } from "@keystone-css/studio-tokens";
+import { makeSpace, makeRem, makeColor } from "@chamfer-css/studio-tokens";
 import type { LinariaClassName } from "@linaria/core";
 import { css } from "@linaria/core";
 

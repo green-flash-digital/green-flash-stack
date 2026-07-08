@@ -9,13 +9,13 @@ import type { IsoScribeLogLevel } from "isoscribe";
 import { Isoscribe, printAsBullets } from "isoscribe";
 import prettier from "prettier";
 
-import type { KeystoneDefinition } from "./defineTokens.js";
-import { TokensSchema, type KeystoneConfig } from "./schemas/schema.js";
+import type { ChamferDefinition } from "./defineTokens.js";
+import { TokensSchema, type ChamferConfig } from "./schemas/schema.js";
 import { defineTemplate } from "./templates/types.js";
 import type { TokenManifest } from "./TokenManifest.js";
 
 export { defineTokens } from "./defineTokens.js";
-export type { KeystoneConfigInput, KeystoneDefinition } from "./defineTokens.js";
+export type { ChamferConfigInput, ChamferDefinition } from "./defineTokens.js";
 import { colorTemplate } from "./templates/Template.make-color.js";
 import { customTemplate } from "./templates/Template.make-custom.js";
 import { fontFamilyTemplate } from "./templates/Template.make-font-family.js";
@@ -40,16 +40,16 @@ export type TokensConfigDirectories = {
 };
 
 export type TokensConfigMeta = {
-  /** Absolute path to the `.keystone/` directory */
+  /** Absolute path to the `.chamfer/` directory */
   dirPath: string;
-  /** Absolute path to the directory that contains `.keystone/` */
+  /** Absolute path to the directory that contains `.chamfer/` */
   dirName: string;
   /** Absolute path to `tokens.json` */
   filePath: string;
 };
 
 export type TokensConfig = {
-  config: KeystoneConfig;
+  config: ChamferConfig;
   meta: TokensConfigMeta;
   dirs: TokensConfigDirectories;
 };
@@ -60,11 +60,11 @@ type GetConfigOptions = {
 
 export type LogLevel = IsoScribeLogLevel;
 
-/** Walks up from `startDir` looking for `.keystone/tokens.json`. Returns the path or null. */
-export async function findKeystoneTokensFile(startDir: string): Promise<string | null> {
+/** Walks up from `startDir` looking for `.chamfer/tokens.json`. Returns the path or null. */
+export async function findChamferTokensFile(startDir: string): Promise<string | null> {
   let dir = startDir;
   while (true) {
-    const candidate = path.resolve(dir, ".keystone", "tokens.json");
+    const candidate = path.resolve(dir, ".chamfer", "tokens.json");
     if (existsSync(candidate)) return candidate;
     const parent = path.dirname(dir);
     if (parent === dir) return null;
@@ -73,31 +73,31 @@ export async function findKeystoneTokensFile(startDir: string): Promise<string |
 }
 
 /**
- * Scaffolds a new keystone-css project in `cwd` (defaults to `process.cwd()`).
+ * Scaffolds a new chamfer-css project in `cwd` (defaults to `process.cwd()`).
  * Creates:
- *   .keystone/tokens.json  — token data with $schema reference for VS Code IntelliSense
- *   .keystone/config.ts    — entry point that imports tokens.json
+ *   .chamfer/tokens.json  — token data with $schema reference for VS Code IntelliSense
+ *   .chamfer/config.ts    — entry point that imports tokens.json
  */
 export async function bootstrap(options?: { cwd?: string; prefix?: string }) {
   const rootDir = options?.cwd ?? process.cwd();
-  const keystoneDir = path.resolve(rootDir, ".keystone");
+  const chamferDir = path.resolve(rootDir, ".chamfer");
 
   const prefix =
     options?.prefix ??
     (await input({
       message:
-        "What prefix would you like to use for your CSS tokens? (https://keystone-css/concepts/token-prefixing)",
+        "What prefix would you like to use for your CSS tokens? (https://chamfer-css/concepts/token-prefixing)",
       default: path.basename(rootDir)
     }));
 
-  const defaultTokens = TokensSchema.parse({ runtime: { prefix } } as KeystoneConfig);
+  const defaultTokens = TokensSchema.parse({ runtime: { prefix } } as ChamferConfig);
 
-  const tokensPath = path.resolve(keystoneDir, "tokens.json");
+  const tokensPath = path.resolve(chamferDir, "tokens.json");
   await writeFileRecursive(
     tokensPath,
     JSON.stringify(
       {
-        $schema: "https://schemas.greenflash.digital/keystone-tokens.json",
+        $schema: "https://schemas.greenflash.digital/chamfer-tokens.json",
         ...defaultTokens
       },
       null,
@@ -105,13 +105,13 @@ export async function bootstrap(options?: { cwd?: string; prefix?: string }) {
     ) + "\n"
   );
 
-  const configPath = path.resolve(keystoneDir, "config.ts");
+  const configPath = path.resolve(chamferDir, "config.ts");
   await writeFileRecursive(
     configPath,
     `import tokens from "./tokens.json";\nexport default tokens;\n`
   );
 
-  return { keystoneDir, tokensPath, configPath };
+  return { chamferDir, tokensPath, configPath };
 }
 
 function deepMerge(target: Record<string, unknown>, source: Record<string, unknown>): void {
@@ -133,11 +133,11 @@ function deepMerge(target: Record<string, unknown>, source: Record<string, unkno
   }
 }
 
-export class Keystone {
+export class Chamfer {
   private _log: Isoscribe;
   private _config: TokensConfig | undefined = undefined;
   private _configAutoInit: boolean;
-  private _inlineDefinition: KeystoneDefinition | undefined;
+  private _inlineDefinition: ChamferDefinition | undefined;
   private _inlineCwd: string | undefined;
 
   constructor(options: {
@@ -145,19 +145,19 @@ export class Keystone {
     env?: "development" | "production";
     autoInit?: boolean;
     /** Definition produced by `defineTokens()`. When provided, file lookup is skipped. */
-    definition?: KeystoneDefinition;
-    /** Directory that contains the `.keystone/` folder. Defaults to `process.cwd()`. Required when `definition` is provided. */
+    definition?: ChamferDefinition;
+    /** Directory that contains the `.chamfer/` folder. Defaults to `process.cwd()`. Required when `definition` is provided. */
     cwd?: string;
   }) {
     const logLevel =
-      (process.env.KEYSTONE_CSS_LOG_LEVEL as IsoScribeLogLevel) ?? options.logLevel ?? "info";
-    process.env.KEYSTONE_CSS_ENV = options.env ?? process.env.KEYSTONE_CSS_ENV ?? "development";
+      (process.env.CHAMFER_CSS_LOG_LEVEL as IsoScribeLogLevel) ?? options.logLevel ?? "info";
+    process.env.CHAMFER_CSS_ENV = options.env ?? process.env.CHAMFER_CSS_ENV ?? "development";
 
     this._configAutoInit = options.autoInit ?? false;
     this._inlineDefinition = options.definition;
     this._inlineCwd = options.cwd;
     this._log = new Isoscribe({
-      name: "@keystone-css/core",
+      name: "@chamfer-css/core",
       logFormat: "string",
       logLevel
     });
@@ -177,11 +177,11 @@ export class Keystone {
     // Inline definition path (programmatic use, e.g. tests or monorepo setups)
     if (this._inlineDefinition) {
       const cwd = this._inlineCwd ?? process.cwd();
-      const keystoneDir = path.resolve(cwd, ".keystone");
+      const chamferDir = path.resolve(cwd, ".chamfer");
       const meta: TokensConfigMeta = {
-        dirPath: keystoneDir,
+        dirPath: chamferDir,
         dirName: cwd,
-        filePath: path.resolve(keystoneDir, "tokens.json")
+        filePath: path.resolve(chamferDir, "tokens.json")
       };
       this._config = {
         config: this._inlineDefinition.config,
@@ -192,15 +192,15 @@ export class Keystone {
     }
 
     // tokens.json discovery path
-    const tokensFilePath = await findKeystoneTokensFile(process.cwd());
+    const tokensFilePath = await findChamferTokensFile(process.cwd());
 
     if (tokensFilePath) {
       const raw = JSON.parse(await readFile(tokensFilePath, "utf8"));
       const config = TokensSchema.parse(raw);
-      const keystoneDir = path.dirname(tokensFilePath);
+      const chamferDir = path.dirname(tokensFilePath);
       const meta: TokensConfigMeta = {
-        dirPath: keystoneDir,
-        dirName: path.dirname(keystoneDir),
+        dirPath: chamferDir,
+        dirName: path.dirname(chamferDir),
         filePath: tokensFilePath
       };
       this._config = { config, meta, dirs: this._getDirsFromMeta(meta) };
@@ -210,20 +210,20 @@ export class Keystone {
     // No tokens.json found — bootstrap if autoInit, otherwise throw
     if (!this._configAutoInit) {
       throw new Error(
-        'Could not locate ".keystone/tokens.json". Run `keystone init` to create one.'
+        'Could not locate ".chamfer/tokens.json". Run `chamfer init` to create one.'
       );
     }
 
-    this._log.warn("Unable to locate .keystone/tokens.json — bootstrapping a new project");
+    this._log.warn("Unable to locate .chamfer/tokens.json — bootstrapping a new project");
     const { tokensPath } = await bootstrap();
 
     // Re-read the freshly created file
     const raw = JSON.parse(await readFile(tokensPath, "utf8"));
     const config = TokensSchema.parse(raw);
-    const keystoneDir = path.dirname(tokensPath);
+    const chamferDir = path.dirname(tokensPath);
     const meta: TokensConfigMeta = {
-      dirPath: keystoneDir,
-      dirName: path.dirname(keystoneDir),
+      dirPath: chamferDir,
+      dirName: path.dirname(chamferDir),
       filePath: tokensPath
     };
     this._config = { config, meta, dirs: this._getDirsFromMeta(meta) };
@@ -245,7 +245,7 @@ export class Keystone {
   async build(options?: GetConfigOptions & { extraTemplates?: TokenTemplate[] }) {
     try {
       const config = await this.getConfig(options);
-      this._log.info("Building keystone-css tokens");
+      this._log.info("Building chamfer-css tokens");
 
       const builtinTemplates: TokenTemplate[] = [
         colorTemplate,
@@ -281,7 +281,7 @@ export class Keystone {
       // 2. Write _tokens.ts — the single generated TypeScript file
       this._log.debug("Writing _tokens.ts manifest...");
       const tokensContent =
-        `// auto-generated by keystone-css — do not edit\n` +
+        `// auto-generated by chamfer-css — do not edit\n` +
         `export const tokens = ${JSON.stringify(manifest, null, 2)} as const;\n`;
       await writeFileRecursive(path.resolve(config.dirs.generated, "_tokens.ts"), tokensContent);
       this._log.debug("Writing _tokens.ts manifest... done.");
@@ -330,7 +330,7 @@ export class Keystone {
         `  remTemplate,`,
         `  resetTemplate,`,
         `  responsiveTemplate,`,
-        `} from "@keystone-css/core/templates";`,
+        `} from "@chamfer-css/core/templates";`,
         `import { tokens } from "./_tokens.js";`
       ];
 
@@ -358,7 +358,7 @@ export class Keystone {
       }
 
       const makeUtilsContent = [
-        `// auto-generated by keystone-css — do not edit`,
+        `// auto-generated by chamfer-css — do not edit`,
         ...importLines,
         ``,
         ...exportLines
@@ -370,10 +370,10 @@ export class Keystone {
       );
       this._log.debug("Generating makeUtils.ts... done.");
 
-      // 5. Generate .keystone/index.ts barrel
+      // 5. Generate .chamfer/index.ts barrel
       this._log.debug("Generating index.ts barrel...");
       const barrelContent = [
-        `// auto-generated by keystone-css — do not edit`,
+        `// auto-generated by chamfer-css — do not edit`,
         `export * from "./_generated/makeUtils.js";`
       ].join("\n");
       await writeFileRecursive(path.resolve(config.meta.dirPath, "./index.ts"), barrelContent);
