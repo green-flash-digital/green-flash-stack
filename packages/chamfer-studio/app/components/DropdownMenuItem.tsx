@@ -1,14 +1,8 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
 
+import { makeSpace, makeReset, makeRem, makeColor } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";
-import {
-  makeSpace,
-  makeReset,
-  makeRem,
-  makeColor,
-  makeFontWeight
-} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import type { IconInspectCode } from "~/icons/IconInspectCode";
@@ -16,80 +10,47 @@ import type { IconInspectCode } from "~/icons/IconInspectCode";
 export type DropdownMenuItemPropsNative = JSX.IntrinsicElements["button"];
 export type DropdownMenuItemPropsCustom = {
   dxTitle: string;
-  dxSubtitle: string;
-  /**
-   * The color or theme of the icon in the menu item
-   * @default primary
-   */
-  dxTheme?: "primary" | "secondary";
   DXIcon: typeof IconInspectCode;
 };
 export type DropdownMenuItemProps = DropdownMenuItemPropsNative & DropdownMenuItemPropsCustom;
 
 const styles = css`
   ${makeReset("button")};
+  display: flex;
+  align-items: center;
+  gap: ${makeSpace(12)};
+  width: 100%;
   text-align: left;
-  padding: ${makeSpace(12)} !important;
+  padding: ${makeRem(10)} ${makeRem(12)} !important;
+  border-radius: ${makeSpace(6)};
   cursor: pointer;
+  transition: background 0.1s ease-in-out;
 
-  display: grid;
-  grid-template-columns: ${makeRem(38)} auto;
-  grid-template-rows: auto auto;
-  grid-template-areas:
-    "icon title"
-    "icon subtitle";
-  column-gap: ${makeSpace(12)};
-  row-gap: ${makeSpace(4)};
-  border-radius: ${makeSpace(4)};
-  transition: all 0.15s ease-in-out;
-
-  &:hover {
-    background: ${makeColor("primary-300", { opacity: 0.2 })};
-  }
+  &:hover,
   &:focus {
-    background: ${makeColor("primary-200", { opacity: 0.3 })};
+    background: ${makeColor("neutral", { opacity: 0.06 })};
   }
 
   .icon {
-    grid-area: icon;
     display: grid;
     place-content: center;
-    height: 100%;
-    border-radius: ${makeSpace(4)};
+    color: ${makeColor("neutral", { opacity: 0.7 })};
+  }
 
-    &.primary {
-      background: ${makeColor("primary-500", { opacity: 0.2 })};
-    }
-    &.secondary {
-      background: ${makeColor("secondary-500", { opacity: 0.2 })};
-    }
-  }
   .title {
-    grid-area: title;
-    font-weight: ${makeFontWeight("mulish-medium")};
-    color: ${makeColor("neutral")};
-    font-size: ${makeSpace(16)};
-  }
-  .subtitle {
-    grid-area: subtitle;
-    white-space: nowrap;
-    font-size: ${makeSpace(12)};
-    color: ${makeColor("neutral", { opacity: 0.6 })};
+    font-size: ${makeRem(14)};
+    color: ${makeColor("neutral-dark")};
   }
 `;
 
 export const DropdownMenuItem = forwardRef<HTMLButtonElement, DropdownMenuItemProps>(
-  function DropdownMenuItem(
-    { children, className, dxTitle, dxSubtitle, DXIcon, dxTheme, ...restProps },
-    ref
-  ) {
+  function DropdownMenuItem({ children, className, dxTitle, DXIcon, ...restProps }, ref) {
     return (
       <button {...restProps} className={classes(styles, className)} ref={ref}>
-        <div className={classes("icon", dxTheme)}>
-          <DXIcon dxSize={16} />
+        <div className="icon">
+          <DXIcon dxSize={18} />
         </div>
         <div className="title">{dxTitle}</div>
-        <div className="subtitle">{dxSubtitle}</div>
       </button>
     );
   }

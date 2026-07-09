@@ -116,7 +116,6 @@ const bodyStyles = css`
   overflow: hidden;
   display: grid;
   grid-template-columns: auto 1fr;
-  gap: ${makeRem(16)};
 
   :global() {
     html,
@@ -280,7 +279,10 @@ function LayoutNav() {
   );
 }
 
-const mainStyles = css``;
+const mainStyles = css`
+  height: 100%;
+  overflow: hidden;
+`;
 
 function LayoutMain({ children }: { children?: ReactNode }) {
   return <main className={mainStyles}>{children}</main>;

@@ -1,4 +1,4 @@
-import { forwardRef } from "react";
+import { forwardRef, useCallback } from "react";
 
 import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
@@ -7,7 +7,10 @@ import { ColorBlob, useColorBlob } from "./ColorBlob";
 import type { InputRangePropsNative } from "./InputRange";
 import { InputRange } from "./InputRange";
 
-export type InputHuePropsNative = InputRangePropsNative & { value?: number };
+export type InputHuePropsNative = InputRangePropsNative & {
+  value?: number;
+  dxOnChange?: (value: number) => void;
+};
 export type InputHueProps = InputHuePropsNative;
 
 const styles = css`
@@ -19,10 +22,18 @@ const styles = css`
 `;
 
 export const InputHue = forwardRef<HTMLInputElement, InputHueProps>(function InputHue(
-  { children, className, value, ...restProps },
+  { children, className, value, dxOnChange, ...restProps },
   ref
 ) {
   const { colorBlobRef, setHue } = useColorBlob();
+
+  const handleChange = useCallback(
+    (newValue: number) => {
+      setHue(newValue);
+      dxOnChange?.(newValue);
+    },
+    [setHue, dxOnChange]
+  );
 
   return (
     <div className={styles}>
@@ -33,7 +44,7 @@ export const InputHue = forwardRef<HTMLInputElement, InputHueProps>(function Inp
         min={0}
         max={360}
         ref={ref}
-        dxOnChange={setHue}
+        dxOnChange={handleChange}
         value={value}
         {...restProps}
       />

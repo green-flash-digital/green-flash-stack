@@ -1,4 +1,3 @@
-import type { ChangeEventHandler } from "react";
 import { useCallback } from "react";
 
 import { generateGUID } from "@green-flash/ts-utils/isomorphic";
@@ -34,25 +33,25 @@ export function ColorBrandModeAuto({
   const vibeType = state.vibe?.type ?? "fluorescent";
   const presets = colorVibePresets[vibeType];
 
-  const handleChangeLightness = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    ({ currentTarget: { value } }) => {
+  const handleChangeLightness = useCallback(
+    (value: number) => {
       update((draft) => {
         if (!draft.color.vibe) {
           draft.color.vibe = { type: vibeType, ...vibeDefaults[vibeType] };
         }
-        (draft.color.vibe as { lightness: number }).lightness = Number(value);
+        (draft.color.vibe as { lightness: number }).lightness = value;
       });
     },
     [update, vibeType]
   );
 
-  const handleChangeChroma = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    ({ currentTarget: { value } }) => {
+  const handleChangeChroma = useCallback(
+    (value: number) => {
       update((draft) => {
         if (!draft.color.vibe) {
           draft.color.vibe = { type: vibeType, ...vibeDefaults[vibeType] };
         }
-        (draft.color.vibe as { chroma: number }).chroma = Number(value);
+        (draft.color.vibe as { chroma: number }).chroma = value;
       });
     },
     [update, vibeType]
@@ -98,7 +97,7 @@ export function ColorBrandModeAuto({
             max={presets.lightness.max}
             step={0.01}
             className={inputLabelStyles}
-            onChange={handleChangeLightness}
+            dxOnChange={handleChangeLightness}
           />
         </div>
         <div className={inputLabelStyles}>
@@ -113,7 +112,7 @@ export function ColorBrandModeAuto({
             max={presets.chroma.max}
             step={0.01}
             className={inputLabelStyles}
-            onChange={handleChangeChroma}
+            dxOnChange={handleChangeChroma}
           />
         </div>
         <div className={inputLabelStyles}>

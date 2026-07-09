@@ -34,14 +34,13 @@ export function ColorBrandModeAutoVariant<
   const [id, { name, hue, variants }] = Object.entries(colorDef)[0];
   const [isOpen, toggle] = useToggle();
 
-  const handleChangeHue = useCallback<ChangeEventHandler<HTMLInputElement>>(
-    ({ currentTarget: { value } }) => {
+  const handleChangeHue = useCallback(
+    (value: number) => {
       update((draft) => {
         const color = draft.color.hue[id];
-        const hue = Number(value);
-        color.hue = hue;
-        setHue(hue);
+        color.hue = value;
       });
+      setHue(value);
     },
     [id, update, setHue]
   );

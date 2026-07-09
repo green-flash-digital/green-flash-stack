@@ -1,7 +1,7 @@
 import { Outlet, useLoaderData } from "react-router";
 
+import { makeRem } from "@chamfer-css/studio-tokens";
 import { classes, tryHandle } from "@green-flash/ts-utils/isomorphic";
-import { makeCustom, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { layoutSidebarSectionStyles, layoutSidebarStyles } from "~/components/layout.styles";
@@ -9,7 +9,7 @@ import { LayoutNavItem } from "~/components/LayoutNavItem";
 import { LayoutSidebarTitle } from "~/components/LayoutSidebarTitle";
 import { AdapterContext } from "~/context";
 import { ConfigurationProvider } from "~/features/Config.context";
-import { ConfigSave } from "~/features/ConfigSave";
+import { ConfigHeader } from "~/features/ConfigHeader";
 import { IconCode } from "~/icons/IconCode";
 import { IconColors } from "~/icons/IconColors";
 import { IconGrid } from "~/icons/IconGrid";
@@ -27,7 +27,7 @@ const shellStyles = css`
   grid-template-areas:
     "nav preview"
     "config preview";
-  height: ${`calc(100dvh - ${makeCustom("layout-header-height")})`};
+  height: 100%;
 `;
 
 export async function loader({ context }: Route.LoaderArgs) {
@@ -56,6 +56,7 @@ export default function AppConfigRoute() {
       <div className={shellStyles}>
         {/* Nav */}
         <aside className={classes(layoutSidebarStyles, sidebarNav)}>
+          <ConfigHeader />
           <LayoutSidebarTitle>Pages</LayoutSidebarTitle>
           <nav className={layoutSidebarSectionStyles}>
             <LayoutNavItem to="/config" label="Color" DXIcon={IconColors} end />
@@ -65,7 +66,6 @@ export default function AppConfigRoute() {
             <LayoutNavItem to="/config/custom" label="Custom" DXIcon={IconCode} />
             <LayoutNavItem to="/config/settings" label="Settings" DXIcon={IconSettings05} />
           </nav>
-          <ConfigSave />
         </aside>
         <Outlet />
       </div>

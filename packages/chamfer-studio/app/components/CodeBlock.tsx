@@ -20,6 +20,7 @@ const styles = css`
     padding: ${makeSpace(16)};
     height: 100%;
     overflow-x: auto;
+    white-space: pre;
   }
 `;
 

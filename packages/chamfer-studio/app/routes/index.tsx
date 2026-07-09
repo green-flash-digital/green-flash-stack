@@ -13,6 +13,7 @@ import {
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
+import { CodeBlock } from "~/components/CodeBlock";
 import { IconArrowDown } from "~/icons/IconArrowDown";
 import { IconFiles } from "~/icons/IconFiles";
 import { IconPaintBoard } from "~/icons/IconPaintBoard";
@@ -72,7 +73,34 @@ const styles = css`
     gap: ${makeSpace(16)};
     width: 100%;
   }
+
+  .code {
+    margin-top: ${makeSpace(32)};
+    width: 100%;
+    text-align: left;
+
+    .code-label {
+      font-size: ${makeRem(12)};
+      font-weight: ${makeFontWeight("mulish-medium")};
+      color: ${makeColor("neutral", { opacity: 0.5 })};
+      margin-bottom: ${makeSpace(8)};
+    }
+  }
 `;
+
+const codeSample = `import { css } from "@linaria/core";
+import { makeColor, makeSpace, makeFontVariant } from "~/.chamfer";
+\n
+const styles = css\`
+  \${makeFontVariant("heading")};
+  background: \${makeColor("primary", { opacity: 0.2 })};
+  padding: \${makeSpace(16)};
+  border-radius: \${makeSpace(8)};
+\`;
+\n
+export function Card() {
+  return <div className={styles}>Hello, Chamfer</div>;
+}`;
 
 const cardStyles = css`
   ${makeReset("anchor")};
@@ -199,6 +227,10 @@ export default function Index() {
           title="Your projects"
           description="Pick up an existing token set and keep going. (requires login)"
         />
+      </div>
+      <div className="code">
+        <div className="code-label">What you write</div>
+        <CodeBlock dxCode={codeSample} dxOptions={{ lang: "tsx" }} />
       </div>
     </div>
   );

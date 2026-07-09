@@ -2,8 +2,8 @@ import type { JSX, RefCallback } from "react";
 import { forwardRef, useCallback, useId } from "react";
 import { useForwardedRef } from "react-hook-primitives";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makeRem, makeReset } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 
@@ -112,7 +112,7 @@ export const ButtonIcon = forwardRef<HTMLButtonElement, ButtonIconProps>(functio
       <button
         {...restProps}
         type={type}
-        // ref={refCallback}
+        ref={forwardedRef}
         aria-labelledby={id}
         className={classes(styles, className, {
           [`s-${dxSize}`]: dxSize,
