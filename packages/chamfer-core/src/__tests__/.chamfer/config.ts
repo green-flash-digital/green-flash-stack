@@ -1,5 +1,5 @@
-import { defineTemplate } from "../../../templates/types.js";
-import { defineTokens } from "../../../defineTokens.js";
+import { defineTokens } from "../../defineTokens.js";
+import { defineTemplate } from "../../templates/types.js";
 
 /**
  * A representative custom (user-provided) template, mirroring the

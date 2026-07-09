@@ -1,3 +1,3 @@
 schema.json
-src/__tests__/fixtures/.chamfer/_generated/
-src/__tests__/fixtures/.chamfer/index.ts
+src/__tests__/.chamfer/_generated/
+src/__tests__/.chamfer/index.ts

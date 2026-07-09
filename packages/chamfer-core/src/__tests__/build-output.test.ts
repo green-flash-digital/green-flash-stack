@@ -36,7 +36,7 @@ import {
   makeSemanticColor,
   makeSize,
   makeSpace
-} from "./fixtures/.chamfer/index.js";
+} from "./.chamfer/index.js";
 
 function checkMakeColor() {
   makeColor("primary");

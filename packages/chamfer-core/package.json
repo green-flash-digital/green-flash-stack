@@ -31,12 +31,11 @@
     "access": "public"
   },
   "scripts": {
-    "build": "yarn generate:schema && yarn build:lib && yarn copy:schema && yarn test:types",
+    "build": "yarn generate:schema && yarn build:lib && yarn copy:schema && yarn test",
     "build:lib": "tsc --project tsconfig.build.json",
     "generate:schema": "tsx scripts/generate-tokens-schema.ts",
-    "generate:test-fixtures": "tsx scripts/generate-test-fixtures.ts",
     "copy:schema": "cp src/schemas/tokens.schema.json dist/schemas/tokens.schema.json",
-    "test:types": "yarn generate:test-fixtures && tsc -p tsconfig.test.json",
+    "test": "tsx scripts/generate-test-fixtures.ts && tsc -p tsconfig.test.json",
     "dev": "yarn build:lib --watch"
   },
   "dependencies": {
