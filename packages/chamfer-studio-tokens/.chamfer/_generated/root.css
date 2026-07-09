@@ -110,6 +110,24 @@
   --studio-font-weight-geist-medium: 500;
   --studio-font-weight-geist-regular: 400;
   --studio-font-weight-geist-light: 300;
+  --studio-font-variant-logo: var(--studio-font-weight-poppins-bold) 1.5rem/1.2
+    var(--studio-font-family-poppins);
+  --studio-font-variant-logo-letter-spacing: 0em;
+  --studio-font-variant-heading: var(--studio-font-weight-poppins-semiBold)
+    1.125rem/1.3 var(--studio-font-family-poppins);
+  --studio-font-variant-heading-letter-spacing: 0em;
+  --studio-font-variant-body: var(--studio-font-weight-mulish-regular)
+    0.875rem/1.5 var(--studio-font-family-mulish);
+  --studio-font-variant-body-letter-spacing: 0em;
+  --studio-font-variant-body-sm: var(--studio-font-weight-mulish-regular)
+    0.75rem/1.5 var(--studio-font-family-mulish);
+  --studio-font-variant-body-sm-letter-spacing: 0em;
+  --studio-font-variant-label: var(--studio-font-weight-mulish-medium)
+    0.75rem/1.4 var(--studio-font-family-mulish);
+  --studio-font-variant-label-letter-spacing: 0em;
+  --studio-font-variant-code: var(--studio-font-weight-consolas-regular)
+    0.8125rem/1.6 var(--studio-font-family-consolas);
+  --studio-font-variant-code-letter-spacing: 0em;
   --studio-space-4-px: 4px;
   --studio-space-4-rem: 0.25rem;
   --studio-space-8-px: 8px;
