@@ -1,0 +1,7 @@
+{
+  "extends": "@gfdigital/tsconfig/library",
+  "compilerOptions": {
+    "noEmit": true
+  },
+  "include": ["src/__tests__/**/*.ts"]
+}

@@ -43,6 +43,34 @@ export default defineTokens({
         surface: { hex: "#f8fafc" },
         neutral: { hex: "#64748b", variants: { dark: "#0f172a", light: "#f1f5f9" } }
       }
+    },
+    semantic: {
+      interactive: { light: "primary", dark: "secondary" }
+    },
+    sizeAndSpace: {
+      baseFontSize: 16,
+      baselineGrid: 4,
+      size: { variants: { dense: 24, normal: 32 } },
+      space: { mode: "auto", variants: 11 }
+    },
+    font: {
+      source: "manual",
+      families: {
+        Body: {
+          family: "Body",
+          fallback: "sans-serif",
+          styles: ["bold-700", "regular-400"]
+        }
+      },
+      variants: {
+        heading: { familyToken: "Body", weight: "bold-700", size: 24, lineHeight: 1.2 }
+      }
+    },
+    response: {
+      breakpoints: { mobile: 375, tablet: 768, desktop: 1280 }
+    },
+    custom: {
+      "brand-radius": { type: "rem", value: 8, description: "Fixture custom token" }
     }
   },
   templates: [makeBorderTemplate]
