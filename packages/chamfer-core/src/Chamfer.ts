@@ -388,6 +388,20 @@ export class Chamfer {
       await writeFileRecursive(path.resolve(config.meta.dirPath, "./index.ts"), barrelContent);
       this._log.debug("Generating index.ts barrel... done.");
 
+      // 6. Generate .chamfer/.gitignore — a nested .gitignore scoped to this
+      // directory means the generated output is ignored automatically,
+      // without the user needing to remember to add it to their project's
+      // own .gitignore. `tokens.json`/`config.ts` (and any custom
+      // `templates/`) are the hand-authored source of truth and stay
+      // tracked; only the derived output is ignored here.
+      this._log.debug("Generating .gitignore...");
+      const gitignoreContent = ["_generated/", "index.ts"].join("\n") + "\n";
+      await writeFileRecursive(
+        path.resolve(config.meta.dirPath, "./.gitignore"),
+        gitignoreContent
+      );
+      this._log.debug("Generating .gitignore... done.");
+
       await this._formatGeneratedFiles();
 
       this._log.success(
