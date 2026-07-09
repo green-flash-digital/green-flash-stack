@@ -55,7 +55,7 @@ const formStyles = css`
   label {
     display: flex;
     flex-direction: column;
-    gap: ${makeSpace(6)};
+    gap: ${makeSpace(8)};
     font-size: ${makeRem(13)};
     color: ${makeColor("neutral-light", { opacity: 0.7 })};
   }
@@ -98,7 +98,7 @@ const formStyles = css`
 
 const errorStyles = css`
   font-size: ${makeRem(13)};
-  color: ${makeColor("error-400", { opacity: 0.9 })};
+  color: ${makeColor("danger-300", { opacity: 0.9 })};
 `;
 
 export default function ResetPasswordPage() {

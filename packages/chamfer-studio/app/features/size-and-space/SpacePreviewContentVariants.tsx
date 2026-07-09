@@ -31,7 +31,7 @@ const styles = css`
     height: 100%;
     background: ${makeColor("secondary-300")};
     border-radius: ${makeSpace(4)};
-    min-width: ${makeSpace(2)};
+    min-width: ${makeSpace(4)};
   }
 `;
 

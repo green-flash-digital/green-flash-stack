@@ -19,7 +19,7 @@ import type { Route } from "./+types/projects";
 
 const pageStyles = css`
   max-width: ${makeRem(640)};
-  margin: ${makeSpace(48)} auto;
+  margin: ${makeSpace(44)} auto;
   padding: 0 ${makeSpace(24)};
 `;
 

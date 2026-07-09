@@ -22,7 +22,7 @@ const styles = css`
   width: 100%;
   text-align: left;
   padding: ${makeRem(10)} ${makeRem(12)} !important;
-  border-radius: ${makeSpace(6)};
+  border-radius: ${makeSpace(8)};
   cursor: pointer;
   transition: background 0.1s ease-in-out;
 

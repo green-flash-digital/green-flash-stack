@@ -37,7 +37,7 @@ const styles = css`
 
     @media (max-width: 900px) {
       justify-content: center;
-      padding: ${makeSpace(10)};
+      padding: ${makeSpace(12)};
       margin: ${makeRem(2)} ${makeSpace(4)};
 
       .label {

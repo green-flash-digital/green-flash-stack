@@ -11,7 +11,7 @@ export type DropdownMenuProps = DropdownMenuPropsNative;
 const styles = css`
   ${makeReset("ul")};
   min-width: ${makeRem(200)};
-  padding: ${makeSpace(6)};
+  padding: ${makeSpace(8)};
 `;
 
 export const DropdownMenu = forwardRef<HTMLUListElement, DropdownMenuProps>(function DropdownMenu(

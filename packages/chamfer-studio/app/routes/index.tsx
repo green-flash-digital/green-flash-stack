@@ -13,7 +13,7 @@ import {
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
-import { CodeBlock } from "~/components/CodeBlock";
+import { HomeCodeSampleTabs } from "~/components/HomeCodeSampleTabs";
 import { IconArrowDown } from "~/icons/IconArrowDown";
 import { IconFiles } from "~/icons/IconFiles";
 import { IconPaintBoard } from "~/icons/IconPaintBoard";
@@ -87,20 +87,6 @@ const styles = css`
     }
   }
 `;
-
-const codeSample = `import { css } from "@linaria/core";
-import { makeColor, makeSpace, makeFontVariant } from "~/.chamfer";
-\n
-const styles = css\`
-  \${makeFontVariant("heading")};
-  background: \${makeColor("primary", { opacity: 0.2 })};
-  padding: \${makeSpace(16)};
-  border-radius: \${makeSpace(8)};
-\`;
-\n
-export function Card() {
-  return <div className={styles}>Hello, Chamfer</div>;
-}`;
 
 const cardStyles = css`
   ${makeReset("anchor")};
@@ -210,7 +196,8 @@ export default function Index() {
       </div>
       <p className="intro">
         Design tokens shouldn't be a leap of faith. Define your entire design system once — Chamfer
-        turns it into CSS variables and TypeScript functions that reject anything that isn't real.
+        turns it into CSS variables and framework agnostic TypeScript functions that reject anything
+        that isn't real.
       </p>
       <div className="options">
         <OptionCard
@@ -230,7 +217,7 @@ export default function Index() {
       </div>
       <div className="code">
         <div className="code-label">What you write</div>
-        <CodeBlock dxCode={codeSample} dxOptions={{ lang: "tsx" }} />
+        <HomeCodeSampleTabs />
       </div>
     </div>
   );

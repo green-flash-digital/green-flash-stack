@@ -13,7 +13,7 @@ const styles = css`
   h4 {
     padding: ${makeRem(8)} ${makeRem(12)};
     font-size: ${makeRem(14)};
-    color: ${makeColor("neutral-100")};
+    color: ${makeColor("neutral")};
     margin: 0;
     border-bottom: 1px solid #ededed;
   }

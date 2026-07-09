@@ -38,7 +38,7 @@ const listStyles = css`
 const rowStyles = css`
   display: flex;
   flex-direction: column;
-  gap: ${makeSpace(6)};
+  gap: ${makeSpace(8)};
 
   .role-name {
     font-family: ${makeFontFamily("consolas")};
@@ -58,7 +58,7 @@ const rowStyles = css`
 `;
 
 const swatchStyles = css`
-  padding: ${makeSpace(10)} ${makeSpace(12)};
+  padding: ${makeSpace(12)} ${makeSpace(12)};
   display: flex;
   flex-direction: column;
   gap: ${makeSpace(4)};
@@ -87,7 +87,7 @@ const swatchStyles = css`
     gap: ${makeSpace(4)};
     font-size: ${makeRem(10)};
     font-weight: ${makeFontWeight("mulish-semiBold")};
-    padding: ${makeSpace(2)} ${makeSpace(6)};
+    padding: ${makeSpace(4)} ${makeSpace(8)};
     border-radius: ${makeSpace(4)};
 
     &.pass {

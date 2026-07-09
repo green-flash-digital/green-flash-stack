@@ -55,7 +55,7 @@ const formStyles = css`
   label {
     display: flex;
     flex-direction: column;
-    gap: ${makeSpace(6)};
+    gap: ${makeSpace(8)};
     font-size: ${makeRem(13)};
     color: ${makeColor("neutral-light", { opacity: 0.7 })};
   }
