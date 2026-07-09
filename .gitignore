@@ -17,4 +17,5 @@ coverage
 .turbo
 *storybook.log
 storybook-static
-*.tsbuild.info
+*.*.tsbuildinfo
+*.tsbuildinfo
