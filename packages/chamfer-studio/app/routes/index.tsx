@@ -125,8 +125,8 @@ const cardStyles = css`
     display: flex;
     align-items: center;
     justify-content: center;
-    width: ${makeSpace(48)};
-    height: ${makeSpace(48)};
+    width: ${makeSpace(36)};
+    height: ${makeSpace(36)};
     border-radius: ${makeSpace(12)};
     margin-bottom: ${makeSpace(12)};
     transition: transform 0.18s ease-in-out;
@@ -209,8 +209,8 @@ export default function Index() {
         <span>chamfer-css</span>
       </div>
       <p className="intro">
-        Design decisions shouldn't get lost in translation. Define your colors, type, and spacing
-        once, and Chamfer reshapes them into typed CSS your codebase can build on.
+        Design tokens shouldn't be a leap of faith. Define your entire design system once — Chamfer
+        turns it into CSS variables and TypeScript functions that reject anything that isn't real.
       </p>
       <div className="options">
         <OptionCard
