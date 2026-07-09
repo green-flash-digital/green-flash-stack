@@ -21,7 +21,7 @@ export const semanticTemplate = defineTemplate({
   namespace: "semantic",
   description:
     "Generates light-dark() CSS variables for semantic color roles. Each role maps a primitive color token to a light and dark scheme value.",
-  tokens(config) {
+  tokens(config): { semantic: Record<string, { light: string; dark: string }> } {
     const semantic: Record<string, { light: string; dark: string }> = {};
     for (const [role, entry] of Object.entries(config.config.semantic)) {
       semantic[role] = { light: entry.light, dark: entry.dark };

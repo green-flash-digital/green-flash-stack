@@ -31,10 +31,12 @@
     "access": "public"
   },
   "scripts": {
-    "build": "yarn generate:schema && yarn build:lib && yarn copy:schema",
+    "build": "yarn generate:schema && yarn build:lib && yarn copy:schema && yarn test:types",
     "build:lib": "tsc --project tsconfig.build.json",
     "generate:schema": "tsx scripts/generate-tokens-schema.ts",
+    "generate:test-fixtures": "tsx scripts/generate-test-fixtures.ts",
     "copy:schema": "cp src/schemas/tokens.schema.json dist/schemas/tokens.schema.json",
+    "test:types": "yarn generate:test-fixtures && vitest run",
     "dev": "yarn build:lib --watch"
   },
   "dependencies": {
@@ -56,6 +58,7 @@
     "@types/express": "5.0.6",
     "@types/node": "26.1.0",
     "tsx": "4.22.4",
+    "vitest": "4.1.9",
     "wrangler": "4.106.0",
     "zod-to-json-schema": "3.25.2"
   }

@@ -1,7 +1,7 @@
 import path from "node:path";
 
-import { writeFileRecursive } from "@green-flash/ts-utils/node";
 import { Chamfer } from "@chamfer-css/core";
+import { writeFileRecursive } from "@green-flash/ts-utils/node";
 import { defineCommand } from "fizmoo";
 
 export default defineCommand({
@@ -35,7 +35,10 @@ export default defineTemplate({
   cssProperties(_config) {
     return [];
   },
-  util(_tokens) {
+  // \`util\` must be a real generic function (not a plain method) so its
+  // parameter type is preserved instead of collapsing to \`never\` — add
+  // fields to the <T extends {...}> constraint as you add fields above.
+  util<T extends { prefix: string }>(_tokens: T) {
     return {};
   },
 });

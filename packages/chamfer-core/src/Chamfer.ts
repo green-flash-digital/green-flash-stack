@@ -338,7 +338,15 @@ export class Chamfer {
 
       for (const template of builtinTemplates) {
         const varName = builtinVarMap.get(template)!;
-        const keys = Object.keys(template.util(manifest as unknown as TokenManifest));
+        // Each built-in template's `util` keeps its own precise generic
+        // signature (that's what makes `makeColor`/`makeSpace`/etc. narrow
+        // correctly for real consumers) — but that means a *union* of them
+        // (this array) collapses `util`'s parameter type toward `never`,
+        // since TS combines differently-constrained generic methods
+        // contravariantly. This call only needs the resulting keys, so cast
+        // through a plain non-generic signature to sidestep that collapse.
+        const util = template.util as (tokens: TokenManifest) => object;
+        const keys = Object.keys(util(manifest as unknown as TokenManifest));
         if (keys.length > 0) {
           exportLines.push(`export const { ${keys.join(", ")} } = ${varName}.util(tokens);`);
         }
@@ -348,7 +356,8 @@ export class Chamfer {
       if (inlineTemplates.length > 0) {
         importLines.push(`import _def from "../config.js";`);
         for (let i = 0; i < inlineTemplates.length; i++) {
-          const keys = Object.keys(inlineTemplates[i].util(manifest as unknown as TokenManifest));
+          const util = inlineTemplates[i].util as (tokens: TokenManifest) => object;
+          const keys = Object.keys(util(manifest as unknown as TokenManifest));
           if (keys.length > 0) {
             exportLines.push(
               `export const { ${keys.join(", ")} } = _def.templates[${i}].util(tokens);`

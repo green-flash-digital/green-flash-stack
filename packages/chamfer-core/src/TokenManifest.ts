@@ -14,4 +14,5 @@ export type TokenManifest = {
   space: readonly number[];
   size: Record<string, number>;
   breakpoints: Record<string, number>;
+  semantic: Record<string, { light: string; dark: string }>;
 };

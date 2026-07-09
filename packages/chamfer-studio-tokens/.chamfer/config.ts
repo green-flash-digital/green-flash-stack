@@ -20,9 +20,9 @@ const makeBorderTemplate = defineTemplate({
       `--${prefix}-border-radius-full: 9999px`
     ];
   },
-  util(tokens) {
+  util<T extends { prefix: string; border: { radius: Record<string, number> } }>(tokens: T) {
     return {
-      makeBorder(size: keyof typeof tokens.border.radius): string {
+      makeBorder(size: keyof T["border"]["radius"] & string): string {
         return `var(--${tokens.prefix}-border-radius-${size})`;
       }
     };
