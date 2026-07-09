@@ -1,8 +1,8 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeFontFamily, makeRem } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 import type { CodeToHastOptions, BundledLanguage, BundledTheme } from "shiki";
 
@@ -19,8 +19,14 @@ const styles = css`
     border-radius: ${makeSpace(8)};
     padding: ${makeSpace(16)};
     height: 100%;
+    width: 100%;
     overflow-x: auto;
     white-space: pre;
+    box-sizing: border-box;
+
+    code {
+      width: 100%;
+    }
   }
 `;
 

@@ -31,7 +31,7 @@ const styles = css`
   display: grid;
   align-items: center;
   place-content: center;
-  max-width: ${makeRem(640)};
+  width: ${makeRem(640)};
   margin: 0 auto;
   padding: ${makeSpace(44)} ${makeSpace(16)};
 
@@ -63,11 +63,11 @@ const styles = css`
     line-height: 1.6;
     color: ${makeColor("neutral")};
     display: block;
-    margin-bottom: ${makeRem(64)};
     margin-top: 0;
   }
 
   .options {
+    margin-top: ${makeSpace(32)};
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: ${makeSpace(16)};
@@ -75,16 +75,9 @@ const styles = css`
   }
 
   .code {
-    margin-top: ${makeSpace(32)};
     width: 100%;
+    min-width: 0;
     text-align: left;
-
-    .code-label {
-      font-size: ${makeRem(12)};
-      font-weight: ${makeFontWeight("mulish-medium")};
-      color: ${makeColor("neutral", { opacity: 0.5 })};
-      margin-bottom: ${makeSpace(8)};
-    }
   }
 `;
 
@@ -199,6 +192,9 @@ export default function Index() {
         turns it into CSS variables and framework agnostic TypeScript functions that reject anything
         that isn't real.
       </p>
+      <div className="code">
+        <HomeCodeSampleTabs />
+      </div>
       <div className="options">
         <OptionCard
           to="/config"
@@ -214,10 +210,6 @@ export default function Index() {
           title="Your projects"
           description="Pick up an existing token set and keep going. (requires login)"
         />
-      </div>
-      <div className="code">
-        <div className="code-label">What you write</div>
-        <HomeCodeSampleTabs />
       </div>
     </div>
   );

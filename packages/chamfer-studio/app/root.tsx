@@ -1,4 +1,5 @@
-import { useEffect, type ReactNode } from "react";
+import { useCallback, useEffect, type ReactNode } from "react";
+import { useDropdownMenu } from "react-hook-primitives";
 import {
   Link,
   Links,
@@ -8,7 +9,10 @@ import {
   ScrollRestoration,
   href,
   redirect,
+  useFetcher,
   useLoaderData,
+  useLocation,
+  useNavigate,
   useRevalidator
 } from "react-router";
 
@@ -16,18 +20,27 @@ import "@chamfer-css/studio-tokens/root.css";
 import type { LinksFunction } from "react-router";
 
 import { makeColor, makeFontFamily, makeRem, makeReset } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import type { Route } from "./+types/root";
+import { DropdownMenu } from "./components/DropdownMenu";
+import { DropdownMenuItem } from "./components/DropdownMenuItem";
+import { createDropdownStyles } from "./components/shared-styles";
 import { AdapterContext, IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
 import { IconGridView } from "./icons/IconGridView";
+import { IconLogout03 } from "./icons/IconLogout03";
 import { IconPlusSign } from "./icons/IconPlusSign";
 import { IconSettings04 } from "./icons/IconSettings04";
 import { IconUserCircle } from "./icons/IconUserCircle";
+import { signOut } from "./saas/auth/auth.client";
+import type { StudioUser } from "./saas/auth/auth.context";
 import { UserContext } from "./saas/auth/auth.context";
 import { ActiveProjectContext } from "./saas/projects/projects.context";
 import { saasMiddlewares } from "./saas/saas.middleware";
 import { FileSystemAdapter } from "./utils/StorageAdapter";
+
+const AUTH_PATHS = ["/login", "/signup", "/forgot-password", "/reset-password"];
 
 export const middleware: Route.MiddlewareFunction[] = [
   ({ context }) => {
@@ -117,6 +130,10 @@ const bodyStyles = css`
   display: grid;
   grid-template-columns: auto 1fr;
 
+  &.no-nav {
+    grid-template-columns: 1fr;
+  }
+
   :global() {
     html,
     body {
@@ -142,6 +159,9 @@ const bodyStyles = css`
 `;
 
 export function Layout({ children }: { children: React.ReactNode }) {
+  const { pathname } = useLocation();
+  const isAuthPage = AUTH_PATHS.includes(pathname);
+
   return (
     <html lang="en">
       <head>
@@ -150,7 +170,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className={bodyStyles}>
+      <body className={classes(bodyStyles, { "no-nav": isAuthPage })}>
         {children}
         <ScrollRestoration />
         <Scripts />
@@ -243,7 +263,55 @@ const navStyles = css`
   }
 `;
 
-function LayoutNav() {
+const accountMenuStyles = createDropdownStyles(css`
+  display: none;
+
+  &:popover-open {
+    display: block;
+  }
+
+  border: ${makeRem(1)} solid ${makeColor("neutral", { opacity: 0.12 })};
+`);
+
+function AccountMenu({ user }: { user: StudioUser }) {
+  const navigate = useNavigate();
+  const { closeMenu, setTargetRef, setDropdownRef, alignmentRef } = useDropdownMenu<
+    HTMLDivElement,
+    HTMLDivElement
+  >({
+    dxOffset: 4,
+    dxPosition: "right-top"
+  });
+
+  const handleSignOut = useCallback(async () => {
+    closeMenu();
+    await signOut();
+    navigate("/login");
+  }, [closeMenu, navigate]);
+
+  return (
+    <div ref={alignmentRef}>
+      <button ref={setTargetRef} type="button" title={user.name || user.email}>
+        <IconUserCircle dxSize={20} />
+      </button>
+      <div ref={setDropdownRef} className={accountMenuStyles}>
+        <DropdownMenu>
+          <li>
+            <DropdownMenuItem dxTitle="Sign out" DXIcon={IconLogout03} onClick={handleSignOut} />
+          </li>
+        </DropdownMenu>
+      </div>
+    </div>
+  );
+}
+
+function LayoutNav({ isLocal, user }: { isLocal: boolean; user: StudioUser | null }) {
+  const fetcher = useFetcher();
+
+  const handleCreateProject = useCallback(() => {
+    fetcher.submit({ intent: "create" }, { method: "post", action: "/projects" });
+  }, [fetcher]);
+
   return (
     <nav className={navStyles}>
       <div className="root">
@@ -258,23 +326,27 @@ function LayoutNav() {
               <IconSettings04 dxSize={20} />
             </Link>
           </li>
-          <li>
-            <Link to={href("/projects")}>
-              <IconGridView dxSize={20} />
-            </Link>
-          </li>
-          <li>
-            <button>
-              <IconPlusSign dxSize={20} />
-            </button>
-          </li>
+          {!isLocal && (
+            <>
+              <li>
+                <Link to={href("/projects")}>
+                  <IconGridView dxSize={20} />
+                </Link>
+              </li>
+              <li>
+                <button type="button" title="New design system" onClick={handleCreateProject}>
+                  <IconPlusSign dxSize={20} />
+                </button>
+              </li>
+            </>
+          )}
         </ul>
       </div>
-      <div className="account">
-        <button>
-          <IconUserCircle dxSize={20} />
-        </button>
-      </div>
+      {!isLocal && user && (
+        <div className="account">
+          <AccountMenu user={user} />
+        </div>
+      )}
     </nav>
   );
 }
@@ -284,13 +356,11 @@ const mainStyles = css`
   overflow: hidden;
 `;
 
-function LayoutMain({ children }: { children?: ReactNode }) {
-  return <main className={mainStyles}>{children}</main>;
-}
-
 export default function App() {
   const { isLocal, user } = useLoaderData<typeof loader>();
   const revalidator = useRevalidator();
+  const location = useLocation();
+  const isAuthPage = AUTH_PATHS.includes(location.pathname);
 
   useEffect(() => {
     if (!isLocal) return;
@@ -301,10 +371,10 @@ export default function App() {
 
   return (
     <>
-      <LayoutNav />
-      <LayoutMain>
+      {!isAuthPage && <LayoutNav isLocal={isLocal} user={user} />}
+      <main className={mainStyles}>
         <Outlet />
-      </LayoutMain>
+      </main>
     </>
   );
 }

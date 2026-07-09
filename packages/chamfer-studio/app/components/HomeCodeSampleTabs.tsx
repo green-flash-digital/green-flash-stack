@@ -133,6 +133,7 @@ const tabBarStyles = css`
   button {
     position: relative;
     z-index: 2;
+    flex: 1;
     padding: ${makeSpace(8)} ${makeSpace(12)};
     border: none;
     background: none;
@@ -189,7 +190,7 @@ export function HomeCodeSampleTabs() {
   );
 
   return (
-    <div>
+    <>
       <div className={tabBarStyles} role="tablist" ref={tabListRef}>
         <div className="tracker" ref={trackerRef} />
         {libraries.map((library) => (
@@ -218,6 +219,6 @@ export function HomeCodeSampleTabs() {
           dxOptions={{ lang: "tsx" }}
         />
       ))}
-    </div>
+    </>
   );
 }
