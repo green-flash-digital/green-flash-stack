@@ -1,10 +1,11 @@
-import { ButteryMetaProvider } from "@buttery/meta/react";
 import { StrictMode, useRef } from "react";
 import {
   type RouteObject,
   RouterProvider,
   createBrowserRouter,
 } from "react-router";
+
+import { DocumintsMetaProvider } from "../meta/DocumintsMetaProvider.js";
 
 export function ButteryDocsClient({ routes }: { routes: RouteObject[] }) {
   const routerRef = useRef(
@@ -16,9 +17,9 @@ export function ButteryDocsClient({ routes }: { routes: RouteObject[] }) {
 
   return (
     <StrictMode>
-      <ButteryMetaProvider>
+      <DocumintsMetaProvider>
         <RouterProvider router={routerRef.current} />
-      </ButteryMetaProvider>
+      </DocumintsMetaProvider>
     </StrictMode>
   );
 }

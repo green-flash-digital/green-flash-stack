@@ -15,10 +15,10 @@ import { getDocumintsRouteManifest } from "./getDocumintsRouteManifest.js";
 import type { ButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
 import { getButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
 
-import type { ResolvedButteryDocsConfig } from "../config/getButteryDocsConfig.js";
+import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
 
-export function getButteryDocsViteConfig(rConfig: ResolvedButteryDocsConfig) {
+export function getButteryDocsViteConfig(rConfig: ResolvedDocumintsConfig) {
   let userDefinedPlugins: VitePlugin[] = [];
   if (typeof rConfig.config.vitePlugins === "function") {
     LOG.debug("Parsing functional vitePlugins...");
@@ -99,7 +99,7 @@ export function getButteryDocsViteConfig(rConfig: ResolvedButteryDocsConfig) {
 }
 
 function vitePluginButteryDocsVirtual(
-  rConfig: ResolvedButteryDocsConfig
+  rConfig: ResolvedDocumintsConfig
 ): VitePlugin {
   // Assemble the route manifest along with
   // the virtual modules that will tell vite exactly where

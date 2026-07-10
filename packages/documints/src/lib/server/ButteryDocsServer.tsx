@@ -1,5 +1,3 @@
-import type { ButteryMeta } from "@buttery/meta";
-import { ButteryMetaProvider } from "@buttery/meta/react";
 import { StrictMode } from "react";
 import {
   type StaticHandlerContext,
@@ -7,9 +5,12 @@ import {
   type createStaticRouter,
 } from "react-router";
 
+import { type DocumintsMeta } from "../meta/DocumintsMeta.js";
+import { DocumintsMetaProvider } from "../meta/DocumintsMetaProvider.js";
+
 export type ButteryDocsServerContext = {
   route: string;
-  Meta: ButteryMeta;
+  Meta: DocumintsMeta;
 };
 
 export function ButteryDocsServer({
@@ -22,9 +23,9 @@ export function ButteryDocsServer({
 }) {
   return (
     <StrictMode>
-      <ButteryMetaProvider ButteryMeta={props.Meta}>
+      <DocumintsMetaProvider documintsMeta={props.Meta}>
         <StaticRouterProvider router={router} context={routerContext} />
-      </ButteryMetaProvider>
+      </DocumintsMetaProvider>
     </StrictMode>
   );
 }

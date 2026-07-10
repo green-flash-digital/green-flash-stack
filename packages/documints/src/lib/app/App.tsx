@@ -1,4 +1,3 @@
-import { Meta } from "@buttery/meta/react";
 import { Suspense, lazy, useMemo } from "react";
 import { Link, Outlet, type RouteObject, useLocation } from "react-router";
 import "@buttery/tokens/docs/css";
@@ -18,6 +17,7 @@ import type {
   ButteryDocsRouteManifestGraphObject,
 } from "../../utils/util.types.js";
 import type { ButteryDocsConfigHeader } from "../../config/_config.utils.js";
+import { Meta } from "../meta/Meta.js";
 
 function createRoute(
   route: ButteryDocsRouteManifestEntryDoc,
@@ -36,7 +36,7 @@ function createRoute(
       return {
         default: () => (
           <>
-            <Meta metaJSON={frontmatter} />
+            <Meta title={frontmatter.title as string | undefined} />
             <DocumentComponent />
           </>
         ),
@@ -46,7 +46,7 @@ function createRoute(
       default: () => {
         return (
           <>
-            <Meta metaJSON={frontmatter} />
+            <Meta title={frontmatter.title as string | undefined} />
             <LayoutBodyMain>
               <DocumentComponent />
             </LayoutBodyMain>

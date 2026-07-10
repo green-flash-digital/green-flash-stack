@@ -9,7 +9,7 @@ import {
 } from "./getDocumentConfigFromFrontmatter.js";
 import { orderDocumintsRouteManifest } from "./orderDocumintsRouteManifest.js";
 
-import type { ResolvedButteryDocsConfig } from "../config/getButteryDocsConfig.js";
+import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
 import type { ButteryDocsRouteManifest } from "../utils/util.types.js";
 
@@ -56,7 +56,7 @@ function getRoutePathFromFrontmatter(frontmatter: DocumintsFrontmatter): string 
  * its `title` frontmatter does.
  */
 export function getDocumintsRouteManifest(
-  rConfig: ResolvedButteryDocsConfig
+  rConfig: ResolvedDocumintsConfig
 ): ButteryDocsRouteManifest {
   const routeManifest: ButteryDocsRouteManifest = {};
 

@@ -1,5 +1,5 @@
 {
-  "extends": "@buttery/tsconfig/library",
+  "extends": "@green-flash/tsconfig/library",
   "compilerOptions": {
     "noEmit": false,
     "outDir": "dist",

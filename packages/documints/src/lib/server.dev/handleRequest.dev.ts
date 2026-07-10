@@ -1,13 +1,13 @@
 import { Transform } from "node:stream";
 
-import { ButteryMeta } from "@buttery/meta";
 import type { Request, Response } from "express";
 import type { ViteDevServer } from "vite";
 
 
 import { LOG_SERVER_DEV } from "./server-dev.utils.js";
 
-import type { ResolvedButteryDocsConfig } from "../../config/getButteryDocsConfig.js";
+import type { DocumintsDirs } from "../../config/getDocumintsDirectories.js";
+import { DocumintsMeta } from "../meta/DocumintsMeta.js";
 import type { ButteryDocsServerContext } from "../server/ButteryDocsServer.js";
 import type { createButteryDocsRenderToPipeableStream } from "../server/createRenderFnPipeableStream.js";
 import { expressToWebRequest } from "../server/expressToWebRequest.js";
@@ -20,13 +20,13 @@ export async function handleRequestDev(
   config: {
     req: Request;
     res: Response;
-    dirs: ResolvedButteryDocsConfig["dirs"];
+    dirs: DocumintsDirs;
     vite: ViteDevServer;
   }
 ) {
   try {
     // Instantiate a new Meta class to collect the meta tags for each page
-    const Meta = new ButteryMeta();
+    const Meta = new DocumintsMeta();
 
     // Insert the assets into the HTML template start and end
     LOG_SERVER_DEV.debug("Generating HTML template...");

@@ -1,4 +1,4 @@
-import type { ResolvedButteryDocsConfig } from "../config/getButteryDocsConfig.js";
+import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
 import type { ButteryDocsRouteManifest } from "../utils/util.types.js";
 
@@ -10,7 +10,7 @@ import type { ButteryDocsRouteManifest } from "../utils/util.types.js";
  * `order` is expressed the same way: section keys and leaf slugs, not files.
  */
 export function orderDocumintsRouteManifest(
-  rConfig: ResolvedButteryDocsConfig,
+  rConfig: ResolvedDocumintsConfig,
   routeManifest: ButteryDocsRouteManifest
 ): ButteryDocsRouteManifest {
   LOG.debug("Ordering docs...");

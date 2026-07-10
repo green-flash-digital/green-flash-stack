@@ -89,7 +89,7 @@ export type ButteryDocsConfigHeader = z.infer<
   typeof butteryDocsConfigHeaderSchema
 >;
 
-export const butteryDocsConfigSchema = z.object({
+export const documintsConfigSchema = z.object({
   buildTarget: z.union([z.literal("cloudflare-pages"), z.literal("basic")]),
   /**
    * An optional key to further configure the routing
@@ -116,7 +116,7 @@ export const butteryDocsConfigSchema = z.object({
   header: butteryDocsConfigHeaderSchema.optional(),
 });
 
-export type ButteryDocsConfig = z.infer<typeof butteryDocsConfigSchema> & {
+export type DocumintsConfig = z.infer<typeof documintsConfigSchema> & {
   vitePlugins?:
     | ((params: {
         /**

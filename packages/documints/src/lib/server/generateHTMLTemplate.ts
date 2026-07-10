@@ -1,4 +1,4 @@
-import type { ButteryMeta } from "@buttery/meta";
+import type { DocumintsMeta } from "../meta/DocumintsMeta.js";
 
 function ensureLeadingSlash(entries: string[]): string[] {
   return entries.map((entry) =>
@@ -18,7 +18,7 @@ export function generateHTMLTemplate({
 }: {
   cssLinks: string[];
   jsScripts: string[];
-  Meta: ButteryMeta;
+  Meta: DocumintsMeta;
 }) {
   const htmlStart = `<!DOCTYPE html>
 <html lang="en">

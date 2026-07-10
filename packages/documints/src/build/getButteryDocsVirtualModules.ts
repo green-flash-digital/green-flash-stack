@@ -2,7 +2,7 @@ import { produce } from "immer";
 
 import { getButteryDocsRouteGraph } from "./getButteryDocsRouteGraph.js";
 
-import type { ResolvedButteryDocsConfig } from "../config/getButteryDocsConfig.js";
+import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
 import type {
   ButteryDocsRouteManifest,
@@ -14,7 +14,7 @@ export type ButteryDocsVirtualModules = ReturnType<
 >;
 
 export function getButteryDocsVirtualModules(
-  rConfig: ResolvedButteryDocsConfig,
+  rConfig: ResolvedDocumintsConfig,
   routeManifest: ButteryDocsRouteManifest
 ) {
   const routeGraph = getButteryDocsRouteGraph(routeManifest);
