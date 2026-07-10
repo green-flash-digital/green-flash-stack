@@ -13,12 +13,12 @@ import {
 import { orderDocumintsRouteManifest } from "./orderDocumintsRouteManifest.js";
 
 /**
- * Default glob, resolved relative to `.documints/`. Matches the same files
- * the old fixed-directory walk did: any `.doc.md`/`.doc.mdx` file, anywhere
- * under `.documints/content/`. Override via `config.docs` to search
- * somewhere else entirely - see `documintsConfigSchema`.
+ * Default glob, resolved relative to `.documints/`. Matches any
+ * `.doc.md`/`.doc.mdx`/`.doc.tsx` file, anywhere under `.documints/content/`.
+ * Override via `config.docs` to search somewhere else entirely - see
+ * `documintsConfigSchema`.
  */
-const DEFAULT_DOC_GLOB = "./content/**/*.doc.{md,mdx}";
+const DEFAULT_DOC_GLOB = "./content/**/*.doc.{md,mdx,tsx}";
 
 function slugify(text: string): string {
   return text

@@ -18,5 +18,5 @@ export default defineDocumintsConfig({
     guides: ["writing-docs", "configuration"],
     reference: ["cli"]
   },
-  docs: "../content/**/*.doc.(md|mdx)"
+  docs: "../content/**/*.doc.{md,mdx,tsx}"
 });

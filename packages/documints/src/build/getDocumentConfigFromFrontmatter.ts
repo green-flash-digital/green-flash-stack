@@ -1,4 +1,5 @@
 import { readFileSync } from "node:fs";
+import path from "node:path";
 
 import matter from "gray-matter";
 
@@ -24,6 +25,31 @@ export type DocumintsFrontmatter = {
   home?: boolean;
 };
 
+const TSX_FRONTMATTER_COMMENT = /^\s*\/\*\*\s*\r?\n---\r?\n([\s\S]*?)\r?\n---\s*\r?\n\*\/\s*/;
+
+/**
+ * `.doc.tsx` files can't start with a literal YAML frontmatter block (`---`
+ * isn't valid TSX), so the same YAML lives inside a leading block comment
+ * instead:
+ *
+ * ```tsx
+ * /**
+ * ---
+ * title: Guides/Playground
+ * ---
+ * *\/
+ * ```
+ *
+ * Extracting it this way keeps frontmatter parsing pure text, same as
+ * `.doc.md` - no need to transpile or execute the file (and resolve its real
+ * imports) just to discover its route.
+ */
+function extractTsxFrontmatterSource(fileContent: string): string | null {
+  const match = fileContent.match(TSX_FRONTMATTER_COMMENT);
+  if (!match) return null;
+  return `---\n${match[1]}\n---\n`;
+}
+
 export function getDocumentConfigFromFrontmatter(
   routeId: string,
   filepath: string
@@ -31,7 +57,18 @@ export function getDocumentConfigFromFrontmatter(
   try {
     LOG.debug(`Parsing file frontmatter: "${filepath}"`);
     const fileContent = readFileSync(filepath, { encoding: "utf8" });
-    const { data } = matter(fileContent) as { data: Partial<DocumintsFrontmatter> };
+
+    const isTsx = path.extname(filepath) === ".tsx";
+    const matterSource = isTsx ? extractTsxFrontmatterSource(fileContent) : fileContent;
+
+    if (matterSource === null) {
+      throw new Error(
+        "Missing frontmatter comment block. Add one at the top of the file:\n" +
+          "/**\n---\ntitle: Guides/Playground\n---\n*/"
+      );
+    }
+
+    const { data } = matter(matterSource) as { data: Partial<DocumintsFrontmatter> };
 
     if (!data.title) {
       throw new Error(
@@ -43,11 +80,13 @@ export function getDocumentConfigFromFrontmatter(
     return {
       title: data.title,
       slug: data.slug,
-      home: data.home ?? false
+      home: data.home ?? false,
     };
   } catch (error) {
     throw LOG.fatal(
-      new Error(`Error when trying to parse the frontmatter for "${routeId}": ${error}`)
+      new Error(
+        `Error when trying to parse the frontmatter for "${routeId}": ${error}`
+      )
     );
   }
 }
