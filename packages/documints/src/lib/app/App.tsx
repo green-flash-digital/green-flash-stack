@@ -22,17 +22,13 @@ function createRoute(route: ButteryDocsRouteManifestEntryDoc, options: { isDocs:
   const Component = lazy(async () => {
     // Import the .(md|mdx) file as a component and collect
     // the other information that was supplied to it
-    const {
-      default: DocumentComponent,
-      tableOfContents,
-      frontmatter
-    } = await route.importComponent();
+    const { default: DocumentComponent, tableOfContents } = await route.importComponent();
 
     if (!options.isDocs) {
       return {
         default: () => (
           <>
-            <Meta title={frontmatter.title as string | undefined} />
+            <Meta title={route.fileNameFormatted} />
             <DocumentComponent />
           </>
         )
@@ -42,7 +38,7 @@ function createRoute(route: ButteryDocsRouteManifestEntryDoc, options: { isDocs:
       default: () => {
         return (
           <>
-            <Meta title={frontmatter.title as string | undefined} />
+            <Meta title={route.fileNameFormatted} />
             <LayoutBodyMain>
               <DocumentComponent />
             </LayoutBodyMain>

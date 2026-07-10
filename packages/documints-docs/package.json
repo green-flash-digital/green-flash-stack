@@ -1,0 +1,21 @@
+{
+  "name": "documints-docs",
+  "version": "0.1.0",
+  "private": true,
+  "description": "documints' own documentation site, built with documints itself.",
+  "type": "module",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/documints-docs"
+  },
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "license": "MIT",
+  "scripts": {
+    "dev": "yarn documints dev",
+    "build": "yarn documints build"
+  },
+  "devDependencies": {
+    "documints": "workspace:*"
+  }
+}

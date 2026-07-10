@@ -46,7 +46,9 @@ export function getButteryDocsVirtualModules(
   const routes = `;
 export const routeIndex = {
   routePath: "/",
-  aliasPath: "${routeIndex.aliasPath}",
+  aliasPath: ${JSON.stringify(routeIndex.aliasPath)},
+  fileName: ${JSON.stringify(routeIndex.fileName)},
+  fileNameFormatted: ${JSON.stringify(routeIndex.fileNameFormatted)},
   root: "${routeIndex.root}",
   importComponent: async () => await import("@docs${routeIndex.aliasPath}")
 };
@@ -54,7 +56,9 @@ export const routeGraph = ${JSON.stringify(routeGraph, null, 2)};
 export const routeDocs = [${Object.values(routeDocs).map(
     (routeEntry) => `{
   routePath: "${routeEntry.routePath}",
-  aliasPath: "${routeEntry.aliasPath}",
+  aliasPath: ${JSON.stringify(routeEntry.aliasPath)},
+  fileName: ${JSON.stringify(routeEntry.fileName)},
+  fileNameFormatted: ${JSON.stringify(routeEntry.fileNameFormatted)},
   root: "${routeEntry.root}",
   importComponent: async () => await import("@docs${routeEntry.aliasPath}")
 }`
