@@ -21,6 +21,6 @@ export async function writeFileRecursive(
     // Write the file
     await fsWriteFile(filepath, data, { encoding: "utf-8" });
   } catch (error) {
-    throw new Error(String(error));
+    throw new Error(String(error), { cause: error });
   }
 }

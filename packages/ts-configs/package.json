@@ -1,0 +1,53 @@
+{
+  "name": "@green-flash/tsconfig",
+  "version": "0.3.1",
+  "description": "A collection of TS configs that can be used and extended in any project",
+  "keywords": [
+    "build-tooling",
+    "config",
+    "developer-tools",
+    "extendable-tsconfig",
+    "monorepo",
+    "shared-tsconfig",
+    "ts-config",
+    "ts-preset",
+    "tsconfig",
+    "tsconfig-base",
+    "tsconfig-custom",
+    "tsconfig-extend",
+    "tsconfig-library",
+    "tsconfig-templates",
+    "typed-config",
+    "typescript",
+    "typescript-best-practices",
+    "typescript-boilerplate",
+    "typescript-config",
+    "typescript-project",
+    "typescript-setup",
+    "typescript-starter",
+    "typescript-tooling",
+    "typescript-workspaces"
+  ],
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/ts-configs"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./tsconfig.json",
+    "./library": "./tsconfig.library.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "devDependencies": {
+    "typescript": "6.0.3"
+  }
+}

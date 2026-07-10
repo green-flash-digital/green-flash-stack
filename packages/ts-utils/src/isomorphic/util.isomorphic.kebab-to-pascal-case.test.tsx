@@ -1,5 +1,6 @@
 import { describe, it, expect } from "vitest";
-import { kebabToPascalCase } from "./util.isomorphic.kebab-to-pascal-case";
+
+import { kebabToPascalCase } from "./util.isomorphic.kebab-to-pascal-case.js";
 
 describe("kebabToPascalCase", () => {
   it("should convert a simple kebab-case string to PascalCase", () => {
@@ -19,9 +20,7 @@ describe("kebabToPascalCase", () => {
   });
 
   it("should handle mixed hyphens and spaces", () => {
-    expect(kebabToPascalCase("mix-of-hyphens and spaces")).toBe(
-      "MixOfHyphensAndSpaces"
-    );
+    expect(kebabToPascalCase("mix-of-hyphens and spaces")).toBe("MixOfHyphensAndSpaces");
   });
 
   it("should return an empty string if input is empty", () => {

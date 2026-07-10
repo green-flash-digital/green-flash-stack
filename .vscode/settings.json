@@ -1,0 +1,33 @@
+{
+  "cSpell.words": ["Fizmoo", "irida"],
+  "eslint.enable": false,
+  "editor.formatOnSave": false,
+  "editor.formatOnSaveMode": "file",
+  "oxc.fixKind": "all",
+  "editor.codeActionsOnSave": {
+    "source.format.oxc": "explicit",
+    "source.fixAll.oxc": "explicit"
+  },
+  "[typescript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[typescriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascript]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[javascriptreact]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[json]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "[jsonc]": {
+    "editor.defaultFormatter": "oxc.oxc-vscode"
+  },
+  "files.associations": {
+    "wrangler.json": "jsonc"
+  },
+  "js/ts.tsdk.path": "node_modules/typescript/lib"
+}

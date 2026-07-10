@@ -1,11 +1,11 @@
 import { describe, it, expect } from "vitest";
-import { generateGUID } from "./util.isomorphic.generate-guid";
+
+import { generateGUID } from "./util.isomorphic.generate-guid.js";
 
 describe("generateGUID", () => {
   it("should generate a valid UUID format", () => {
     const guid = generateGUID();
-    const uuidV4Regex =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+    const uuidV4Regex = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
     expect(guid).toMatch(uuidV4Regex);
   });

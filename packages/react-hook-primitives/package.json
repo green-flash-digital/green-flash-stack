@@ -1,0 +1,81 @@
+{
+  "name": "react-hook-primitives",
+  "version": "0.2.2",
+  "description": "A collection of foundational, lower-level hooks that can be used to progressively build complex components & interactions; built solely using baseline on web standards.",
+  "homepage": "https://github.com/green-flash-digital/react-hook-primitives#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/react-hook-primitives/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/green-flash-digital/react-hook-primitives.git"
+  },
+  "files": [
+    "dist",
+    "src"
+  ],
+  "type": "module",
+  "exports": {
+    ".": "./dist/index.js",
+    "./styles": {
+      "types": "./dist/react-hook-primitives.css.d.ts",
+      "default": "./dist/react-hook-primitives.css"
+    }
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build && yarn types:build",
+    "types:build": "yarn tsc --project ./tsconfig.types.json",
+    "lint": "eslint src/**",
+    "cli:build": "",
+    "cli:dev": "",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build",
+    "release": "yarn changeset publish"
+  },
+  "dependencies": {
+    "@changesets/cli": "2.31.0",
+    "@green-flash/ts-utils": "workspace:*",
+    "isoscribe": "0.2.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7"
+  },
+  "devDependencies": {
+    "@babel/core": "8.0.1",
+    "@babel/preset-react": "8.0.1",
+    "@babel/preset-typescript": "8.0.1",
+    "@chromatic-com/storybook": "5.2.1",
+    "@green-flash/tsconfig": "workspace:*",
+    "@linaria/core": "8.0.0",
+    "@ngneat/falso": "8.0.2",
+    "@storybook/addon-essentials": "8.6.18",
+    "@storybook/addon-onboarding": "10.4.6",
+    "@storybook/blocks": "8.6.18",
+    "@storybook/experimental-addon-test": "8.6.18",
+    "@storybook/react": "10.4.6",
+    "@storybook/react-vite": "10.4.6",
+    "@storybook/test": "8.6.18",
+    "@types/babel__core": "7.20.5",
+    "@types/node": "26.1.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@vitejs/plugin-react-swc": "4.3.1",
+    "@vitest/browser": "4.1.9",
+    "@vitest/coverage-v8": "4.1.9",
+    "@wyw-in-js/vite": "2.1.3",
+    "eslint": "10.6.0",
+    "eslint-config-greenflash": "0.2.1",
+    "playwright": "1.61.1",
+    "storybook": "10.4.6",
+    "typescript": "6.0.3",
+    "vite": "8.1.2",
+    "vitest": "4.1.9",
+    "wrangler": "4.106.0"
+  },
+  "packageManager": "yarn@4.7.0"
+}

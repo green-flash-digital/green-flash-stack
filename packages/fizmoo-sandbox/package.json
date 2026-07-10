@@ -1,0 +1,17 @@
+{
+  "name": "@fizmoo/sandbox",
+  "version": "0.0.1",
+  "private": true,
+  "description": "Sandbox for testing fizmoo end-to-end",
+  "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "bin": "./bin/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "yarn fizmoo build",
+    "dev": "yarn fizmoo dev"
+  },
+  "dependencies": {
+    "fizmoo": "workspace:*"
+  }
+}

@@ -1,0 +1,45 @@
+{
+  "name": "@stratum-ui/core",
+  "version": "0.1.0",
+  "description": "UI components and utilities for stratum",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/stratum-ui"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "yarn tsc --project tsconfig.build.json",
+    "dev": "yarn build --watch",
+    "test": "vitest",
+    "test:ci": "vitest run"
+  },
+  "dependencies": {
+    "@green-flash/reactor": "workspace:*",
+    "@green-flash/ts-utils": "workspace:"
+  },
+  "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
+    "@types/node": "26.1.0",
+    "@vitest/coverage-v8": "4.1.9",
+    "csstype": "3.2.3",
+    "typescript": "6.0.3",
+    "vitest": "4.1.9"
+  }
+}

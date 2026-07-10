@@ -1,0 +1,7 @@
+{
+  "extends": "@green-flash/tsconfig/library",
+  "compilerOptions": {
+    "types": ["node"]
+  },
+  "include": ["src"]
+}

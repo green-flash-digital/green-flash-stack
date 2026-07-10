@@ -1,7 +1,9 @@
-import { describe, it, expect, beforeEach, afterEach } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { findDirectoryUpwards } from "./util.node.find-directory-upwards";
+
+import { describe, it, expect, beforeEach, afterEach } from "vitest";
+
+import { findDirectoryUpwards } from "./util.node.find-directory-upwards.js";
 
 const TEST_DIR = path.join(process.cwd(), "temp_test");
 const TARGET_DIR = path.join(TEST_DIR, "node_modules");
@@ -28,7 +30,7 @@ afterEach(() => {
 describe("findDirectoryUpwards", () => {
   it("should find a directory when it exists", () => {
     const result = findDirectoryUpwards("node_modules", undefined, {
-      startingDirectory: path.join(TEST_DIR, "someSubDir"),
+      startingDirectory: path.join(TEST_DIR, "someSubDir")
     });
 
     expect(result).toBe(TARGET_DIR);
@@ -36,7 +38,7 @@ describe("findDirectoryUpwards", () => {
 
   it("should find a nested directory when specified", () => {
     const result = findDirectoryUpwards("node_modules", "nestedDir", {
-      startingDirectory: path.join(TEST_DIR, "someSubDir"),
+      startingDirectory: path.join(TEST_DIR, "someSubDir")
     });
 
     expect(result).toBe(NESTED_DIR);
@@ -44,7 +46,7 @@ describe("findDirectoryUpwards", () => {
 
   it("should return null when the directory does not exist", () => {
     const result = findDirectoryUpwards("non_existent_folder", undefined, {
-      startingDirectory: TEST_DIR,
+      startingDirectory: TEST_DIR
     });
 
     expect(result).toBeNull();
@@ -52,7 +54,7 @@ describe("findDirectoryUpwards", () => {
 
   it("should return null when the nested directory does not exist", () => {
     const result = findDirectoryUpwards("node_modules", "non_existent", {
-      startingDirectory: TEST_DIR,
+      startingDirectory: TEST_DIR
     });
 
     expect(result).toBeNull();
@@ -63,7 +65,7 @@ describe("findDirectoryUpwards", () => {
     fs.mkdirSync(deepSubDir, { recursive: true });
 
     const result = findDirectoryUpwards("node_modules", undefined, {
-      startingDirectory: deepSubDir,
+      startingDirectory: deepSubDir
     });
 
     expect(result).toBe(TARGET_DIR);
@@ -71,7 +73,7 @@ describe("findDirectoryUpwards", () => {
 
   it("should return null when it reaches the root without finding the directory", () => {
     const result = findDirectoryUpwards("missing_directory", undefined, {
-      startingDirectory: "/",
+      startingDirectory: "/"
     });
 
     expect(result).toBeNull();

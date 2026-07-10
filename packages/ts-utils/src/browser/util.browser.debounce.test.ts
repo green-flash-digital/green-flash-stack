@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from "vitest";
-import { debounce } from "./util.browser.debounce";
+
+import { debounce } from "./util.browser.debounce.js";
 
 describe("debounce", () => {
   it("should call the function after the specified delay", async () => {

@@ -1,98 +1,100 @@
 import { describe, it, expect } from "vitest";
-import { tryHandle, tryHandleSync } from "./util.isomorphic.try-handle";
 
-describe("tryHandle (Async)", () => {
-  it("should return data when the function resolves successfully", async () => {
-    const asyncFn = async (num: number) => num * 2;
-    const handle = tryHandle(asyncFn);
-    const result = await handle(5);
+import { tryHandle, tryHandleSync } from "./util.isomorphic.try-handle.js";
 
-    expect(result.hasError).toBe(false);
-    expect(result.data).toBe(10);
-    expect(result.error).toBeUndefined();
+describe("tryHandle", () => {
+  it("returns success when the promise resolves", async () => {
+    const result = await tryHandle(Promise.resolve("hello"));
+    expect(result).toEqual({ success: true, data: "hello" });
   });
 
-  it("should return an error when the function throws", async () => {
-    const asyncErrorFn = async () => {
-      throw new Error("Async failure");
-    };
-    const handle = tryHandle(asyncErrorFn);
-    const result = await handle();
-
-    expect(result.hasError).toBe(true);
-    expect(result.data).toBeUndefined();
-    expect(result.error).toBeInstanceOf(Error);
-    expect(result.error?.message).toBe("Async failure");
+  it("returns failure when the promise rejects with an Error", async () => {
+    const error = new Error("something went wrong");
+    const result = await tryHandle(Promise.reject(error));
+    expect(result).toEqual({ success: false, error });
   });
 
-  it("should handle non-Error thrown values correctly", async () => {
-    const asyncThrowString = async () => {
-      throw "Some error";
-    };
-    const handle = tryHandle(asyncThrowString);
-    const result = await handle();
-
-    expect(result.hasError).toBe(true);
-    expect(result.data).toBeUndefined();
-    expect(result.error).toBeInstanceOf(Error);
-    expect(result.error?.message).toBe("Some error");
+  it("wraps a non-Error rejection in an Error", async () => {
+    const result = await tryHandle(Promise.reject("raw string"));
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toBeInstanceOf(Error);
+      expect(result.error.message).toBe("raw string");
+    }
   });
 
-  it("should work with synchronous functions", async () => {
-    const syncFn = (text: string) => text.toUpperCase();
-    const handle = tryHandle(syncFn);
-    const result = await handle("hello");
-
-    expect(result.hasError).toBe(false);
-    expect(result.data).toBe("HELLO");
-    expect(result.error).toBeUndefined();
+  it("works with complex resolved values", async () => {
+    const data = { id: 1, tags: ["a", "b"] };
+    const result = await tryHandle(Promise.resolve(data));
+    expect(result).toEqual({ success: true, data });
   });
 });
 
-describe("tryHandleSync (Synchronous)", () => {
-  it("should return data when the function executes successfully", () => {
-    const syncFn = (num: number) => num * 3;
-    const handle = tryHandleSync(syncFn);
-    const result = handle(4);
-
-    expect(result.hasError).toBe(false);
-    expect(result.data).toBe(12);
-    expect(result.error).toBeUndefined();
+describe("tryHandle (function-wrapping overload)", () => {
+  it("wraps an async function and returns success when it resolves", async () => {
+    const fn = async (x: number) => x * 2;
+    const result = await tryHandle(fn)(21);
+    expect(result).toEqual({ success: true, data: 42 });
   });
 
-  it("should return an error when the function throws", () => {
-    const syncErrorFn = () => {
-      throw new Error("Sync failure");
+  it("wraps an async function and returns failure when it throws", async () => {
+    const error = new Error("async fail");
+    const fn = async () => {
+      throw error;
     };
-    const handle = tryHandleSync(syncErrorFn);
-    const result = handle();
-
-    expect(result.hasError).toBe(true);
-    expect(result.data).toBeUndefined();
-    expect(result.error).toBeInstanceOf(Error);
-    expect(result.error?.message).toBe("Sync failure");
+    const result = await tryHandle(fn)();
+    expect(result).toEqual({ success: false, error });
   });
 
-  it("should handle non-Error thrown values correctly", () => {
-    const syncThrowString = () => {
-      throw "Some sync error";
+  it("supports being called multiple times from the same wrapped function", async () => {
+    let call = 0;
+    const fn = async () => {
+      call++;
+      if (call === 1) throw new Error("first");
+      return "ok";
     };
-    const handle = tryHandleSync(syncThrowString);
-    const result = handle();
-
-    expect(result.hasError).toBe(true);
-    expect(result.data).toBeUndefined();
-    expect(result.error).toBeInstanceOf(Error);
-    expect(result.error?.message).toBe("Some sync error");
+    const safe = tryHandle(fn);
+    const r1 = await safe();
+    const r2 = await safe();
+    expect(r1.success).toBe(false);
+    expect(r2).toEqual({ success: true, data: "ok" });
   });
 
-  it("should work with functions that return objects", () => {
-    const syncFn = () => ({ success: true, value: 42 });
-    const handle = tryHandleSync(syncFn);
-    const result = handle();
+  it("passes arguments through to the wrapped function", async () => {
+    const fn = async (a: string, b: number) => `${a}-${b}`;
+    const result = await tryHandle(fn)("hello", 42);
+    expect(result).toEqual({ success: true, data: "hello-42" });
+  });
+});
 
-    expect(result.hasError).toBe(false);
-    expect(result.data).toEqual({ success: true, value: 42 });
-    expect(result.error).toBeUndefined();
+describe("tryHandleSync", () => {
+  it("returns success when the function returns a value", () => {
+    const result = tryHandleSync((n: number) => n * 2)(21);
+    expect(result).toEqual({ success: true, data: 42 });
+  });
+
+  it("returns failure when the function throws an Error", () => {
+    const error = new Error("Sync failure");
+    const result = tryHandleSync(() => {
+      throw error;
+    })();
+    expect(result).toEqual({ success: false, error });
+  });
+
+  it("wraps a non-Error throw in an Error", () => {
+    const result = tryHandleSync(() => {
+      throw "raw string";
+    })();
+    expect(result.success).toBe(false);
+    if (!result.success) {
+      expect(result.error).toBeInstanceOf(Error);
+      expect(result.error.message).toBe("raw string");
+    }
+  });
+
+  it("works with complex return values", () => {
+    const data = { id: 1, tags: ["a", "b"] };
+    const result = tryHandleSync(() => data)();
+    expect(result).toEqual({ success: true, data });
   });
 });

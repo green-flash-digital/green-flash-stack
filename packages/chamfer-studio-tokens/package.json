@@ -1,0 +1,38 @@
+{
+  "name": "@chamfer-css/studio-tokens",
+  "version": "0.3.6",
+  "description": "A standalone package to test the APIs in @chamfer-css/core and to establish the tokens for the @chamfer-css/studio",
+  "homepage": "https://github.com/chamfer-css/chamfer-css#readme",
+  "bugs": {
+    "url": "https://github.com/chamfer-css/chamfer-css/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/chamfer-css/chamfer-css.git"
+  },
+  "type": "module",
+  "exports": {
+    ".": "./.chamfer/index.ts",
+    "./ts": "./.chamfer/index.ts",
+    "./scss": "./dist/scss/_index.scss",
+    "./root.css": "./.chamfer/_generated/root.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "yarn tsx ./scripts/build-studio-tokens.ts",
+    "dev": "yarn tsx ./scripts/dev-studio-tokens.ts"
+  },
+  "dependencies": {
+    "@gfdigital/tsconfig": "0.3.1",
+    "typescript": "6.0.3"
+  },
+  "devDependencies": {
+    "@chamfer-css/core": "0.3.6",
+    "isoscribe": "0.2.0",
+    "tsx": "4.22.4"
+  }
+}

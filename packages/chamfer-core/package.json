@@ -1,0 +1,63 @@
+{
+  "name": "@chamfer-css/core",
+  "version": "0.3.6",
+  "description": "The JS API for the chamfer-css package that is used to distribute schemas, utils, and the main Chamfer class.",
+  "homepage": "https://github.com/chamfer-css/chamfer-css#readme",
+  "bugs": {
+    "url": "https://github.com/chamfer-css/chamfer-css/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drewdecarme@gmail.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/chamfer-css/chamfer-css.git",
+    "directory": "packages/core"
+  },
+  "type": "module",
+  "exports": {
+    ".": {
+      "browser": "./dist/client.js",
+      "default": "./dist/Chamfer.js"
+    },
+    "./client": "./dist/client.js",
+    "./bootstrap": "./dist/Chamfer.js",
+    "./token-utils": "./dist/createTokenUtils.js",
+    "./templates": "./dist/templates/index.js",
+    "./utils": "./dist/utils/index.js",
+    "./schemas": "./dist/schemas/index.js",
+    "./schema": "./dist/schemas/tokens.schema.json"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "yarn generate:schema && yarn build:lib && yarn copy:schema && yarn test",
+    "build:lib": "tsc --project tsconfig.build.json",
+    "generate:schema": "tsx scripts/generate-tokens-schema.ts",
+    "copy:schema": "cp src/schemas/tokens.schema.json dist/schemas/tokens.schema.json",
+    "test": "tsx scripts/generate-test-fixtures.ts && tsc -p tsconfig.test.json",
+    "dev": "yarn build:lib --watch"
+  },
+  "dependencies": {
+    "@gfdigital/tsconfig": "0.3.1",
+    "@green-flash/ts-utils": "workspace:*",
+    "@inquirer/prompts": "8.5.2",
+    "chokidar": "5.0.0",
+    "chroma-js": "3.2.0",
+    "express": "5.2.1",
+    "globby": "16.2.0",
+    "isoscribe": "0.2.0",
+    "prettier": "3.9.4",
+    "ts-pattern": "5.9.0",
+    "typescript": "6.0.3",
+    "zod": "4.4.3"
+  },
+  "devDependencies": {
+    "@types/chroma-js": "3.1.2",
+    "@types/express": "5.0.6",
+    "@types/node": "26.1.0",
+    "tsx": "4.22.4",
+    "wrangler": "4.106.0",
+    "zod-to-json-schema": "3.25.2"
+  }
+}

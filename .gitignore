@@ -12,3 +12,10 @@ node_modules
 coverage
 .npmrc
 .env
+
+# Turborepo
+.turbo
+*storybook.log
+storybook-static
+*.*.tsbuildinfo
+*.tsbuildinfo

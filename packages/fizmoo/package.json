@@ -1,0 +1,40 @@
+{
+  "name": "fizmoo",
+  "version": "0.1.4",
+  "description": "Effortlessly create 100% type-safe, self-documenting Node.js CLIs by simply adding files to your file system.",
+  "homepage": "https://github.com/green-flash-digital/fizmoo#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/fizmoo/issues"
+  },
+  "license": "Apache-2.0",
+  "author": "Drew DeCarme (drew@greenflash.digital)",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/green-flash-digital/fizmoo.git",
+    "directory": "packages/fizmoo"
+  },
+  "bin": "./bin/index.js",
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "yarn lib:build & yarn cli:build",
+    "cli:build": "yarn tsx ./scripts/build-fizmoo-cli-with-fizmoo.ts",
+    "cli:dev": "yarn lib:build && yarn tsx ./scripts/dev-fizmoo-cli-with-fizmoo.ts",
+    "lib:build": "yarn tsc --project ./tsconfig.build.json"
+  },
+  "dependencies": {
+    "@fizmoo/core": "workspace:*"
+  },
+  "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
+    "@types/node": "^26.1.0",
+    "tsx": "4.22.4",
+    "typescript": "6.0.3"
+  }
+}
