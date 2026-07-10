@@ -4,7 +4,10 @@ export default defineDocumintsConfig({
   header: {
     title: "documints",
     links: [
-      [{ type: "section", title: "Guides" }, { type: "section", title: "Reference" }],
+      [
+        { type: "section", title: "Guides" },
+        { type: "section", title: "Reference" }
+      ],
       [
         {
           type: "social",
@@ -19,5 +22,5 @@ export default defineDocumintsConfig({
     guides: ["writing-docs", "configuration"],
     reference: ["cli"]
   },
-  docs: "../content/**/*.doc.{md,mdx,tsx}"
+  docs: "../docs/**/*.doc.{md,mdx,tsx}"
 });
