@@ -7,6 +7,12 @@ export default [
   route("forgot-password", "routes/saas/auth/forgot-password.tsx"),
   route("reset-password", "routes/saas/auth/reset-password.tsx"),
   route("projects", "routes/saas/projects.tsx"),
+  route("account", "routes/saas/account/layout.tsx", [
+    index("routes/saas/account/index.tsx"),
+    route("profile", "routes/saas/account/profile.tsx"),
+    route("billing", "routes/saas/account/billing.tsx"),
+    route("security", "routes/saas/account/security.tsx")
+  ]),
   layout("routes/layout.tsx", [
     index("routes/index.tsx"),
     route("config", "routes/config/layout.tsx", [

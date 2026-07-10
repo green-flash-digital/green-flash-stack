@@ -10,7 +10,7 @@ export type InputTextPropsCustom = {
   /**
    * A customized type that tells the input what type it should be
    */
-  dxType?: "text" | "number";
+  dxType?: "text" | "number" | "password";
   dxSize: "dense" | "normal";
 };
 export type InputTextProps = InputTextPropsNative & InputTextPropsCustom;

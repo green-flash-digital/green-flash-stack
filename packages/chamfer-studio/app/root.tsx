@@ -1,5 +1,4 @@
 import { useCallback, useEffect, type ReactNode } from "react";
-import { useDropdownMenu } from "react-hook-primitives";
 import {
   Link,
   Links,
@@ -12,7 +11,6 @@ import {
   useFetcher,
   useLoaderData,
   useLocation,
-  useNavigate,
   useRevalidator
 } from "react-router";
 
@@ -24,16 +22,11 @@ import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import type { Route } from "./+types/root";
-import { DropdownMenu } from "./components/DropdownMenu";
-import { DropdownMenuItem } from "./components/DropdownMenuItem";
-import { createDropdownStyles } from "./components/shared-styles";
 import { AdapterContext, IsLocalContext, TokensPathContext, VersionsDirContext } from "./context";
 import { IconGridView } from "./icons/IconGridView";
-import { IconLogout03 } from "./icons/IconLogout03";
 import { IconPlusSign } from "./icons/IconPlusSign";
 import { IconSettings04 } from "./icons/IconSettings04";
 import { IconUserCircle } from "./icons/IconUserCircle";
-import { signOut } from "./saas/auth/auth.client";
 import type { StudioUser } from "./saas/auth/auth.context";
 import { UserContext } from "./saas/auth/auth.context";
 import { ActiveProjectContext } from "./saas/projects/projects.context";
@@ -67,12 +60,14 @@ export const middleware: Route.MiddlewareFunction[] = [
     // itself, forming an infinite client-side redirect loop.
     const pathname = url.pathname.replace(/\.data$/, "");
     const isProjectsPath = pathname === "/projects";
+    const isAccountPath = pathname === "/account" || pathname.startsWith("/account/");
     const isSaasPagePath =
       pathname === "/login" ||
       pathname === "/signup" ||
       pathname === "/forgot-password" ||
       pathname === "/reset-password" ||
-      isProjectsPath;
+      isProjectsPath ||
+      isAccountPath;
 
     // Local CLI mode has no accounts/projects concept — send any of these SaaS
     // pages straight to /config instead of each route guarding for IsLocalContext
@@ -92,7 +87,13 @@ export const middleware: Route.MiddlewareFunction[] = [
     const user = context.get(UserContext);
     if (!user && !isAuthPath) throw redirect("/login");
     if (user && pathname === "/login") throw redirect("/config");
-    if (user && !isAuthPath && !isProjectsPath && !context.get(ActiveProjectContext)) {
+    if (
+      user &&
+      !isAuthPath &&
+      !isProjectsPath &&
+      !isAccountPath &&
+      !context.get(ActiveProjectContext)
+    ) {
       throw redirect("/projects");
     }
   }
@@ -263,48 +264,6 @@ const navStyles = css`
   }
 `;
 
-const accountMenuStyles = createDropdownStyles(css`
-  display: none;
-
-  &:popover-open {
-    display: block;
-  }
-
-  border: ${makeRem(1)} solid ${makeColor("neutral", { opacity: 0.12 })};
-`);
-
-function AccountMenu({ user }: { user: StudioUser }) {
-  const navigate = useNavigate();
-  const { closeMenu, setTargetRef, setDropdownRef, alignmentRef } = useDropdownMenu<
-    HTMLDivElement,
-    HTMLDivElement
-  >({
-    dxOffset: 4,
-    dxPosition: "right-top"
-  });
-
-  const handleSignOut = useCallback(async () => {
-    closeMenu();
-    await signOut();
-    navigate("/login");
-  }, [closeMenu, navigate]);
-
-  return (
-    <div ref={alignmentRef}>
-      <button ref={setTargetRef} type="button" title={user.name || user.email}>
-        <IconUserCircle dxSize={20} />
-      </button>
-      <div ref={setDropdownRef} className={accountMenuStyles}>
-        <DropdownMenu>
-          <li>
-            <DropdownMenuItem dxTitle="Sign out" DXIcon={IconLogout03} onClick={handleSignOut} />
-          </li>
-        </DropdownMenu>
-      </div>
-    </div>
-  );
-}
-
 function LayoutNav({ isLocal, user }: { isLocal: boolean; user: StudioUser | null }) {
   const fetcher = useFetcher();
 
@@ -344,7 +303,9 @@ function LayoutNav({ isLocal, user }: { isLocal: boolean; user: StudioUser | nul
       </div>
       {!isLocal && user && (
         <div className="account">
-          <AccountMenu user={user} />
+          <Link to={href("/account")} title={user.name || user.email}>
+            <IconUserCircle dxSize={20} />
+          </Link>
         </div>
       )}
     </nav>
