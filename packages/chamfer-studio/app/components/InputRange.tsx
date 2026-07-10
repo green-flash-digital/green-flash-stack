@@ -2,7 +2,6 @@ import type { ChangeEventHandler, JSX } from "react";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
 import { useForwardedRef } from "react-hook-primitives";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,
@@ -10,6 +9,7 @@ import {
   makeRem,
   makeReset
 } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { InputNumber } from "./InputNumber";

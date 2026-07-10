@@ -95,7 +95,11 @@ export default defineTokens({
     custom: {
       // All three CustomVariantSchema branches (rem / string / number)
       "brand-radius": { type: "rem", value: 8, description: "Fixture custom rem token" },
-      "brand-name": { type: "string", value: "Chamfer", description: "Fixture custom string token" },
+      "brand-name": {
+        type: "string",
+        value: "Chamfer",
+        description: "Fixture custom string token"
+      },
       "z-index-modal": { type: "number", value: 1000, description: "Fixture custom number token" }
     }
   },

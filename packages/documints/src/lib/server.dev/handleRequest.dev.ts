@@ -3,15 +3,13 @@ import { Transform } from "node:stream";
 import type { Request, Response } from "express";
 import type { ViteDevServer } from "vite";
 
-
-import { LOG_SERVER_DEV } from "./server-dev.utils.js";
-
 import type { DocumintsDirs } from "../../config/getDocumintsDirectories.js";
 import { DocumintsMeta } from "../meta/DocumintsMeta.js";
 import type { ButteryDocsServerContext } from "../server/ButteryDocsServer.js";
 import type { createButteryDocsRenderToPipeableStream } from "../server/createRenderFnPipeableStream.js";
 import { expressToWebRequest } from "../server/expressToWebRequest.js";
 import { generateHTMLTemplate } from "../server/generateHTMLTemplate.js";
+import { LOG_SERVER_DEV } from "./server-dev.utils.js";
 
 const ABORT_DELAY = 10_000;
 
@@ -33,24 +31,21 @@ export async function handleRequestDev(
     const { htmlDev } = generateHTMLTemplate({
       cssLinks: [config.dirs.app.css.docsUI],
       jsScripts: [config.dirs.app.appEntryClient],
-      Meta,
+      Meta
     });
     LOG_SERVER_DEV.debug("Generating HTML template... done.");
 
     // Create the ButteryContext to pass to the render function
     const butteryContext: ButteryDocsServerContext = {
       route: config.req.originalUrl,
-      Meta,
+      Meta
     };
 
     let didError = false;
 
     // allow vite to inject the necessary scripts
     LOG_SERVER_DEV.debug("Injecting scripts into HTML base...");
-    const htmlTemplate = await config.vite.transformIndexHtml(
-      config.req.url,
-      htmlDev
-    );
+    const htmlTemplate = await config.vite.transformIndexHtml(config.req.url, htmlDev);
     LOG_SERVER_DEV.debug("Injecting scripts into HTML base... done");
 
     // Run the render function imported from the entry-server.ts file
@@ -81,7 +76,7 @@ export async function handleRequestDev(
           transform(chunk, encoding, callback) {
             config.res.write(chunk, encoding);
             callback();
-          },
+          }
         });
 
         // When the stream is complete, tack on the end of
@@ -96,7 +91,7 @@ export async function handleRequestDev(
       onError(error) {
         didError = true;
         console.error(error);
-      },
+      }
     });
 
     setTimeout(() => {

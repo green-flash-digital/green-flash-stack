@@ -1,8 +1,10 @@
-import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeCustom, makeRem } from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import type { JSX } from "react";
 import { forwardRef } from "react";
+
+import { classes } from "@green-flash/ts-utils/isomorphic";
+import { css } from "@linaria/core";
+
+import { makeCustom, makeRem } from "../../../../.chamfer/index.js";
 
 export type LayoutBodyPropsNative = JSX.IntrinsicElements["main"];
 export type LayoutBodyProps = LayoutBodyPropsNative;
@@ -21,16 +23,13 @@ const layoutBodyStyles = css`
   width: 100%;
 `;
 
-export const LayoutBody = forwardRef<HTMLElement, LayoutBodyProps>(
-  function LayoutBody({ children, className, ...restProps }, ref) {
-    return (
-      <main
-        {...restProps}
-        className={classes(layoutBodyStyles, className)}
-        ref={ref}
-      >
-        {children}
-      </main>
-    );
-  }
-);
+export const LayoutBody = forwardRef<HTMLElement, LayoutBodyProps>(function LayoutBody(
+  { children, className, ...restProps },
+  ref
+) {
+  return (
+    <main {...restProps} className={classes(layoutBodyStyles, className)} ref={ref}>
+      {children}
+    </main>
+  );
+});

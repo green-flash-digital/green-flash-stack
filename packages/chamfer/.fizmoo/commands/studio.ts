@@ -18,9 +18,7 @@ export default defineCommand({
   action: async ({ options }) => {
     const tokensPath = await findChamferTokensFile(process.cwd());
     if (!tokensPath) {
-      throw new Error(
-        'Could not locate ".chamfer/tokens.json". Run `chamfer init` to create one.'
-      );
+      throw new Error('Could not locate ".chamfer/tokens.json". Run `chamfer init` to create one.');
     }
     const chamferDir = path.dirname(tokensPath);
     const server = new StudioServer({

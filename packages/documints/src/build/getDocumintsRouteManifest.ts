@@ -1,17 +1,16 @@
-import path from "node:path";
 import { type Dirent, readdirSync } from "node:fs";
+import path from "node:path";
 
 import { printAsBullets } from "logarhythm";
-
-import {
-  type DocumintsFrontmatter,
-  getDocumentConfigFromFrontmatter,
-} from "./getDocumentConfigFromFrontmatter.js";
-import { orderDocumintsRouteManifest } from "./orderDocumintsRouteManifest.js";
 
 import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
 import type { ButteryDocsRouteManifest } from "../utils/util.types.js";
+import {
+  type DocumintsFrontmatter,
+  getDocumentConfigFromFrontmatter
+} from "./getDocumentConfigFromFrontmatter.js";
+import { orderDocumintsRouteManifest } from "./orderDocumintsRouteManifest.js";
 
 const DOC_FILE_PATTERN = /\.doc\.mdx?$/;
 
@@ -77,17 +76,13 @@ export function getDocumintsRouteManifest(
       const aliasPath = direntFullPath.split(rConfig.dirs.srcDocs.root)[1];
       LOG.debug(`Creating manifest entry for doc: ${aliasPath}`);
 
-      const frontmatter = getDocumentConfigFromFrontmatter(
-        aliasPath,
-        direntFullPath
-      );
+      const frontmatter = getDocumentConfigFromFrontmatter(aliasPath, direntFullPath);
       const routePath = getRoutePathFromFrontmatter(frontmatter);
       const titleSegments = frontmatter.title
         .split("/")
         .map((segment) => segment.trim())
         .filter(Boolean);
-      const fileNameFormatted =
-        titleSegments[titleSegments.length - 1] ?? frontmatter.title;
+      const fileNameFormatted = titleSegments[titleSegments.length - 1] ?? frontmatter.title;
       const routeSegments = routePath.split("/");
       const fileName = routeSegments[routeSegments.length - 1] || "index";
 
@@ -95,7 +90,7 @@ export function getDocumintsRouteManifest(
         LOG.warn(
           `Multiple docs resolve to the route "${routePath}":${printAsBullets([
             routeManifest[routePath].aliasPath,
-            aliasPath,
+            aliasPath
           ])}\nThe later one will win. Give one of them a distinct "title" or "slug".`
         );
       }
@@ -105,7 +100,7 @@ export function getDocumintsRouteManifest(
         fileName,
         fileNameFormatted,
         routePath,
-        root: routePath === "/",
+        root: routePath === "/"
       };
     }
   }

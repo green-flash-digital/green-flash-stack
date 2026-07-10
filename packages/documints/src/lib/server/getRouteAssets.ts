@@ -43,6 +43,6 @@ export function getRouteAssets(
 
   return {
     cssAssets,
-    jsAssets,
+    jsAssets
   };
 }

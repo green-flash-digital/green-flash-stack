@@ -17,14 +17,15 @@ export function getCriticalViteChunks(
 ) {
   const targetPath = path.resolve(contentRoot, `.${routeId}`);
 
-  const viteChunkRoute = Object.entries(vManifest).reduce<
-    ManifestChunk | undefined
-  >((accum, [entryKey, entryValue]) => {
-    if (path.resolve(viteRoot, entryKey) === targetPath) {
-      return entryValue;
-    }
-    return accum;
-  }, undefined);
+  const viteChunkRoute = Object.entries(vManifest).reduce<ManifestChunk | undefined>(
+    (accum, [entryKey, entryValue]) => {
+      if (path.resolve(viteRoot, entryKey) === targetPath) {
+        return entryValue;
+      }
+      return accum;
+    },
+    undefined
+  );
 
   if (!viteChunkRoute) {
     throw `Could not locate a vite route chunk entry that matches the routeId: ${routeId}`;
@@ -49,6 +50,6 @@ export function getCriticalViteChunks(
 
   return {
     viteChunkRoute,
-    viteChunkEntry: vManifest[entryKey],
+    viteChunkEntry: vManifest[entryKey]
   };
 }

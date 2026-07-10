@@ -11,19 +11,18 @@ import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { type Plugin as VitePlugin, defineConfig } from "vite";
 
-import { getDocumintsRouteManifest } from "./getDocumintsRouteManifest.js";
-import type { ButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
-import { getButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
-
 import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
+import type { ButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
+import { getButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
+import { getDocumintsRouteManifest } from "./getDocumintsRouteManifest.js";
 
 export function getButteryDocsViteConfig(rConfig: ResolvedDocumintsConfig) {
   let userDefinedPlugins: VitePlugin[] = [];
   if (typeof rConfig.config.vitePlugins === "function") {
     LOG.debug("Parsing functional vitePlugins...");
     userDefinedPlugins = rConfig.config.vitePlugins({
-      rootDir: rConfig.paths.rootDir,
+      rootDir: rConfig.paths.rootDir
     });
     LOG.debug("Parsing functional vitePlugins... done.");
   }
@@ -41,17 +40,11 @@ export function getButteryDocsViteConfig(rConfig: ResolvedDocumintsConfig) {
       preserveSymlinks: true,
       extensions: [".js", ".jsx", ".ts", ".tsx", ".mdx"],
       alias: {
-        "@docs": rConfig.dirs.srcDocs.root,
-      },
+        "@docs": rConfig.dirs.srcDocs.root
+      }
     },
     optimizeDeps: {
-      include: [
-        "logarhythm",
-        "react",
-        "react-dom",
-        "react-dom/client",
-        "react-router",
-      ],
+      include: ["logarhythm", "react", "react-dom", "react-dom/client", "react-router"]
     },
     plugins: [
       mdx({
@@ -65,17 +58,17 @@ export function getButteryDocsViteConfig(rConfig: ResolvedDocumintsConfig) {
             {
               behavior: "wrap",
               headingProperties: {
-                className: "heading",
-              },
-            },
+                className: "heading"
+              }
+            }
           ],
           [
             rehypeShiki,
             {
-              theme: "dark-plus",
-            },
-          ],
-        ],
+              theme: "dark-plus"
+            }
+          ]
+        ]
       }),
 
       react(),
@@ -84,21 +77,19 @@ export function getButteryDocsViteConfig(rConfig: ResolvedDocumintsConfig) {
       wyw({
         include: ["**/*.{ts,tsx}"],
         babelOptions: {
-          presets: ["@babel/preset-typescript", "@babel/preset-react"],
-        },
+          presets: ["@babel/preset-typescript", "@babel/preset-react"]
+        }
       }),
       vitePluginButteryDocsVirtual(rConfig),
       // add the user defined vite plugins
-      ...userDefinedPlugins,
-    ],
+      ...userDefinedPlugins
+    ]
   });
 
   return viteConfig;
 }
 
-function vitePluginButteryDocsVirtual(
-  rConfig: ResolvedDocumintsConfig
-): VitePlugin {
+function vitePluginButteryDocsVirtual(rConfig: ResolvedDocumintsConfig): VitePlugin {
   // Assemble the route manifest along with
   // the virtual modules that will tell vite exactly where
   // the dynamic imports are. This allows us to get around the issue
@@ -116,9 +107,7 @@ function vitePluginButteryDocsVirtual(
         console.log(_event, path, path.startsWith(rConfig.dirs.srcDocs.root));
         // Only process things inside docs directory
         if (!path.startsWith(rConfig.dirs.srcDocs.root)) return;
-        LOG.info(
-          "Detected changes in the .buttery/docs directory. Reloading..."
-        );
+        LOG.info("Detected changes in the .buttery/docs directory. Reloading...");
 
         // Rebuild the static data
         LOG.debug("Rebuilding virtual modules");
@@ -127,21 +116,17 @@ function vitePluginButteryDocsVirtual(
 
         LOG.checkpointStart("Rebuild Virtual Modules");
         // Loop through the virtual modules and invalidate them
-        const viteVirtualModuleEntries = [
-          ...server.moduleGraph.idToModuleMap.entries(),
-        ].filter(([virtualModuleId]) => virtualModuleId.includes("virtual"));
-
-        LOG.debug(
-          "Attempting to match buttery virtual module Ids with those in vite"
+        const viteVirtualModuleEntries = [...server.moduleGraph.idToModuleMap.entries()].filter(
+          ([virtualModuleId]) => virtualModuleId.includes("virtual")
         );
+
+        LOG.debug("Attempting to match buttery virtual module Ids with those in vite");
         for (const butteryVirtualModuleId of butteryVirtualModuleIds) {
           // Go through the virtual module entries and find an an entry id that
           // matches the buttery virtual module id.
-          LOG.debug(
-            `Locating vite virtual module that includes: "${butteryVirtualModuleId}"`
-          );
-          const viteVirtualModuleEntry = viteVirtualModuleEntries.find(
-            ([viteModId]) => viteModId.includes(butteryVirtualModuleId)
+          LOG.debug(`Locating vite virtual module that includes: "${butteryVirtualModuleId}"`);
+          const viteVirtualModuleEntry = viteVirtualModuleEntries.find(([viteModId]) =>
+            viteModId.includes(butteryVirtualModuleId)
           );
 
           // wasn't able to match a buttery virtual module id with the ones that are in vite
@@ -159,8 +144,7 @@ function vitePluginButteryDocsVirtual(
           LOG.debug(
             `Locating vite virtual module that includes: "buttery:${butteryVirtualModuleId} - vite:${viteVirtualModuleId}`
           );
-          const viteVirtualModule =
-            server.moduleGraph.getModuleById(viteVirtualModuleId);
+          const viteVirtualModule = server.moduleGraph.getModuleById(viteVirtualModuleId);
           if (!viteVirtualModule) {
             continue;
           }
@@ -174,14 +158,12 @@ function vitePluginButteryDocsVirtual(
 
         // Force a full refresh
         server.ws.send({
-          type: "full-reload",
+          type: "full-reload"
         });
       });
     },
     resolveId(id) {
-      const vModuleId = butteryVirtualModuleIds.find(
-        (vModuleId) => vModuleId === id
-      );
+      const vModuleId = butteryVirtualModuleIds.find((vModuleId) => vModuleId === id);
       if (vModuleId) return resolvedVModulePrefix.concat(vModuleId);
       return null;
     },
@@ -194,6 +176,6 @@ function vitePluginButteryDocsVirtual(
         return module;
       }
       return null;
-    },
+    }
   };
 }

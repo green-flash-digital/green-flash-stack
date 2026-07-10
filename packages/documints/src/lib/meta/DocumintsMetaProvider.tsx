@@ -6,7 +6,7 @@ const DocumintsMetaContext = createContext<DocumintsMeta | null>(null);
 
 export function DocumintsMetaProvider({
   documintsMeta,
-  children,
+  children
 }: {
   /** Server usage supplies a per-request instance; client usage creates its own. */
   documintsMeta?: DocumintsMeta;

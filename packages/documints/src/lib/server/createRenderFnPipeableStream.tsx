@@ -1,8 +1,6 @@
-import {
-  type RenderToPipeableStreamOptions,
-  renderToPipeableStream,
-} from "react-dom/server";
 import { type RouteObject, createStaticHandler } from "react-router";
+
+import { type RenderToPipeableStreamOptions, renderToPipeableStream } from "react-dom/server";
 
 import type { ButteryDocsServerContext } from "./ButteryDocsServer.js";
 import { ButteryDocsServer } from "./ButteryDocsServer.js";
@@ -20,9 +18,6 @@ export function createButteryDocsRenderToPipeableStream(routes: RouteObject[]) {
     const router = await createRouterFromRoutes(handler, request);
 
     LOG_SERVER.debug("Rendering app to pipeable stream");
-    return renderToPipeableStream(
-      <ButteryDocsServer {...butteryContext} {...router} />,
-      options
-    );
+    return renderToPipeableStream(<ButteryDocsServer {...butteryContext} {...router} />, options);
   };
 }

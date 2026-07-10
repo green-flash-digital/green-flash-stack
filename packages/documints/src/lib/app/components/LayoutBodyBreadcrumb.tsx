@@ -1,13 +1,10 @@
-import { classes } from "@green-flash/ts-utils/isomorphic";
-import {
-  makeColor,
-  makeCustom,
-  makeRem,
-  makeReset,
-} from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import type { JSX } from "react";
 import { forwardRef } from "react";
+
+import { classes } from "@green-flash/ts-utils/isomorphic";
+import { css } from "@linaria/core";
+
+import { makeColor, makeCustom, makeRem, makeReset } from "../../../../.chamfer/index.js";
 
 export type LayoutBodyBreadcrumbPropsNative = JSX.IntrinsicElements["nav"];
 export type LayoutBodyBreadcrumbProps = LayoutBodyBreadcrumbPropsNative;
@@ -27,8 +24,7 @@ const styles = css`
     padding-bottom: ${makeRem(24)};
     margin-left: ${makeRem(32)};
     margin-right: ${makeRem(32)};
-    border-bottom: ${makeRem(1)} solid
-      ${makeColor("neutral-50", { opacity: 0.5 })};
+    border-bottom: ${makeRem(1)} solid ${makeColor("neutral-50", { opacity: 0.5 })};
 
     & > li {
       position: relative;
@@ -48,13 +44,12 @@ const styles = css`
   }
 `;
 
-export const LayoutBodyBreadcrumb = forwardRef<
-  HTMLElement,
-  LayoutBodyBreadcrumbProps
->(function LayoutBodyBreadcrumb({ children, className, ...restProps }, ref) {
-  return (
-    <nav {...restProps} className={classes(className, styles)} ref={ref}>
-      {children}
-    </nav>
-  );
-});
+export const LayoutBodyBreadcrumb = forwardRef<HTMLElement, LayoutBodyBreadcrumbProps>(
+  function LayoutBodyBreadcrumb({ children, className, ...restProps }, ref) {
+    return (
+      <nav {...restProps} className={classes(className, styles)} ref={ref}>
+        {children}
+      </nav>
+    );
+  }
+);

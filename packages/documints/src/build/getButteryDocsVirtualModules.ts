@@ -1,17 +1,14 @@
 import { produce } from "immer";
 
-import { getButteryDocsRouteGraph } from "./getButteryDocsRouteGraph.js";
-
 import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
 import type {
   ButteryDocsRouteManifest,
-  ButteryDocsRouteManifestEntry,
+  ButteryDocsRouteManifestEntry
 } from "../utils/util.types.js";
+import { getButteryDocsRouteGraph } from "./getButteryDocsRouteGraph.js";
 
-export type ButteryDocsVirtualModules = ReturnType<
-  typeof getButteryDocsVirtualModules
->;
+export type ButteryDocsVirtualModules = ReturnType<typeof getButteryDocsVirtualModules>;
 
 export function getButteryDocsVirtualModules(
   rConfig: ResolvedDocumintsConfig,
@@ -68,6 +65,6 @@ export const routeDocs = [${Object.values(routeDocs).map(
 
   return {
     "virtual:routes": routes,
-    "virtual:data": data,
+    "virtual:data": data
   };
 }

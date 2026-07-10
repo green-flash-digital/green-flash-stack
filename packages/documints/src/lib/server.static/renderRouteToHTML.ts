@@ -50,7 +50,7 @@ export async function renderRouteToHTML(
       },
       onError(error: unknown) {
         console.error(error);
-      },
+      }
     }).then((result) => {
       pipeableResult = result;
     }, reject);
@@ -66,7 +66,7 @@ export async function renderRouteToHTML(
     write(chunk, _encoding, callback) {
       chunks.push(Buffer.isBuffer(chunk) ? chunk : Buffer.from(chunk));
       callback();
-    },
+    }
   });
 
   await new Promise<void>((resolve, reject) => {
@@ -80,7 +80,7 @@ export async function renderRouteToHTML(
   const { htmlStart, htmlEnd } = generateHTMLTemplate({
     cssLinks: cssAssets,
     jsScripts: jsAssets,
-    Meta,
+    Meta
   });
 
   return `${htmlStart}${body}${htmlEnd}`;

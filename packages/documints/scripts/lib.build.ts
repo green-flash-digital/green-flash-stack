@@ -4,7 +4,6 @@ import react from "@vitejs/plugin-react";
 import wyw from "@wyw-in-js/vite";
 import { defineConfig, build as viteBuild } from "vite";
 
-
 import packageJson from "../package.json" with { type: "json" };
 import { LOG } from "../src/utils/util.logger.js";
 
@@ -19,9 +18,7 @@ import { LOG } from "../src/utils/util.logger.js";
  * and ButteryDocsClient apps
  */
 async function buildLibrary() {
-  LOG.debug(
-    "Building the documints library for consumption in the SSR app..."
-  );
+  LOG.debug("Building the documints library for consumption in the SSR app...");
   const libBasePath = path.resolve(import.meta.dirname, "../src/lib/");
 
   const entry = [
@@ -31,7 +28,7 @@ async function buildLibrary() {
     "server.dev",
     "server.static",
     "plugin-interactive-preview/vite",
-    "plugin-interactive-preview/ui",
+    "plugin-interactive-preview/ui"
   ].reduce((accum, entryName) => {
     const entryPath = path.resolve(libBasePath, `${entryName}/index.ts`);
     return Object.assign(accum, { [entryName]: entryPath });
@@ -45,11 +42,11 @@ async function buildLibrary() {
           formats: ["es"],
           entry: {
             index: path.resolve(libBasePath, "./index.ts"),
-            ...entry,
+            ...entry
           },
           fileName(_format, entryName) {
             return `${entryName}/index.js`;
-          },
+          }
         },
         rollupOptions: {
           external: [
@@ -67,13 +64,13 @@ async function buildLibrary() {
             "node:stream",
             "node:fs",
             "node:path",
-            /node_modules/,
+            /node_modules/
           ],
           output: {
-            dir: path.resolve(import.meta.dirname, "../dist/lib"),
+            dir: path.resolve(import.meta.dirname, "../dist/lib")
             // preserveModules: true,
-          },
-        },
+          }
+        }
       },
       plugins: [
         react(),
@@ -81,21 +78,17 @@ async function buildLibrary() {
         wyw({
           include: ["**/*.{ts,tsx}"],
           babelOptions: {
-            presets: ["@babel/preset-typescript", "@babel/preset-react"],
-          },
-        }),
-      ],
+            presets: ["@babel/preset-typescript", "@babel/preset-react"]
+          }
+        })
+      ]
     });
 
     await viteBuild(config);
 
-    LOG.debug(
-      "Building the documints library for consumption in the SSR app... done."
-    );
+    LOG.debug("Building the documints library for consumption in the SSR app... done.");
   } catch (error) {
-    throw LOG.fatal(
-      new Error(`Error when building the documints library: ${error}`)
-    );
+    throw LOG.fatal(new Error(`Error when building the documints library: ${error}`));
   }
 }
 

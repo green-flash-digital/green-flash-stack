@@ -12,16 +12,14 @@ export function useDetermineActiveSection(pathname: string) {
 
   const getHeadings = useCallback(() => {
     if (!headingsRef.current) {
-      headingsRef.current =
-        document.querySelectorAll<HTMLHeadingElement>(".heading");
+      headingsRef.current = document.querySelectorAll<HTMLHeadingElement>(".heading");
     }
     return headingsRef.current;
   }, []);
 
   const getAnchors = useCallback(() => {
     if (!anchorsRef.current) {
-      anchorsRef.current =
-        document.querySelectorAll<HTMLAnchorElement>(".contents-link");
+      anchorsRef.current = document.querySelectorAll<HTMLAnchorElement>(".contents-link");
     }
     return anchorsRef.current;
   }, []);

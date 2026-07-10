@@ -1,7 +1,8 @@
-import { classes } from "@buttery/components";
-import { css } from "@linaria/core";
 import type { JSX } from "react";
 import { forwardRef } from "react";
+
+import { classes } from "@buttery/components";
+import { css } from "@linaria/core";
 
 export type ButtonPropsNative = JSX.IntrinsicElements["button"];
 export type ButtonPropsCustom = {
@@ -24,16 +25,13 @@ const buttonStyles = css`
  * An example component to display how the buttery docs vite plugin system
  * works
  */
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  function Button({ children, className, ...restProps }, ref) {
-    return (
-      <button
-        {...restProps}
-        className={classes(buttonStyles, className)}
-        ref={ref}
-      >
-        {children}
-      </button>
-    );
-  }
-);
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  { children, className, ...restProps },
+  ref
+) {
+  return (
+    <button {...restProps} className={classes(buttonStyles, className)} ref={ref}>
+      {children}
+    </button>
+  );
+});

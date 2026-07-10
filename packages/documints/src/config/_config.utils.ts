@@ -4,7 +4,7 @@ import { z } from "zod";
 const butteryDocsConfigHeaderLinkTypeTextSchema = z.object({
   type: z.literal("text"),
   text: z.string(),
-  href: z.string(),
+  href: z.string()
 });
 export type ButteryDocsConfigHeaderLinkTypeText = z.infer<
   typeof butteryDocsConfigHeaderLinkTypeTextSchema
@@ -19,7 +19,7 @@ const butteryDocsConfigHeaderLinkTypeSocialSchema = z.object({
    * that we provide a label that is accompanies the icon in order to ensure
    * that our links are 100% accessible.
    */
-  label: z.string(),
+  label: z.string()
 });
 export type ButteryDocsConfigHeaderLinkTypeSocial = z.infer<
   typeof butteryDocsConfigHeaderLinkTypeSocialSchema
@@ -28,7 +28,7 @@ export type ButteryDocsConfigHeaderLinkTypeSocial = z.infer<
 const butteryDocsConfigHeaderLinkTypeInternalSchema = z.object({
   type: z.literal("internal"),
   text: z.string(),
-  href: z.string(),
+  href: z.string()
 });
 export type ButteryDocsConfigHeaderLinkTypeInternal = z.infer<
   typeof butteryDocsConfigHeaderLinkTypeInternalSchema
@@ -42,9 +42,9 @@ const butteryDocsConfigHeaderLinkTypeDropdownSchema = z.object({
     .extend({
       subText: z.string().optional(),
       iconSrc: z.string(),
-      iconAlt: z.string(),
+      iconAlt: z.string()
     })
-    .array(),
+    .array()
 });
 export type ButteryDocsConfigHeaderLinkTypeDropdown = z.infer<
   typeof butteryDocsConfigHeaderLinkTypeDropdownSchema
@@ -54,14 +54,11 @@ const butteryDocsConfigHeaderLinkSchema = z.discriminatedUnion("type", [
   butteryDocsConfigHeaderLinkTypeTextSchema,
   butteryDocsConfigHeaderLinkTypeSocialSchema,
   butteryDocsConfigHeaderLinkTypeInternalSchema,
-  butteryDocsConfigHeaderLinkTypeDropdownSchema,
+  butteryDocsConfigHeaderLinkTypeDropdownSchema
 ]);
-export type ButteryDocsConfigHeaderLink = z.infer<
-  typeof butteryDocsConfigHeaderLinkSchema
->;
+export type ButteryDocsConfigHeaderLink = z.infer<typeof butteryDocsConfigHeaderLinkSchema>;
 
-const butteryDocsConfigHeaderLinksSchema =
-  butteryDocsConfigHeaderLinkSchema.array();
+const butteryDocsConfigHeaderLinksSchema = butteryDocsConfigHeaderLinkSchema.array();
 
 const butteryDocsConfigHeaderSchema = z.object({
   /**
@@ -75,7 +72,7 @@ const butteryDocsConfigHeaderSchema = z.object({
   logo: z
     .object({
       src: z.string(),
-      alt: z.string(),
+      alt: z.string()
     })
     .optional(),
   /**
@@ -83,15 +80,13 @@ const butteryDocsConfigHeaderSchema = z.object({
    * out to different external pages or to places inside of the
    * documents app
    */
-  links: butteryDocsConfigHeaderLinksSchema.array().optional(),
+  links: butteryDocsConfigHeaderLinksSchema.array().optional()
 });
-export type ButteryDocsConfigHeader = z.infer<
-  typeof butteryDocsConfigHeaderSchema
->;
+export type ButteryDocsConfigHeader = z.infer<typeof butteryDocsConfigHeaderSchema>;
 
 export const documintsConfigSchema = z.object({
   order: z.record(z.string(), z.string().array()).optional(),
-  header: butteryDocsConfigHeaderSchema.optional(),
+  header: butteryDocsConfigHeaderSchema.optional()
 });
 
 export type DocumintsConfig = z.infer<typeof documintsConfigSchema> & {

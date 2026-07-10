@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 
-import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import type { ColorVariantTypeKeyValue } from "@chamfer-css/core/schemas";
 import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
+import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 import { useImmer } from "use-immer";
 

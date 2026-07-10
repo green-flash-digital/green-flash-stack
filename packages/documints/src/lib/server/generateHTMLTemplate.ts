@@ -1,9 +1,7 @@
 import type { DocumintsMeta } from "../meta/DocumintsMeta.js";
 
 function ensureLeadingSlash(entries: string[]): string[] {
-  return entries.map((entry) =>
-    entry.startsWith("/") ? entry : "/".concat(entry)
-  );
+  return entries.map((entry) => (entry.startsWith("/") ? entry : "/".concat(entry)));
 }
 
 /**
@@ -14,7 +12,7 @@ function ensureLeadingSlash(entries: string[]): string[] {
 export function generateHTMLTemplate({
   cssLinks,
   jsScripts,
-  Meta,
+  Meta
 }: {
   cssLinks: string[];
   jsScripts: string[];
@@ -26,8 +24,7 @@ export function generateHTMLTemplate({
     <meta charSet="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     ${ensureLeadingSlash(cssLinks).reduce<string>(
-      (accum, href) =>
-        accum.concat(`<link rel="stylesheet" href="${href}" />\n`),
+      (accum, href) => accum.concat(`<link rel="stylesheet" href="${href}" />\n`),
       ""
     )}
     ${Meta.renderNodesToString()}
@@ -50,8 +47,7 @@ export function generateHTMLTemplate({
   const htmlEnd = `</div>
   </body>
   ${ensureLeadingSlash(jsScripts).reduce<string>(
-    (accum, src) =>
-      accum.concat(`<script type="module" src="${src}"></script>`),
+    (accum, src) => accum.concat(`<script type="module" src="${src}"></script>`),
     ""
   )}
 </html>
@@ -60,6 +56,6 @@ export function generateHTMLTemplate({
   return {
     htmlStart,
     htmlEnd,
-    htmlDev: `${htmlStart}<!--ssr-outlet-->${htmlEnd}`,
+    htmlDev: `${htmlStart}<!--ssr-outlet-->${htmlEnd}`
   };
 }

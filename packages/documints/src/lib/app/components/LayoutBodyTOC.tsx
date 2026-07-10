@@ -1,14 +1,15 @@
+import { type FC, type MouseEventHandler, useCallback, useMemo } from "react";
+
+import { css } from "@linaria/core";
+import type { Toc as TableOfContents } from "@stefanprobst/rehype-extract-toc";
+
 import {
   makeColor,
   makeCustom,
   makeFontWeight,
   makeRem,
-  makeReset,
+  makeReset
 } from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
-import type { Toc as TableOfContents } from "@stefanprobst/rehype-extract-toc";
-import { type FC, type MouseEventHandler, useCallback, useMemo } from "react";
-
 import { LayoutTextOverline } from "./LayoutTextOverline.js";
 
 const layoutBodyStyles = css`
@@ -28,8 +29,7 @@ const layoutBodyStyles = css`
       top: ${makeRem(32)};
       bottom: ${makeRem(32)};
       width: ${makeRem(1)};
-      border-left: ${makeRem(1)} solid
-        ${makeColor("neutral-50", { opacity: 0.5 })};
+      border-left: ${makeRem(1)} solid ${makeColor("neutral-50", { opacity: 0.5 })};
     }
   }
 `;
@@ -70,26 +70,20 @@ const overlineStyles = css`
   margin-bottom: ${makeRem(16)};
 `;
 
-export function ContentsNode({
-  tableOfContents,
-}: {
-  tableOfContents: TableOfContents;
-}) {
+export function ContentsNode({ tableOfContents }: { tableOfContents: TableOfContents }) {
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>((e) => {
     e.preventDefault();
     const anchorHash = e.currentTarget.hash;
     window.history.replaceState(null, "", anchorHash);
     // get the heading with the ID of hash
-    const headingWithIdOfAnchorHash =
-      document.querySelector<HTMLHeadingElement>(anchorHash);
+    const headingWithIdOfAnchorHash = document.querySelector<HTMLHeadingElement>(anchorHash);
     const header = document.querySelector<HTMLElement>("header");
     if (!headingWithIdOfAnchorHash || !header) return;
-    const offset =
-      headingWithIdOfAnchorHash.offsetTop - header.offsetHeight + 64;
+    const offset = headingWithIdOfAnchorHash.offsetTop - header.offsetHeight + 64;
 
     window.scrollTo({
       top: offset,
-      behavior: "smooth",
+      behavior: "smooth"
     });
   }, []);
 
@@ -121,16 +115,12 @@ export const LayoutBodyTOC: FC<LayoutBodyTOCProps> = ({ tableOfContents }) => {
       <div>
         {useMemo(
           () => (
-            <LayoutTextOverline className={overlineStyles}>
-              on this page
-            </LayoutTextOverline>
+            <LayoutTextOverline className={overlineStyles}>on this page</LayoutTextOverline>
           ),
           []
         )}
         <ul className={ulStyles}>
-          <ContentsNode
-            tableOfContents={tableOfContents?.[0]?.children ?? []}
-          />
+          <ContentsNode tableOfContents={tableOfContents?.[0]?.children ?? []} />
         </ul>
       </div>
     </article>

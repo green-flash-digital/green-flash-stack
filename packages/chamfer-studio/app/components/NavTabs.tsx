@@ -3,7 +3,6 @@ import { forwardRef, useCallback } from "react";
 import type { UseTrackingNodeCallback } from "react-hook-primitives";
 import { useForwardedRef, useTrackingNode } from "react-hook-primitives";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,
@@ -12,6 +11,7 @@ import {
   makeRem,
   makeReset
 } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { NavTabsContextProvider } from "./NavTabs.context";

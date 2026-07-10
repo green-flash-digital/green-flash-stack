@@ -1,4 +1,3 @@
-import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import type {
   ChamferConfig,
   ChamferColorEntry,
@@ -19,6 +18,7 @@ import type {
 import { fontFamilyFallback, manualFontStyles } from "@chamfer-css/core/schemas";
 import type { SpaceVariantsRecord } from "@chamfer-css/core/utils";
 import { calculateSpaceVariantsAuto, calculateSpaceVariantsManual } from "@chamfer-css/core/utils";
+import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { match } from "ts-pattern";
 
 // ── Color state types ─────────────────────────────────────────────────────────
@@ -218,9 +218,7 @@ function convertSpaceVariantConfigIntoState(
   );
 }
 
-function getInitStateSizeAndSpaceFromConfig(
-  config: ChamferConfig
-): ConfigurationStateSizeAndSpace {
+function getInitStateSizeAndSpaceFromConfig(config: ChamferConfig): ConfigurationStateSizeAndSpace {
   const createSizeVariants = (
     variants: ChamferConfig["sizeAndSpace"]["size"]["variants"]
   ): ConfigurationStateSizeAndSpace_SizeVariants =>

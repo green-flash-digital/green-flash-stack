@@ -1,18 +1,18 @@
+import type { FC } from "react";
+import { NavLink } from "react-router";
+
+import { css } from "@linaria/core";
+
 import {
   makeColor,
   makeCustom,
   makeFontWeight,
   makeRem,
-  makeReset,
+  makeReset
 } from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
-import type { FC } from "react";
-import { NavLink } from "react-router";
-
+import type { ButteryDocsRouteManifestGraphObject } from "../../../utils/util.types.js";
 import { LayoutBodyNavItem } from "./LayoutBodyNavItem.js";
 import { LayoutTextOverline } from "./LayoutTextOverline.js";
-
-import type { ButteryDocsRouteManifestGraphObject } from "../../../utils/util.types.js";
 
 const navStyles = css`
   grid-area: layout-sidebar;
@@ -61,23 +61,16 @@ export const LayoutBodyNav: FC<{
     <nav className={navStyles}>
       <div className={navContentStyles}>
         {Object.values(graph).map((graphValue) => {
-          return Object.entries(graphValue.pages).map(
-            ([sectionKey, sectionValues]) => {
-              return (
-                <section key={sectionKey} className={sectionStyles}>
-                  <NavLink
-                    to={sectionValues.routePath}
-                    className={anchorOverlineCSS}
-                  >
-                    <LayoutTextOverline>
-                      {sectionValues.fileNameFormatted}
-                    </LayoutTextOverline>
-                  </NavLink>
-                  <LayoutBodyNavItem graph={sectionValues.pages} />
-                </section>
-              );
-            }
-          );
+          return Object.entries(graphValue.pages).map(([sectionKey, sectionValues]) => {
+            return (
+              <section key={sectionKey} className={sectionStyles}>
+                <NavLink to={sectionValues.routePath} className={anchorOverlineCSS}>
+                  <LayoutTextOverline>{sectionValues.fileNameFormatted}</LayoutTextOverline>
+                </NavLink>
+                <LayoutBodyNavItem graph={sectionValues.pages} />
+              </section>
+            );
+          });
         })}
       </div>
     </nav>

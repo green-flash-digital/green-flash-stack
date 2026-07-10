@@ -1,7 +1,7 @@
 declare module "virtual:routes" {
   import type {
     ButteryDocsRouteManifestGraphObject,
-    ButteryDocsRouteManifestEntryDoc,
+    ButteryDocsRouteManifestEntryDoc
   } from "../../../utils/util.types.js";
   // Adjust the types based on what your `virtual:routes` module exports
   export const routeGraph: ButteryDocsRouteManifestGraphObject;

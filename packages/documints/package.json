@@ -2,8 +2,36 @@
   "name": "documints",
   "version": "0.1.0",
   "description": "TODO",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drewdecarme@gmail.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/documints"
+  },
+  "bin": "./bin/index.js",
+  "files": [
+    "dist",
+    "app",
+    "bin"
+  ],
   "type": "module",
   "sideEffects": false,
+  "exports": {
+    "./server": "./dist/lib/server/index.js",
+    "./server.dev": "./dist/lib/server.dev/index.js",
+    "./server.static": "./dist/lib/server.static/index.js",
+    "./client": "./dist/lib/client/index.js",
+    "./plugin-interactive-preview": "./dist/lib/plugin-interactive-preview/vite/index.js",
+    "./plugin-interactive-preview/ui": "./dist/lib/plugin-interactive-preview/ui/index.js",
+    ".": "./dist/lib/index/index.js",
+    "./app": "./dist/lib/app/index.js",
+    "./css": "./dist/lib/documints.css"
+  },
   "publishConfig": {
     "access": "public"
   },
@@ -18,52 +46,6 @@
     "lib:dev": "yarn lib:build --watch",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
-    "directory": "packages/documints"
-  },
-  "files": [
-    "dist",
-    "app",
-    "bin"
-  ],
-  "author": "Drew DeCarme (drewdecarme@gmail.com)",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
-  },
-  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
-  "bin": "./bin/index.js",
-  "exports": {
-    "./server": "./dist/lib/server/index.js",
-    "./server.dev": "./dist/lib/server.dev/index.js",
-    "./server.static": "./dist/lib/server.static/index.js",
-    "./client": "./dist/lib/client/index.js",
-    "./plugin-interactive-preview": "./dist/lib/plugin-interactive-preview/vite/index.js",
-    "./plugin-interactive-preview/ui": "./dist/lib/plugin-interactive-preview/ui/index.js",
-    ".": "./dist/lib/index/index.js",
-    "./app": "./dist/lib/app/index.js",
-    "./css": "./dist/lib/documints.css"
-  },
-  "devDependencies": {
-    "@green-flash/tsconfig": "workspace:*",
-    "@storybook/react": "8.5.2",
-    "@types/babel__core": "7.20.5",
-    "@types/express": "5.0.0",
-    "@types/node": "22.12.0",
-    "@types/react": "19.2.17",
-    "@types/react-dom": "19.2.3",
-    "@wyw-in-js/vite": "0.5.5",
-    "chamfer": "workspace:*",
-    "rehype-parse": "9.0.1",
-    "rehype-remark": "10.0.0",
-    "remark-parse": "11.0.0",
-    "tsx": "4.19.2",
-    "typescript": "5.7.3",
-    "unified": "11.0.5",
-    "unist-util-visit": "5.0.0"
   },
   "dependencies": {
     "@babel/core": "7.26.7",
@@ -99,5 +81,23 @@
     "ts-pattern": "5.6.2",
     "vite": "6.0.11",
     "zod": "3.24.1"
+  },
+  "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
+    "@storybook/react": "8.5.2",
+    "@types/babel__core": "7.20.5",
+    "@types/express": "5.0.0",
+    "@types/node": "22.12.0",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "@wyw-in-js/vite": "0.5.5",
+    "chamfer": "workspace:*",
+    "rehype-parse": "9.0.1",
+    "rehype-remark": "10.0.0",
+    "remark-parse": "11.0.0",
+    "tsx": "4.19.2",
+    "typescript": "5.7.3",
+    "unified": "11.0.5",
+    "unist-util-visit": "5.0.0"
   }
 }

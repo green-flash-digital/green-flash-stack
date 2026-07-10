@@ -24,8 +24,6 @@ export async function createRouterFromRoutes(
 
     return { router, routerContext };
   } catch (error) {
-    throw LOG_SERVER.fatal(
-      new Error(`Error when trying to create the router: ${error}`)
-    );
+    throw LOG_SERVER.fatal(new Error(`Error when trying to create the router: ${error}`));
   }
 }

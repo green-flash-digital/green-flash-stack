@@ -1,18 +1,13 @@
-import {
-  makeColor,
-  makeFontWeight,
-  makeRem,
-  makeReset,
-} from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import type { FC } from "react";
 import { NavLink } from "react-router";
+
+import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 
-import { LayoutHeaderLinksTypeDropdown } from "./LayoutHeaderLinksTypeDropdown.js";
-import { IconComponent } from "./icons/IconComponent.js";
-
+import { makeColor, makeFontWeight, makeRem, makeReset } from "../../../../.chamfer/index.js";
 import type { ButteryDocsConfigHeaderLink } from "../../../config/_config.utils.js";
+import { IconComponent } from "./icons/IconComponent.js";
+import { LayoutHeaderLinksTypeDropdown } from "./LayoutHeaderLinksTypeDropdown.js";
 
 const divStyles = css`
   display: flex;
@@ -78,9 +73,7 @@ export const LayoutHeaderLinks: FC<{
                 <li key={"links".concat(i.toString())}>
                   {match(link)
                     .with({ type: "dropdown" }, (dropdownLink) => {
-                      return (
-                        <LayoutHeaderLinksTypeDropdown {...dropdownLink} />
-                      );
+                      return <LayoutHeaderLinksTypeDropdown {...dropdownLink} />;
                     })
                     .with({ type: "social" }, (socialLink) => {
                       return (

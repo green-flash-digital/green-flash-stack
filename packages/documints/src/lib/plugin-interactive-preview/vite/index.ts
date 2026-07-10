@@ -62,12 +62,9 @@ export function vitePluginButteryDocsInteractivePreview(
           }
         }
 
-        const transformedPath = path.join(
-          options.componentRootDir,
-          params.path
-        );
+        const transformedPath = path.join(options.componentRootDir, params.path);
         const codeBlock = fs.readFileSync(transformedPath, {
-          encoding: "utf8",
+          encoding: "utf8"
         });
 
         matchNum++;
@@ -102,8 +99,8 @@ import { ${params.export} as Component${matchNum} } from "${transformedPath}";
 
       return {
         code: transformedCode,
-        map: null, // Provide source map if necessary
+        map: null // Provide source map if necessary
       };
-    },
+    }
   };
 }

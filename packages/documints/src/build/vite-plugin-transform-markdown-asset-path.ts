@@ -11,15 +11,12 @@ export function transformMarkdownAssetPath(): Plugin {
     transform(code: string, id: string) {
       if (id.endsWith(".md")) {
         // Replace the ./public with /public URL
-        const transformedCode = code.replace(
-          /!\[([^\]]*)\]\(\.\/public\/([^)]*)\)/g,
-          "![$1](/$2)"
-        );
+        const transformedCode = code.replace(/!\[([^\]]*)\]\(\.\/public\/([^)]*)\)/g, "![$1](/$2)");
         return {
           code: transformedCode,
-          map: null,
+          map: null
         };
       }
-    },
+    }
   };
 }

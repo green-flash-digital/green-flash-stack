@@ -16,9 +16,7 @@ function getDocumintsPackageRoot(): string {
   let dir = import.meta.dirname;
   while (true) {
     try {
-      const packageJson = JSON.parse(
-        readFileSync(path.resolve(dir, "./package.json"), "utf8")
-      );
+      const packageJson = JSON.parse(readFileSync(path.resolve(dir, "./package.json"), "utf8"));
       if (packageJson.name === "documints") return dir;
     } catch {
       // no readable/parsable package.json here - keep walking up
@@ -37,19 +35,14 @@ function getDocumintsPackageRoot(): string {
  * build output should go. `dotDirPath` is the resolved `.documints/`
  * directory found in the consuming project.
  */
-export function getDocumintsDirectories(
-  _config: DocumintsConfig,
-  dotDirPath: string
-) {
+export function getDocumintsDirectories(_config: DocumintsConfig, dotDirPath: string) {
   const rootDir = path.dirname(dotDirPath);
   const packageRoot = getDocumintsPackageRoot();
   const appRoot = path.resolve(packageRoot, "./app");
   const contentRoot = path.resolve(dotDirPath, "./content");
 
   const serverEntryFileName =
-    process.env.NODE_ENV === "production"
-      ? "entry.server.static.tsx"
-      : "entry.server.tsx";
+    process.env.NODE_ENV === "production" ? "entry.server.static.tsx" : "entry.server.tsx";
 
   return {
     /**
@@ -59,7 +52,7 @@ export function getDocumintsDirectories(
      */
     srcDocs: {
       root: contentRoot,
-      public: path.resolve(contentRoot, "./_public"),
+      public: path.resolve(contentRoot, "./_public")
     },
     app: {
       root: appRoot,
@@ -67,8 +60,8 @@ export function getDocumintsDirectories(
       appEntryServer: path.resolve(appRoot, serverEntryFileName),
       appEntryClient: path.resolve(appRoot, "./entry.client.tsx"),
       css: {
-        docsUI: path.resolve(packageRoot, "./dist/lib/documints.css"),
-      },
+        docsUI: path.resolve(packageRoot, "./dist/lib/documints.css")
+      }
     },
     output: {
       /** The final, deployable static site - plain HTML/CSS/JS, servable anywhere. */
@@ -78,8 +71,8 @@ export function getDocumintsDirectories(
        * Internal-only: never part of the deployed static output, and
        * removed once the build finishes.
        */
-      serverBundleDir: path.resolve(dotDirPath, "./.server-build"),
-    },
+      serverBundleDir: path.resolve(dotDirPath, "./.server-build")
+    }
   };
 }
 

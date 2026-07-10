@@ -1,5 +1,4 @@
 import type { Preview } from "@storybook/react";
-
 import "@buttery/tokens/docs/css";
 
 const preview: Preview = {
@@ -7,10 +6,10 @@ const preview: Preview = {
     controls: {
       matchers: {
         color: /(background|color)$/i,
-        date: /Date$/i,
-      },
-    },
-  },
+        date: /Date$/i
+      }
+    }
+  }
 };
 
 export default preview;

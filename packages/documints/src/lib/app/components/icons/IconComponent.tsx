@@ -14,30 +14,28 @@ export type IconComponentCustom = {
 };
 export type IconComponent = IconComponentNative & IconComponentCustom;
 
-export const IconComponent = forwardRef<HTMLDivElement, IconComponent>(
-  function IconComponent(
-    { children, className, icon, ddSize = "inherit", ...restProps },
-    ref
-  ) {
-    const Icon = lazy(() => import(`./generated/${icon}.tsx`));
+export const IconComponent = forwardRef<HTMLDivElement, IconComponent>(function IconComponent(
+  { children, className, icon, ddSize = "inherit", ...restProps },
+  ref
+) {
+  const Icon = lazy(() => import(`./generated/${icon}.tsx`));
 
-    return (
-      <div
-        {...restProps}
-        className={className}
-        style={{
-          display: "grid",
-          placeContent: "center",
-          width: ddSize,
-          height: ddSize,
-          color: "inherit",
-        }}
-        ref={ref}
-      >
-        <Suspense fallback={<div>...</div>}>
-          <Icon width="100%" height="100%" />
-        </Suspense>
-      </div>
-    );
-  }
-);
+  return (
+    <div
+      {...restProps}
+      className={className}
+      style={{
+        display: "grid",
+        placeContent: "center",
+        width: ddSize,
+        height: ddSize,
+        color: "inherit"
+      }}
+      ref={ref}
+    >
+      <Suspense fallback={<div>...</div>}>
+        <Icon width="100%" height="100%" />
+      </Suspense>
+    </div>
+  );
+});

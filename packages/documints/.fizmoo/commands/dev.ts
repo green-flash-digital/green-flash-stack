@@ -10,24 +10,24 @@ export default defineCommand({
       type: "number",
       alias: "p",
       description: "Port to run the dev server on",
-      default: 3000,
+      default: 3000
     },
     host: {
       type: "string",
       description: "Host to bind the dev server to",
-      default: "localhost",
+      default: "localhost"
     },
     open: {
       type: "boolean",
       alias: "o",
       description: "Open the dev server in your browser",
-      default: false,
+      default: false
     },
     "auto-init": {
       type: "boolean",
       description: "Automatically bootstrap .documints/ if it's missing",
-      default: false,
-    },
+      default: false
+    }
   },
   action: async ({ options }) => {
     // Must be set before createDocumints() resolves directories, since which
@@ -37,5 +37,5 @@ export default defineCommand({
     const documints = await createDocumints({ autoInit: options["auto-init"] });
     if (!documints) return;
     await documints.dev({ port: options.port, host: options.host, open: options.open });
-  },
+  }
 });

@@ -7,6 +7,6 @@ export default defineConfig({
   commands: [
     command("./commands/dev.ts"),
     command("./commands/build.ts"),
-    command("./commands/init.ts"),
-  ],
+    command("./commands/init.ts")
+  ]
 });

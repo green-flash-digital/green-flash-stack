@@ -1,15 +1,17 @@
-import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeColor, makeRem } from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import type { JSX } from "react";
 import { forwardRef } from "react";
+
+import { classes } from "@green-flash/ts-utils/isomorphic";
+import { css } from "@linaria/core";
+
+import { makeColor, makeRem } from "../../../../.chamfer/index.js";
 
 export type LayoutBodyBreadcrumbTextPropsNative = JSX.IntrinsicElements["div"];
 export type LayoutBodyBreadcrumbTextPropsCustom = {
   dxIsActive?: boolean;
 };
-export type LayoutBodyBreadcrumbTextProps =
-  LayoutBodyBreadcrumbTextPropsCustom & LayoutBodyBreadcrumbTextPropsNative;
+export type LayoutBodyBreadcrumbTextProps = LayoutBodyBreadcrumbTextPropsCustom &
+  LayoutBodyBreadcrumbTextPropsNative;
 
 const styles = css`
   color: ${makeColor("neutral")};
@@ -30,20 +32,15 @@ const styles = css`
   }
 `;
 
-export const LayoutBodyBreadcrumbText = forwardRef<
-  HTMLDivElement,
-  LayoutBodyBreadcrumbTextProps
->(function LayoutBodyBreadcrumbText(
-  { children, className, dxIsActive = false, ...restProps },
-  ref
-) {
-  return (
-    <div
-      {...restProps}
-      className={classes(className, styles, { active: dxIsActive })}
-      ref={ref}
-    >
-      {children}
-    </div>
-  );
-});
+export const LayoutBodyBreadcrumbText = forwardRef<HTMLDivElement, LayoutBodyBreadcrumbTextProps>(
+  function LayoutBodyBreadcrumbText(
+    { children, className, dxIsActive = false, ...restProps },
+    ref
+  ) {
+    return (
+      <div {...restProps} className={classes(className, styles, { active: dxIsActive })} ref={ref}>
+        {children}
+      </div>
+    );
+  }
+);

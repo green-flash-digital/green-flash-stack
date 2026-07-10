@@ -33,9 +33,7 @@ export function orderDocumintsRouteManifest(
     }
   }
 
-  LOG.debug(
-    `Ordering docs... done. Ordered ${Object.keys(orderedRouteManifest).length} routes.`
-  );
+  LOG.debug(`Ordering docs... done. Ordered ${Object.keys(orderedRouteManifest).length} routes.`);
 
   // Append anything not explicitly ordered, preserving discovery order.
   for (const [routePath, entry] of Object.entries(routeManifest)) {

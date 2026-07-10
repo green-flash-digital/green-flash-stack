@@ -1,7 +1,7 @@
 import type {
   ButteryDocsRouteManifest,
   ButteryDocsRouteManifestGraphObject,
-  ButteryDocsRouteManifestEntry,
+  ButteryDocsRouteManifestEntry
 } from "../lib/index.js";
 import { LOG } from "../utils/util.logger.js";
 
@@ -18,18 +18,12 @@ import { LOG } from "../utils/util.logger.js";
  * that is needed to make routing and the things around them as clean as possible as well
  * as provide the ability to scale the manifest as needed.
  */
-export type ButteryDocsRouteManifestGraph = ReturnType<
-  typeof getButteryDocsRouteGraph
->;
-export function getButteryDocsRouteGraph(
-  routeManifest: ButteryDocsRouteManifest
-) {
+export type ButteryDocsRouteManifestGraph = ReturnType<typeof getButteryDocsRouteGraph>;
+export function getButteryDocsRouteGraph(routeManifest: ButteryDocsRouteManifest) {
   const graphObj: ButteryDocsRouteManifestGraphObject = {};
 
   function addRouteGraphNode(manifestEntry: ButteryDocsRouteManifestEntry) {
-    const manifestEntrySegments = manifestEntry.routePath
-      .split("/")
-      .filter(Boolean);
+    const manifestEntrySegments = manifestEntry.routePath.split("/").filter(Boolean);
 
     let currentGraphObj = graphObj;
 
@@ -44,7 +38,7 @@ export function getButteryDocsRouteGraph(
           fileNameFormatted: "",
           root: false,
           routePath: "",
-          pages: {},
+          pages: {}
         };
       }
 
@@ -53,7 +47,7 @@ export function getButteryDocsRouteGraph(
       if (i === manifestEntrySegments.length - 1) {
         currentGraphObj[segment] = {
           ...manifestEntry,
-          pages: currentGraphObj[segment].pages,
+          pages: currentGraphObj[segment].pages
         };
       } else {
         currentGraphObj = currentGraphObj[segment].pages;
@@ -67,9 +61,7 @@ export function getButteryDocsRouteGraph(
   for (const manifestEntry of manifestEntries) {
     LOG.debug(`Adding "${manifestEntry.routePath}" to the route graph...`);
     addRouteGraphNode(manifestEntry);
-    LOG.debug(
-      `Adding "${manifestEntry.routePath}" to the route graph... done.`
-    );
+    LOG.debug(`Adding "${manifestEntry.routePath}" to the route graph... done.`);
   }
 
   return graphObj;

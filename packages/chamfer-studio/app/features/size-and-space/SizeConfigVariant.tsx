@@ -2,8 +2,8 @@ import type { JSX } from "react";
 import { forwardRef, useCallback } from "react";
 import { useToggle } from "react-hook-primitives";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { InputGroup } from "~/components/InputGroup";

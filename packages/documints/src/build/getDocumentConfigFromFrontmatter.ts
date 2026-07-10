@@ -43,13 +43,11 @@ export function getDocumentConfigFromFrontmatter(
     return {
       title: data.title,
       slug: data.slug,
-      home: data.home ?? false,
+      home: data.home ?? false
     };
   } catch (error) {
     throw LOG.fatal(
-      new Error(
-        `Error when trying to parse the frontmatter for "${routeId}": ${error}`
-      )
+      new Error(`Error when trying to parse the frontmatter for "${routeId}": ${error}`)
     );
   }
 }

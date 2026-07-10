@@ -1,18 +1,18 @@
-import { MenuController } from "@stratum-ui/react/menu";
 import { useState } from "react";
-import { css } from "@linaria/core";
 
-import { IconComponent } from "./icons/IconComponent.js";
-import type { LayoutHeaderLinksTypeDropdownState } from "./LayoutHeaderLinksTypeDropdownContent.js";
+import { css } from "@linaria/core";
+import { MenuController } from "@stratum-ui/react/menu";
 
 import {
   makeColor,
   makeFontFamily,
   makeFontWeight,
   makeRem,
-  makeReset,
+  makeReset
 } from "../../../../.chamfer/index.js";
 import type { ButteryDocsConfigHeaderLinkTypeDropdown } from "../../../config/_config.utils.js";
+import { IconComponent } from "./icons/IconComponent.js";
+import type { LayoutHeaderLinksTypeDropdownState } from "./LayoutHeaderLinksTypeDropdownContent.js";
 
 const buttonStyles = css`
   ${makeReset("button")};
@@ -119,16 +119,14 @@ const dropdownStyles = css`
   }
 `;
 
-export function LayoutHeaderLinksTypeDropdown(
-  props: ButteryDocsConfigHeaderLinkTypeDropdown
-) {
+export function LayoutHeaderLinksTypeDropdown(props: ButteryDocsConfigHeaderLinkTypeDropdown) {
   const [menu] = useState(
     () =>
       new MenuController<LayoutHeaderLinksTypeDropdownState>({
         load: () => import("./LayoutHeaderLinksTypeDropdownContent.js"),
         className: dropdownStyles,
         position: "bottom-right",
-        offset: 16,
+        offset: 16
       })
   );
 

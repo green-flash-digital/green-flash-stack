@@ -250,9 +250,9 @@ export class Documints {
           manifest: true,
           outDir: this._dirs.output.root,
           rollupOptions: {
-            input: this._dirs.app.appEntryClient,
-          },
-        },
+            input: this._dirs.app.appEntryClient
+          }
+        }
       });
       LOG.debug("Building client bundle for production... done");
 
@@ -266,9 +266,9 @@ export class Documints {
           ssr: this._dirs.app.appEntryServer,
           outDir: this._dirs.output.serverBundleDir,
           rollupOptions: {
-            output: { entryFileNames: "server.js" },
-          },
-        },
+            output: { entryFileNames: "server.js" }
+          }
+        }
       });
       LOG.debug("Building server bundle for production... done");
 
@@ -285,12 +285,9 @@ export class Documints {
           aliasPath: entry.aliasPath,
           vManifest: viteManifest,
           contentRoot: this._dirs.srcDocs.root,
-          viteRoot: this._dirs.app.root,
+          viteRoot: this._dirs.app.root
         });
-        const outputPath = path.resolve(
-          this._dirs.output.root,
-          `.${entry.routePath}/index.html`
-        );
+        const outputPath = path.resolve(this._dirs.output.root, `.${entry.routePath}/index.html`);
         const res = await tryHandle(writeFileRecursive)(outputPath, html);
         if (res.success === false) throw res.error;
       }
@@ -304,7 +301,7 @@ export class Documints {
 
       const filesAndDirs = await readdir(this._dirs.output.root, {
         recursive: true,
-        withFileTypes: true,
+        withFileTypes: true
       });
       const files = filesAndDirs.filter((dirent) => dirent.isFile());
       LOG.success(`Successfully built documentation app!

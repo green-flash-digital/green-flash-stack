@@ -1,6 +1,8 @@
-import { makeColor } from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import React, { type ReactNode, useState } from "react";
+
+import { css } from "@linaria/core";
+
+import { makeColor } from "../../../../.chamfer/index.js";
 
 const SourceCodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg
@@ -38,7 +40,7 @@ const SourceCodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
 
 const styles = css`
   --preview-border-color: ${makeColor("neutral-100", {
-    opacity: 0.6,
+    opacity: 0.6
   })};
 
   border-radius: 0.25rem;
@@ -77,7 +79,7 @@ const styles = css`
         &:hover,
         &:focus {
           background: ${makeColor("primary-500", {
-            opacity: 0.2,
+            opacity: 0.2
           })};
         }
 

@@ -1,9 +1,10 @@
-import { classes } from "@green-flash/ts-utils/isomorphic";
-import { makeColor, makeFontWeight, makeRem } from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import type { FC } from "react";
 import { NavLink } from "react-router";
 
+import { classes } from "@green-flash/ts-utils/isomorphic";
+import { css } from "@linaria/core";
+
+import { makeColor, makeFontWeight, makeRem } from "../../../../.chamfer/index.js";
 import type { ButteryDocsRouteManifestGraphObject } from "../../../utils/util.types.js";
 
 const ulStyles = css`
@@ -57,7 +58,7 @@ const anchorCss = css`
   &:not(.active) {
     &:hover {
       background: ${makeColor("primary-200", {
-        opacity: 0.2,
+        opacity: 0.2
       })};
       color: ${makeColor("primary")};
       font-weight: ${makeFontWeight("source-sans-3-semiBold")};
@@ -73,10 +74,7 @@ export type NavItemProps = {
   graph: ButteryDocsRouteManifestGraphObject;
   isNested?: boolean;
 };
-export const LayoutBodyNavItem: FC<NavItemProps> = ({
-  graph,
-  isNested = false,
-}) => {
+export const LayoutBodyNavItem: FC<NavItemProps> = ({ graph, isNested = false }) => {
   return (
     <ul className={classes(ulStyles, { nested: isNested })}>
       {Object.entries(graph).map(([graphKey, graphValue]) => {

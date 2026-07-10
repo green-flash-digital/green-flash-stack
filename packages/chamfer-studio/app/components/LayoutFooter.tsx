@@ -1,8 +1,8 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeColor, makeCustom, makeRem } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 export type LayoutFooterPropsNative = JSX.IntrinsicElements["footer"];

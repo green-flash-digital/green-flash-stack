@@ -1,7 +1,7 @@
 import { useCallback } from "react";
 
-import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeRem, makeReset } from "@chamfer-css/studio-tokens";
+import { exhaustiveMatchGuard, generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { VariantEmpty } from "~/components/VariantEmpty";

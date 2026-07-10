@@ -80,9 +80,8 @@ export default function AccountBillingPage() {
       <div className={cardStyles}>
         <h2>Plan</h2>
         <p>
-          You&apos;re on the <strong>Free plan</strong>. It includes {FREE_PLAN_LIMIT} design
-          system{FREE_PLAN_LIMIT === 1 ? "" : "s"} — additional design systems require a
-          subscription.
+          You&apos;re on the <strong>Free plan</strong>. It includes {FREE_PLAN_LIMIT} design system
+          {FREE_PLAN_LIMIT === 1 ? "" : "s"} — additional design systems require a subscription.
         </p>
         <div className={usageBarStyles}>
           <div className="fill" style={{ width: `${usagePercent}%` }} />

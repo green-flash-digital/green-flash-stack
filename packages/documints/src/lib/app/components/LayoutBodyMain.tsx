@@ -1,11 +1,8 @@
-import {
-  makeColor,
-  makeCustom,
-  makeRem,
-  makeReset,
-} from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import type { FC, ReactNode } from "react";
+
+import { css } from "@linaria/core";
+
+import { makeColor, makeCustom, makeRem, makeReset } from "../../../../.chamfer/index.js";
 
 const layoutBodyMainStyles = css`
   grid-area: layout-main;
@@ -33,7 +30,7 @@ const layoutBodyMainStyles = css`
 
   blockquote {
     background-color: ${makeColor("secondary-500", {
-      opacity: 0.1,
+      opacity: 0.1
     })} !important;
     margin: 0;
     padding: ${makeRem(16)};
@@ -60,7 +57,7 @@ const layoutBodyMainStyles = css`
 
     thead {
       background: ${makeColor("secondary-50", {
-        opacity: 0.3,
+        opacity: 0.3
       })};
     }
 
@@ -136,7 +133,7 @@ const layoutBodyMainStyles = css`
 
       a {
         background-color: ${makeColor("secondary-50", {
-          opacity: 0.2,
+          opacity: 0.2
         })};
         color: ${makeColor("secondary-700")} !important;
         padding: 0 ${makeRem(4)};

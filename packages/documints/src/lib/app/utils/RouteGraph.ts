@@ -1,6 +1,5 @@
-import { LOG } from "./LOG.js";
-
 import type { ButteryDocsRouteManifestGraphObject } from "../../../utils/util.types.js";
+import { LOG } from "./LOG.js";
 
 /**
  * A collection of utilities to easily transact on the route manifest
@@ -24,9 +23,7 @@ export class ButteryDocsRouteManifestGraphUtils {
    * render on the front-end, this function will return the graph node
    * that matches that browser route path
    */
-  getRouteGraphNodeByRoutePath(
-    routePath: string
-  ): ButteryDocsRouteManifestGraphObject {
+  getRouteGraphNodeByRoutePath(routePath: string): ButteryDocsRouteManifestGraphObject {
     const segments = routePath.split("/").filter(Boolean);
     const routeGraphNode = segments.reduce<ButteryDocsRouteManifestGraphObject>(
       (accum, segment, i) => {
@@ -43,9 +40,7 @@ export class ButteryDocsRouteManifestGraphUtils {
 
     if (Object.values(routeGraphNode).length === 0) {
       throw LOG.fatal(
-        new Error(
-          `Cannot locate a ButteryDocsRouteManifestGraph node for the path: ${routePath}`
-        )
+        new Error(`Cannot locate a ButteryDocsRouteManifestGraph node for the path: ${routePath}`)
       );
     }
 
@@ -62,7 +57,7 @@ export class ButteryDocsRouteManifestGraphUtils {
       const graphEntry = currentGraph[segment];
       links.push({
         href: graphEntry.routePath,
-        display: graphEntry.fileNameFormatted,
+        display: graphEntry.fileNameFormatted
       });
       currentGraph = graphEntry.pages;
     }

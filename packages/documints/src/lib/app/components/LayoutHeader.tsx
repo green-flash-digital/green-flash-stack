@@ -1,16 +1,11 @@
-import {
-  makeColor,
-  makeCustom,
-  makeFontWeight,
-  makeRem,
-} from "../../../../.chamfer/index.js";
-import { css } from "@linaria/core";
 import type { FC } from "react";
 import { NavLink } from "react-router";
 
-import { LayoutHeaderLinks } from "./LayoutHeaderLinks.js";
+import { css } from "@linaria/core";
 
+import { makeColor, makeCustom, makeFontWeight, makeRem } from "../../../../.chamfer/index.js";
 import type { ButteryDocsConfigHeader } from "../../../config/_config.utils.js";
+import { LayoutHeaderLinks } from "./LayoutHeaderLinks.js";
 
 const layoutHeaderStyles = css`
   grid-area: layout-header;
@@ -19,8 +14,7 @@ const layoutHeaderStyles = css`
   display: flex;
   align-items: center;
   padding: 0 ${makeRem(32)};
-  border-bottom: ${makeRem(1)} solid
-    ${makeColor("neutral-50", { opacity: 0.5 })};
+  border-bottom: ${makeRem(1)} solid ${makeColor("neutral-50", { opacity: 0.5 })};
   background: ${makeColor("background")};
   z-index: 10;
 
@@ -73,11 +67,7 @@ export const LayoutHeader: FC<LayoutHeaderProps> = ({ header }) => {
         {header && (
           <NavLink to="/" className={anchorCSS}>
             {header?.logo && (
-              <img
-                className={imgStyles}
-                src={header.logo.src}
-                alt={header.logo.alt}
-              />
+              <img className={imgStyles} src={header.logo.src} alt={header.logo.alt} />
             )}
             {header?.title && <div className={divStyles}>{header.title}</div>}
           </NavLink>

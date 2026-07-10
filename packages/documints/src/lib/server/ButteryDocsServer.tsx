@@ -2,7 +2,7 @@ import { StrictMode } from "react";
 import {
   type StaticHandlerContext,
   StaticRouterProvider,
-  type createStaticRouter,
+  type createStaticRouter
 } from "react-router";
 
 import { type DocumintsMeta } from "../meta/DocumintsMeta.js";

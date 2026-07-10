@@ -1,6 +1,5 @@
 import { useCallback, useMemo } from "react";
 
-import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import {
   makeColor,
   makeFontFamily,
@@ -9,6 +8,7 @@ import {
   makeReset,
   makeSpace
 } from "@chamfer-css/studio-tokens";
+import { generateGUID } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { InputLabel } from "~/components/InputLabel";

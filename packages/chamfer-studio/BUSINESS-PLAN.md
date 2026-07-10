@@ -8,7 +8,7 @@ Status: **on hold, revisit later.** Decided next step (2026-07-09): use Chamfer 
 
 The original plan was: every user gets 1 free design system; additional design systems require a paid subscription.
 
-That model doesn't hold up. A "design system" in Chamfer is just a `.chamfer/config.ts` file — plain data, no proprietary format, no server-side computation. The local CLI (`chamfer build`) is fully free and fully functional with no account needed. So a user who wants a 2nd, 3rd, 10th design system can just copy the config file into their own repo and run the local CLI against it — there's nothing to enforce the paywall against. Gating on *count of config files* is gating on something that isn't actually scarce.
+That model doesn't hold up. A "design system" in Chamfer is just a `.chamfer/config.ts` file — plain data, no proprietary format, no server-side computation. The local CLI (`chamfer build`) is fully free and fully functional with no account needed. So a user who wants a 2nd, 3rd, 10th design system can just copy the config file into their own repo and run the local CLI against it — there's nothing to enforce the paywall against. Gating on _count of config files_ is gating on something that isn't actually scarce.
 
 This isn't a bug to fix — the local tool being complete and free is correct (that's what makes people trust and adopt it in the first place, and it's the standard shape for this category: Vercel, Prisma, Supabase CLI all give away the core engine for free). The fix is to stop trying to paywall something copyable, and instead find the part of the product that genuinely requires our server.
 
@@ -21,6 +21,7 @@ Anything that requires the server to keep existing and to mediate between multip
 ### 1. Team collaboration (primary recommendation)
 
 A design system used by a team needs things a single local config file can't provide on its own:
+
 - Multiple people invited to the same design system
 - Roles/permissions (who can change the primary brand color vs. who can just view)
 - An approval flow before a token change goes live
@@ -31,7 +32,7 @@ This is the classic, proven SaaS moat for "config that a team has to agree on" (
 
 ### 2. Figma sync (secondary — the differentiator)
 
-Pull color/type/spacing variables from Figma into Chamfer, or push Chamfer tokens back into Figma styles. This is specific to *design tokens* (not just "config as code with a nicer UI") — it requires real ongoing infrastructure (OAuth, webhooks/polling) a local CLI user can't replicate by hand, and it directly attacks the actual problem design tokens exist to solve: design/engineering drift.
+Pull color/type/spacing variables from Figma into Chamfer, or push Chamfer tokens back into Figma styles. This is specific to _design tokens_ (not just "config as code with a nicer UI") — it requires real ongoing infrastructure (OAuth, webhooks/polling) a local CLI user can't replicate by hand, and it directly attacks the actual problem design tokens exist to solve: design/engineering drift.
 
 This is the feature that makes the marketing story compelling — "Chamfer keeps design and engineering in sync" is a much bigger pitch than "Chamfer is a nicer way to write CSS variables."
 
@@ -45,7 +46,7 @@ This is the feature that makes the marketing story compelling — "Chamfer keeps
 
 ### 5. Multi-platform export
 
-Chamfer is CSS-only right now. Companies with a *real* design system usually need one source of truth across web and mobile too (iOS/Swift, Android/Kotlin, React Native, Style Dictionary JSON). This is genuinely ongoing engineering work (platform APIs shift over time), which is exactly the kind of thing worth paying a subscription for rather than building in-house.
+Chamfer is CSS-only right now. Companies with a _real_ design system usually need one source of truth across web and mobile too (iOS/Swift, Android/Kotlin, React Native, Style Dictionary JSON). This is genuinely ongoing engineering work (platform APIs shift over time), which is exactly the kind of thing worth paying a subscription for rather than building in-house.
 
 ### 6. Hosted npm publishing
 
@@ -61,11 +62,11 @@ Scan a company's consuming repos to show what % of colors/spacing/type actually 
 
 ### 9. Agency/reseller tier
 
-Plugs directly into the theming/white-labeling architecture above: an agency managing design systems for many clients wants one account, one login, with each client as a themed variant or sub-workspace, and team permissions per client. This is a distinct customer *segment* (agencies, not just single companies) that "1 design system per account" doesn't address at all — it turns the multi-theme architecture into a sales angle, not just a UX nicety.
+Plugs directly into the theming/white-labeling architecture above: an agency managing design systems for many clients wants one account, one login, with each client as a themed variant or sub-workspace, and team permissions per client. This is a distinct customer _segment_ (agencies, not just single companies) that "1 design system per account" doesn't address at all — it turns the multi-theme architecture into a sales angle, not just a UX nicety.
 
 ### 10. Self-hosted enterprise license
 
-A different revenue *shape*, not per-seat SaaS: some large enterprises won't put design tokens in a third-party cloud at all for security/compliance reasons. Selling a Docker-packaged, license-key-gated version of the Studio app itself (not the open local CLI) for them to run on their own infra is the classic open-core play (GitLab, Sentry). An alternate path, not necessarily near-term.
+A different revenue _shape_, not per-seat SaaS: some large enterprises won't put design tokens in a third-party cloud at all for security/compliance reasons. Selling a Docker-packaged, license-key-gated version of the Studio app itself (not the open local CLI) for them to run on their own infra is the classic open-core play (GitLab, Sentry). An alternate path, not necessarily near-term.
 
 ### Weaker ideas (not worth building as pillars)
 
@@ -77,11 +78,12 @@ A different revenue *shape*, not per-seat SaaS: some large enterprises won't put
 
 ### Considered and deprioritized: hosted CDN for generated output
 
-Serving the generated `root.css` / tokens from a stable hosted URL. Rejected as a *standalone* pillar — the output is small enough (a CSS/JS file) that self-hosting it is trivial (any static host, GitHub Pages, a committed file in the repo). Fine as a bundled convenience alongside one of the above, not defensible on its own.
+Serving the generated `root.css` / tokens from a stable hosted URL. Rejected as a _standalone_ pillar — the output is small enough (a CSS/JS file) that self-hosting it is trivial (any static host, GitHub Pages, a committed file in the repo). Fine as a bundled convenience alongside one of the above, not defensible on its own.
 
 ### Considered and rejected: require sign-in to use the CLI at all (gate local usage to 1 design system)
 
 Floated as "just make the CLI phone home and enforce the 1-design-system limit server-side." Rejected:
+
 - Breaks the core promise of a local-first tool (runs entirely on your machine, no network dependency, no vendor lock-in) — that promise is exactly what makes a solo dev trust the tool enough to bring it to their team, which is the real path to the team-collaboration tier.
 - Doesn't actually close the loophole — `@chamfer-css/core`'s `Chamfer.build()` has to stay open/auditable for anyone to trust installing it, so a determined user can call it directly in their own script and skip the CLI's account check entirely.
 - Precedent (Prisma, Supabase CLI, Vercel CLI) is to never gate local/free usage behind auth — sign-in only appears when opting into something genuinely server-dependent.
@@ -95,6 +97,7 @@ Question raised: should a "theme" (light/dark, multi-brand, white-label, seasona
 **Current state:** there's no general theme concept in the schema today (confirmed — no hits for "theme" anywhere in `chamfer-core`'s schemas/templates). The only variant mechanism that exists is light/dark, and it's baked into the semantic-color layer itself (`SemanticEntrySchema = { light, dark }`, resolved via CSS `light-dark()`) — not a broader theming system.
 
 **Recommendation: one design system, multiple theme overlays — not N separate design systems.** Reasoning:
+
 - Most of a design system (spacing scale, typography, breakpoints, custom tokens) is shared across themes; only a subset (usually colors, sometimes fonts) actually varies. Forcing users into N fully separate design systems duplicates everything else N times, with real drift risk (update the type scale in one, forget the other three).
 - It avoids a business-model trap: if "I need 3 brand variants of the same product" required 3 separate design systems, that would shove a legitimate, common need straight into the design-system paywall for something that isn't conceptually "another design system" — punishing normal use, not abuse.
 
@@ -119,11 +122,11 @@ Ten paywall candidates are on the table now (#1–#10 above). Not yet ranked aga
 
 - What does a "workspace" or "organization" concept look like on top of the current per-user `projects` model? Does a design system belong to a user or to a team?
 - Pricing shape: per-seat? Per-workspace with a seat cap? Flat team tier?
-- Does the free tier still get unlimited *solo* design systems (no collaborators), or does it stay capped at 1 and only collaboration unlocks more? (Given the copyability problem, capping solo usage at all may not be worth enforcing — the free tier could just be "unlimited local + 1 hosted/Studio-managed project," with paid unlocking more Studio-managed projects *and* collaboration.)
+- Does the free tier still get unlimited _solo_ design systems (no collaborators), or does it stay capped at 1 and only collaboration unlocks more? (Given the copyability problem, capping solo usage at all may not be worth enforcing — the free tier could just be "unlimited local + 1 hosted/Studio-managed project," with paid unlocking more Studio-managed projects _and_ collaboration.)
 - Figma sync: one-way (Figma → Chamfer) or two-way? Where do conflicts get resolved?
 - Theme schema shape: what exactly can a theme override (colors only, or fonts/spacing too)? How does theme switching interact with the existing light/dark `light-dark()` mechanism — is light/dark itself just "a theme," or a separate orthogonal axis every theme gets for free?
 - What does "shoring up the experience" concretely include before revisiting this? (Candidates so far this session: CI/CD verification against a real GitHub Actions run, remote D1 migration, sign-in/sign-up page redesign, `@greenflash/http-errors` migration.)
 
 ---
 
-*Last updated: 2026-07-09, captured from a planning conversation. Not an implementation plan — no code should be written against this until the direction is confirmed.*
+_Last updated: 2026-07-09, captured from a planning conversation. Not an implementation plan — no code should be written against this until the direction is confirmed._

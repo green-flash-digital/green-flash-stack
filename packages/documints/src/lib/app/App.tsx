@@ -1,7 +1,13 @@
 import { Suspense, lazy, useMemo } from "react";
 import { Link, Outlet, type RouteObject, useLocation } from "react-router";
-import "../../../.chamfer/_generated/root.css";
 
+import "../../../.chamfer/_generated/root.css";
+import type { ButteryDocsConfigHeader } from "../../config/_config.utils.js";
+import type {
+  ButteryDocsRouteManifestEntryDoc,
+  ButteryDocsRouteManifestGraphObject
+} from "../../utils/util.types.js";
+import { Meta } from "../meta/Meta.js";
 import { Layout } from "./components/Layout.js";
 import { LayoutBody } from "./components/LayoutBody.js";
 import { LayoutBodyBreadcrumb } from "./components/LayoutBodyBreadcrumb.js";
@@ -12,24 +18,14 @@ import { LayoutBodyTOC } from "./components/LayoutBodyTOC.js";
 import { LayoutHeader } from "./components/LayoutHeader.js";
 import { ButteryDocsRouteManifestGraphUtils } from "./utils/RouteGraph.js";
 
-import type {
-  ButteryDocsRouteManifestEntryDoc,
-  ButteryDocsRouteManifestGraphObject,
-} from "../../utils/util.types.js";
-import type { ButteryDocsConfigHeader } from "../../config/_config.utils.js";
-import { Meta } from "../meta/Meta.js";
-
-function createRoute(
-  route: ButteryDocsRouteManifestEntryDoc,
-  options: { isDocs: boolean }
-) {
+function createRoute(route: ButteryDocsRouteManifestEntryDoc, options: { isDocs: boolean }) {
   const Component = lazy(async () => {
     // Import the .(md|mdx) file as a component and collect
     // the other information that was supplied to it
     const {
       default: DocumentComponent,
       tableOfContents,
-      frontmatter,
+      frontmatter
     } = await route.importComponent();
 
     if (!options.isDocs) {
@@ -39,7 +35,7 @@ function createRoute(
             <Meta title={frontmatter.title as string | undefined} />
             <DocumentComponent />
           </>
-        ),
+        )
       };
     }
     return {
@@ -53,7 +49,7 @@ function createRoute(
             <LayoutBodyTOC tableOfContents={tableOfContents} />
           </>
         );
-      },
+      }
     };
   });
 
@@ -67,12 +63,12 @@ function createRoute(
       >
         <Component />
       </Suspense>
-    ),
+    )
   };
 }
 
 function DocsLayout({
-  routeModuleGraph,
+  routeModuleGraph
 }: {
   routeModuleGraph: ButteryDocsRouteManifestGraphUtils;
 }) {
@@ -96,18 +92,14 @@ function DocsLayout({
               return (
                 <li key={link.href}>
                   <Link to={link.href}>
-                    <LayoutBodyBreadcrumbText>
-                      {link.display}
-                    </LayoutBodyBreadcrumbText>
+                    <LayoutBodyBreadcrumbText>{link.display}</LayoutBodyBreadcrumbText>
                   </Link>
                 </li>
               );
             }
             return (
               <li key={link.href}>
-                <LayoutBodyBreadcrumbText dxIsActive>
-                  {link.display}
-                </LayoutBodyBreadcrumbText>
+                <LayoutBodyBreadcrumbText dxIsActive>{link.display}</LayoutBodyBreadcrumbText>
               </li>
             );
           })}
@@ -124,9 +116,7 @@ export function createButteryDocsRoutes(props: {
   routeDocs: ButteryDocsRouteManifestEntryDoc[];
   routeIndex: ButteryDocsRouteManifestEntryDoc;
 }): RouteObject[] {
-  const routeModuleGraph = new ButteryDocsRouteManifestGraphUtils(
-    props.routeGraph
-  );
+  const routeModuleGraph = new ButteryDocsRouteManifestGraphUtils(props.routeGraph);
 
   return [
     {
@@ -141,15 +131,13 @@ export function createButteryDocsRoutes(props: {
         {
           path: "/",
           index: true,
-          element: createRoute(props.routeIndex, { isDocs: false }).element,
+          element: createRoute(props.routeIndex, { isDocs: false }).element
         },
         {
           element: <DocsLayout routeModuleGraph={routeModuleGraph} />,
-          children: props.routeDocs.map((route) =>
-            createRoute(route, { isDocs: true })
-          ),
-        },
-      ],
-    },
+          children: props.routeDocs.map((route) => createRoute(route, { isDocs: true }))
+        }
+      ]
+    }
   ];
 }

@@ -6,25 +6,17 @@
 
 Removes the inclusion of the `@buttery/tokens/docs` CSS file since it is being built at build time and then statically supplied to the development server of the `@buttery/docs` app. This will fix a runtime error in DEV and PROD instances where the browser is looking for a file that doesn't exist.
 
-
-
 ## @buttery/docs (v0.2.8) <a name="0.2.8"></a>
 
 Upgrades `@buttery/docs` to use ReactRouter v7. This changeset is important in order to support the ongoing major releases of React Router and eventually React 19.
-
-
 
 ## @buttery/docs (v0.2.7) <a name="0.2.7"></a>
 
 Upgrades dependencies to their latest versions. No breaking changes.
 
-
-
 ## @buttery/docs (v0.2.6) <a name="0.2.6"></a>
 
 Builds the shared `App` of the `entry.client` and `entry.server` when the `@buttery/docs` library is built. This was necessary for ensuring that all styles and other assets were built and bundled for use in external packages / libraries. In addition, this allows for faster startup times since the main part of the app is already built and the modules are the only things that need to be resolved. That means layouts, routes, etc... are all prebuilt.
-
-
 
 ## @buttery/docs (v0.2.4) <a name="0.2.4"></a>
 
@@ -32,19 +24,13 @@ This changeset primarily focuses on changing some of the logic to resolve the bu
 
 In addition, a required configuration parameter was added to the script so the logLevel that was passed into into the script was then reflected in the `@buttery/core` logger. This allows us to debug the resolution of the buttery module at CLI runtime.
 
-
-
 ## @buttery/docs (v0.2.3) <a name="0.2.3"></a>
 
 Adds more logging to the `@buttery/docs` development package
 
-
-
 ## @buttery/docs (v0.2.2) <a name="0.2.2"></a>
 
 Adds CLI options to the `buttery docs dev|build|add` commands.
-
-
 
 ## @buttery/docs (v0.2.1) <a name="0.2.1"></a>
 
@@ -55,8 +41,6 @@ This changeset fixes some bugs with the bundling and transpilation of the assets
 - Organizes the docs in the CLI package
 - `@buttery/core` - Changes the to resolve files using `NodeNext` which requires file extensions on imports. This allows the CLI to reference barrel imports as well as singular file imports while running in a purely node context.
 - `@buttery/docs` - Re-loads the manifest and graph when files are added and changed by correctly invalidating the virtual modules.
-
-
 
 ## @buttery/docs (v0.2.0) <a name="0.2.0"></a>
 
@@ -72,15 +56,11 @@ It has support for an optional boolean argument `--template, -t` to create the n
 buttery docs add <relative-path-to-.buttery/docs> --template
 ```
 
-
-
 ## @buttery/docs (v0.1.4) <a name="0.1.4"></a>
 
 Removes `changeset` and adds `monoweave` to be able to version, release and manage changelogs for the monorepo using yarn modern (yarn berry).
 
 This changeset also adds some comments to the changelogs so `monoweave` has the ability to understand where it needs to add the changesets to each of the packages' changelogs.
-
-
 
 ## 0.1.2
 
@@ -102,9 +82,7 @@ This changeset also adds some comments to the changelogs so `monoweave` has the 
 
   ```ts
   // Get only the route paths
-  const routes = Object.values(bManifest).map(
-    (manifestEntry) => manifestEntry.routePath
-  );
+  const routes = Object.values(bManifest).map((manifestEntry) => manifestEntry.routePath);
 
   // try the route first
   if (routes.includes(pathname)) {

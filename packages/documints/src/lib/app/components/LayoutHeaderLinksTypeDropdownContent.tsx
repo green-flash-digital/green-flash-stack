@@ -1,5 +1,6 @@
-import { useMenuContext } from "@stratum-ui/react/menu";
 import { NavLink } from "react-router";
+
+import { useMenuContext } from "@stratum-ui/react/menu";
 
 import type { ButteryDocsConfigHeaderLinkTypeDropdown } from "../../../config/_config.utils.js";
 
