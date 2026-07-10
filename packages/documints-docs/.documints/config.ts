@@ -9,13 +9,14 @@ export default defineDocumintsConfig({
           type: "social",
           provider: "github",
           href: "https://github.com/green-flash-digital/green-flash-stack",
-          label: "GitHub",
-        },
-      ],
-    ],
+          label: "GitHub"
+        }
+      ]
+    ]
   },
   order: {
     guides: ["writing-docs", "configuration"],
-    reference: ["cli"],
+    reference: ["cli"]
   },
+  docs: "../content/**/*.doc.(md|mdx)"
 });

@@ -39,20 +39,22 @@ export function getDocumintsDirectories(_config: DocumintsConfig, dotDirPath: st
   const rootDir = path.dirname(dotDirPath);
   const packageRoot = getDocumintsPackageRoot();
   const appRoot = path.resolve(packageRoot, "./app");
-  const contentRoot = path.resolve(dotDirPath, "./content");
 
   const serverEntryFileName =
     process.env.NODE_ENV === "production" ? "entry.server.static.tsx" : "entry.server.tsx";
 
   return {
     /**
-     * The docs that are created and stored by the user. This is where
-     * they create their .doc.md|.doc.mdx files to then be built into
-     * the app.
+     * The anchor that the `docs` glob, each doc's `aliasPath`, and the
+     * `@docs` vite alias are all resolved relative to - the `.documints/`
+     * directory itself, not a fixed "content" subfolder. This is what lets
+     * `config.docs` point anywhere reachable via a relative path, including
+     * outside `.documints/` entirely (e.g. a sibling `content/` folder at
+     * the project root, one level up).
      */
     srcDocs: {
-      root: contentRoot,
-      public: path.resolve(contentRoot, "./_public")
+      root: dotDirPath,
+      public: path.resolve(dotDirPath, "./_public")
     },
     app: {
       root: appRoot,

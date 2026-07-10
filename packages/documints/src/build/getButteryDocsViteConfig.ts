@@ -104,10 +104,12 @@ function vitePluginButteryDocsVirtual(rConfig: ResolvedDocumintsConfig): VitePlu
     configureServer(server) {
       server.watcher.add(rConfig.dirs.srcDocs.root);
       server.watcher.on("all", (_event, path) => {
-        console.log(_event, path, path.startsWith(rConfig.dirs.srcDocs.root));
-        // Only process things inside docs directory
+        // Only process doc changes - not vite's own cache churn, which now
+        // lives under the same watched root since it's the .documints/
+        // directory itself, not a fixed "content" subfolder.
         if (!path.startsWith(rConfig.dirs.srcDocs.root)) return;
-        LOG.info("Detected changes in the .buttery/docs directory. Reloading...");
+        if (path.startsWith(rConfig.dirs.app.viteCacheDir)) return;
+        LOG.info("Detected changes in the docs directory. Reloading...");
 
         // Rebuild the static data
         LOG.debug("Rebuilding virtual modules");

@@ -15,6 +15,24 @@ export default defineDocumintsConfig({});
 
 An empty config is entirely valid - everything below is optional.
 
+## `docs`
+
+A glob pattern for finding your `.doc.md`/`.doc.mdx` files, resolved relative to
+`.documints/` itself - not a fixed "content" subfolder. The default,
+`"./content/**/*.doc.{md,mdx}"`, matches a `.documints/content/` folder. If you'd rather
+keep your docs somewhere else - a `content/` folder at your project root, for example -
+point `docs` there instead:
+
+```ts
+export default defineDocumintsConfig({
+  docs: "../content/**/*.doc.md",
+});
+```
+
+This is exactly what this site's own `.documints/config.ts` does - its content lives in a
+`content/` folder at the project root, a sibling of `.documints/`, rather than nested
+inside it.
+
 ## `header`
 
 Controls the site's header: a title, an optional logo, and links.

@@ -85,6 +85,14 @@ const butteryDocsConfigHeaderSchema = z.object({
 export type ButteryDocsConfigHeader = z.infer<typeof butteryDocsConfigHeaderSchema>;
 
 export const documintsConfigSchema = z.object({
+  /**
+   * A glob pattern for finding your `.doc.md`/`.doc.mdx` files, resolved
+   * relative to the `.documints/` directory. Defaults to
+   * `"./content/**\/*.doc.{md,mdx}"` - override this if you'd rather keep
+   * your docs somewhere else, e.g. a `content/` folder at your project root:
+   * `"../content/**\/*.doc.md"`.
+   */
+  docs: z.string().optional(),
   order: z.record(z.string(), z.string().array()).optional(),
   header: butteryDocsConfigHeaderSchema.optional()
 });

@@ -9448,6 +9448,7 @@ __metadata:
     esbuild: "npm:0.24.2"
     express: "npm:4.21.2"
     fizmoo: "workspace:*"
+    globby: "npm:16.2.0"
     gray-matter: "npm:4.0.3"
     immer: "npm:10.1.1"
     logarhythm: "workspace:*"

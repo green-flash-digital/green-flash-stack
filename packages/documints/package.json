@@ -64,6 +64,7 @@
     "esbuild": "0.24.2",
     "express": "4.21.2",
     "fizmoo": "workspace:*",
+    "globby": "16.2.0",
     "gray-matter": "4.0.3",
     "immer": "10.1.1",
     "logarhythm": "workspace:*",

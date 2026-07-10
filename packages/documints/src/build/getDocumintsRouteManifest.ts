@@ -1,6 +1,6 @@
-import { type Dirent, readdirSync } from "node:fs";
 import path from "node:path";
 
+import { globbySync } from "globby";
 import { printAsBullets } from "logarhythm";
 
 import type { ResolvedDocumintsConfig } from "../Documints.js";
@@ -12,11 +12,13 @@ import {
 } from "./getDocumentConfigFromFrontmatter.js";
 import { orderDocumintsRouteManifest } from "./orderDocumintsRouteManifest.js";
 
-const DOC_FILE_PATTERN = /\.doc\.mdx?$/;
-
-const shouldReadDirectory = (dirent: Dirent): boolean => {
-  return !dirent.name.startsWith(".") && dirent.name !== "_public";
-};
+/**
+ * Default glob, resolved relative to `.documints/`. Matches the same files
+ * the old fixed-directory walk did: any `.doc.md`/`.doc.mdx` file, anywhere
+ * under `.documints/content/`. Override via `config.docs` to search
+ * somewhere else entirely - see `documintsConfigSchema`.
+ */
+const DEFAULT_DOC_GLOB = "./content/**/*.doc.{md,mdx}";
 
 function slugify(text: string): string {
   return text
@@ -49,8 +51,8 @@ function getRoutePathFromFrontmatter(frontmatter: DocumintsFrontmatter): string 
 }
 
 /**
- * Recursively walks the docs content directory and discovers every `*.doc.md` /
- * `*.doc.mdx` file, wherever it's nested. Unlike the filesystem-driven routing
+ * Discovers every `.doc.md`/`.doc.mdx` file matching `config.docs` (or the
+ * default glob), wherever it's nested. Unlike the filesystem-driven routing
  * this replaces, a file's location on disk has no bearing on its route — only
  * its `title` frontmatter does.
  */
@@ -59,53 +61,48 @@ export function getDocumintsRouteManifest(
 ): ButteryDocsRouteManifest {
   const routeManifest: ButteryDocsRouteManifest = {};
 
-  function discoverDocs(dir: string) {
-    const dirents = readdirSync(dir, { withFileTypes: true });
+  const pattern = rConfig.config.docs ?? DEFAULT_DOC_GLOB;
+  LOG.debug(`Discovering docs matching "${pattern}" (from "${rConfig.dirs.srcDocs.root}")...`);
+  const matches = globbySync(pattern, {
+    cwd: rConfig.dirs.srcDocs.root,
+    absolute: true,
+    onlyFiles: true,
+    ignore: ["**/node_modules/**", "**/.git/**"]
+  });
 
-    for (const dirent of dirents) {
-      const direntFullPath = path.resolve(dirent.parentPath, dirent.name);
+  for (const direntFullPath of matches) {
+    // path.relative (not a naive string split) since globby's absolute paths
+    // don't necessarily string-match path.resolve()'s output exactly.
+    const aliasPath = `/${path.relative(rConfig.dirs.srcDocs.root, direntFullPath).split(path.sep).join("/")}`;
+    LOG.debug(`Creating manifest entry for doc: ${aliasPath}`);
 
-      if (dirent.isDirectory() && shouldReadDirectory(dirent)) {
-        LOG.debug(`Reading directory "${dirent.name}" for .doc files...`);
-        discoverDocs(direntFullPath);
-        continue;
-      }
+    const frontmatter = getDocumentConfigFromFrontmatter(aliasPath, direntFullPath);
+    const routePath = getRoutePathFromFrontmatter(frontmatter);
+    const titleSegments = frontmatter.title
+      .split("/")
+      .map((segment) => segment.trim())
+      .filter(Boolean);
+    const fileNameFormatted = titleSegments[titleSegments.length - 1] ?? frontmatter.title;
+    const routeSegments = routePath.split("/");
+    const fileName = routeSegments[routeSegments.length - 1] || "index";
 
-      if (!dirent.isFile() || !DOC_FILE_PATTERN.test(dirent.name)) continue;
-
-      const aliasPath = direntFullPath.split(rConfig.dirs.srcDocs.root)[1];
-      LOG.debug(`Creating manifest entry for doc: ${aliasPath}`);
-
-      const frontmatter = getDocumentConfigFromFrontmatter(aliasPath, direntFullPath);
-      const routePath = getRoutePathFromFrontmatter(frontmatter);
-      const titleSegments = frontmatter.title
-        .split("/")
-        .map((segment) => segment.trim())
-        .filter(Boolean);
-      const fileNameFormatted = titleSegments[titleSegments.length - 1] ?? frontmatter.title;
-      const routeSegments = routePath.split("/");
-      const fileName = routeSegments[routeSegments.length - 1] || "index";
-
-      if (routeManifest[routePath]) {
-        LOG.warn(
-          `Multiple docs resolve to the route "${routePath}":${printAsBullets([
-            routeManifest[routePath].aliasPath,
-            aliasPath
-          ])}\nThe later one will win. Give one of them a distinct "title" or "slug".`
-        );
-      }
-
-      routeManifest[routePath] = {
-        aliasPath,
-        fileName,
-        fileNameFormatted,
-        routePath,
-        root: routePath === "/"
-      };
+    if (routeManifest[routePath]) {
+      LOG.warn(
+        `Multiple docs resolve to the route "${routePath}":${printAsBullets([
+          routeManifest[routePath].aliasPath,
+          aliasPath
+        ])}\nThe later one will win. Give one of them a distinct "title" or "slug".`
+      );
     }
-  }
 
-  discoverDocs(rConfig.dirs.srcDocs.root);
+    routeManifest[routePath] = {
+      aliasPath,
+      fileName,
+      fileNameFormatted,
+      routePath,
+      root: routePath === "/"
+    };
+  }
 
   if (!rConfig.config.order) return routeManifest;
   LOG.debug("Detected an order to the docs... ordering the manifest.");
