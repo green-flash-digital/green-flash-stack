@@ -185,7 +185,7 @@ export default function Index() {
     <div className={styles}>
       <div className="wordmark">
         <img src="/images/chamfer-logo.png" alt="Chamfer logo" />
-        <span>chamfer-css</span>
+        <span>chamfer</span>
       </div>
       <p className="intro">
         Design tokens shouldn't be a leap of faith. Define your entire design system once — Chamfer
