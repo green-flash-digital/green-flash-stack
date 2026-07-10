@@ -8,9 +8,11 @@
     "access": "public"
   },
   "scripts": {
-    "build": "yarn typechecks && yarn lib:build && yarn fizmoo build",
+    "build": "yarn tokens:build && yarn typechecks && yarn lib:build && yarn fizmoo build",
     "dev": "yarn fizmoo dev",
     "typechecks": "tsc --project tsconfig.typechecks.json",
+    "tokens:build": "chamfer build",
+    "tokens:dev": "chamfer dev",
     "lib:build": "tsx ./scripts/lib.build.ts && yarn lib:types",
     "lib:types": "tsc --project tsconfig.library.types.json",
     "lib:dev": "yarn lib:build --watch",
@@ -41,9 +43,9 @@
     "./client": "./dist/lib/client/index.js",
     "./plugin-interactive-preview": "./dist/lib/plugin-interactive-preview/vite/index.js",
     "./plugin-interactive-preview/ui": "./dist/lib/plugin-interactive-preview/ui/index.js",
-    ".": "./dist/lib/index.js",
+    ".": "./dist/lib/index/index.js",
     "./app": "./dist/lib/app/index.js",
-    "./css": "./dist/lib/style.css"
+    "./css": "./dist/lib/documints.css"
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
@@ -51,9 +53,10 @@
     "@types/babel__core": "7.20.5",
     "@types/express": "5.0.0",
     "@types/node": "22.12.0",
-    "@types/react": "19.0.8",
-    "@types/react-dom": "19.0.3",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
     "@wyw-in-js/vite": "0.5.5",
+    "chamfer": "workspace:*",
     "rehype-parse": "9.0.1",
     "rehype-remark": "10.0.0",
     "remark-parse": "11.0.0",
@@ -83,8 +86,8 @@
     "immer": "10.1.1",
     "logarhythm": "workspace:*",
     "open": "10.1.0",
-    "react": "19.0.0",
-    "react-dom": "19.0.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "react-hook-primitives": "workspace:*",
     "rehype-autolink-headings": "7.1.0",
     "rehype-slug": "6.0.0",

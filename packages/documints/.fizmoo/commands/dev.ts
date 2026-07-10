@@ -30,6 +30,10 @@ export default defineCommand({
     },
   },
   action: async ({ options }) => {
+    // Must be set before createDocumints() resolves directories, since which
+    // server entry file gets picked (entry.server.static.tsx vs
+    // entry.server.tsx) depends on NODE_ENV at that point.
+    process.env.NODE_ENV = "development";
     const documints = await createDocumints({ autoInit: options["auto-init"] });
     if (!documints) return;
     await documints.dev({ port: options.port, host: options.host, open: options.open });

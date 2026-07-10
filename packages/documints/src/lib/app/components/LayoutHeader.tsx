@@ -3,7 +3,7 @@ import {
   makeCustom,
   makeFontWeight,
   makeRem,
-} from "@buttery/tokens/docs";
+} from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { FC } from "react";
 import { NavLink } from "react-router";
@@ -61,7 +61,7 @@ const divStyles = css`
   font-size: ${makeRem(16)};
   text-transform: uppercase;
   color: ${makeColor("neutral")};
-  font-weight: ${makeFontWeight("Source Sans 3-bold")};
+  font-weight: ${makeFontWeight("source-sans-3-bold")};
 `;
 
 export type LayoutHeaderProps = { header: ButteryDocsConfigHeader | undefined };

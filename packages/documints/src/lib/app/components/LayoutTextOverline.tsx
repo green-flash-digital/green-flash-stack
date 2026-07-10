@@ -1,10 +1,10 @@
-import { classes } from "@buttery/components";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeColor,
   makeFontWeight,
   makeRem,
   makeReset,
-} from "@buttery/tokens/docs";
+} from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { JSX } from "react";
 import { forwardRef } from "react";
@@ -16,7 +16,7 @@ export const layoutNavOverlineCSS = css`
   ${makeReset("anchor")};
   font-size: ${makeRem(12)};
   text-transform: uppercase;
-  font-weight: ${makeFontWeight("Source Sans 3-bold")};
+  font-weight: ${makeFontWeight("source-sans-3-bold")};
   color: ${makeColor("neutral-900")};
 `;
 

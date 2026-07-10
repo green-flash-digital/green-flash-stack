@@ -285,6 +285,7 @@ export class Documints {
           aliasPath: entry.aliasPath,
           vManifest: viteManifest,
           contentRoot: this._dirs.srcDocs.root,
+          viteRoot: this._dirs.app.root,
         });
         const outputPath = path.resolve(
           this._dirs.output.root,

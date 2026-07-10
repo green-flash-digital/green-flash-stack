@@ -4,7 +4,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset,
-} from "@buttery/tokens/docs";
+} from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { Toc as TableOfContents } from "@stefanprobst/rehype-extract-toc";
 import { type FC, type MouseEventHandler, useCallback, useMemo } from "react";
@@ -60,7 +60,7 @@ const ulStyles = css`
 
       &.active {
         color: ${makeColor("secondary")};
-        font-weight: ${makeFontWeight("Source Sans 3-semiBold")};
+        font-weight: ${makeFontWeight("source-sans-3-semiBold")};
       }
     }
   }

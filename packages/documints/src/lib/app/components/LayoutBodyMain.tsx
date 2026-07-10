@@ -3,7 +3,7 @@ import {
   makeCustom,
   makeRem,
   makeReset,
-} from "@buttery/tokens/docs";
+} from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { FC, ReactNode } from "react";
 

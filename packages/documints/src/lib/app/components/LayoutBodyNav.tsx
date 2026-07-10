@@ -4,7 +4,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset,
-} from "@buttery/tokens/docs";
+} from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { FC } from "react";
 import { NavLink } from "react-router";
@@ -48,7 +48,7 @@ const anchorOverlineCSS = css`
   &.active,
   &:hover {
     & > * {
-      font-weight: ${makeFontWeight("Source Sans 3-bold")};
+      font-weight: ${makeFontWeight("source-sans-3-bold")};
       color: ${makeColor("primary")};
     }
   }

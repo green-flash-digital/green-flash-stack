@@ -67,7 +67,7 @@ export function getDocumintsDirectories(
       appEntryServer: path.resolve(appRoot, serverEntryFileName),
       appEntryClient: path.resolve(appRoot, "./entry.client.tsx"),
       css: {
-        docsUI: path.resolve(packageRoot, "./dist/lib/style.css"),
+        docsUI: path.resolve(packageRoot, "./dist/lib/documints.css"),
       },
     },
     output: {

@@ -1,22 +1,23 @@
-import { useDropdownNav } from "@buttery/components";
+import { MenuController } from "@stratum-ui/react/menu";
+import { useState } from "react";
+import { css } from "@linaria/core";
+
+import { IconComponent } from "./icons/IconComponent.js";
+import type { LayoutHeaderLinksTypeDropdownState } from "./LayoutHeaderLinksTypeDropdownContent.js";
+
 import {
   makeColor,
   makeFontFamily,
   makeFontWeight,
   makeRem,
   makeReset,
-} from "@buttery/tokens/docs";
-import { css } from "@linaria/core";
-import { NavLink } from "react-router";
-
-import { IconComponent } from "./icons/IconComponent.js";
-
+} from "../../../../.chamfer/index.js";
 import type { ButteryDocsConfigHeaderLinkTypeDropdown } from "../../../config/_config.utils.js";
 
 const buttonStyles = css`
   ${makeReset("button")};
   font-size: ${makeRem(16)};
-  font-family: ${makeFontFamily("Source Sans 3")};
+  font-family: ${makeFontFamily("source-sans-3")};
   cursor: pointer;
 
   display: flex;
@@ -29,7 +30,7 @@ const buttonStyles = css`
 
   &.active {
     color: ${makeColor("primary")};
-    font-weight: ${makeFontWeight("Source Sans 3-bold")};
+    font-weight: ${makeFontWeight("source-sans-3-bold")};
   }
 `;
 
@@ -80,7 +81,7 @@ const dropdownStyles = css`
 
     a {
       ${makeReset("anchor")};
-      font-family: ${makeFontFamily("Source Sans 3")};
+      font-family: ${makeFontFamily("source-sans-3")};
       display: grid;
       grid-template-columns: ${makeRem(48)} auto;
       gap: ${makeRem(8)};
@@ -98,7 +99,7 @@ const dropdownStyles = css`
 
       .title {
         font-size: ${makeRem(16)};
-        font-weight: ${makeFontWeight("Source Sans 3-semiBold")};
+        font-weight: ${makeFontWeight("source-sans-3-semiBold")};
       }
 
       .sub-title {
@@ -121,36 +122,34 @@ const dropdownStyles = css`
 export function LayoutHeaderLinksTypeDropdown(
   props: ButteryDocsConfigHeaderLinkTypeDropdown
 ) {
-  const { setNavMenuRef, setTargetRef } = useDropdownNav({
-    dxOffset: 16,
-    dxPosition: "bottom-right",
-  });
+  const [menu] = useState(
+    () =>
+      new MenuController<LayoutHeaderLinksTypeDropdownState>({
+        load: () => import("./LayoutHeaderLinksTypeDropdownContent.js"),
+        className: dropdownStyles,
+        position: "bottom-right",
+        offset: 16,
+      })
+  );
 
   return (
     <>
-      <button type="button" ref={setTargetRef} className={buttonStyles}>
+      <menu.Render />
+      <button
+        type="button"
+        className={buttonStyles}
+        {...menu.preloadHandlers}
+        onClick={(e) =>
+          // `openPopover` only reads `e.currentTarget`, which React's
+          // SyntheticEvent sets correctly during the synchronous handler -
+          // this cast bridges a nominal-typing mismatch (SyntheticEvent
+          // doesn't structurally extend DOM Event), not a runtime concern.
+          menu.openPopover(e as unknown as Event, { items: props.items })
+        }
+      >
         {props.text}
         <IconComponent icon="arrow-down-stroke-rounded" ddSize={24} />
       </button>
-      <div ref={setNavMenuRef} className={dropdownStyles}>
-        <ul>
-          {props.items.map((item) => {
-            return (
-              <li key={item.href}>
-                <NavLink to={item.href}>
-                  <img src={item.iconSrc} alt={item.iconAlt} />
-                  <div>
-                    <div className="title">{item.text}</div>
-                    {item.subText && (
-                      <div className="sub-title">{item.subText}</div>
-                    )}
-                  </div>
-                </NavLink>
-              </li>
-            );
-          })}
-        </ul>
-      </div>
     </>
   );
 }

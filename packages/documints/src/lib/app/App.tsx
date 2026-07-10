@@ -1,6 +1,6 @@
 import { Suspense, lazy, useMemo } from "react";
 import { Link, Outlet, type RouteObject, useLocation } from "react-router";
-import "@buttery/tokens/docs/css";
+import "../../../.chamfer/_generated/root.css";
 
 import { Layout } from "./components/Layout.js";
 import { LayoutBody } from "./components/LayoutBody.js";

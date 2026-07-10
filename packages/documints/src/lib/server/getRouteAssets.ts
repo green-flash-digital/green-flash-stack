@@ -14,13 +14,15 @@ import { getCriticalViteChunks } from "./getCriticalViteChunks.js";
 export function getRouteAssets(
   routeId: string,
   vManifest: Manifest,
-  contentRoot: string
+  contentRoot: string,
+  viteRoot: string
 ) {
   // match the vite chunks with the documint's route
   const { viteChunkEntry, viteChunkRoute } = getCriticalViteChunks(
     routeId,
     vManifest,
-    contentRoot
+    contentRoot,
+    viteRoot
   );
 
   // gather css

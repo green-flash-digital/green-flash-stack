@@ -1,22 +1,26 @@
+import path from "node:path";
+
 import type { Manifest, ManifestChunk } from "vite";
 
 /**
  * Fetches the vite manifest entry that matches the supplied route ID (a doc's
- * `aliasPath`, relative to the content root). Vite's manifest keys are the
- * resolved absolute disk paths, so we normalize each key by stripping
- * everything up to and including `contentRoot` (an absolute path) to compare
- * against the manifest's own aliasPath-relative keys.
+ * `aliasPath`, relative to the content root). Vite manifest keys are paths
+ * *relative to vite's project root* (`app/`), not absolute paths, so we
+ * resolve each key against `viteRoot` and compare against the doc's own
+ * resolved absolute path instead of trying to string-match.
  */
 export function getCriticalViteChunks(
   routeId: string,
   vManifest: Manifest,
-  contentRoot: string
+  contentRoot: string,
+  viteRoot: string
 ) {
+  const targetPath = path.resolve(contentRoot, `.${routeId}`);
+
   const viteChunkRoute = Object.entries(vManifest).reduce<
     ManifestChunk | undefined
   >((accum, [entryKey, entryValue]) => {
-    const normalizedKey = entryKey.split(contentRoot)[1];
-    if (normalizedKey === routeId) {
+    if (path.resolve(viteRoot, entryKey) === targetPath) {
       return entryValue;
     }
     return accum;

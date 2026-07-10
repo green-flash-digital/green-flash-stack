@@ -1,4 +1,4 @@
-import { makeColor } from "@buttery/tokens/docs";
+import { makeColor } from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import React, { type ReactNode, useState } from "react";
 

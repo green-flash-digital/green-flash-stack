@@ -1,5 +1,5 @@
-import { classes } from "@buttery/components";
-import { makeColor, makeRem } from "@buttery/tokens/docs";
+import { classes } from "@green-flash/ts-utils/isomorphic";
+import { makeColor, makeRem } from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { JSX } from "react";
 import { forwardRef } from "react";

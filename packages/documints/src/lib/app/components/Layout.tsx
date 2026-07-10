@@ -1,16 +1,16 @@
-import { classes } from "@buttery/components";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeColor,
   makeCustom,
   makeFontFamily,
   makeRem,
-} from "@buttery/tokens/docs";
+} from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { JSX } from "react";
 import { forwardRef } from "react";
 
 export const bodyStyles = css`
-  font-family: ${makeFontFamily("Source Sans 3")};
+  font-family: ${makeFontFamily("source-sans-3")};
   margin: 0;
 
   display: grid;

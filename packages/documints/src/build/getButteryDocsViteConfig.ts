@@ -47,8 +47,6 @@ export function getButteryDocsViteConfig(rConfig: ResolvedDocumintsConfig) {
     optimizeDeps: {
       include: [
         "logarhythm",
-        "@buttery/components",
-        "@buttery/tokens/docs",
         "react",
         "react-dom",
         "react-dom/client",

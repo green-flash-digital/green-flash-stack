@@ -1,5 +1,5 @@
-import { classes } from "@buttery/components";
-import { makeColor, makeFontWeight, makeRem } from "@buttery/tokens/docs";
+import { classes } from "@green-flash/ts-utils/isomorphic";
+import { makeColor, makeFontWeight, makeRem } from "../../../../.chamfer/index.js";
 import { css } from "@linaria/core";
 import type { FC } from "react";
 import { NavLink } from "react-router";
@@ -52,7 +52,7 @@ const anchorCss = css`
   &.active {
     background: ${makeColor("primary-300", { opacity: 0.2 })};
     color: ${makeColor("primary")};
-    font-weight: ${makeFontWeight("Source Sans 3-semiBold")};
+    font-weight: ${makeFontWeight("source-sans-3-semiBold")};
   }
   &:not(.active) {
     &:hover {
@@ -60,7 +60,7 @@ const anchorCss = css`
         opacity: 0.2,
       })};
       color: ${makeColor("primary")};
-      font-weight: ${makeFontWeight("Source Sans 3-semiBold")};
+      font-weight: ${makeFontWeight("source-sans-3-semiBold")};
     }
   }
 `;

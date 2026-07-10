@@ -54,16 +54,12 @@ async function buildLibrary() {
         rollupOptions: {
           external: [
             ...Object.keys(packageJson.dependencies),
-            "@buttery/tokens",
-            "@buttery/meta/react",
             "documints/css",
             "documints/app",
             "documints/server",
             "documints/client",
             "documints/plugin-interactive-preview/vite",
             "documints/plugin-interactive-preview/ui",
-            "@buttery/core",
-            "@buttery/core/utils/isomorphic",
             "react/jsx-runtime",
             "react-dom/server",
             "virtual:data",
