@@ -32,8 +32,8 @@ import {
 import { getDocumintRouteGraph } from "./build/getDocumintRouteGraph.js";
 import { resolveDocumintsHeader } from "./build/resolveDocumintsHeader.js";
 import { documintsConfigSchema, type DocumintsConfig } from "./config/_config.utils.js";
-import { handleRequestDev } from "./lib/server.dev/index.js";
-import { renderRouteToHTML } from "./lib/server.static/index.js";
+import { handleRequestDev } from "./server.dev/index.js";
+import { renderRouteToHTML } from "./server.static/index.js";
 import { LOG } from "./utils/util.logger.js";
 import { slugify } from "./utils/util.slugify.js";
 import type { DocumintRouteManifest, DocumintRouteManifestEntry } from "./utils/util.types.js";

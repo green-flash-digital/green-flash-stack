@@ -8,7 +8,7 @@ import type {
   DocumintResolvedHeader
 } from "@documints/core";
 
-import { Meta } from "../meta/Meta.js";
+import { DocumintsMetaComponent } from "./components/DocumintsMetaComponent.js";
 import { Layout } from "./components/Layout.js";
 import { LayoutBody } from "./components/LayoutBody.js";
 import { LayoutBodyBreadcrumb } from "./components/LayoutBodyBreadcrumb.js";
@@ -29,7 +29,7 @@ function createRoute(route: DocumintRouteManifestEntryDoc, options: { isDocs: bo
       return {
         default: () => (
           <>
-            <Meta title={route.fileNameFormatted} />
+            <DocumintsMetaComponent title={route.fileNameFormatted} />
             <DocumentComponent />
           </>
         )
@@ -39,7 +39,7 @@ function createRoute(route: DocumintRouteManifestEntryDoc, options: { isDocs: bo
       default: () => {
         return (
           <>
-            <Meta title={route.fileNameFormatted} />
+            <DocumintsMetaComponent title={route.fileNameFormatted} />
             <LayoutBodyMain>
               <DocumentComponent />
             </LayoutBodyMain>
