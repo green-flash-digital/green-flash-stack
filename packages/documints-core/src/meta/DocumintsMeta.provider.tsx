@@ -1,6 +1,6 @@
 import { createContext, useContext, useRef, type ReactNode } from "react";
 
-import { DocumintsMeta } from "../../src/meta/DocumintsMeta.js";
+import { DocumintsMeta } from "./DocumintsMeta.js";
 
 const DocumintsMetaContext = createContext<DocumintsMeta | null>(null);
 

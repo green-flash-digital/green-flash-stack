@@ -3,7 +3,7 @@ import { type RouteObject, RouterProvider, createBrowserRouter } from "react-rou
 
 import ReactDOMClient from "react-dom/client";
 
-import { DocumintsMetaProvider } from "./components/DocumintsMeta.provider.js";
+import { DocumintsMetaProvider } from "../src/meta/DocumintsMeta.provider.js";
 import { routes } from "./routes.js";
 
 ReactDOMClient.hydrateRoot(

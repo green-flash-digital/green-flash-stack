@@ -5,7 +5,7 @@ import type { DocumintResolvedHeaderLink } from "@documints/core";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 
-import { makeColor, makeFontWeight, makeRem, makeReset } from "../../../../.chamfer/index.js";
+import { makeColor, makeFontWeight, makeRem, makeReset } from "../../.chamfer/index.js";
 import { IconComponent } from "./icons/IconComponent.js";
 import { LayoutHeaderLinksTypeDropdown } from "./LayoutHeaderLinksTypeDropdown.js";
 

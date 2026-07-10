@@ -6,7 +6,7 @@ import {
 } from "react-router";
 
 import { type DocumintsMeta } from "../meta/DocumintsMeta.js";
-import { DocumintsMetaProvider } from "../meta/DocumintsMetaProvider.js";
+import { DocumintsMetaProvider } from "../meta/DocumintsMeta.provider.js";
 
 export type DocumintServerContext = {
   route: string;

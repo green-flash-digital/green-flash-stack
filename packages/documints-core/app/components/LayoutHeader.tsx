@@ -4,7 +4,7 @@ import { NavLink } from "react-router";
 import type { DocumintResolvedHeader } from "@documints/core";
 import { css } from "@linaria/core";
 
-import { makeColor, makeCustom, makeFontWeight, makeRem } from "../../../../.chamfer/index.js";
+import { makeColor, makeCustom, makeFontWeight, makeRem } from "../../.chamfer/index.js";
 import { LayoutHeaderLinks } from "./LayoutHeaderLinks.js";
 
 const layoutHeaderStyles = css`

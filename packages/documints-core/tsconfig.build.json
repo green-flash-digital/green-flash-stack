@@ -9,5 +9,5 @@
     "declarationMap": true
   },
   "include": ["./src"],
-  "exclude": ["./src/lib/app", "./src/lib/plugin-interactive-preview", "./src/lib/client"]
+  "exclude": ["./src/plugin-interactive-preview"]
 }

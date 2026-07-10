@@ -24,7 +24,6 @@
     "./server": "./dist/lib/server/index.js",
     "./server.dev": "./dist/lib/server.dev/index.js",
     "./server.static": "./dist/lib/server.static/index.js",
-    "./client": "./dist/lib/client/index.js",
     "./plugin-interactive-preview": "./dist/lib/plugin-interactive-preview/vite/index.js",
     "./plugin-interactive-preview/ui": "./dist/lib/plugin-interactive-preview/ui/index.js",
     "./app": "./dist/lib/app/index.js",

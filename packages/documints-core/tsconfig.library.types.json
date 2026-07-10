@@ -9,12 +9,16 @@
     "emitDeclarationOnly": true
   },
   "include": [
-    "src/lib/server",
-    "src/lib/server.dev/index.ts",
-    "src/lib/server.static/index.ts",
-    "src/lib/plugin-interactive-preview",
-    "src/lib/client",
-    "src/lib/app",
-    "src/lib/index.ts"
+    "src/server",
+    "src/server.dev/index.ts",
+    "src/server.static/index.ts",
+    "src/plugin-interactive-preview",
+    "app"
+  ],
+  "exclude": [
+    "app/entry.client.tsx",
+    "app/entry.server.tsx",
+    "app/entry.server.static.tsx",
+    "app/routes.ts"
   ]
 }

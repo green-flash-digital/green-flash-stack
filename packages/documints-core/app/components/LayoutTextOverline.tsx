@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
-import { makeColor, makeFontWeight, makeRem, makeReset } from "../../../../.chamfer/index.js";
+import { makeColor, makeFontWeight, makeRem, makeReset } from "../../.chamfer/index.js";
 
 export type LayoutTextOverlinePropsNative = JSX.IntrinsicElements["div"];
 export type LayoutTextOverlineProps = LayoutTextOverlinePropsNative;

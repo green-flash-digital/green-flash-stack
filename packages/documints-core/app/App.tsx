@@ -1,7 +1,7 @@
 import { Suspense, lazy, useMemo } from "react";
 import { Link, Outlet, type RouteObject, useLocation } from "react-router";
 
-import "../../../.chamfer/_generated/root.css";
+import "../.chamfer/_generated/root.css";
 import type {
   DocumintRouteManifestEntryDoc,
   DocumintRouteManifestGraphObject,

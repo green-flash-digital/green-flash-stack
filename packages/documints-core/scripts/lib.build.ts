@@ -19,20 +19,22 @@ import packageJson from "../package.json" with { type: "json" };
  */
 async function buildLibrary() {
   LOG.debug("Building the documints library for consumption in the SSR app...");
-  const libBasePath = path.resolve(import.meta.dirname, "../src/lib/");
+  const packageRoot = path.resolve(import.meta.dirname, "..");
 
-  const entry = [
-    "client",
-    "app",
-    "server",
-    "server.dev",
-    "server.static",
-    "plugin-interactive-preview/vite",
-    "plugin-interactive-preview/ui"
-  ].reduce((accum, entryName) => {
-    const entryPath = path.resolve(libBasePath, `${entryName}/index.ts`);
-    return Object.assign(accum, { [entryName]: entryPath });
-  }, {});
+  const entry = {
+    app: path.resolve(packageRoot, "app/index.ts"),
+    server: path.resolve(packageRoot, "src/server/index.ts"),
+    "server.dev": path.resolve(packageRoot, "src/server.dev/index.ts"),
+    "server.static": path.resolve(packageRoot, "src/server.static/index.ts"),
+    "plugin-interactive-preview/vite": path.resolve(
+      packageRoot,
+      "src/plugin-interactive-preview/vite/index.ts"
+    ),
+    "plugin-interactive-preview/ui": path.resolve(
+      packageRoot,
+      "src/plugin-interactive-preview/ui/index.ts"
+    )
+  };
 
   try {
     const config = defineConfig({
@@ -40,10 +42,7 @@ async function buildLibrary() {
       build: {
         lib: {
           formats: ["es"],
-          entry: {
-            index: path.resolve(libBasePath, "./index.ts"),
-            ...entry
-          },
+          entry,
           fileName(_format, entryName) {
             return `${entryName}/index.js`;
           }
@@ -54,7 +53,6 @@ async function buildLibrary() {
             "@documints/core/css",
             "@documints/core/app",
             "@documints/core/server",
-            "@documints/core/client",
             "@documints/core/plugin-interactive-preview/vite",
             "@documints/core/plugin-interactive-preview/ui",
             "react/jsx-runtime",
