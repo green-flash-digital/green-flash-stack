@@ -4,7 +4,7 @@ import remarkGfm from "remark-gfm";
 import remarkParse from "remark-parse";
 import { unified } from "unified";
 import { visit } from "unist-util-visit";
-import { tryHandle } from "@buttery/utils/isomorphic";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
 import { fetchGitLabRepoBlob } from "./fetch-gitlab-repo-blob.js";
 import type { GitLabRepoTreeNode } from "./types.js";

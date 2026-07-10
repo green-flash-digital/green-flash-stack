@@ -1,8 +1,8 @@
 import path from "node:path";
 
 import type { ButteryConfigPaths } from "@buttery/core/config";
-import { findDirectoryUpwards } from "@buttery/utils/node";
-import type { ButteryLogLevel } from "@buttery/logs";
+import type { LogarhythmLogLevel } from "logarhythm";
+import { findDirectoryUpwards } from "@green-flash/ts-utils/node";
 import { getNodeModulesButteryOutputDir } from "@buttery/core/utils";
 
 import type { ButteryDocsConfig } from "./_config.utils.js";
@@ -16,7 +16,7 @@ import { LOG } from "../utils/util.logger.js";
 export async function getButteryDocsDirectories(
   config: ButteryDocsConfig,
   paths: ButteryConfigPaths,
-  { logLevel }: { logLevel: ButteryLogLevel }
+  { logLevel }: { logLevel: LogarhythmLogLevel }
 ) {
   LOG.checkpointStart("resolve docs dir");
 
@@ -52,7 +52,7 @@ export async function getButteryDocsDirectories(
     "./docs/dist/lib/style.css"
   );
 
-  LOG.checkpointEnd("resolve docs dir");
+  LOG.checkpointEnd();
 
   return {
     /**

@@ -20,7 +20,7 @@ import { LOG } from "../src/utils/util.logger.js";
  */
 async function buildLibrary() {
   LOG.debug(
-    "Building the @buttery/docs library for consumption in the SSR app..."
+    "Building the documints library for consumption in the SSR app..."
   );
   const libBasePath = path.resolve(import.meta.dirname, "../src/lib/");
 
@@ -56,15 +56,14 @@ async function buildLibrary() {
             ...Object.keys(packageJson.dependencies),
             "@buttery/tokens",
             "@buttery/meta/react",
-            "@buttery/docs/css",
-            "@buttery/docs/app",
-            "@buttery/docs/server",
-            "@buttery/docs/client",
-            "@buttery/docs/plugin-interactive-preview/vite",
-            "@buttery/docs/plugin-interactive-preview/ui",
+            "documints/css",
+            "documints/app",
+            "documints/server",
+            "documints/client",
+            "documints/plugin-interactive-preview/vite",
+            "documints/plugin-interactive-preview/ui",
             "@buttery/core",
             "@buttery/core/utils/isomorphic",
-            "@buttery/logs",
             "react/jsx-runtime",
             "react-dom/server",
             "virtual:data",
@@ -95,11 +94,11 @@ async function buildLibrary() {
     await viteBuild(config);
 
     LOG.debug(
-      "Building the @buttery/docs library for consumption in the SSR app... done."
+      "Building the documints library for consumption in the SSR app... done."
     );
   } catch (error) {
     throw LOG.fatal(
-      new Error(`Error when building the @buttery/docs library: ${error}`)
+      new Error(`Error when building the documints library: ${error}`)
     );
   }
 }

@@ -2,7 +2,7 @@ import path from "node:path";
 import { readFile, writeFile } from "node:fs/promises";
 
 import { parseAndValidateOptions } from "@buttery/core/utils";
-import { tryHandle } from "@buttery/utils/isomorphic";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 import { confirm, input, select } from "@inquirer/prompts";
 
 

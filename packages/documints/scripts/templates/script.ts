@@ -1,7 +1,7 @@
 import { writeFile } from "node:fs/promises";
 import path from "node:path";
 
-import { tryHandle } from "@buttery/utils/isomorphic";
+import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 
 import { fetchGitLabRepoBlob } from "./fetch-gitlab-repo-blob.js";
 import { fetchGitLabRepoTree } from "./fetch-gitlab-repo-tree.js";

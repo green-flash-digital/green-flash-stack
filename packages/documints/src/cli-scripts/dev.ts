@@ -21,7 +21,7 @@ export async function dev(options?: Partial<ButteryDocsDevOptions>) {
   );
   LOG.level = parsedOptions.logLevel;
 
-  LOG.info("Starting @buttery/docs DevServer...");
+  LOG.info("Starting documints DevServer...");
 
   // Process and store configurations
   const rConfig = await getButteryDocsConfig({
@@ -79,7 +79,7 @@ export async function dev(options?: Partial<ButteryDocsDevOptions>) {
   });
 
   app.listen(PORT, () => {
-    LOG.watch(`@buttery/docs DevServer running on ${HOSTNAME_AND_PORT}`);
+    LOG.watch(`documints DevServer running on ${HOSTNAME_AND_PORT}`);
 
     // Open the DevServer if it has been configured to do so
     if (!parsedOptions.open) return;

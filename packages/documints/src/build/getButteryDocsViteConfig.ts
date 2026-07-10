@@ -46,7 +46,7 @@ export function getButteryDocsViteConfig(rConfig: ResolvedButteryDocsConfig) {
     },
     optimizeDeps: {
       include: [
-        "@buttery/logs",
+        "logarhythm",
         "@buttery/components",
         "@buttery/tokens/docs",
         "react",

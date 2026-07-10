@@ -1,6 +1,6 @@
 import ReactDOMClient from "react-dom/client";
 
-import { ButteryDocsClient } from "@buttery/docs/client";
+import { ButteryDocsClient } from "documints/client";
 
 import { routes } from "./routes.js";
 

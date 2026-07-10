@@ -25,7 +25,7 @@ export async function build(options?: ButteryDocsBuildOptions) {
   LOG.level = parsedOptions.logLevel;
 
   // Process and store configurations
-  LOG.loadingStart("Building @buttery/docs");
+  LOG.loadingStart("Building documints");
   const rConfig = await getButteryDocsConfig({
     prompt: parsedOptions.prompt,
     logLevel: parsedOptions.logLevel,

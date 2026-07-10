@@ -1,7 +1,7 @@
 import fs from "node:fs";
 import path from "node:path";
 
-import { exhaustiveMatchGuard } from "@buttery/utils/isomorphic";
+import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 import type { Plugin } from "vite";
 
 type VitePluginButteryDocsInteractivePreviewOptions = {
@@ -77,7 +77,7 @@ export function vitePluginButteryDocsInteractivePreview(
           case "interactive":
             return `
 
-import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "@buttery/docs/plugin-interactive-preview/ui";
+import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "documints/plugin-interactive-preview/ui";
 import { ${params.export} as Component${matchNum} } from "${transformedPath}";
 
 <InteractivePreviewComponent${matchNum}>

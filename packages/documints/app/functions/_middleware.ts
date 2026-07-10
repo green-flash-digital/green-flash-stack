@@ -4,7 +4,7 @@ import type { Manifest } from "vite";
 import {
   type CFContext,
   handleRequestCloudflarePages,
-} from "@buttery/docs/server.cloudflare-pages";
+} from "documints/server.cloudflare-pages";
 
 import type { ButteryDocsRouteManifest } from "../../src/utils/util.types.js";
 // @ts-expect-error This will only exist when the app is built

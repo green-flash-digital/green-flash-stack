@@ -1,8 +1,7 @@
-import { ButteryLogger } from "@buttery/logs";
+import { Logarhythm } from "logarhythm";
 
-export const LOG_SERVER = new ButteryLogger({
-  id: "buttery-docs",
-  prefix: "buttery:docs:server",
-  prefixBgColor: "#812c8d",
+export const LOG_SERVER = new Logarhythm({
+  name: "documints:server",
+  pillColor: "#812c8d",
   logLevel: "debug",
 });
