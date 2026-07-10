@@ -8297,15 +8297,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"documints-docs@workspace:packages/documints-docs":
-  version: 0.0.0-use.local
-  resolution: "documints-docs@workspace:packages/documints-docs"
-  dependencies:
-    documints: "workspace:*"
-  languageName: unknown
-  linkType: soft
-
-"documints@workspace:*, documints@workspace:packages/documints":
+"documints@workspace:packages/documints":
   version: 0.0.0-use.local
   resolution: "documints@workspace:packages/documints"
   dependencies:

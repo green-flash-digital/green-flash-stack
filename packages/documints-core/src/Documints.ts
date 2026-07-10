@@ -137,7 +137,6 @@ export class Documints {
    * directory found in the consuming project.
    */
   private static getDirectories(_config: DocumintsConfig, dotDirPath: string): DocumintsDirs {
-    const rootDir = path.dirname(dotDirPath);
     const packageRoot = Documints.getPackageRoot();
     const appRoot = path.resolve(packageRoot, "./app");
 
@@ -159,7 +158,7 @@ export class Documints {
         }
       },
       output: {
-        root: path.resolve(rootDir, "./dist"),
+        root: path.resolve(dotDirPath, "./static"),
         serverBundleDir: path.resolve(dotDirPath, "./.server-build")
       }
     };
@@ -222,7 +221,8 @@ export class Documints {
 
   /**
    * Interactively scaffolds a new `.documints/` project: the config file, a
-   * starter home-page doc, and a `.gitignore` for the vite cache.
+   * starter home-page doc, and a `.gitignore` for the vite cache, the
+   * server-only prerender bundle, and the built static site.
    */
   static async bootstrap(rootDir = process.cwd()): Promise<string> {
     const dotDir = path.resolve(rootDir, CONFIG_DIRNAME);
@@ -253,7 +253,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
     const welcomeRes = await tryHandle(writeFileRecursive)(welcomeDocPath, welcomeDocContent);
     if (welcomeRes.success === false) throw welcomeRes.error;
 
-    const gitignoreRes = await tryHandle(writeFileRecursive)(gitignorePath, ".vite-cache\n");
+    const gitignoreRes = await tryHandle(writeFileRecursive)(
+      gitignorePath,
+      ".vite-cache\n.server-build\nstatic\n"
+    );
     if (gitignoreRes.success === false) throw gitignoreRes.error;
 
     return configPath;

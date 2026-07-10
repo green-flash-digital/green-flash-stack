@@ -29,6 +29,8 @@
   "scripts": {
     "build": "yarn lib:build && yarn fizmoo build",
     "dev": "yarn fizmoo dev",
+    "docs:dev": "yarn build && yarn documints dev",
+    "docs:build": "yarn build && yarn documints build",
     "lib:build": "tsc --project tsconfig.build.json",
     "typechecks": "tsc --project tsconfig.typechecks.json"
   },
