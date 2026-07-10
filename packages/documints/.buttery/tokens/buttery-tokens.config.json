@@ -1,0 +1,117 @@
+{
+  "runtime": {
+    "namespace": "docs",
+    "prefix": "buttery-docs",
+    "strict": true,
+    "suppressStrictWarnings": false
+  },
+  "sizeAndSpace": {
+    "baseFontSize": 16,
+    "baselineGrid": 4,
+    "size": {
+      "variants": {
+        "dense": 24,
+        "normal": 36,
+        "big": 48
+      }
+    },
+    "space": {
+      "mode": "auto",
+      "variants": 20
+    }
+  },
+  "font": {
+    "source": "manual",
+    "families": {
+      "Source Sans 3": {
+        "fallback": "system-ui, \"Segoe UI\", Roboto, Helvetica, Arial, sans-serif, \"Apple Color Emoji\", \"Segoe UI Emoji\", \"Segoe UI Symbol\"",
+        "styles": [
+          "regular-400",
+          "medium-500",
+          "semiBold-600",
+          "bold-700"
+        ]
+      }
+    },
+    "variants": {
+      "body1": {
+        "family": "Source Sans 3",
+        "weight": "regular-400",
+        "size": 16,
+        "lineHeight": 1.3
+      },
+      "body2": {
+        "family": "Source Sans 3",
+        "weight": "medium-500",
+        "size": 14,
+        "lineHeight": 1.3
+      },
+      "overline": {
+        "family": "Source Sans 3",
+        "weight": "bold-700",
+        "size": 12,
+        "lineHeight": 1.3
+      }
+    }
+  },
+  "response": {
+    "breakpoints": {
+      "mobile": 480,
+      "tablet": 768,
+      "laptop": 1024,
+      "desktop": 1280,
+      "ultraWide": 1536
+    }
+  },
+  "color": {
+    "brand": {
+      "type": "jewel",
+      "colors": {
+        "primary": {
+          "hue": 38,
+          "variants": 10
+        },
+        "secondary": {
+          "hue": 168,
+          "variants": 10
+        },
+        "warning": {
+          "hue": 56,
+          "variants": 10
+        },
+        "danger": {
+          "hue": 360,
+          "variants": 10
+        }
+      },
+      "saturation": 83,
+      "brightness": 58
+    },
+    "neutral": {
+      "neutral": {
+        "hex": "#999999",
+        "variants": 10
+      },
+      "background": {
+        "hex": "#ffffff",
+        "variants": 1
+      },
+      "surface": {
+        "hex": "#ffffff",
+        "variants": 1
+      }
+    }
+  },
+  "custom": {
+    "layout-header-height": {
+      "type": "rem",
+      "value": 64,
+      "description": "The height of the header in the layout"
+    },
+    "layout-max-width": {
+      "type": "rem",
+      "value": 1440,
+      "description": "The max width that the layout of the docs can go"
+    }
+  }
+}

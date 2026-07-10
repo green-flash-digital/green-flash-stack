@@ -1,0 +1,73 @@
+{
+  "meta": {
+    "created_at": "2025-01-28T17:23:15.989Z"
+  },
+  "config": {
+    "runtime": {
+      "namespace": "docs",
+      "prefix": "docs",
+      "strict": true,
+      "suppressStrictWarnings": false
+    },
+    "sizeAndSpace": {
+      "baseFontSize": 16,
+      "baselineGrid": 4,
+      "size": {
+        "variants": {}
+      },
+      "space": {
+        "mode": "auto",
+        "variants": 11
+      }
+    },
+    "font": {
+      "source": "manual",
+      "families": {},
+      "variants": {}
+    },
+    "response": {
+      "breakpoints": {
+        "mobile": 480,
+        "tablet": 768,
+        "laptop": 1024,
+        "desktop": 1280,
+        "ultraWide": 1536
+      }
+    },
+    "color": {
+      "brand": {
+        "type": "jewel",
+        "colors": {
+          "brand1": {
+            "hue": 328,
+            "variants": [
+              "light",
+              "dark",
+              "variant-3"
+            ]
+          }
+        },
+        "saturation": 73,
+        "brightness": 56
+      },
+      "neutral": {
+        "grey-1": {
+          "hex": "#000000",
+          "variants": 10
+        }
+      }
+    },
+    "custom": {
+      "token_1": {
+        "type": "string",
+        "value": "testing",
+        "description": "token_description_1"
+      },
+      "token_2": {
+        "type": "string",
+        "value": "",
+        "description": "token_description_2"
+      }
+    }
+  }
+}

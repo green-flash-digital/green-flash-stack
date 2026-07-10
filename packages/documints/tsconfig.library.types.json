@@ -1,0 +1,20 @@
+{
+  "extends": "@buttery/tsconfig/library",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist",
+    "emitDeclarationOnly": true
+  },
+  "include": [
+    "src/lib/server",
+    "src/lib/server.dev/index.ts",
+    "src/lib/server.cloudflare-pages/index.ts",
+    "src/lib/plugin-interactive-preview",
+    "src/lib/client",
+    "src/lib/app",
+    "src/lib/index.ts"
+  ]
+}

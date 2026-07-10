@@ -1,0 +1,11 @@
+{
+  "extends": "@buttery/tsconfig/library",
+  "compilerOptions": {
+    "noEmit": false,
+    "outDir": "dist",
+    "declaration": true,
+    "declarationMap": true,
+    "declarationDir": "dist"
+  },
+  "include": ["src/cli-scripts/*.ts"]
+}

@@ -1,0 +1,12 @@
+{
+  "extends": "@buttery/tsconfig/library",
+  "compilerOptions": {
+    "lib": ["DOM", "DOM.Iterable", "ES2023"],
+    "noEmit": true,
+    "module": "NodeNext",
+    "moduleResolution": "NodeNext",
+    "types": ["@cloudflare/workers-types"],
+    "allowSyntheticDefaultImports": true
+  },
+  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"]
+}

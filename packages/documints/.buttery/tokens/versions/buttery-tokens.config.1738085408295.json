@@ -1,0 +1,89 @@
+{
+  "meta": {
+    "created_at": "2025-01-28T17:30:08.295Z"
+  },
+  "config": {
+    "runtime": {
+      "namespace": "docs",
+      "prefix": "buttery-docs",
+      "strict": true,
+      "suppressStrictWarnings": false
+    },
+    "sizeAndSpace": {
+      "baseFontSize": 16,
+      "baselineGrid": 4,
+      "size": {
+        "variants": {}
+      },
+      "space": {
+        "mode": "auto",
+        "variants": 11
+      }
+    },
+    "font": {
+      "source": "manual",
+      "families": {},
+      "variants": {}
+    },
+    "response": {
+      "breakpoints": {
+        "mobile": 480,
+        "tablet": 768,
+        "laptop": 1024,
+        "desktop": 1280,
+        "ultraWide": 1536
+      }
+    },
+    "color": {
+      "brand": {
+        "type": "jewel",
+        "colors": {
+          "primary": {
+            "hue": 38,
+            "variants": 10
+          },
+          "secondary": {
+            "hue": 168,
+            "variants": 10
+          },
+          "warning": {
+            "hue": 56,
+            "variants": 10
+          },
+          "danger": {
+            "hue": 360,
+            "variants": 10
+          }
+        },
+        "saturation": 83,
+        "brightness": 58
+      },
+      "neutral": {
+        "neutral": {
+          "hex": "#030305",
+          "variants": 10
+        },
+        "background": {
+          "hex": "#ffffff",
+          "variants": 1
+        },
+        "surface": {
+          "hex": "#ffffff",
+          "variants": 1
+        }
+      }
+    },
+    "custom": {
+      "layout-header-height": {
+        "type": "rem",
+        "value": 64,
+        "description": "The height of the header in the layout"
+      },
+      "layout-max-width": {
+        "type": "rem",
+        "value": 1440,
+        "description": "The max width that the layout of the docs can go"
+      }
+    }
+  }
+}
