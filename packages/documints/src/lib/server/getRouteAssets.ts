@@ -11,11 +11,16 @@ import { getCriticalViteChunks } from "./getCriticalViteChunks.js";
  * returning the .css path on the entry chunk and then recursively fetching
  * all of the imports for each nested vite chunk import.
  */
-export function getRouteAssets(routeId: string, vManifest: Manifest) {
-  // match the vite chunks with the buttery route
+export function getRouteAssets(
+  routeId: string,
+  vManifest: Manifest,
+  contentRoot: string
+) {
+  // match the vite chunks with the documint's route
   const { viteChunkEntry, viteChunkRoute } = getCriticalViteChunks(
     routeId,
-    vManifest
+    vManifest,
+    contentRoot
   );
 
   // gather css

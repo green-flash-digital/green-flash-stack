@@ -38,7 +38,7 @@ function getDocumintsPackageRoot(): string {
  * directory found in the consuming project.
  */
 export function getDocumintsDirectories(
-  config: DocumintsConfig,
+  _config: DocumintsConfig,
   dotDirPath: string
 ) {
   const rootDir = path.dirname(dotDirPath);
@@ -48,7 +48,7 @@ export function getDocumintsDirectories(
 
   const serverEntryFileName =
     process.env.NODE_ENV === "production"
-      ? `entry.server.${config.buildTarget}.tsx`
+      ? "entry.server.static.tsx"
       : "entry.server.tsx";
 
   return {
@@ -71,8 +71,14 @@ export function getDocumintsDirectories(
       },
     },
     output: {
+      /** The final, deployable static site - plain HTML/CSS/JS, servable anywhere. */
       root: path.resolve(rootDir, "./dist"),
-      bundleDir: path.resolve(rootDir, "./dist/build"),
+      /**
+       * Where the SSR bundle used to prerender each route gets built.
+       * Internal-only: never part of the deployed static output, and
+       * removed once the build finishes.
+       */
+      serverBundleDir: path.resolve(dotDirPath, "./.server-build"),
     },
   };
 }

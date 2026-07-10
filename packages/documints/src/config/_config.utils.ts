@@ -90,28 +90,6 @@ export type ButteryDocsConfigHeader = z.infer<
 >;
 
 export const documintsConfigSchema = z.object({
-  buildTarget: z.union([z.literal("cloudflare-pages"), z.literal("basic")]),
-  /**
-   * An optional key to further configure the routing
-   * of your docs application.
-   */
-  routing: z
-    .object({
-      /**
-       * Optionally add extra absolute paths to create pages with directories
-       * that are outside the local .buttery/docs folder. This is helpful
-       * when you have a mono-repo of multiple packages and want to co-locate
-       * their docs in their package, but only want to publish one buttery-docs site.
-       *
-       * The directories that are defined here will create new pages entries.
-       * - `routeName` is the name of the route that you wish to create. This will be the route that others will access this directory of docs at.
-       * - `path` is the absolute path where the docs are. Most often, this is in another .buttery/docs folder but it can be elsewhere
-       */
-      pageDirectories: z
-        .object({ routeName: z.string(), path: z.string() })
-        .array(),
-    })
-    .optional(),
   order: z.record(z.string(), z.string().array()).optional(),
   header: butteryDocsConfigHeaderSchema.optional(),
 });
@@ -120,8 +98,8 @@ export type DocumintsConfig = z.infer<typeof documintsConfigSchema> & {
   vitePlugins?:
     | ((params: {
         /**
-         * The directory that the .buttery/ directory resides in, typically the
-         * root of the package or repository
+         * The directory that the .documints/ directory resides in, typically
+         * the root of the package or repository
          */
         rootDir: string;
       }) => Plugin[])

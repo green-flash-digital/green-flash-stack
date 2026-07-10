@@ -14,8 +14,6 @@
     "lib:build": "tsx ./scripts/lib.build.ts && yarn lib:types",
     "lib:types": "tsc --project tsconfig.library.types.json",
     "lib:dev": "yarn lib:build --watch",
-    "pages:deploy": "cd ./.buttery/docs/dist && wrangler pages deploy ./build/client --project-name buttery-docs-cf",
-    "pages:dev": "cd ./.buttery/docs/dist && wrangler pages dev ./build/client",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
   },
@@ -39,7 +37,7 @@
   "exports": {
     "./server": "./dist/lib/server/index.js",
     "./server.dev": "./dist/lib/server.dev/index.js",
-    "./server.cloudflare-pages": "./dist/lib/server.cloudflare-pages/index.js",
+    "./server.static": "./dist/lib/server.static/index.js",
     "./client": "./dist/lib/client/index.js",
     "./plugin-interactive-preview": "./dist/lib/plugin-interactive-preview/vite/index.js",
     "./plugin-interactive-preview/ui": "./dist/lib/plugin-interactive-preview/ui/index.js",
@@ -48,7 +46,6 @@
     "./css": "./dist/lib/style.css"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "4.20250124.3",
     "@green-flash/tsconfig": "workspace:*",
     "@storybook/react": "8.5.2",
     "@types/babel__core": "7.20.5",

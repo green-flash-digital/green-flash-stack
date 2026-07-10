@@ -1,4 +1,4 @@
-import { access, cp, readdir, rm } from "node:fs/promises";
+import { access, readFile, readdir, rm } from "node:fs/promises";
 import path from "node:path";
 
 import { tryHandle } from "@green-flash/ts-utils/isomorphic";
@@ -14,6 +14,7 @@ import { getDocumintsRouteManifest } from "./build/getDocumintsRouteManifest.js"
 import { documintsConfigSchema, type DocumintsConfig } from "./config/_config.utils.js";
 import { getDocumintsDirectories, type DocumintsDirs } from "./config/getDocumintsDirectories.js";
 import { handleRequestDev } from "./lib/server.dev/handleRequest.dev.js";
+import { renderRouteToHTML } from "./lib/server.static/renderRouteToHTML.js";
 import { LOG } from "./utils/util.logger.js";
 
 const CONFIG_DIRNAME = ".documints";
@@ -91,9 +92,7 @@ export async function bootstrapDocumints(rootDir = process.cwd()) {
 
   const configContent = `import { defineDocumintsConfig } from "documints";
 
-export default defineDocumintsConfig({
-  buildTarget: "basic",
-});
+export default defineDocumintsConfig({});
 `;
 
   const welcomeDocContent = `---
@@ -249,11 +248,11 @@ export class Documints {
         build: {
           emptyOutDir: true,
           manifest: true,
-          outDir: path.resolve(this._dirs.output.bundleDir, "./client"),
+          outDir: this._dirs.output.root,
           rollupOptions: {
-            input: this._dirs.app.appEntryClient
-          }
-        }
+            input: this._dirs.app.appEntryClient,
+          },
+        },
       });
       LOG.debug("Building client bundle for production... done");
 
@@ -264,40 +263,47 @@ export class Documints {
         ...viteConfig,
         build: {
           emptyOutDir: true,
-          ssrManifest: true,
           ssr: this._dirs.app.appEntryServer,
-          outDir: path.resolve(this._dirs.output.bundleDir, "./server"),
+          outDir: this._dirs.output.serverBundleDir,
           rollupOptions: {
-            output: { entryFileNames: "server.js" }
-          }
-        }
+            output: { entryFileNames: "server.js" },
+          },
+        },
       });
       LOG.debug("Building server bundle for production... done");
 
-      const manifestPath = path.resolve(
-        this._dirs.output.bundleDir,
-        "./client/.documints/documints.manifest.json"
+      LOG.debug("Prerendering routes to static HTML...");
+      const viteManifestPath = path.resolve(this._dirs.output.root, "./.vite/manifest.json");
+      const viteManifest = JSON.parse(await readFile(viteManifestPath, "utf8"));
+      const { render } = await import(
+        `${path.resolve(this._dirs.output.serverBundleDir, "./server.js")}?t=${Date.now()}`
       );
-      LOG.debug("Writing documints manifest.json...");
-      const manifestRes = await tryHandle(writeFileRecursive)(
-        manifestPath,
-        JSON.stringify(routeManifest, null, 2)
-      );
-      if (manifestRes.success === false) throw manifestRes.error;
-      LOG.debug("Writing documints manifest.json... done.");
 
-      if (this._config.buildTarget === "cloudflare-pages") {
-        const functionsDir = path.resolve(this._dirs.app.root, "./functions");
-        await cp(functionsDir, path.resolve(this._dirs.output.root, "./functions"), {
-          recursive: true
+      for (const entry of Object.values(routeManifest)) {
+        const html = await renderRouteToHTML(render, {
+          routePath: entry.routePath,
+          aliasPath: entry.aliasPath,
+          vManifest: viteManifest,
+          contentRoot: this._dirs.srcDocs.root,
         });
+        const outputPath = path.resolve(
+          this._dirs.output.root,
+          `.${entry.routePath}/index.html`
+        );
+        const res = await tryHandle(writeFileRecursive)(outputPath, html);
+        if (res.success === false) throw res.error;
       }
+      LOG.debug("Prerendering routes to static HTML... done");
+
+      // The SSR bundle was only needed to prerender the routes above -
+      // it's never part of the deployed static output.
+      await rm(this._dirs.output.serverBundleDir, { recursive: true, force: true });
 
       LOG.checkpointEnd();
 
       const filesAndDirs = await readdir(this._dirs.output.root, {
         recursive: true,
-        withFileTypes: true
+        withFileTypes: true,
       });
       const files = filesAndDirs.filter((dirent) => dirent.isFile());
       LOG.success(`Successfully built documentation app!

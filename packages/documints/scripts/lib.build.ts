@@ -29,7 +29,7 @@ async function buildLibrary() {
     "app",
     "server",
     "server.dev",
-    "server.cloudflare-pages",
+    "server.static",
     "plugin-interactive-preview/vite",
     "plugin-interactive-preview/ui",
   ].reduce((accum, entryName) => {

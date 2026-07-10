@@ -11,7 +11,7 @@
   "include": [
     "src/lib/server",
     "src/lib/server.dev/index.ts",
-    "src/lib/server.cloudflare-pages/index.ts",
+    "src/lib/server.static/index.ts",
     "src/lib/plugin-interactive-preview",
     "src/lib/client",
     "src/lib/app",

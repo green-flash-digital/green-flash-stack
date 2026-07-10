@@ -1,17 +1,21 @@
 import type { Manifest, ManifestChunk } from "vite";
 
 /**
- * Fetches the vite manifest entry that matches the supplied route ID. Note that
- * the route ID is reconciled using the `getButteryRouteFromRequest`.
- * First normalize the key to match the relative path to the .buttery/docs
- * folder. From there we can loop through the viteManifest and fine the route
- * in the buttery manifest that matches the key of the vite manifest
+ * Fetches the vite manifest entry that matches the supplied route ID (a doc's
+ * `aliasPath`, relative to the content root). Vite's manifest keys are the
+ * resolved absolute disk paths, so we normalize each key by stripping
+ * everything up to and including `contentRoot` (an absolute path) to compare
+ * against the manifest's own aliasPath-relative keys.
  */
-export function getCriticalViteChunks(routeId: string, vManifest: Manifest) {
+export function getCriticalViteChunks(
+  routeId: string,
+  vManifest: Manifest,
+  contentRoot: string
+) {
   const viteChunkRoute = Object.entries(vManifest).reduce<
     ManifestChunk | undefined
   >((accum, [entryKey, entryValue]) => {
-    const normalizedKey = entryKey.split(".buttery/docs")[1];
+    const normalizedKey = entryKey.split(contentRoot)[1];
     if (normalizedKey === routeId) {
       return entryValue;
     }
