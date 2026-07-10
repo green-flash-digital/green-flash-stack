@@ -40,7 +40,7 @@ export function getButteryDocsVirtualModules(
   if (typeof routeIndex === "undefined") {
     throw LOG.fatal(
       new Error(
-        "Cannot find an '_index' route. Ensure that you have added an _index.(md|mdx) route inside of the '.buttery/docs' directory."
+        'Cannot find a home page. Ensure that one of your .doc.md/.doc.mdx files has "home: true" in its frontmatter.'
       )
     );
   }

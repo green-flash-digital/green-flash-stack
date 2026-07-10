@@ -11,7 +11,7 @@ import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { type Plugin as VitePlugin, defineConfig } from "vite";
 
-import { getButteryDocsRouteManifest } from "./getButteryDocsRouteManifest.js";
+import { getDocumintsRouteManifest } from "./getDocumintsRouteManifest.js";
 import type { ButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
 import { getButteryDocsVirtualModules } from "./getButteryDocsVirtualModules.js";
 
@@ -105,7 +105,7 @@ function vitePluginButteryDocsVirtual(
   // the virtual modules that will tell vite exactly where
   // the dynamic imports are. This allows us to get around the issue
   // where you can't supply the async import a dynamic path
-  let routeManifest = getButteryDocsRouteManifest(rConfig);
+  let routeManifest = getDocumintsRouteManifest(rConfig);
   let vModules = getButteryDocsVirtualModules(rConfig, routeManifest);
   const butteryVirtualModuleIds = Object.keys(vModules);
   const resolvedVModulePrefix = "\0";
@@ -124,7 +124,7 @@ function vitePluginButteryDocsVirtual(
 
         // Rebuild the static data
         LOG.debug("Rebuilding virtual modules");
-        routeManifest = getButteryDocsRouteManifest(rConfig);
+        routeManifest = getDocumintsRouteManifest(rConfig);
         vModules = getButteryDocsVirtualModules(rConfig, routeManifest);
 
         LOG.checkpointStart("Rebuild Virtual Modules");
@@ -172,7 +172,7 @@ function vitePluginButteryDocsVirtual(
           LOG.debug(`Invalidating vModule: ${viteVirtualModuleId}`);
           server.moduleGraph.invalidateModule(viteVirtualModule);
         }
-        LOG.checkpointEnd("Rebuild Virtual Modules");
+        LOG.checkpointEnd();
 
         // Force a full refresh
         server.ws.send({

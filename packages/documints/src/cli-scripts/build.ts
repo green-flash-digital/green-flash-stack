@@ -9,7 +9,7 @@ import { build as viteBuild } from "vite";
 import type { ButteryDocsBuildOptions } from "./_cli-scripts.utils.js";
 import { butteryDocsBuildOptionsSchema } from "./_cli-scripts.utils.js";
 
-import { getButteryDocsRouteManifest } from "../build/getButteryDocsRouteManifest.js";
+import { getDocumintsRouteManifest } from "../build/getDocumintsRouteManifest.js";
 import { getButteryDocsViteConfig } from "../build/getButteryDocsViteConfig.js";
 import { getButteryDocsConfig } from "../config/getButteryDocsConfig.js";
 import { LOG } from "../utils/util.logger.js";
@@ -32,7 +32,7 @@ export async function build(options?: ButteryDocsBuildOptions) {
   });
 
   const viteConfig = getButteryDocsViteConfig(rConfig);
-  const butteryManifest = getButteryDocsRouteManifest(rConfig);
+  const butteryManifest = getDocumintsRouteManifest(rConfig);
 
   try {
     LOG.debug("Building client bundle for production...");
