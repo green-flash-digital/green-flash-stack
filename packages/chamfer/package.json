@@ -1,5 +1,5 @@
 {
-  "name": "chamfer-css",
+  "name": "chamfer",
   "version": "0.3.6",
   "description": "The missing piece between a design specification and developer tooling — typed CSS design tokens with generated utilities.",
   "homepage": "https://github.com/chamfer-css/chamfer-css#readme",
@@ -12,9 +12,7 @@
     "type": "git",
     "url": "git+ssh://git@github.com/chamfer-css/chamfer-css.git"
   },
-  "bin": {
-    "chamfer": "./bin/index.js"
-  },
+  "bin": "./bin/index.js",
   "type": "module",
   "publishConfig": {
     "access": "public"

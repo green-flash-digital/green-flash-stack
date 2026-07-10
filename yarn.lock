@@ -7196,9 +7196,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"chamfer-css@workspace:packages/chamfer-cli":
+"chamfer@workspace:packages/chamfer":
   version: 0.0.0-use.local
-  resolution: "chamfer-css@workspace:packages/chamfer-cli"
+  resolution: "chamfer@workspace:packages/chamfer"
   dependencies:
     "@chamfer-css/core": "npm:0.3.6"
     "@chamfer-css/studio": "npm:0.3.6"

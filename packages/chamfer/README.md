@@ -1,9 +1,9 @@
-# chamfer-css
+# chamfer
 
 The CLI for [`@chamfer-css/core`](../core/README.md).
 
 ```sh
-npm install -g chamfer-css
+npm install -g chamfer
 ```
 
 ---
@@ -19,7 +19,7 @@ chamfer add       # scaffold new .chamfer/ assets
 
 ## How it works
 
-`chamfer-css` reads your `.chamfer/config.ts`, runs the build pipeline from `@chamfer-css/core`, and writes the generated files into `.chamfer/_generated/`. See the [`@chamfer-css/core` README](../core/README.md) for the full token definition API and customization options.
+`chamfer` reads your `.chamfer/config.ts`, runs the build pipeline from `@chamfer-css/core`, and writes the generated files into `.chamfer/_generated/`. See the [`@chamfer-css/core` README](../core/README.md) for the full token definition API and customization options.
 
 ---
 
