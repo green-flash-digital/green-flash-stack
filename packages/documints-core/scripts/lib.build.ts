@@ -1,11 +1,11 @@
 import path from "node:path";
 
+import { LOG } from "@documints/core";
 import react from "@vitejs/plugin-react";
 import wyw from "@wyw-in-js/vite";
 import { defineConfig, build as viteBuild } from "vite";
 
 import packageJson from "../package.json" with { type: "json" };
-import { LOG } from "../src/utils/util.logger.js";
 
 /**
  * Builds the library that the app uses for client and server components
@@ -14,8 +14,8 @@ import { LOG } from "../src/utils/util.logger.js";
  * This is done here since the components need to be built outside of the app.
  * the `wyw` plugin ignores any vite resolved IDs from node modules so we can't built
  * these styles when they're being sourced from node_modules. So we build them
- * using Vite here and then just import them much like we to the ButteryDocsServer
- * and ButteryDocsClient apps
+ * using Vite here and then just import them much like we to the DocumintServer
+ * and DocumintClient apps
  */
 async function buildLibrary() {
   LOG.debug("Building the documints library for consumption in the SSR app...");
@@ -51,12 +51,12 @@ async function buildLibrary() {
         rollupOptions: {
           external: [
             ...Object.keys(packageJson.dependencies),
-            "documints/css",
-            "documints/app",
-            "documints/server",
-            "documints/client",
-            "documints/plugin-interactive-preview/vite",
-            "documints/plugin-interactive-preview/ui",
+            "@documints/core/css",
+            "@documints/core/app",
+            "@documints/core/server",
+            "@documints/core/client",
+            "@documints/core/plugin-interactive-preview/vite",
+            "@documints/core/plugin-interactive-preview/ui",
             "react/jsx-runtime",
             "react-dom/server",
             "virtual:data",
@@ -67,7 +67,14 @@ async function buildLibrary() {
             /node_modules/
           ],
           output: {
-            dir: path.resolve(import.meta.dirname, "../dist/lib")
+            dir: path.resolve(import.meta.dirname, "../dist/lib"),
+            // Pin this explicitly rather than letting Rollup infer it from
+            // the package name - `getDirectories()`'s `app.css.docsUI` (in
+            // Documints.ts) hardcodes this exact filename.
+            assetFileNames: (assetInfo) =>
+              assetInfo.names?.some((name) => name.endsWith(".css"))
+                ? "documints.css"
+                : "[name][extname]"
             // preserveModules: true,
           }
         }

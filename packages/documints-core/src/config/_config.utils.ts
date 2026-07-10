@@ -1,16 +1,16 @@
 import type { Plugin } from "vite";
 import { z } from "zod";
 
-const butteryDocsConfigHeaderLinkTypeTextSchema = z.object({
+const DocumintConfigHeaderLinkTypeTextSchema = z.object({
   type: z.literal("text"),
   text: z.string(),
   href: z.string()
 });
-export type ButteryDocsConfigHeaderLinkTypeText = z.infer<
-  typeof butteryDocsConfigHeaderLinkTypeTextSchema
+export type DocumintConfigHeaderLinkTypeText = z.infer<
+  typeof DocumintConfigHeaderLinkTypeTextSchema
 >;
 
-const butteryDocsConfigHeaderLinkTypeSocialSchema = z.object({
+const DocumintConfigHeaderLinkTypeSocialSchema = z.object({
   type: z.literal("social"),
   provider: z.union([z.literal("github"), z.literal("discord")]),
   href: z.string(),
@@ -21,24 +21,23 @@ const butteryDocsConfigHeaderLinkTypeSocialSchema = z.object({
    */
   label: z.string()
 });
-export type ButteryDocsConfigHeaderLinkTypeSocial = z.infer<
-  typeof butteryDocsConfigHeaderLinkTypeSocialSchema
+export type DocumintConfigHeaderLinkTypeSocial = z.infer<
+  typeof DocumintConfigHeaderLinkTypeSocialSchema
 >;
 
-const butteryDocsConfigHeaderLinkTypeInternalSchema = z.object({
+const DocumintConfigHeaderLinkTypeInternalSchema = z.object({
   type: z.literal("internal"),
   text: z.string(),
   href: z.string()
 });
-export type ButteryDocsConfigHeaderLinkTypeInternal = z.infer<
-  typeof butteryDocsConfigHeaderLinkTypeInternalSchema
+export type DocumintConfigHeaderLinkTypeInternal = z.infer<
+  typeof DocumintConfigHeaderLinkTypeInternalSchema
 >;
 
-const butteryDocsConfigHeaderLinkTypeDropdownSchema = z.object({
+const DocumintConfigHeaderLinkTypeDropdownSchema = z.object({
   type: z.literal("dropdown"),
   text: z.string(),
-  items: butteryDocsConfigHeaderLinkTypeInternalSchema
-    .omit({ type: true })
+  items: DocumintConfigHeaderLinkTypeInternalSchema.omit({ type: true })
     .extend({
       subText: z.string().optional(),
       iconSrc: z.string().optional(),
@@ -46,11 +45,11 @@ const butteryDocsConfigHeaderLinkTypeDropdownSchema = z.object({
     })
     .array()
 });
-export type ButteryDocsConfigHeaderLinkTypeDropdown = z.infer<
-  typeof butteryDocsConfigHeaderLinkTypeDropdownSchema
+export type DocumintConfigHeaderLinkTypeDropdown = z.infer<
+  typeof DocumintConfigHeaderLinkTypeDropdownSchema
 >;
 
-const butteryDocsConfigHeaderLinkTypeSectionSchema = z.object({
+const DocumintConfigHeaderLinkTypeSectionSchema = z.object({
   type: z.literal("section"),
   /**
    * The `title` of a top-level doc section's index page (e.g. "Guides"),
@@ -60,22 +59,22 @@ const butteryDocsConfigHeaderLinkTypeSectionSchema = z.object({
    */
   title: z.string()
 });
-export type ButteryDocsConfigHeaderLinkTypeSection = z.infer<
-  typeof butteryDocsConfigHeaderLinkTypeSectionSchema
+export type DocumintConfigHeaderLinkTypeSection = z.infer<
+  typeof DocumintConfigHeaderLinkTypeSectionSchema
 >;
 
-const butteryDocsConfigHeaderLinkSchema = z.discriminatedUnion("type", [
-  butteryDocsConfigHeaderLinkTypeTextSchema,
-  butteryDocsConfigHeaderLinkTypeSocialSchema,
-  butteryDocsConfigHeaderLinkTypeInternalSchema,
-  butteryDocsConfigHeaderLinkTypeDropdownSchema,
-  butteryDocsConfigHeaderLinkTypeSectionSchema
+const DocumintConfigHeaderLinkSchema = z.discriminatedUnion("type", [
+  DocumintConfigHeaderLinkTypeTextSchema,
+  DocumintConfigHeaderLinkTypeSocialSchema,
+  DocumintConfigHeaderLinkTypeInternalSchema,
+  DocumintConfigHeaderLinkTypeDropdownSchema,
+  DocumintConfigHeaderLinkTypeSectionSchema
 ]);
-export type ButteryDocsConfigHeaderLink = z.infer<typeof butteryDocsConfigHeaderLinkSchema>;
+export type DocumintConfigHeaderLink = z.infer<typeof DocumintConfigHeaderLinkSchema>;
 
-const butteryDocsConfigHeaderLinksSchema = butteryDocsConfigHeaderLinkSchema.array();
+const DocumintConfigHeaderLinksSchema = DocumintConfigHeaderLinkSchema.array();
 
-const butteryDocsConfigHeaderSchema = z.object({
+const DocumintConfigHeaderSchema = z.object({
   /**
    * Adds a title in the upper left hand of the application
    */
@@ -95,21 +94,21 @@ const butteryDocsConfigHeaderSchema = z.object({
    * out to different external pages or to places inside of the
    * documents app
    */
-  links: butteryDocsConfigHeaderLinksSchema.array().optional()
+  links: DocumintConfigHeaderLinksSchema.array().optional()
 });
-export type ButteryDocsConfigHeader = z.infer<typeof butteryDocsConfigHeaderSchema>;
+export type DocumintConfigHeader = z.infer<typeof DocumintConfigHeaderSchema>;
 
 /**
  * The shape of a header link once `section` links have been resolved against
  * the route graph (see `resolveDocumintsHeader.ts`) - this is what's actually
  * serialized to the client, so it never needs to know about `section` links.
  */
-export type ButteryDocsResolvedHeaderLink = Exclude<
-  ButteryDocsConfigHeaderLink,
-  ButteryDocsConfigHeaderLinkTypeSection
+export type DocumintResolvedHeaderLink = Exclude<
+  DocumintConfigHeaderLink,
+  DocumintConfigHeaderLinkTypeSection
 >;
-export type ButteryDocsResolvedHeader = Omit<ButteryDocsConfigHeader, "links"> & {
-  links?: ButteryDocsResolvedHeaderLink[][];
+export type DocumintResolvedHeader = Omit<DocumintConfigHeader, "links"> & {
+  links?: DocumintResolvedHeaderLink[][];
 };
 
 export const documintsConfigSchema = z.object({
@@ -122,7 +121,7 @@ export const documintsConfigSchema = z.object({
    */
   docs: z.string().optional(),
   order: z.record(z.string(), z.string().array()).optional(),
-  header: butteryDocsConfigHeaderSchema.optional()
+  header: DocumintConfigHeaderSchema.optional()
 });
 
 export type DocumintsConfig = z.infer<typeof documintsConfigSchema> & {

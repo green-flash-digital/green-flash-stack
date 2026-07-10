@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+import type { DocumintConfigHeaderLinkTypeDropdown } from "@documints/core";
 import { css } from "@linaria/core";
 import { MenuController } from "@stratum-ui/react/menu";
 
@@ -10,7 +11,6 @@ import {
   makeRem,
   makeReset
 } from "../../../../.chamfer/index.js";
-import type { ButteryDocsConfigHeaderLinkTypeDropdown } from "../../../config/_config.utils.js";
 import { IconComponent } from "./icons/IconComponent.js";
 import type { LayoutHeaderLinksTypeDropdownState } from "./LayoutHeaderLinksTypeDropdownContent.js";
 
@@ -123,7 +123,7 @@ const dropdownStyles = css`
   }
 `;
 
-export function LayoutHeaderLinksTypeDropdown(props: ButteryDocsConfigHeaderLinkTypeDropdown) {
+export function LayoutHeaderLinksTypeDropdown(props: DocumintConfigHeaderLinkTypeDropdown) {
   const [menu] = useState(
     () =>
       new MenuController<LayoutHeaderLinksTypeDropdownState>({

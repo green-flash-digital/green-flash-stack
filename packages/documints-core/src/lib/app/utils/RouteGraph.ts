@@ -1,15 +1,16 @@
-import type { ButteryDocsRouteManifestGraphObject } from "../../../utils/util.types.js";
+import type { DocumintRouteManifestGraphObject } from "@documints/core";
+
 import { LOG } from "./LOG.js";
 
 /**
  * A collection of utilities to easily transact on the route manifest
  * graph to display and work with recursive data.
  */
-export class ButteryDocsRouteManifestGraphUtils {
-  private routeManifestGraph: ButteryDocsRouteManifestGraphObject;
+export class DocumintRouteManifestGraphUtils {
+  private routeManifestGraph: DocumintRouteManifestGraphObject;
   breadcrumbLinks: string[];
 
-  constructor(routeManifestGraph: ButteryDocsRouteManifestGraphObject) {
+  constructor(routeManifestGraph: DocumintRouteManifestGraphObject) {
     this.routeManifestGraph = routeManifestGraph;
     this.breadcrumbLinks = [];
   }
@@ -23,9 +24,9 @@ export class ButteryDocsRouteManifestGraphUtils {
    * render on the front-end, this function will return the graph node
    * that matches that browser route path
    */
-  getRouteGraphNodeByRoutePath(routePath: string): ButteryDocsRouteManifestGraphObject {
+  getRouteGraphNodeByRoutePath(routePath: string): DocumintRouteManifestGraphObject {
     const segments = routePath.split("/").filter(Boolean);
-    const routeGraphNode = segments.reduce<ButteryDocsRouteManifestGraphObject>(
+    const routeGraphNode = segments.reduce<DocumintRouteManifestGraphObject>(
       (accum, segment, i) => {
         if (accum[segment] && i < segments.length - 1) {
           return accum[segment].pages;
@@ -40,7 +41,7 @@ export class ButteryDocsRouteManifestGraphUtils {
 
     if (Object.values(routeGraphNode).length === 0) {
       throw LOG.fatal(
-        new Error(`Cannot locate a ButteryDocsRouteManifestGraph node for the path: ${routePath}`)
+        new Error(`Cannot locate a DocumintRouteManifestGraph node for the path: ${routePath}`)
       );
     }
 

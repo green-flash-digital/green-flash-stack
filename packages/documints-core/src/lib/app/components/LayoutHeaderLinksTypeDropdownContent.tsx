@@ -1,11 +1,10 @@
 import { NavLink } from "react-router";
 
+import type { DocumintConfigHeaderLinkTypeDropdown } from "@documints/core";
 import { useMenuContext } from "@stratum-ui/react/menu";
 
-import type { ButteryDocsConfigHeaderLinkTypeDropdown } from "../../../config/_config.utils.js";
-
 export type LayoutHeaderLinksTypeDropdownState = {
-  items: ButteryDocsConfigHeaderLinkTypeDropdown["items"];
+  items: DocumintConfigHeaderLinkTypeDropdown["items"];
 };
 
 export default function LayoutHeaderLinksTypeDropdownContent() {

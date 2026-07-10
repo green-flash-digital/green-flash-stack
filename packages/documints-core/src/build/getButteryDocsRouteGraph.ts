@@ -1,9 +1,9 @@
-import type {
-  ButteryDocsRouteManifest,
-  ButteryDocsRouteManifestGraphObject,
-  ButteryDocsRouteManifestEntry
-} from "../lib/index.js";
 import { LOG } from "../utils/util.logger.js";
+import type {
+  DocumintRouteManifest,
+  DocumintRouteManifestGraphObject,
+  DocumintRouteManifestEntry
+} from "../utils/util.types.js";
 
 /**
  * Takes the route manifest and recursively turns it into a graphical
@@ -18,11 +18,11 @@ import { LOG } from "../utils/util.logger.js";
  * that is needed to make routing and the things around them as clean as possible as well
  * as provide the ability to scale the manifest as needed.
  */
-export type ButteryDocsRouteManifestGraph = ReturnType<typeof getButteryDocsRouteGraph>;
-export function getButteryDocsRouteGraph(routeManifest: ButteryDocsRouteManifest) {
-  const graphObj: ButteryDocsRouteManifestGraphObject = {};
+export type DocumintRouteManifestGraph = ReturnType<typeof getDocumintRouteGraph>;
+export function getDocumintRouteGraph(routeManifest: DocumintRouteManifest) {
+  const graphObj: DocumintRouteManifestGraphObject = {};
 
-  function addRouteGraphNode(manifestEntry: ButteryDocsRouteManifestEntry) {
+  function addRouteGraphNode(manifestEntry: DocumintRouteManifestEntry) {
     const manifestEntrySegments = manifestEntry.routePath.split("/").filter(Boolean);
 
     let currentGraphObj = graphObj;

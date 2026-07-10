@@ -1,2 +1,2 @@
 export * from "./App.js";
-export { ButteryDocsRouteManifestGraphUtils } from "./utils/RouteGraph.js";
+export { DocumintRouteManifestGraphUtils } from "./utils/RouteGraph.js";

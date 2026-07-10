@@ -50,14 +50,14 @@
     "@ngneat/falso": "8.0.2",
     "@storybook/react-vite": "10.4.6",
     "@types/babel__core": "7.20.5",
-    "@types/node": "26.1.0",
+    "@types/node": "26.1.1",
     "@types/react": "19.2.17",
     "@types/react-dom": "19.2.3",
-    "@vitest/coverage-v8": "4.1.9",
-    "@wyw-in-js/vite": "2.1.3",
+    "@vitest/coverage-v8": "4.1.10",
+    "@wyw-in-js/vite": "2.1.4",
     "storybook": "10.4.6",
     "typescript": "6.0.3",
-    "vite": "8.1.2",
-    "vitest": "4.1.9"
+    "vite": "8.1.4",
+    "vitest": "4.1.10"
   }
 }

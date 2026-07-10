@@ -1,12 +1,12 @@
 import { Transform } from "node:stream";
 
+import type { DocumintsDirs } from "@documints/core";
 import type { Request, Response } from "express";
 import type { ViteDevServer } from "vite";
 
-import type { DocumintsDirs } from "../../config/getDocumintsDirectories.js";
 import { DocumintsMeta } from "../meta/DocumintsMeta.js";
-import type { ButteryDocsServerContext } from "../server/ButteryDocsServer.js";
-import type { createButteryDocsRenderToPipeableStream } from "../server/createRenderFnPipeableStream.js";
+import type { createDocumintRenderToPipeableStream } from "../server/createRenderFnPipeableStream.js";
+import type { DocumintServerContext } from "../server/DocumintServer.js";
 import { expressToWebRequest } from "../server/expressToWebRequest.js";
 import { generateHTMLTemplate } from "../server/generateHTMLTemplate.js";
 import { LOG_SERVER_DEV } from "./server-dev.utils.js";
@@ -14,7 +14,7 @@ import { LOG_SERVER_DEV } from "./server-dev.utils.js";
 const ABORT_DELAY = 10_000;
 
 export async function handleRequestDev(
-  render: ReturnType<typeof createButteryDocsRenderToPipeableStream>,
+  render: ReturnType<typeof createDocumintRenderToPipeableStream>,
   config: {
     req: Request;
     res: Response;
@@ -36,7 +36,7 @@ export async function handleRequestDev(
     LOG_SERVER_DEV.debug("Generating HTML template... done.");
 
     // Create the ButteryContext to pass to the render function
-    const butteryContext: ButteryDocsServerContext = {
+    const butteryContext: DocumintServerContext = {
       route: config.req.originalUrl,
       Meta
     };

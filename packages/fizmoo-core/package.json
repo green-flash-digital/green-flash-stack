@@ -33,14 +33,14 @@
     "esbuild": "0.28.1",
     "isoscribe": "0.2.0",
     "picocolors": "1.1.1",
-    "picomatch": "4.0.4",
+    "picomatch": "4.0.5",
     "zod": "4.4.3"
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "26.1.0",
+    "@types/node": "26.1.1",
     "@types/picomatch": "4.0.3",
-    "tsx": "4.22.4",
+    "tsx": "4.23.0",
     "typescript": "6.0.3"
   }
 }

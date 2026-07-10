@@ -1,11 +1,4 @@
 {
   "extends": "@green-flash/tsconfig/library",
-  "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2023"],
-    "noEmit": true,
-    "module": "NodeNext",
-    "moduleResolution": "NodeNext",
-    "allowSyntheticDefaultImports": true
-  },
-  "include": ["**/*.ts", "**/*.tsx", "**/*.d.ts"]
+  "include": ["src", ".fizmoo/**/*.ts"]
 }

@@ -1,0 +1,96 @@
+{
+  "name": "@documints/core",
+  "version": "0.1.0",
+  "description": "The core engine for documints: config resolution, doc discovery, route manifest building, vite dev/build orchestration, and the React/SSR rendering framework.",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drewdecarme@gmail.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/documints-core"
+  },
+  "files": [
+    "dist",
+    "app"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js",
+    "./server": "./dist/lib/server/index.js",
+    "./server.dev": "./dist/lib/server.dev/index.js",
+    "./server.static": "./dist/lib/server.static/index.js",
+    "./client": "./dist/lib/client/index.js",
+    "./plugin-interactive-preview": "./dist/lib/plugin-interactive-preview/vite/index.js",
+    "./plugin-interactive-preview/ui": "./dist/lib/plugin-interactive-preview/ui/index.js",
+    "./app": "./dist/lib/app/index.js",
+    "./css": "./dist/lib/documints.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "yarn tokens:build && yarn engine:build && yarn lib:build",
+    "engine:build": "yarn tsc --project ./tsconfig.build.json",
+    "engine:dev": "yarn tsc --project ./tsconfig.build.json --watch",
+    "tokens:build": "chamfer build",
+    "tokens:dev": "chamfer dev",
+    "lib:build": "tsx ./scripts/lib.build.ts && yarn lib:types",
+    "lib:types": "tsc --project tsconfig.library.types.json",
+    "lib:dev": "yarn lib:build --watch",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@babel/core": "8.0.1",
+    "@babel/preset-react": "8.0.1",
+    "@babel/preset-typescript": "8.0.1",
+    "@green-flash/ts-utils": "workspace:*",
+    "@inquirer/prompts": "8.5.2",
+    "@linaria/core": "8.0.0",
+    "@linaria/react": "8.0.0",
+    "@linaria/server": "8.0.0",
+    "@mdx-js/rollup": "3.1.1",
+    "@shikijs/rehype": "4.3.1",
+    "@stefanprobst/rehype-extract-toc": "3.0.0",
+    "@stratum-ui/react": "workspace:*",
+    "@vitejs/plugin-react": "6.0.3",
+    "@wyw-in-js/vite": "2.1.4",
+    "esbuild": "0.28.1",
+    "express": "5.2.1",
+    "globby": "16.2.1",
+    "gray-matter": "4.0.3",
+    "immer": "11.1.11",
+    "logarhythm": "workspace:*",
+    "open": "11.0.0",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-hook-primitives": "workspace:*",
+    "rehype-autolink-headings": "7.1.0",
+    "rehype-slug": "6.0.0",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-mdx-frontmatter": "5.2.0",
+    "rollup": "4.62.2",
+    "storybook": "10.4.6",
+    "ts-pattern": "5.9.0",
+    "vite": "8.1.4",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
+    "@storybook/react": "10.4.6",
+    "@types/babel__core": "7.20.5",
+    "@types/express": "5.0.6",
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "chamfer": "workspace:*",
+    "tsx": "4.23.0",
+    "typescript": "6.0.3"
+  }
+}

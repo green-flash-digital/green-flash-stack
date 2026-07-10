@@ -2,11 +2,12 @@ import { Suspense, lazy, useMemo } from "react";
 import { Link, Outlet, type RouteObject, useLocation } from "react-router";
 
 import "../../../.chamfer/_generated/root.css";
-import type { ButteryDocsConfigHeader } from "../../config/_config.utils.js";
 import type {
-  ButteryDocsRouteManifestEntryDoc,
-  ButteryDocsRouteManifestGraphObject
-} from "../../utils/util.types.js";
+  DocumintRouteManifestEntryDoc,
+  DocumintRouteManifestGraphObject,
+  DocumintResolvedHeader
+} from "@documints/core";
+
 import { Meta } from "../meta/Meta.js";
 import { Layout } from "./components/Layout.js";
 import { LayoutBody } from "./components/LayoutBody.js";
@@ -16,9 +17,9 @@ import { LayoutBodyMain } from "./components/LayoutBodyMain.js";
 import { LayoutBodyNav } from "./components/LayoutBodyNav.js";
 import { LayoutBodyTOC } from "./components/LayoutBodyTOC.js";
 import { LayoutHeader } from "./components/LayoutHeader.js";
-import { ButteryDocsRouteManifestGraphUtils } from "./utils/RouteGraph.js";
+import { DocumintRouteManifestGraphUtils } from "./utils/RouteGraph.js";
 
-function createRoute(route: ButteryDocsRouteManifestEntryDoc, options: { isDocs: boolean }) {
+function createRoute(route: DocumintRouteManifestEntryDoc, options: { isDocs: boolean }) {
   const Component = lazy(async () => {
     // Import the .(md|mdx) file as a component and collect
     // the other information that was supplied to it
@@ -63,11 +64,7 @@ function createRoute(route: ButteryDocsRouteManifestEntryDoc, options: { isDocs:
   };
 }
 
-function DocsLayout({
-  routeModuleGraph
-}: {
-  routeModuleGraph: ButteryDocsRouteManifestGraphUtils;
-}) {
+function DocsLayout({ routeModuleGraph }: { routeModuleGraph: DocumintRouteManifestGraphUtils }) {
   const { pathname } = useLocation();
 
   const graph = useMemo(() => {
@@ -106,13 +103,13 @@ function DocsLayout({
   );
 }
 
-export function createButteryDocsRoutes(props: {
-  routeGraph: ButteryDocsRouteManifestGraphObject;
-  header: ButteryDocsConfigHeader | undefined;
-  routeDocs: ButteryDocsRouteManifestEntryDoc[];
-  routeIndex: ButteryDocsRouteManifestEntryDoc;
+export function createDocumintRoutes(props: {
+  routeGraph: DocumintRouteManifestGraphObject;
+  header: DocumintResolvedHeader | undefined;
+  routeDocs: DocumintRouteManifestEntryDoc[];
+  routeIndex: DocumintRouteManifestEntryDoc;
 }): RouteObject[] {
-  const routeModuleGraph = new ButteryDocsRouteManifestGraphUtils(props.routeGraph);
+  const routeModuleGraph = new DocumintRouteManifestGraphUtils(props.routeGraph);
 
   return [
     {

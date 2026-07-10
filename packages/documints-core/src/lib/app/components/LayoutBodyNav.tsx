@@ -1,6 +1,7 @@
 import type { FC } from "react";
 import { NavLink } from "react-router";
 
+import type { DocumintRouteManifestGraphObject } from "@documints/core";
 import { css } from "@linaria/core";
 
 import {
@@ -10,7 +11,6 @@ import {
   makeRem,
   makeReset
 } from "../../../../.chamfer/index.js";
-import type { ButteryDocsRouteManifestGraphObject } from "../../../utils/util.types.js";
 import { LayoutBodyNavItem } from "./LayoutBodyNavItem.js";
 import { LayoutTextOverline } from "./LayoutTextOverline.js";
 
@@ -55,7 +55,7 @@ const anchorOverlineCSS = css`
 `;
 
 export const LayoutBodyNav: FC<{
-  graph: ButteryDocsRouteManifestGraphObject;
+  graph: DocumintRouteManifestGraphObject;
 }> = ({ graph }) => {
   return (
     <nav className={navStyles}>

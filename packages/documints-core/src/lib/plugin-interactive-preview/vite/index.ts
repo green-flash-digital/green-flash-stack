@@ -4,7 +4,7 @@ import path from "node:path";
 import { exhaustiveMatchGuard } from "@green-flash/ts-utils/isomorphic";
 import type { Plugin } from "vite";
 
-type VitePluginButteryDocsInteractivePreviewOptions = {
+type VitePluginDocumintInteractivePreviewOptions = {
   componentRootDir: string;
 };
 
@@ -39,8 +39,8 @@ function parsePreviewComment(commentString: string): PreviewData {
  * Inline's a component preview and it's code within a code comment block
  * in any MDX document file relative to the options.componentRootDir
  */
-export function vitePluginButteryDocsInteractivePreview(
-  options: VitePluginButteryDocsInteractivePreviewOptions
+export function vitePluginDocumintInteractivePreview(
+  options: VitePluginDocumintInteractivePreviewOptions
 ): Plugin {
   return {
     enforce: "pre",
@@ -74,7 +74,7 @@ export function vitePluginButteryDocsInteractivePreview(
           case "interactive":
             return `
 
-import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "documints/plugin-interactive-preview/ui";
+import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "@documints/core/plugin-interactive-preview/ui";
 import { ${params.export} as Component${matchNum} } from "${transformedPath}";
 
 <InteractivePreviewComponent${matchNum}>

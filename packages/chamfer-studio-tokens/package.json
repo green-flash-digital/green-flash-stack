@@ -33,6 +33,6 @@
   "devDependencies": {
     "@chamfer-css/core": "0.3.6",
     "isoscribe": "0.2.0",
-    "tsx": "4.22.4"
+    "tsx": "4.23.0"
   }
 }

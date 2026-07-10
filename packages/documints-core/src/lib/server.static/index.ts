@@ -1,2 +1,2 @@
-export { createButteryDocsRenderToPipeableStream as createRenderStatic } from "../server/createRenderFnPipeableStream.js";
+export { createDocumintRenderToPipeableStream as createRenderStatic } from "../server/createRenderFnPipeableStream.js";
 export * from "./renderRouteToHTML.js";

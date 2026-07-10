@@ -33,9 +33,9 @@
     "clean": "rm -rf dist"
   },
   "devDependencies": {
-    "@vitest/coverage-v8": "4.1.9",
+    "@vitest/coverage-v8": "4.1.10",
     "typescript": "6.0.3",
-    "vitest": "4.1.9",
+    "vitest": "4.1.10",
     "zod": "4.4.3"
   },
   "peerDependencies": {

@@ -1,10 +1,10 @@
 import type {
-  ButteryDocsConfigHeader,
-  ButteryDocsResolvedHeader,
-  ButteryDocsResolvedHeaderLink
+  DocumintConfigHeader,
+  DocumintResolvedHeader,
+  DocumintResolvedHeaderLink
 } from "../config/_config.utils.js";
 import { slugify } from "../utils/util.slugify.js";
-import type { ButteryDocsRouteManifestGraphObject } from "../utils/util.types.js";
+import type { DocumintRouteManifestGraphObject } from "../utils/util.types.js";
 
 /**
  * Resolves any `{ type: "section", title }` header links against the route
@@ -13,13 +13,14 @@ import type { ButteryDocsRouteManifestGraphObject } from "../utils/util.types.js
  * has no notion of doc structure, so `section` never reaches the bundle.
  */
 export function resolveDocumintsHeader(
-  header: ButteryDocsConfigHeader | undefined,
-  routeGraph: ButteryDocsRouteManifestGraphObject
-): ButteryDocsResolvedHeader | undefined {
-  if (!header?.links) return header;
+  header: DocumintConfigHeader | undefined,
+  routeGraph: DocumintRouteManifestGraphObject
+): DocumintResolvedHeader | undefined {
+  if (!header) return undefined;
+  if (!header.links) return { ...header, links: undefined };
 
   const links = header.links.map((linkSection) =>
-    linkSection.map((link): ButteryDocsResolvedHeaderLink => {
+    linkSection.map((link): DocumintResolvedHeaderLink => {
       if (link.type !== "section") return link;
 
       const sectionKey = slugify(link.title);

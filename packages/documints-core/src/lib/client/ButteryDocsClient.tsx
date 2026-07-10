@@ -3,10 +3,9 @@ import { type RouteObject, RouterProvider, createBrowserRouter } from "react-rou
 
 import { DocumintsMetaProvider } from "../meta/DocumintsMetaProvider.js";
 
-export function ButteryDocsClient({ routes }: { routes: RouteObject[] }) {
+export function DocumintClient({ routes }: { routes: RouteObject[] }) {
   const routerRef = useRef(
     createBrowserRouter(routes, {
-      // @ts-expect-error react-router adds this for us
       hydrationData: window?.__staticRouterHydrationData
     })
   );

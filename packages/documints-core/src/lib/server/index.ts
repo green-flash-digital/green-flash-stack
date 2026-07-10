@@ -1,1 +1,1 @@
-export * from "./ButteryDocsServer.js";
+export * from "./DocumintServer.js";

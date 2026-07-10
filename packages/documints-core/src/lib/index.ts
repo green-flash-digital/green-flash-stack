@@ -1,2 +1,7 @@
-export { defineDocumintsConfig } from "../config/defineDocumintsConfig.js";
-export * from "../utils/util.types.js";
+export { defineDocumintsConfig } from "@documints/core";
+export type {
+  DocumintRouteManifestEntry,
+  DocumintRouteManifestEntryDoc,
+  DocumintRouteManifest,
+  DocumintRouteManifestGraphObject
+} from "@documints/core";

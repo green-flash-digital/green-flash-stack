@@ -1,24 +1,24 @@
 import type { JSX } from "react";
 
-export type ButteryDocsRouteManifestEntry = {
+export type DocumintRouteManifestEntry = {
   routePath: string;
   fileName: string;
   fileNameFormatted: string;
   aliasPath: string;
   root: boolean;
 };
-export type ButteryDocsRouteManifestEntryDoc = ButteryDocsRouteManifestEntry & {
+export type DocumintRouteManifestEntryDoc = DocumintRouteManifestEntry & {
   importComponent: () => Promise<{
     default: JSX.ElementType;
     tableOfContents: { value: string; depth: number }[];
     frontmatter: Record<string, unknown>;
   }>;
 };
-export type ButteryDocsRouteManifest = {
-  [routeId: string]: ButteryDocsRouteManifestEntry;
+export type DocumintRouteManifest = {
+  [routeId: string]: DocumintRouteManifestEntry;
 };
-export type ButteryDocsRouteManifestGraphObject = {
-  [key: string]: ButteryDocsRouteManifestEntry & {
-    pages: ButteryDocsRouteManifestGraphObject;
+export type DocumintRouteManifestGraphObject = {
+  [key: string]: DocumintRouteManifestEntry & {
+    pages: DocumintRouteManifestGraphObject;
   };
 };

@@ -8,16 +8,16 @@ import {
 import { type DocumintsMeta } from "../meta/DocumintsMeta.js";
 import { DocumintsMetaProvider } from "../meta/DocumintsMetaProvider.js";
 
-export type ButteryDocsServerContext = {
+export type DocumintServerContext = {
   route: string;
   Meta: DocumintsMeta;
 };
 
-export function ButteryDocsServer({
+export function DocumintServer({
   router,
   routerContext,
   ...props
-}: ButteryDocsServerContext & {
+}: DocumintServerContext & {
   router: ReturnType<typeof createStaticRouter>;
   routerContext: StaticHandlerContext;
 }) {

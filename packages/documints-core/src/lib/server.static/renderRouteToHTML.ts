@@ -3,8 +3,8 @@ import { Writable } from "node:stream";
 import type { Manifest as ViteManifest } from "vite";
 
 import { DocumintsMeta } from "../meta/DocumintsMeta.js";
-import type { ButteryDocsServerContext } from "../server/ButteryDocsServer.js";
-import type { createButteryDocsRenderToPipeableStream } from "../server/createRenderFnPipeableStream.js";
+import type { createDocumintRenderToPipeableStream } from "../server/createRenderFnPipeableStream.js";
+import type { DocumintServerContext } from "../server/DocumintServer.js";
 import { generateHTMLTemplate } from "../server/generateHTMLTemplate.js";
 import { getRouteAssets } from "../server/getRouteAssets.js";
 
@@ -16,7 +16,7 @@ import { getRouteAssets } from "../server/getRouteAssets.js";
  * native Web Streams support - the static build runs in plain Node.js).
  */
 export async function renderRouteToHTML(
-  render: ReturnType<typeof createButteryDocsRenderToPipeableStream>,
+  render: ReturnType<typeof createDocumintRenderToPipeableStream>,
   params: {
     routePath: string;
     aliasPath: string;
@@ -34,7 +34,7 @@ export async function renderRouteToHTML(
 
   const Meta = new DocumintsMeta();
   const request = new Request(`http://localhost${params.routePath}`);
-  const context: ButteryDocsServerContext = { route: params.routePath, Meta };
+  const context: DocumintServerContext = { route: params.routePath, Meta };
 
   let pipeableResult: Awaited<ReturnType<typeof render>> | undefined;
 
