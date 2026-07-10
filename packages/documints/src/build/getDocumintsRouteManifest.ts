@@ -5,6 +5,7 @@ import { printAsBullets } from "logarhythm";
 
 import type { ResolvedDocumintsConfig } from "../Documints.js";
 import { LOG } from "../utils/util.logger.js";
+import { slugify } from "../utils/util.slugify.js";
 import type { ButteryDocsRouteManifest } from "../utils/util.types.js";
 import {
   type DocumintsFrontmatter,
@@ -19,14 +20,6 @@ import { orderDocumintsRouteManifest } from "./orderDocumintsRouteManifest.js";
  * `documintsConfigSchema`.
  */
 const DEFAULT_DOC_GLOB = "./content/**/*.doc.{md,mdx,tsx}";
-
-function slugify(text: string): string {
-  return text
-    .trim()
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, "-")
-    .replace(/^-+|-+$/g, "");
-}
 
 /**
  * Turns a doc's frontmatter into its route path. Hierarchy comes from the

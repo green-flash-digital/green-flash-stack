@@ -88,6 +88,10 @@ const dropdownStyles = css`
       align-items: center;
       padding: ${makeRem(8)} ${makeRem(16)};
 
+      &:not(:has(img)) {
+        grid-template-columns: auto;
+      }
+
       img {
         max-height: ${makeRem(36)};
         justify-self: center;

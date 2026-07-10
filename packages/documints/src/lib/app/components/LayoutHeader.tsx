@@ -4,7 +4,7 @@ import { NavLink } from "react-router";
 import { css } from "@linaria/core";
 
 import { makeColor, makeCustom, makeFontWeight, makeRem } from "../../../../.chamfer/index.js";
-import type { ButteryDocsConfigHeader } from "../../../config/_config.utils.js";
+import type { ButteryDocsResolvedHeader } from "../../../config/_config.utils.js";
 import { LayoutHeaderLinks } from "./LayoutHeaderLinks.js";
 
 const layoutHeaderStyles = css`
@@ -58,7 +58,7 @@ const divStyles = css`
   font-weight: ${makeFontWeight("source-sans-3-bold")};
 `;
 
-export type LayoutHeaderProps = { header: ButteryDocsConfigHeader | undefined };
+export type LayoutHeaderProps = { header: ButteryDocsResolvedHeader | undefined };
 
 export const LayoutHeader: FC<LayoutHeaderProps> = ({ header }) => {
   return (

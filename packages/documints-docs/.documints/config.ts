@@ -4,6 +4,7 @@ export default defineDocumintsConfig({
   header: {
     title: "documints",
     links: [
+      [{ type: "section", title: "Guides" }, { type: "section", title: "Reference" }],
       [
         {
           type: "social",

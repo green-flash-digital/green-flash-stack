@@ -41,8 +41,8 @@ const butteryDocsConfigHeaderLinkTypeDropdownSchema = z.object({
     .omit({ type: true })
     .extend({
       subText: z.string().optional(),
-      iconSrc: z.string(),
-      iconAlt: z.string()
+      iconSrc: z.string().optional(),
+      iconAlt: z.string().optional()
     })
     .array()
 });
@@ -50,11 +50,26 @@ export type ButteryDocsConfigHeaderLinkTypeDropdown = z.infer<
   typeof butteryDocsConfigHeaderLinkTypeDropdownSchema
 >;
 
+const butteryDocsConfigHeaderLinkTypeSectionSchema = z.object({
+  type: z.literal("section"),
+  /**
+   * The `title` of a top-level doc section's index page (e.g. "Guides"),
+   * matched by slug. Resolved at build/dev time into a `dropdown` link whose
+   * items are that section's child pages - the client never sees this type,
+   * only the fully-resolved result.
+   */
+  title: z.string()
+});
+export type ButteryDocsConfigHeaderLinkTypeSection = z.infer<
+  typeof butteryDocsConfigHeaderLinkTypeSectionSchema
+>;
+
 const butteryDocsConfigHeaderLinkSchema = z.discriminatedUnion("type", [
   butteryDocsConfigHeaderLinkTypeTextSchema,
   butteryDocsConfigHeaderLinkTypeSocialSchema,
   butteryDocsConfigHeaderLinkTypeInternalSchema,
-  butteryDocsConfigHeaderLinkTypeDropdownSchema
+  butteryDocsConfigHeaderLinkTypeDropdownSchema,
+  butteryDocsConfigHeaderLinkTypeSectionSchema
 ]);
 export type ButteryDocsConfigHeaderLink = z.infer<typeof butteryDocsConfigHeaderLinkSchema>;
 
@@ -83,6 +98,19 @@ const butteryDocsConfigHeaderSchema = z.object({
   links: butteryDocsConfigHeaderLinksSchema.array().optional()
 });
 export type ButteryDocsConfigHeader = z.infer<typeof butteryDocsConfigHeaderSchema>;
+
+/**
+ * The shape of a header link once `section` links have been resolved against
+ * the route graph (see `resolveDocumintsHeader.ts`) - this is what's actually
+ * serialized to the client, so it never needs to know about `section` links.
+ */
+export type ButteryDocsResolvedHeaderLink = Exclude<
+  ButteryDocsConfigHeaderLink,
+  ButteryDocsConfigHeaderLinkTypeSection
+>;
+export type ButteryDocsResolvedHeader = Omit<ButteryDocsConfigHeader, "links"> & {
+  links?: ButteryDocsResolvedHeaderLink[][];
+};
 
 export const documintsConfigSchema = z.object({
   /**

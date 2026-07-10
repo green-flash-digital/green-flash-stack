@@ -10,8 +10,8 @@ declare module "virtual:routes" {
 }
 
 declare module "virtual:data" {
-  import type { ButteryDocsConfigHeader } from "../../../config/_config.utils.js";
-  export const header: ButteryDocsConfigHeader | undefined;
+  import type { ButteryDocsResolvedHeader } from "../../../config/_config.utils.js";
+  export const header: ButteryDocsResolvedHeader | undefined;
 }
 
 declare module "*.css" {

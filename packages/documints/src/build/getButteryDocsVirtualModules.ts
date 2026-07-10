@@ -7,6 +7,7 @@ import type {
   ButteryDocsRouteManifestEntry
 } from "../utils/util.types.js";
 import { getButteryDocsRouteGraph } from "./getButteryDocsRouteGraph.js";
+import { resolveDocumintsHeader } from "./resolveDocumintsHeader.js";
 
 export type ButteryDocsVirtualModules = ReturnType<typeof getButteryDocsVirtualModules>;
 
@@ -65,7 +66,8 @@ export const routeDocs = [${Object.values(routeDocs).map(
   )}];
   `;
 
-  const data = `export const header = ${JSON.stringify(rConfig.config.header)}`;
+  const resolvedHeader = resolveDocumintsHeader(rConfig.config.header, routeGraph);
+  const data = `export const header = ${JSON.stringify(resolvedHeader)}`;
 
   return {
     "virtual:routes": routes,

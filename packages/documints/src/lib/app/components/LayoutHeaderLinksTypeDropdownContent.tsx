@@ -16,7 +16,7 @@ export default function LayoutHeaderLinksTypeDropdownContent() {
       {state.items.map((item) => (
         <li key={item.href}>
           <NavLink to={item.href}>
-            <img src={item.iconSrc} alt={item.iconAlt} />
+            {item.iconSrc && <img src={item.iconSrc} alt={item.iconAlt} />}
             <div>
               <div className="title">{item.text}</div>
               {item.subText && <div className="sub-title">{item.subText}</div>}
