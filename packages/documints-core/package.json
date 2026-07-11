@@ -15,19 +15,21 @@
   },
   "files": [
     "dist",
-    "app"
+    "dist-tokens",
+    "src/app"
   ],
   "type": "module",
   "sideEffects": false,
   "exports": {
     ".": "./dist/index.js",
-    "./server": "./dist/lib/server/index.js",
-    "./server.dev": "./dist/lib/server.dev/index.js",
-    "./server.static": "./dist/lib/server.static/index.js",
-    "./plugin-interactive-preview": "./dist/lib/plugin-interactive-preview/vite/index.js",
-    "./plugin-interactive-preview/ui": "./dist/lib/plugin-interactive-preview/ui/index.js",
-    "./app": "./dist/lib/app/index.js",
-    "./css": "./dist/lib/documints.css"
+    "./server": "./dist/server/index.js",
+    "./server.dev": "./dist/server.dev/index.js",
+    "./server.static": "./dist/server.static/index.js",
+    "./plugins/interactive-preview": "./dist/plugins/interactive-preview/vite/index.js",
+    "./plugins/interactive-preview/ui": "./dist/plugins/interactive-preview/ui/index.js",
+    "./app": "./dist/app/index.js",
+    "./tokens": "./dist-tokens/index.js",
+    "./css": "./dist/documints.css"
   },
   "publishConfig": {
     "access": "public"
@@ -36,7 +38,8 @@
     "build": "yarn tokens:build && yarn engine:build && yarn lib:build",
     "engine:build": "yarn tsc --project ./tsconfig.build.json",
     "engine:dev": "yarn tsc --project ./tsconfig.build.json --watch",
-    "tokens:build": "chamfer build",
+    "tokens:build": "chamfer build && yarn tokens:build:types",
+    "tokens:build:types": "tsc --project tsconfig.tokens.json",
     "tokens:dev": "chamfer dev",
     "lib:build": "tsx ./scripts/lib.build.ts && yarn lib:types",
     "lib:types": "tsc --project tsconfig.library.types.json",
@@ -69,6 +72,7 @@
     "react": "19.2.7",
     "react-dom": "19.2.7",
     "react-hook-primitives": "workspace:*",
+    "react-router": "8.2.0",
     "rehype-autolink-headings": "7.1.0",
     "rehype-slug": "6.0.0",
     "remark-frontmatter": "5.0.0",

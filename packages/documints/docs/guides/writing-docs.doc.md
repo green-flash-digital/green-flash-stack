@@ -4,11 +4,19 @@ title: Guides/Writing Docs
 
 # Writing Docs
 
-Every page is a `.doc.md` (or `.doc.mdx`) file, discovered recursively anywhere under
-`.documints/content/`. Where you put the file makes no difference to your site's
-structure - only its frontmatter does. This page, for example, lives at
+Every page is a `.doc.md`, `.doc.mdx`, or `.doc.tsx` file, discovered recursively wherever
+`config.docs` points (`.documints/content/` by default - see
+[Configuration](/guides/configuration)). Where you put the file makes no difference to
+your site's structure - only its frontmatter does. This page, for example, lives at
 `guides/writing-docs.doc.md` on disk purely for your own organizational convenience; moving
 it to the content root wouldn't change its route or its place in the nav at all.
+
+## File naming
+
+The `.doc.` suffix (`.doc.md`, `.doc.mdx`, `.doc.tsx`) is the one required convention -
+it's how documints tells your actual content apart from anything else the glob might
+otherwise match (a stray `.md` file, a component that isn't meant to be a page, etc).
+Beyond that suffix, names and folders are free-form; only frontmatter drives routing.
 
 ## `title` - required
 
@@ -58,3 +66,33 @@ how most docs sites treat their landing page as separate from the sidebar.
 
 Anything that needs interactivity beyond Markdown can use `.doc.mdx` instead - it supports
 embedding React components directly in the document.
+
+## TSX pages
+
+For a page that's real React from top to bottom - not Markdown with the occasional
+component dropped in - use `.doc.tsx`. A literal `---` frontmatter block isn't valid TSX
+syntax, so the same YAML instead lives inside a leading block comment:
+
+```tsx
+/**
+---
+title: Guides/Playground
+---
+*/
+import { useState } from "react";
+
+export default function Playground() {
+  const [count, setCount] = useState(0);
+
+  return (
+    <button type="button" onClick={() => setCount((c) => c + 1)}>
+      Clicked {count} {count === 1 ? "time" : "times"}
+    </button>
+  );
+}
+```
+
+The comment block is parsed as plain text to discover the route, the same way
+`.doc.md`/`.doc.mdx` frontmatter is - documints never has to execute the file (and resolve
+its real imports) just to figure out where it belongs. See the live
+[Playground](/guides/playground) page for the full source.

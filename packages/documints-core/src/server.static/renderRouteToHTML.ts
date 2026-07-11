@@ -23,6 +23,7 @@ export async function renderRouteToHTML(
     vManifest: ViteManifest;
     contentRoot: string;
     viteRoot: string;
+    head?: string;
   }
 ): Promise<string> {
   const { cssAssets, jsAssets } = getRouteAssets(
@@ -80,7 +81,8 @@ export async function renderRouteToHTML(
   const { htmlStart, htmlEnd } = generateHTMLTemplate({
     cssLinks: cssAssets,
     jsScripts: jsAssets,
-    Meta
+    Meta,
+    head: params.head
   });
 
   return `${htmlStart}${body}${htmlEnd}`;

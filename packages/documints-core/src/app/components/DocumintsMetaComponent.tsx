@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 
-import { useDocumintsMeta } from "../../src/meta/DocumintsMeta.provider.js";
+import { useDocumintsMeta } from "../../meta/DocumintsMeta.provider.js";
 
 /**
  * Rendered once per page (typically from the page's frontmatter) to set the

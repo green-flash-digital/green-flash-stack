@@ -74,7 +74,7 @@ export function vitePluginDocumintInteractivePreview(
           case "interactive":
             return `
 
-import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "@documints/core/plugin-interactive-preview/ui";
+import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "@documints/core/plugins/interactive-preview/ui";
 import { ${params.export} as Component${matchNum} } from "${transformedPath}";
 
 <InteractivePreviewComponent${matchNum}>

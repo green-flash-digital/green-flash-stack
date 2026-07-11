@@ -8,6 +8,5 @@
     "declarationDir": "./dist",
     "declarationMap": true
   },
-  "include": ["./src"],
-  "exclude": ["./src/plugin-interactive-preview"]
+  "exclude": ["./src/app", "./src/plugins"]
 }

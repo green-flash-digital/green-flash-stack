@@ -9,11 +9,16 @@ Every command supports `--help`/`-h` for a generated usage summary.
 ## `documints init`
 
 Bootstraps a new documints project in the current directory: `.documints/config.ts`, a
-starter `welcome.doc.md` (with `home: true`), and a `.gitignore` for the Vite cache.
+starter `content/welcome.doc.md` (with `home: true`), and a `.gitignore` covering the Vite
+cache, the temporary server-only prerender bundle, and the built static site.
 
 ```sh
 documints init
 ```
+
+`documints dev`/`documints build` also accept `--auto-init`, which runs this
+automatically instead of prompting when `.documints/` is missing - useful in CI or scripted
+setups.
 
 ## `documints dev`
 
@@ -32,8 +37,8 @@ documints dev --port 4000 --open
 
 ## `documints build`
 
-Builds the site for production: a full static `dist/` directory, prerendered and ready to
-deploy to any static host.
+Builds the site for production into `.documints/static/`: a complete, prerendered static
+site (real `index.html` per route, plus JS/CSS assets) ready to deploy to any static host.
 
 | Option        | Type    | Default | Description                                                                |
 | ------------- | ------- | ------- | --------------------------------------------------------------------------- |
@@ -42,3 +47,7 @@ deploy to any static host.
 ```sh
 documints build
 ```
+
+Internally this runs a client build, a server-only build (used purely to render each
+route's HTML, then deleted), and a prerender pass - see
+[How Documints Works](/reference/how-it-works) for the full pipeline.

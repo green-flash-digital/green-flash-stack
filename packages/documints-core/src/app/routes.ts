@@ -1,5 +1,5 @@
 import "@documints/core/css";
-import { createDocumintRoutes } from "@documints/core/app";
+import { createDocumintRoutes } from "./App.js";
 import { header } from "virtual:data";
 import { routeDocs, routeGraph, routeIndex } from "virtual:routes";
 

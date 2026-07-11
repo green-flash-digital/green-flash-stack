@@ -15,6 +15,7 @@ import wyw from "@wyw-in-js/vite";
 import { default as esbuild } from "esbuild";
 import express from "express";
 import { globbySync } from "globby";
+import matter from "gray-matter";
 import { produce } from "immer";
 import { printAsBullets } from "logarhythm";
 import open from "open";
@@ -26,17 +27,21 @@ import remarkMdxFrontmatter from "remark-mdx-frontmatter";
 import { type Plugin as VitePlugin, build as viteBuild, createServer, defineConfig } from "vite";
 
 import {
-  type DocumintsFrontmatter,
-  getDocumentConfigFromFrontmatter
-} from "./build/getDocumentConfigFromFrontmatter.js";
-import { getDocumintRouteGraph } from "./build/getDocumintRouteGraph.js";
-import { resolveDocumintsHeader } from "./build/resolveDocumintsHeader.js";
-import { documintsConfigSchema, type DocumintsConfig } from "./config/_config.utils.js";
+  documintsConfigSchema,
+  type DocumintConfigHeader,
+  type DocumintResolvedHeader,
+  type DocumintResolvedHeaderLink,
+  type DocumintsConfig
+} from "./config/_config.utils.js";
 import { handleRequestDev } from "./server.dev/index.js";
 import { renderRouteToHTML } from "./server.static/index.js";
 import { LOG } from "./utils/util.logger.js";
 import { slugify } from "./utils/util.slugify.js";
-import type { DocumintRouteManifest, DocumintRouteManifestEntry } from "./utils/util.types.js";
+import type {
+  DocumintRouteManifest,
+  DocumintRouteManifestEntry,
+  DocumintRouteManifestGraphObject
+} from "./utils/util.types.js";
 
 const CONFIG_DIRNAME = ".documints";
 
@@ -58,7 +63,17 @@ export type DocumintsDirs = {
    * `.documints/` entirely (e.g. a sibling `content/` folder at the project
    * root, one level up).
    */
-  srcDocs: { root: string; public: string };
+  srcDocs: {
+    root: string;
+    public: string;
+    /**
+     * Raw HTML inserted as-is into `<head>`, if `.documints/head.html`
+     * exists - a favicon link, a self-hosted font's `@font-face` block,
+     * social preview meta tags, etc. Optional; no file means no extra head
+     * content.
+     */
+    head: string;
+  };
   app: {
     root: string;
     viteCacheDir: string;
@@ -83,6 +98,28 @@ type DocumintVirtualModules = {
   "virtual:data": string;
 };
 
+type DocumintsFrontmatter = {
+  /**
+   * A slash-delimited hierarchy path, e.g. "Guides/Deployment". Each segment
+   * becomes a nested section in the nav, and the last segment is both the
+   * page's display title and (slugified) its URL segment.
+   */
+  title: string;
+  /**
+   * Overrides the auto-slugified last segment of the URL without changing
+   * the displayed title, e.g. title "Guides/Deployment" + slug "deploy"
+   * routes to "/guides/deploy" but still displays as "Deployment".
+   */
+  slug?: string;
+  /**
+   * Marks this doc as the site's home page, served at "/". Its `title` is
+   * still used for display purposes, but it's excluded from the nav tree.
+   */
+  home?: boolean;
+};
+
+const TSX_FRONTMATTER_COMMENT = /^\s*\/\*\*\s*\r?\n---\r?\n([\s\S]*?)\r?\n---\s*\r?\n\*\/\s*/;
+
 export class Documints {
   private _config: DocumintsConfig;
   private _paths: ResolvedDocumintsConfig["paths"];
@@ -106,8 +143,9 @@ export class Documints {
 
   /**
    * Resolves this package's own installed root (the directory containing
-   * `app/` and `dist/`) by walking up from wherever this module is actually
-   * running. This can't assume a fixed depth relative to `import.meta.dirname`:
+   * `src/app/` and `dist/`) by walking up from wherever this module is
+   * actually running. This can't assume a fixed depth relative to
+   * `import.meta.dirname`:
    * when imported directly it's `dist/`, but the consuming `documints` CLI's
    * esbuild bundling could in principle inline this module too, changing that
    * depth. Matching on this package's own `package.json` name handles both
@@ -131,6 +169,19 @@ export class Documints {
   }
 
   /**
+   * Reads `.documints/head.html`, if present, so its raw contents can be
+   * inserted as-is into `<head>`. Absent by default - most projects don't
+   * need one.
+   */
+  private static readHeadHtml(dotDirPath: string): string {
+    try {
+      return readFileSync(path.resolve(dotDirPath, "./head.html"), "utf8");
+    } catch {
+      return "";
+    }
+  }
+
+  /**
    * Returns absolute path directories for referencing where a documints
    * project's content lives, where documints' own app shell lives, and where
    * build output should go. `dotDirPath` is the resolved `.documints/`
@@ -138,7 +189,7 @@ export class Documints {
    */
   private static getDirectories(_config: DocumintsConfig, dotDirPath: string): DocumintsDirs {
     const packageRoot = Documints.getPackageRoot();
-    const appRoot = path.resolve(packageRoot, "./app");
+    const appRoot = path.resolve(packageRoot, "./src/app");
 
     const serverEntryFileName =
       process.env.NODE_ENV === "production" ? "entry.server.static.tsx" : "entry.server.tsx";
@@ -146,7 +197,8 @@ export class Documints {
     return {
       srcDocs: {
         root: dotDirPath,
-        public: path.resolve(dotDirPath, "./_public")
+        public: path.resolve(dotDirPath, "./public"),
+        head: Documints.readHeadHtml(dotDirPath)
       },
       app: {
         root: appRoot,
@@ -154,7 +206,7 @@ export class Documints {
         appEntryServer: path.resolve(appRoot, serverEntryFileName),
         appEntryClient: path.resolve(appRoot, "./entry.client.tsx"),
         css: {
-          docsUI: path.resolve(packageRoot, "./dist/lib/documints.css")
+          docsUI: path.resolve(packageRoot, "./dist/documints.css")
         }
       },
       output: {
@@ -317,8 +369,160 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
   }
 
   // ---------------------------------------------------------------------
-  // Parsing - instance methods, operate on this.rConfig
+  // Parsing - static helpers are pure (no rConfig needed); instance methods
+  // below them operate on this.rConfig
   // ---------------------------------------------------------------------
+
+  /**
+   * `.doc.tsx` files can't start with a literal YAML frontmatter block (`---`
+   * isn't valid TSX), so the same YAML lives inside a leading block comment
+   * instead:
+   *
+   * ```tsx
+   * /**
+   * ---
+   * title: Guides/Playground
+   * ---
+   * *\/
+   * ```
+   *
+   * Extracting it this way keeps frontmatter parsing pure text, same as
+   * `.doc.md` - no need to transpile or execute the file (and resolve its real
+   * imports) just to discover its route.
+   */
+  private static extractTsxFrontmatterSource(fileContent: string): string | null {
+    const match = fileContent.match(TSX_FRONTMATTER_COMMENT);
+    if (!match) return null;
+    return `---\n${match[1]}\n---\n`;
+  }
+
+  private static getDocumentConfigFromFrontmatter(
+    routeId: string,
+    filepath: string
+  ): DocumintsFrontmatter {
+    try {
+      LOG.debug(`Parsing file frontmatter: "${filepath}"`);
+      const fileContent = readFileSync(filepath, { encoding: "utf8" });
+
+      const isTsx = path.extname(filepath) === ".tsx";
+      const matterSource = isTsx ? Documints.extractTsxFrontmatterSource(fileContent) : fileContent;
+
+      if (matterSource === null) {
+        throw new Error(
+          "Missing frontmatter comment block. Add one at the top of the file:\n" +
+            "/**\n---\ntitle: Guides/Playground\n---\n*/"
+        );
+      }
+
+      const { data } = matter(matterSource) as { data: Partial<DocumintsFrontmatter> };
+
+      if (!data.title) {
+        throw new Error(
+          'Missing required "title" frontmatter field. Every .doc file needs a "title" ' +
+            '(e.g. "Guides/Deployment") that determines its place in the navigation hierarchy.'
+        );
+      }
+
+      return {
+        title: data.title,
+        slug: data.slug,
+        home: data.home ?? false
+      };
+    } catch (error) {
+      throw LOG.fatal(new Error(`Error when trying to parse the frontmatter for "${routeId}": ${error}`));
+    }
+  }
+
+  /**
+   * Resolves any `{ type: "section", title }` header links against the route
+   * graph into a fully-populated `dropdown` link, whose items are that
+   * section's child pages. The client only ever sees the resolved shape - it
+   * has no notion of doc structure, so `section` never reaches the bundle.
+   */
+  private static resolveDocumintsHeader(
+    header: DocumintConfigHeader | undefined,
+    routeGraph: DocumintRouteManifestGraphObject
+  ): DocumintResolvedHeader | undefined {
+    if (!header) return undefined;
+    if (!header.links) return { ...header, links: undefined };
+
+    const links = header.links.map((linkSection) =>
+      linkSection.map((link): DocumintResolvedHeaderLink => {
+        if (link.type !== "section") return link;
+
+        const sectionKey = slugify(link.title);
+        const sectionNode = routeGraph[sectionKey];
+        if (!sectionNode) {
+          throw new Error(
+            `Header link references section "${link.title}", but no top-level doc section resolves to "/${sectionKey}". Check the "title" of that section's index page.`
+          );
+        }
+
+        return {
+          type: "dropdown",
+          text: link.title,
+          items: Object.values(sectionNode.pages).map((page) => ({
+            href: page.routePath,
+            text: page.fileNameFormatted
+          }))
+        };
+      })
+    );
+
+    return { ...header, links };
+  }
+
+  /**
+   * Takes the route manifest and recursively turns it into a graphical
+   * representation of the routes, nesting each entry by its route-path
+   * segments. Path-agnostic to how those segments were derived - it only
+   * reads `routePath`, never adds or removes manifest properties.
+   */
+  private static getDocumintRouteGraph(
+    routeManifest: DocumintRouteManifest
+  ): DocumintRouteManifestGraphObject {
+    const graphObj: DocumintRouteManifestGraphObject = {};
+
+    function addRouteGraphNode(manifestEntry: DocumintRouteManifestEntry) {
+      const manifestEntrySegments = manifestEntry.routePath.split("/").filter(Boolean);
+
+      let currentGraphObj = graphObj;
+
+      for (const segmentIndex in manifestEntrySegments) {
+        const i = Number(segmentIndex);
+        const segment = manifestEntrySegments[segmentIndex];
+        if (!currentGraphObj[segment]) {
+          LOG.debug(`Segment "${segment}" doesn't exist. Creating nested graph.`);
+          currentGraphObj[segment] = {
+            aliasPath: "",
+            fileName: "",
+            fileNameFormatted: "",
+            root: false,
+            routePath: "",
+            pages: {}
+          };
+        }
+
+        if (i === manifestEntrySegments.length - 1) {
+          currentGraphObj[segment] = {
+            ...manifestEntry,
+            pages: currentGraphObj[segment].pages
+          };
+        } else {
+          currentGraphObj = currentGraphObj[segment].pages;
+        }
+      }
+    }
+
+    const manifestEntries = Object.values(routeManifest);
+    for (const manifestEntry of manifestEntries) {
+      LOG.debug(`Adding "${manifestEntry.routePath}" to the route graph...`);
+      addRouteGraphNode(manifestEntry);
+      LOG.debug(`Adding "${manifestEntry.routePath}" to the route graph... done.`);
+    }
+
+    return graphObj;
+  }
 
   /**
    * Turns a doc's frontmatter into its route path. Hierarchy comes from the
@@ -367,7 +571,7 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
       const aliasPath = `/${path.relative(rConfig.dirs.srcDocs.root, direntFullPath).split(path.sep).join("/")}`;
       LOG.debug(`Creating manifest entry for doc: ${aliasPath}`);
 
-      const frontmatter = getDocumentConfigFromFrontmatter(aliasPath, direntFullPath);
+      const frontmatter = Documints.getDocumentConfigFromFrontmatter(aliasPath, direntFullPath);
       const routePath = this.getRoutePathFromFrontmatter(frontmatter);
       const titleSegments = frontmatter.title
         .split("/")
@@ -444,7 +648,7 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
   // ---------------------------------------------------------------------
 
   private getVirtualModules(routeManifest: DocumintRouteManifest): DocumintVirtualModules {
-    const routeGraph = getDocumintRouteGraph(routeManifest);
+    const routeGraph = Documints.getDocumintRouteGraph(routeManifest);
     const { routeIndex, routeDocs } = Object.entries(routeManifest).reduce<{
       routeIndex: DocumintRouteManifestEntry | undefined;
       routeDocs: DocumintRouteManifest;
@@ -494,7 +698,7 @@ export const routeDocs = [${Object.values(routeDocs).map(
     )}];
   `;
 
-    const resolvedHeader = resolveDocumintsHeader(this._config.header, routeGraph);
+    const resolvedHeader = Documints.resolveDocumintsHeader(this._config.header, routeGraph);
     const data = `export const header = ${JSON.stringify(resolvedHeader)}`;
 
     return {
@@ -693,7 +897,8 @@ export const routeDocs = [${Object.values(routeDocs).map(
         req,
         res,
         dirs: this._dirs,
-        vite
+        vite,
+        head: this._dirs.srcDocs.head
       });
     });
 
@@ -756,7 +961,8 @@ export const routeDocs = [${Object.values(routeDocs).map(
           aliasPath: entry.aliasPath,
           vManifest: viteManifest,
           contentRoot: this._dirs.srcDocs.root,
-          viteRoot: this._dirs.app.root
+          viteRoot: this._dirs.app.root,
+          head: this._dirs.srcDocs.head
         });
         const outputPath = path.resolve(this._dirs.output.root, `.${entry.routePath}/index.html`);
         const res = await tryHandle(writeFileRecursive)(outputPath, html);

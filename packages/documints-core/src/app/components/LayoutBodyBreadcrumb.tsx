@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
-import { makeColor, makeCustom, makeRem, makeReset } from "../../.chamfer/index.js";
+import { makeColor, makeCustom, makeRem, makeReset } from "../../../.chamfer/index.js";
 
 export type LayoutBodyBreadcrumbPropsNative = JSX.IntrinsicElements["nav"];
 export type LayoutBodyBreadcrumbProps = LayoutBodyBreadcrumbPropsNative;

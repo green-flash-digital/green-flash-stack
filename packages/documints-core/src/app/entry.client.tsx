@@ -1,28 +1,28 @@
-import { StrictMode, useRef } from "react";
-import { type RouteObject, RouterProvider, createBrowserRouter } from "react-router";
+import { StrictMode } from "react";
+import { RouterProvider, createBrowserRouter } from "react-router";
 
 import ReactDOMClient from "react-dom/client";
 
-import { DocumintsMetaProvider } from "../src/meta/DocumintsMeta.provider.js";
+import { DocumintsMetaProvider } from "../meta/DocumintsMeta.provider.js";
 import { routes } from "./routes.js";
+
+// A browser router is inherently a page-lifetime singleton tied to
+// window.history - created once here, at module scope, rather than inside a
+// component. Constructing it during render (e.g. via `useRef(createBrowserRouter(...))`)
+// calls it as a plain expression on every render, and React's dev-mode
+// StrictMode double-render would then construct a second, silently-discarded
+// router instance - each with real side effects (history subscriptions,
+// initial route matching) that can leave the actually-mounted router's
+// context in a broken state.
+const router = createBrowserRouter(routes, {
+  hydrationData: window?.__staticRouterHydrationData
+});
 
 ReactDOMClient.hydrateRoot(
   document.getElementById("root") as HTMLElement,
-  <DocumintClient routes={routes} />
+  <StrictMode>
+    <DocumintsMetaProvider>
+      <RouterProvider router={router} />
+    </DocumintsMetaProvider>
+  </StrictMode>
 );
-
-function DocumintClient({ routes }: { routes: RouteObject[] }) {
-  const routerRef = useRef(
-    createBrowserRouter(routes, {
-      hydrationData: window?.__staticRouterHydrationData
-    })
-  );
-
-  return (
-    <StrictMode>
-      <DocumintsMetaProvider>
-        <RouterProvider router={routerRef.current} />
-      </DocumintsMetaProvider>
-    </StrictMode>
-  );
-}

@@ -22,17 +22,17 @@ async function buildLibrary() {
   const packageRoot = path.resolve(import.meta.dirname, "..");
 
   const entry = {
-    app: path.resolve(packageRoot, "app/index.ts"),
+    app: path.resolve(packageRoot, "src/app/index.ts"),
     server: path.resolve(packageRoot, "src/server/index.ts"),
     "server.dev": path.resolve(packageRoot, "src/server.dev/index.ts"),
     "server.static": path.resolve(packageRoot, "src/server.static/index.ts"),
-    "plugin-interactive-preview/vite": path.resolve(
+    "plugins/interactive-preview/vite": path.resolve(
       packageRoot,
-      "src/plugin-interactive-preview/vite/index.ts"
+      "src/plugins/interactive-preview/vite/index.ts"
     ),
-    "plugin-interactive-preview/ui": path.resolve(
+    "plugins/interactive-preview/ui": path.resolve(
       packageRoot,
-      "src/plugin-interactive-preview/ui/index.ts"
+      "src/plugins/interactive-preview/ui/index.ts"
     )
   };
 
@@ -40,6 +40,10 @@ async function buildLibrary() {
     const config = defineConfig({
       logLevel: "silent",
       build: {
+        // This runs after `engine:build` (tsc) has already populated dist/
+        // with Documints.js, config/, utils/, etc. - emptying it here would
+        // wipe that out before this build even overwrites its own subpaths.
+        emptyOutDir: false,
         lib: {
           formats: ["es"],
           entry,
@@ -53,8 +57,8 @@ async function buildLibrary() {
             "@documints/core/css",
             "@documints/core/app",
             "@documints/core/server",
-            "@documints/core/plugin-interactive-preview/vite",
-            "@documints/core/plugin-interactive-preview/ui",
+            "@documints/core/plugins/interactive-preview/vite",
+            "@documints/core/plugins/interactive-preview/ui",
             "react/jsx-runtime",
             "react-dom/server",
             "virtual:data",
@@ -65,11 +69,11 @@ async function buildLibrary() {
             /node_modules/
           ],
           output: {
-            dir: path.resolve(import.meta.dirname, "../dist/lib"),
-            // Pin this explicitly rather than letting Rollup infer it from
-            // the package name - `getDirectories()`'s `app.css.docsUI` (in
-            // Documints.ts) hardcodes this exact filename.
+            dir: path.resolve(import.meta.dirname, "../dist"),
             assetFileNames: (assetInfo) =>
+              // Pin this explicitly rather than letting Rollup infer it from
+              // the package name - `getDirectories()`'s `app.css.docsUI` (in
+              // Documints.ts) hardcodes this exact filename.
               assetInfo.names?.some((name) => name.endsWith(".css"))
                 ? "documints.css"
                 : "[name][extname]"
@@ -77,16 +81,7 @@ async function buildLibrary() {
           }
         }
       },
-      plugins: [
-        react(),
-        // @ts-expect-error This actually does have type signatures
-        wyw({
-          include: ["**/*.{ts,tsx}"],
-          babelOptions: {
-            presets: ["@babel/preset-typescript", "@babel/preset-react"]
-          }
-        })
-      ]
+      plugins: [react(), wyw({ include: ["**/*.{ts,tsx}"] })]
     });
 
     await viteBuild(config);

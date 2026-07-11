@@ -21,7 +21,7 @@ yarn documints init
 
 This scaffolds:
 
-```
+```tsx
 your-project/
 └── .documints/
     ├── config.ts
@@ -47,12 +47,17 @@ immediately - no restart needed.
 yarn documints build
 ```
 
-Produces a `dist/` directory containing your complete static site: real, prerendered
-`index.html` files for every route, plus the JS/CSS assets they reference. Deploy `dist/`
-to any static host - there's no server process to run.
+Produces `.documints/static/`: real, prerendered `index.html` files for every route, plus
+the JS/CSS assets they reference. Deploy that directory to any static host - there's no
+server process to run. It's gitignored by default (`documints init` sets that up for you),
+same as the Vite cache.
 
 ## Next steps
 
+- [Guides/Usage](/guides/usage) - the day-to-day write/preview/build/deploy loop.
 - [Guides/Writing Docs](/guides/writing-docs) - the frontmatter contract in detail.
+- [Guides/Routing](/guides/routing) - how hierarchy, the nav, and the header connect.
 - [Guides/Configuration](/guides/configuration) - `.documints/config.ts` options.
+- [Guides/Plugins](/guides/plugins) - built-in and third-party Vite plugins.
 - [Reference/CLI](/reference/cli) - every command and flag.
+- [Reference/How Documints Works](/reference/how-it-works) - the architecture, end to end.

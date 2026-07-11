@@ -1,0 +1,11 @@
+{
+  "extends": "@green-flash/tsconfig/library",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "./.chamfer",
+    "outDir": "./dist-tokens",
+    "declaration": true,
+    "declarationMap": true
+  },
+  "include": ["./.chamfer/index.ts", "./.chamfer/_generated"]
+}

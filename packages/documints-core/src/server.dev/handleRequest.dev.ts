@@ -20,6 +20,7 @@ export async function handleRequestDev(
     res: Response;
     dirs: DocumintsDirs;
     vite: ViteDevServer;
+    head?: string;
   }
 ) {
   try {
@@ -31,7 +32,8 @@ export async function handleRequestDev(
     const { htmlDev } = generateHTMLTemplate({
       cssLinks: [config.dirs.app.css.docsUI],
       jsScripts: [config.dirs.app.appEntryClient],
-      Meta
+      Meta,
+      head: config.head
     });
     LOG_SERVER_DEV.debug("Generating HTML template... done.");
 

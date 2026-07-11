@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
-import { makeCustom, makeRem } from "../../.chamfer/index.js";
+import { makeCustom, makeRem } from "../../../.chamfer/index.js";
 
 export type LayoutBodyPropsNative = JSX.IntrinsicElements["main"];
 export type LayoutBodyProps = LayoutBodyPropsNative;

@@ -10,7 +10,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset
-} from "../../.chamfer/index.js";
+} from "../../../.chamfer/index.js";
 import { IconComponent } from "./icons/IconComponent.js";
 import type { LayoutHeaderLinksTypeDropdownState } from "./LayoutHeaderLinksTypeDropdownContent.js";
 

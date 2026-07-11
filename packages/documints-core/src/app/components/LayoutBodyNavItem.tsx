@@ -5,7 +5,7 @@ import type { DocumintRouteManifestGraphObject } from "@documints/core";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
-import { makeColor, makeFontWeight, makeRem } from "../../.chamfer/index.js";
+import { makeColor, makeFontWeight, makeRem } from "../../../.chamfer/index.js";
 
 const ulStyles = css`
   list-style-type: none;

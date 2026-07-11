@@ -19,8 +19,8 @@ export default defineDocumintsConfig({
     ]
   },
   order: {
-    guides: ["writing-docs", "configuration"],
-    reference: ["cli"]
+    guides: ["usage", "writing-docs", "routing", "configuration", "static-assets", "plugins"],
+    reference: ["cli", "how-it-works"]
   },
   docs: "../docs/**/*.doc.{md,mdx,tsx}"
 });

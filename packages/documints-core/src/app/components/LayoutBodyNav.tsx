@@ -10,7 +10,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset
-} from "../../.chamfer/index.js";
+} from "../../../.chamfer/index.js";
 import { LayoutBodyNavItem } from "./LayoutBodyNavItem.js";
 import { LayoutTextOverline } from "./LayoutTextOverline.js";
 

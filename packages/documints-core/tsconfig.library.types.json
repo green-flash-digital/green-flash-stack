@@ -12,13 +12,13 @@
     "src/server",
     "src/server.dev/index.ts",
     "src/server.static/index.ts",
-    "src/plugin-interactive-preview",
-    "app"
+    "src/plugins/interactive-preview",
+    "src/app"
   ],
   "exclude": [
-    "app/entry.client.tsx",
-    "app/entry.server.tsx",
-    "app/entry.server.static.tsx",
-    "app/routes.ts"
+    "src/app/entry.client.tsx",
+    "src/app/entry.server.tsx",
+    "src/app/entry.server.static.tsx",
+    "src/app/routes.ts"
   ]
 }

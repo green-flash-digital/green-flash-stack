@@ -2,7 +2,7 @@ import type { FC, ReactNode } from "react";
 
 import { css } from "@linaria/core";
 
-import { makeColor, makeCustom, makeRem, makeReset } from "../../.chamfer/index.js";
+import { makeColor, makeCustom, makeRem, makeReset } from "../../../.chamfer/index.js";
 
 const layoutBodyMainStyles = css`
   grid-area: layout-main;

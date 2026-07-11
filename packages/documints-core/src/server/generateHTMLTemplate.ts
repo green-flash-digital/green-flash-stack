@@ -12,17 +12,27 @@ function ensureLeadingSlash(entries: string[]): string[] {
 export function generateHTMLTemplate({
   cssLinks,
   jsScripts,
-  Meta
+  Meta,
+  head = ""
 }: {
   cssLinks: string[];
   jsScripts: string[];
   Meta: DocumintsMeta;
+  /**
+   * Raw HTML, inserted as-is into `<head>` - the contents of the project's
+   * `.documints/head.html`, if present (favicon links, a self-hosted font's
+   * `<style>`/`@font-face` block, social preview meta tags, whatever real
+   * HTML the project needs). Trusted project-authored content, not user
+   * input, so no escaping is applied.
+   */
+  head?: string;
 }) {
   const htmlStart = `<!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charSet="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
+    ${head}
     ${ensureLeadingSlash(cssLinks).reduce<string>(
       (accum, href) => accum.concat(`<link rel="stylesheet" href="${href}" />\n`),
       ""
