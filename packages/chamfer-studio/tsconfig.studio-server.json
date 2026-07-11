@@ -5,7 +5,7 @@
     "outDir": "./studio-server",
     "declarationDir": "./studio-server",
     "declaration": true,
-    "rootDir": "."
+    "rootDir": "./studio-server"
   },
   "include": ["./studio-server/StudioServer.ts"]
 }
