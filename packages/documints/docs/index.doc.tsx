@@ -410,7 +410,7 @@ const cardStyles = css`
   .title {
     font-family: ${makeFontFamily("source-sans-3")};
     font-weight: ${makeFontWeight("source-sans-3-semiBold")};
-    font-size: ${makeRem(15)};
+    font-size: ${makeRem(18)};
     margin-bottom: ${makeRem(4)};
   }
 
@@ -449,8 +449,11 @@ export default function Welcome() {
       <div className={heroStyles}>
         <div>
           <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
-          <h1>Dead simple docs</h1>
-          <p>Write anywhere. Organize easily. Deploy statically.</p>
+          <h1>Docs shouldn't be hard.</h1>
+          <p>
+            Write whatever you want, wherever you want. Documints handles organizing and building a
+            beautiful static site with nothing to run.
+          </p>
           <div className={ctaGroupStyles}>
             <Link to="/getting-started" className={cx(ctaBaseStyles, ctaPrimaryStyles)}>
               Get Started
