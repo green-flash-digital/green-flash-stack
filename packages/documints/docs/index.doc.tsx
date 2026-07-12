@@ -448,14 +448,17 @@ export default function Welcome() {
     <div className={pageStyles}>
       <div className={heroStyles}>
         <div>
-          <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
+          <img className="wordmark" src="/documints-wordmark-v2.png" alt="documints" />
           <h1>Docs shouldn't be hard.</h1>
           <p>
             Write whatever you want, wherever you want. Documints handles organizing and building a
             beautiful static site with nothing to run.
           </p>
           <div className={ctaGroupStyles}>
-            <Link to="/getting-started" className={cx(ctaBaseStyles, ctaPrimaryStyles)}>
+            <Link to="/guides/concepts" className={cx(ctaBaseStyles, ctaPrimaryStyles)}>
+              What is Documints?
+            </Link>
+            <Link to="/getting-started" className={cx(ctaBaseStyles, ctaSecondaryStyles)}>
               Get Started
             </Link>
             <a

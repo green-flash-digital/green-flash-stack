@@ -6,6 +6,7 @@ title: Guides
 
 Deeper dives into how documints works day to day.
 
+- [What is Documints?](/guides/concepts) - the design decisions behind documints, and why.
 - [Usage](/guides/usage) - the write/preview/build/deploy loop.
 - [Writing Docs](/guides/writing-docs) - the frontmatter contract that drives navigation.
 - [Routing](/guides/routing) - how hierarchy, the nav, and the header connect.

@@ -2,7 +2,13 @@ import type { FC, ReactNode } from "react";
 
 import { css } from "@linaria/core";
 
-import { makeColor, makeCustom, makeRem, makeReset } from "../../../.chamfer/index.js";
+import {
+  makeColor,
+  makeCustom,
+  makeFontWeight,
+  makeRem,
+  makeReset
+} from "../../../.chamfer/index.js";
 
 const layoutBodyMainStyles = css`
   grid-area: layout-main;
@@ -111,7 +117,8 @@ const layoutBodyMainStyles = css`
     }
 
     h2 {
-      border-bottom: ${makeRem(1)} solid ${makeColor("neutral-50")};
+      border-bottom: 1px solid ${makeColor("neutral-100")};
+      padding-bottom: ${makeRem(6)};
 
       & + p {
         margin: ${makeRem(16)} 0;
@@ -126,9 +133,10 @@ const layoutBodyMainStyles = css`
       ${makeReset("anchor")};
     }
 
-    p {
+    p,
+    ul > li {
       font-size: ${makeRem(16)};
-      line-height: ${makeRem(24)};
+      line-height: ${makeRem(28)};
       z-index: 9;
 
       a {
@@ -137,9 +145,19 @@ const layoutBodyMainStyles = css`
         })};
         color: ${makeColor("secondary-700")} !important;
         padding: 0 ${makeRem(4)};
+        font-weight: ${makeFontWeight("source-sans-3-bold")};
+        text-decoration: underline;
+
         &:hover {
           text-decoration: underline;
         }
+      }
+    }
+
+    ul li,
+    ol li {
+      & + li {
+        margin-top: ${makeRem(32)};
       }
     }
   }
