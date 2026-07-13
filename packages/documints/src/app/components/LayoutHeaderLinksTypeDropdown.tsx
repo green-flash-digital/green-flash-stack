@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-import type { DocumintConfigHeaderLinkTypeDropdown } from "@documints/core";
+import type { DocumintConfigHeaderLinkTypeDropdown } from "../../config/_config.utils.js";
 import { css } from "@linaria/core";
 import { MenuController } from "@stratum-ui/react/menu";
 
@@ -10,7 +10,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset
-} from "../../../.chamfer/index.js";
+} from "@documints/tokens";
 import { IconComponent } from "./icons/IconComponent.js";
 import type { LayoutHeaderLinksTypeDropdownState } from "./LayoutHeaderLinksTypeDropdownContent.js";
 

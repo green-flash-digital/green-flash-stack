@@ -1,12 +1,12 @@
 import { Suspense, lazy, useMemo } from "react";
 import { Link, Outlet, type RouteObject, useLocation } from "react-router";
 
-import "../../.chamfer/_generated/root.css";
+import "@documints/tokens/root.css";
 import type {
   DocumintRouteManifestEntryDoc,
-  DocumintRouteManifestGraphObject,
-  DocumintResolvedHeader
-} from "@documints/core";
+  DocumintRouteManifestGraphObject
+} from "../utils/util.types.js";
+import type { DocumintResolvedHeader } from "../config/_config.utils.js";
 
 import { DocumintsMetaComponent } from "./components/DocumintsMetaComponent.js";
 import { Layout } from "./components/Layout.js";

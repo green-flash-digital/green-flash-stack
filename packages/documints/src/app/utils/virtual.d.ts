@@ -2,7 +2,7 @@ declare module "virtual:routes" {
   import type {
     DocumintRouteManifestGraphObject,
     DocumintRouteManifestEntryDoc
-  } from "@documints/core";
+  } from "../../utils/util.types.js";
   // Adjust the types based on what your `virtual:routes` module exports
   export const routeGraph: DocumintRouteManifestGraphObject;
   export const routeDocs: DocumintRouteManifestEntryDoc[];
@@ -10,7 +10,7 @@ declare module "virtual:routes" {
 }
 
 declare module "virtual:data" {
-  import type { DocumintResolvedHeader } from "@documints/core";
+  import type { DocumintResolvedHeader } from "../../config/_config.utils.js";
   export const header: DocumintResolvedHeader | undefined;
 }
 

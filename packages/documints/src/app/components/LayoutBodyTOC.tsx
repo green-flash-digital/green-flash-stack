@@ -9,7 +9,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset
-} from "../../../.chamfer/index.js";
+} from "@documints/tokens";
 import { LayoutTextOverline } from "./LayoutTextOverline.js";
 
 const layoutBodyStyles = css`

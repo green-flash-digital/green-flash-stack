@@ -1,4 +1,4 @@
-import { Documints } from "@documints/core";
+import { Documints } from "../../src/Documints.js";
 import { defineCommand } from "fizmoo";
 
 export default defineCommand({

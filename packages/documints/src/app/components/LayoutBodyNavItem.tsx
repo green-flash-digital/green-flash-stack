@@ -1,11 +1,11 @@
 import type { FC } from "react";
 import { NavLink } from "react-router";
 
-import type { DocumintRouteManifestGraphObject } from "@documints/core";
+import type { DocumintRouteManifestGraphObject } from "../../utils/util.types.js";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
-import { makeColor, makeFontWeight, makeRem } from "../../../.chamfer/index.js";
+import { makeColor, makeFontWeight, makeRem } from "@documints/tokens";
 
 const ulStyles = css`
   list-style-type: none;

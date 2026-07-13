@@ -4,7 +4,7 @@ import { forwardRef } from "react";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
-import { makeColor, makeCustom, makeFontFamily, makeRem } from "../../../.chamfer/index.js";
+import { makeColor, makeCustom, makeFontFamily, makeRem } from "@documints/tokens";
 
 export const bodyStyles = css`
   font-family: ${makeFontFamily("source-sans-3")};

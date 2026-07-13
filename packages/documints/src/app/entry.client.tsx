@@ -4,6 +4,7 @@ import { RouterProvider, createBrowserRouter } from "react-router";
 import ReactDOMClient from "react-dom/client";
 
 import { DocumintsMetaProvider } from "../meta/DocumintsMeta.provider.js";
+
 import { routes } from "./routes.js";
 
 // A browser router is inherently a page-lifetime singleton tied to

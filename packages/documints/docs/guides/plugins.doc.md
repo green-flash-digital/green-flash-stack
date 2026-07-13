@@ -26,8 +26,8 @@ export default defineDocumintsConfig({
 });
 ```
 
-If a plugin needs a path relative to your project (not wherever `documints`/`@documints/core`
-themselves happen to be installed), use the function form instead - it receives
+If a plugin needs a path relative to your project (not wherever `documints` itself happens to
+be installed), use the function form instead - it receives
 `{ rootDir }`, the directory containing `.documints/`:
 
 ```ts
@@ -40,7 +40,7 @@ export default defineDocumintsConfig({
 
 ## Built-in plugins
 
-`@documints/core` ships its own optional plugins, wired up the exact same way. Currently:
+`documints` ships its own optional plugins, wired up the exact same way. Currently:
 
 ### Interactive preview
 
@@ -51,7 +51,7 @@ instead of static code fences.
 ```ts
 import path from "node:path";
 import { defineDocumintsConfig } from "documints";
-import { vitePluginDocumintInteractivePreview } from "@documints/core/plugins/interactive-preview";
+import { vitePluginDocumintInteractivePreview } from "documints/plugins/interactive-preview";
 
 export default defineDocumintsConfig({
   vitePlugins: ({ rootDir }) => [

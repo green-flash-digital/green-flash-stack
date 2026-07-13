@@ -1,0 +1,25 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "documints",
+  "compatibility_date": "2026-07-07",
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  /**
+   * Custom Domains
+   * Binds this Worker to a domain/subdomain on a zone already in this Cloudflare account.
+   * Cloudflare provisions the DNS record + TLS cert automatically.
+   * https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
+   */
+  "routes": [{ "pattern": "documints.dev", "custom_domain": true }],
+  /**
+   * Static Assets
+   * https://developers.cloudflare.com/workers/static-assets/binding/
+   */
+  "assets": { "directory": "./.documints/static" }
+}

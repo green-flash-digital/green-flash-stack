@@ -8,25 +8,25 @@ slug: how-it-works
 A tour of the actual machinery behind `documints dev`/`documints build`, for anyone
 extending documints itself or just curious what's happening under the hood.
 
-## Two packages, one job
+## One package, plus design tokens
 
-The functionality is split across two packages:
+`documints` - the CLI you install - owns the whole thing: the
+[fizmoo](https://github.com/green-flash-digital/fizmoo)-defined commands (`dev`/`build`/`init`),
+config resolution, doc discovery, the Vite pipeline, and the app shell (`Layout`, header, nav)
+your docs render inside, all in one package.
 
-- **`documints`** - the CLI you install. It's intentionally thin: a `bin/`, three
-  [fizmoo](https://github.com/green-flash-digital/fizmoo)-defined commands
-  (`dev`/`build`/`init`), and a single re-export of `@documints/core`. Nothing else lives
-  here.
-- **`@documints/core`** - the engine and the React/SSR rendering framework. Everything that
-  actually does work - config resolution, doc discovery, the Vite pipeline, the app shell
-  your docs render inside - lives here.
+That's deliberate, not an oversight: the shell and a specific project's own doc content have
+to compile together, in the same Vite build, every single time `dev`/`build` runs. Splitting
+that across a package boundary only adds indirection - a self-referencing import here, a
+`tsconfig` `rootDir` to reason about there - without buying anything, since nothing outside
+documints itself ever needs the shell on its own.
 
-Why split them at all? So the CLI package stays a stable, minimal surface while the engine
-underneath it can evolve freely - and so the engine is independently usable/testable
-without needing the CLI's argument-parsing layer in the loop.
+The one piece that *is* split out is design tokens (`@documints/tokens`) - genuinely useful
+independent of the engine, so it's built and versioned separately with chamfer-css.
 
 ## The `Documints` class
 
-Everything in `@documints/core` is reached through one class. Its shape mirrors what it
+Nearly everything documints does is reached through one class. Its shape mirrors what it
 does:
 
 - **Static methods handle finding and locating**, since they run *before* an instance
@@ -112,8 +112,8 @@ static output, deployable anywhere.
 ## Design tokens and the app shell
 
 The app shell (nav, header, breadcrumbs, TOC) is a real React application living inside
-`@documints/core`, styled with [chamfer-css](https://github.com/green-flash-digital/green-flash-stack)
-design tokens compiled to CSS custom properties - which is what makes
-[Plugins](/guides/plugins) and future theming both possible without touching documints'
-own source: anything downstream can override a token by redeclaring the corresponding
-`--documints-*` CSS variable.
+`documints` itself, styled with design tokens from `@documints/tokens`
+([chamfer-css](https://github.com/green-flash-digital/green-flash-stack)-generated CSS custom
+properties) - which is what makes [Plugins](/guides/plugins) and future theming both possible
+without touching documints' own source: anything downstream can override a token by
+redeclaring the corresponding `--documints-*` CSS variable.

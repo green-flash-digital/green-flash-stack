@@ -10,6 +10,13 @@ type VitePluginDocumintInteractivePreviewOptions = {
 
 const previewRegex = /{\/\*\s*preview:\s*([^*]+)\s*\*\/}/g;
 
+// Computed at runtime, not a package specifier: the .mdx file this gets
+// injected into can live anywhere in a consumer's own project, so there's
+// no fixed relative path back to this plugin's own UI component - an
+// absolute path is the only thing that reliably resolves regardless of
+// where the .mdx file is.
+const interactivePreviewUiPath = path.resolve(import.meta.dirname, "../ui/index.js");
+
 // Define the structure of the parsed preview data
 type PreviewData =
   | {
@@ -74,7 +81,7 @@ export function vitePluginDocumintInteractivePreview(
           case "interactive":
             return `
 
-import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "@documints/core/plugins/interactive-preview/ui";
+import { InteractivePreview as InteractivePreviewComponent${matchNum} } from "${interactivePreviewUiPath}";
 import { ${params.export} as Component${matchNum} } from "${transformedPath}";
 
 <InteractivePreviewComponent${matchNum}>

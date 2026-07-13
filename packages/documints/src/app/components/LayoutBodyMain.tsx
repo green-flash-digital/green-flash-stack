@@ -8,7 +8,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset
-} from "../../../.chamfer/index.js";
+} from "@documints/tokens";
 
 const layoutBodyMainStyles = css`
   grid-area: layout-main;

@@ -13,7 +13,7 @@ import {
   makeFontFamily,
   makeFontWeight,
   makeRem
-} from "@documints/core/tokens";
+} from "@documints/tokens";
 import { css } from "@linaria/core";
 
 function cx(...names: (string | false | undefined)[]): string {
@@ -448,7 +448,7 @@ export default function Welcome() {
     <div className={pageStyles}>
       <div className={heroStyles}>
         <div>
-          <img className="wordmark" src="/documints-wordmark-v2.png" alt="documints" />
+          <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
           <h1>Docs shouldn't be hard.</h1>
           <p>
             Write whatever you want, wherever you want. Documints handles organizing and building a

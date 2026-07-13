@@ -2,7 +2,7 @@ import React, { type ReactNode, useState } from "react";
 
 import { css } from "@linaria/core";
 
-import { makeColor } from "../../../../.chamfer/index.js";
+import { makeColor } from "@documints/tokens";
 
 const SourceCodeIcon = (props: React.SVGProps<SVGSVGElement>) => (
   <svg

@@ -1,6 +1,6 @@
 import { Transform } from "node:stream";
 
-import type { DocumintsDirs } from "@documints/core";
+import type { DocumintsDirs } from "../Documints.js";
 import type { Request, Response } from "express";
 import type { ViteDevServer } from "vite";
 
@@ -30,8 +30,11 @@ export async function handleRequestDev(
     // Insert the assets into the HTML template start and end
     LOG_SERVER_DEV.debug("Generating HTML template...");
     const { htmlDev } = generateHTMLTemplate({
-      cssLinks: [config.dirs.app.css.docsUI],
-      jsScripts: [config.dirs.app.appEntryClient],
+      // Vite's dev-server client runtime injects styles for anything
+      // reachable in the module graph on its own - no explicit <link> needed
+      // in dev, same as any other css-in-js usage in the app.
+      cssLinks: [],
+      jsScripts: [config.dirs.entry.appEntryClient],
       Meta,
       head: config.head
     });
@@ -88,7 +91,7 @@ export async function handleRequestDev(
     const [htmlStart, htmlEnd] = htmlTemplate.split("<!--ssr-outlet-->");
 
     // inject critical css (Hydration issues at the moment)
-    // const docsUiCssContent = readFileSync(dirs.app.css.docsUI, "utf8");
+    // const docsUiCssContent = readFileSync(someCssAssetPath, "utf8");
     // const { critical } = collect(htmlTemplate, docsUiCssContent);
     // htmlStart = htmlTemplate.replace("<!--ssr-critical-->", critical);
 

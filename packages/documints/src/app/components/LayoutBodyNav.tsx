@@ -1,7 +1,7 @@
 import type { FC } from "react";
 import { NavLink } from "react-router";
 
-import type { DocumintRouteManifestGraphObject } from "@documints/core";
+import type { DocumintRouteManifestGraphObject } from "../../utils/util.types.js";
 import { css } from "@linaria/core";
 
 import {
@@ -10,7 +10,7 @@ import {
   makeFontWeight,
   makeRem,
   makeReset
-} from "../../../.chamfer/index.js";
+} from "@documints/tokens";
 import { LayoutBodyNavItem } from "./LayoutBodyNavItem.js";
 import { LayoutTextOverline } from "./LayoutTextOverline.js";
 

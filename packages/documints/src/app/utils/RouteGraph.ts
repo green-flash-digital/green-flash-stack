@@ -1,4 +1,4 @@
-import type { DocumintRouteManifestGraphObject } from "@documints/core";
+import type { DocumintRouteManifestGraphObject } from "../../utils/util.types.js";
 
 import { LOG } from "./LOG.js";
 
