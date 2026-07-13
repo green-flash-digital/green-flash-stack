@@ -46,62 +46,38 @@ import type {
 
 const CONFIG_DIRNAME = ".documints";
 
-/** Default glob, resolved relative to `.documints/`. Override via `config.docs`. */
+/** Default glob for finding docs, resolved relative to `.documints/`. Override via `config.docs`. */
 const DEFAULT_DOC_GLOB = "./**/*.doc.{md,mdx,tsx}";
 
-export type ResolvedDocumintsConfig = {
-  config: DocumintsConfig;
-  paths: { rootDir: string; documintsDir: string };
-  dirs: DocumintsDirs;
+export type DocumintsDirs = {
+  /** The directory one level up from `.documints/` - the consumer's own project root. */
+  projectRootDir: string;
+  /** `.documints/` itself. Anchor for the docs glob and each doc's display-only `aliasPath`. */
+  docsContentDir: string;
+  /** Static assets served as-is (favicon, images, etc). */
+  docsPublicDir: string;
+  /** Raw contents of `head.html`, if it exists. Not a path - this is the actual HTML string. */
+  headHtml: string;
+  /** `.documints/config.ts` */
+  configFilePath: string;
+  /** `.documints/.generated/` - gitignored, rebuilt on every `dev`/`build`. */
+  generatedDir: string;
+  /** `.documints/.generated/order.ts`, exporting `defineDocumintsOrdering`. */
+  orderTypesPath: string;
+  /** Vite's project root for both `dev()` and `build()` - the app shell plus the harness files. */
+  appShellDir: string;
+  viteCacheDir: string;
+  appEntryClientPath: string;
+  appEntryServerPath: string;
+  /** The final, deployable static site. */
+  staticOutputDir: string;
+  /** Temporary SSR bundle used to prerender routes. Deleted once the build finishes. */
+  serverBundleDir: string;
 };
 
-export type DocumintsDirs = {
-  /**
-   * The anchor that the `docs` glob and each doc's display-only `aliasPath`
-   * are resolved relative to - the `.documints/` directory itself, not a
-   * fixed "content" subfolder. This is what lets `config.docs` point anywhere
-   * reachable via a relative path, including outside `.documints/` entirely
-   * (e.g. a sibling `content/` folder at the project root, one level up).
-   * Each doc's generated `import()` uses its absolute `fullPath` instead of
-   * an alias built from this root, since that path commonly needs to escape
-   * `.documints/` via a `../` segment glob-based plugin filters won't match.
-   */
-  srcDocs: {
-    root: string;
-    public: string;
-    /**
-     * Raw HTML inserted as-is into `<head>`, if `.documints/head.html`
-     * exists - a favicon link, a self-hosted font's `@font-face` block,
-     * social preview meta tags, etc. Optional; no file means no extra head
-     * content.
-     */
-    head: string;
-  };
-  /**
-   * `root` is Vite's project root for both `dev()` and `build()` - the whole
-   * app shell (`Layout`, `App`, etc.) plus the 4 "harness" files
-   * (`entry.client.tsx`, `entry.server.tsx`, `entry.server.static.tsx`,
-   * `routes.ts`) that wire a specific consumer project's virtual routes into
-   * that shell. Everything under this root compiles fresh, every time -
-   * there's no pre-built package boundary to cross, so shell edits hot-reload
-   * exactly like a consumer's own doc edits do.
-   */
-  entry: {
-    root: string;
-    viteCacheDir: string;
-    appEntryServer: string;
-    appEntryClient: string;
-  };
-  output: {
-    /** The final, deployable static site - plain HTML/CSS/JS, servable anywhere. */
-    root: string;
-    /**
-     * Where the SSR bundle used to prerender each route gets built.
-     * Internal-only: never part of the deployed static output, and removed
-     * once the build finishes.
-     */
-    serverBundleDir: string;
-  };
+type DocumintsInstanceArgs = {
+  config: DocumintsConfig;
+  dirs: DocumintsDirs;
 };
 
 type DocumintVirtualModules = {
@@ -110,35 +86,39 @@ type DocumintVirtualModules = {
 };
 
 type DocumintsFrontmatter = {
-  /**
-   * A slash-delimited hierarchy path, e.g. "Guides/Deployment". Each segment
-   * becomes a nested section in the nav, and the last segment is both the
-   * page's display title and (slugified) its URL segment.
-   */
+  /** A slash-delimited hierarchy, e.g. "Guides/Deployment". Each segment becomes a nav section. */
   title: string;
-  /**
-   * Overrides the auto-slugified last segment of the URL without changing
-   * the displayed title, e.g. title "Guides/Deployment" + slug "deploy"
-   * routes to "/guides/deploy" but still displays as "Deployment".
-   */
+  /** Overrides the URL's last segment without changing the displayed title. */
   slug?: string;
-  /**
-   * Marks this doc as the site's home page, served at "/". Its `title` is
-   * still used for display purposes, but it's excluded from the nav tree.
-   */
+  /** Marks this doc as the home page, served at "/" and left out of the nav tree. */
   home?: boolean;
 };
 
 const TSX_FRONTMATTER_COMMENT = /^\s*\/\*\*\s*\r?\n---\r?\n([\s\S]*?)\r?\n---\s*\r?\n\*\/\s*/;
 
 export class Documints {
+  /** Well-known file and folder names inside a documints project. */
+  private static readonly FILE_NAMES = {
+    config: "config.ts",
+    headHtml: "head.html",
+    gitignore: ".gitignore",
+    welcomeDoc: "content/welcome.doc.md",
+    public: "public",
+    viteCacheDir: ".vite-cache",
+    staticOutputDir: "static",
+    serverBundleDir: ".server-build",
+    generatedDir: ".generated",
+    orderTypes: ".generated/order.ts",
+    clientEntry: "entry.client.tsx",
+    devServerEntry: "entry.server.tsx",
+    staticServerEntry: "entry.server.static.tsx"
+  } as const;
+
   #config: DocumintsConfig;
-  #paths: ResolvedDocumintsConfig["paths"];
   #dirs: DocumintsDirs;
 
-  private constructor(args: ResolvedDocumintsConfig) {
+  private constructor(args: DocumintsInstanceArgs) {
     this.#config = args.config;
-    this.#paths = args.paths;
     this.#dirs = args.dirs;
     this.dev = this.dev.bind(this);
     this.build = this.build.bind(this);
@@ -149,13 +129,11 @@ export class Documints {
   // ---------------------------------------------------------------------
 
   /**
-   * Resolves this package's own installed root (the directory containing
-   * `src/app/` and `dist/`) by walking up from wherever this module is
-   * actually running. This can't assume a fixed depth relative to
-   * `import.meta.dirname`: when imported directly it's `dist/`, but esbuild
-   * bundling the `.fizmoo/commands/*` entry points could in principle inline
-   * this module too, changing that depth. Matching on this package's own
-   * `package.json` name handles both without hardcoding either depth.
+   * Finds this package's own installed root (the folder containing `src/app/`
+   * and `dist/`) by walking up from wherever this module is running. The
+   * depth from here isn't fixed - it changes depending on whether this file
+   * is loaded directly or bundled - so we walk up until we find a
+   * `package.json` named "documints" instead of assuming a fixed depth.
    */
   private static getPackageRoot(): string {
     let dir = import.meta.dirname;
@@ -164,7 +142,7 @@ export class Documints {
         const packageJson = JSON.parse(readFileSync(path.resolve(dir, "./package.json"), "utf8"));
         if (packageJson.name === "documints") return dir;
       } catch {
-        // no readable/parsable package.json here - keep walking up
+        // no readable package.json here - keep walking up
       }
       const parent = path.dirname(dir);
       if (parent === dir) {
@@ -174,56 +152,44 @@ export class Documints {
     }
   }
 
-  /**
-   * Reads `.documints/head.html`, if present, so its raw contents can be
-   * inserted as-is into `<head>`. Absent by default - most projects don't
-   * need one.
-   */
-  private static readHeadHtml(dotDirPath: string): string {
+  /** Reads `.documints/head.html`, if present, so it can be inserted as-is into `<head>`. */
+  private static readHeadHtml(docsContentDir: string): string {
     try {
-      return readFileSync(path.resolve(dotDirPath, "./head.html"), "utf8");
+      return readFileSync(path.resolve(docsContentDir, Documints.FILE_NAMES.headHtml), "utf8");
     } catch {
       return "";
     }
   }
 
   /**
-   * Returns absolute path directories for referencing where a documints
-   * project's content lives, where documints' own app shell lives, and where
-   * build output should go. `dotDirPath` is the resolved `.documints/`
+   * Resolves every path a documints project needs, given the `.documints/`
    * directory found in the consuming project.
    */
-  private static getDirectories(dotDirPath: string): DocumintsDirs {
-    const packageRoot = Documints.getPackageRoot();
-    const entryRoot = path.resolve(packageRoot, "./src/app");
-
-    const serverEntryFileName =
-      process.env.NODE_ENV === "production" ? "entry.server.static.tsx" : "entry.server.tsx";
+  private static getDirectories(docsContentDir: string): DocumintsDirs {
+    const appShellDir = path.resolve(Documints.getPackageRoot(), "./src/app");
+    const serverEntryFile =
+      process.env.NODE_ENV === "production"
+        ? Documints.FILE_NAMES.staticServerEntry
+        : Documints.FILE_NAMES.devServerEntry;
 
     return {
-      srcDocs: {
-        root: dotDirPath,
-        public: path.resolve(dotDirPath, "./public"),
-        head: Documints.readHeadHtml(dotDirPath)
-      },
-      entry: {
-        root: entryRoot,
-        viteCacheDir: path.resolve(dotDirPath, "./.vite-cache"),
-        appEntryServer: path.resolve(entryRoot, serverEntryFileName),
-        appEntryClient: path.resolve(entryRoot, "./entry.client.tsx")
-      },
-      output: {
-        root: path.resolve(dotDirPath, "./static"),
-        serverBundleDir: path.resolve(dotDirPath, "./.server-build")
-      }
+      projectRootDir: path.dirname(docsContentDir),
+      docsContentDir,
+      docsPublicDir: path.resolve(docsContentDir, Documints.FILE_NAMES.public),
+      headHtml: Documints.readHeadHtml(docsContentDir),
+      configFilePath: path.resolve(docsContentDir, Documints.FILE_NAMES.config),
+      generatedDir: path.resolve(docsContentDir, Documints.FILE_NAMES.generatedDir),
+      orderTypesPath: path.resolve(docsContentDir, Documints.FILE_NAMES.orderTypes),
+      appShellDir,
+      viteCacheDir: path.resolve(docsContentDir, Documints.FILE_NAMES.viteCacheDir),
+      appEntryClientPath: path.resolve(appShellDir, Documints.FILE_NAMES.clientEntry),
+      appEntryServerPath: path.resolve(appShellDir, serverEntryFile),
+      staticOutputDir: path.resolve(docsContentDir, Documints.FILE_NAMES.staticOutputDir),
+      serverBundleDir: path.resolve(docsContentDir, Documints.FILE_NAMES.serverBundleDir)
     };
   }
 
-  /**
-   * Walks up the directory tree from startDir (default: cwd) looking for
-   * `.documints/config.ts`. Returns the resolved paths on success, null if
-   * not found. Mirrors fizmoo-core's own config-file discovery.
-   */
+  /** Walks up from `startDir` (default: cwd) looking for `.documints/config.ts`. */
   private static async findConfigFile(startDir?: string): Promise<{
     configFile: string;
     dirPath: string;
@@ -241,11 +207,7 @@ export class Documints {
     }
   }
 
-  /**
-   * Compiles `.documints/config.ts` with esbuild in-process, imports the
-   * result, and validates it against the config schema. Mirrors fizmoo-core's
-   * own `loadFizmooConfig`.
-   */
+  /** Compiles `.documints/config.ts` with esbuild in-process and validates the result. */
   private static async loadConfig(configFile: string): Promise<DocumintsConfig> {
     const tempFile = path.resolve(path.dirname(configFile), `_documints_config_${Date.now()}.mjs`);
     try {
@@ -266,8 +228,8 @@ export class Documints {
       }
       const result = documintsConfigSchema.safeParse(mod.default);
       if (!result.success) throw result.error;
-      // Return the raw default export (not the parsed result) so that
-      // non-serializable fields like `vitePlugins` functions survive.
+      // Return the raw default export, not the parsed result, so non-serializable
+      // fields like `vitePlugins` functions survive.
       return mod.default as DocumintsConfig;
     } finally {
       await rm(tempFile, { force: true }).catch(() => undefined);
@@ -275,22 +237,15 @@ export class Documints {
   }
 
   /**
-   * Interactively scaffolds a new `.documints/` project: the config file, a
-   * starter home-page doc, and a `.gitignore` for the vite cache, the
-   * server-only prerender bundle, and the built static site.
+   * Scaffolds a new `.documints/` project: a config file, a starter home
+   * page, a `.gitignore`, and a stub for the generated order types.
    */
   static async bootstrap(rootDir = process.cwd()): Promise<string> {
     const dotDir = path.resolve(rootDir, CONFIG_DIRNAME);
-    const configPath = path.resolve(dotDir, "./config.ts");
-    const welcomeDocPath = path.resolve(dotDir, "./content/welcome.doc.md");
-    const gitignorePath = path.resolve(dotDir, "./.gitignore");
-    // config.ts doesn't import defineDocumintsOrdering out of the box, but a
-    // stub has to exist from the start regardless - config.ts gets bundled by
-    // loadConfig() before any Documints instance exists to compute a route
-    // manifest and overwrite this with the real thing, so if a project's
-    // config.ts is hand-edited to import it before the first dev/build run,
-    // there needs to be something on disk to resolve against.
-    const orderTypesPath = path.resolve(dotDir, "./.generated/order.ts");
+    const configPath = path.resolve(dotDir, Documints.FILE_NAMES.config);
+    const welcomeDocPath = path.resolve(dotDir, Documints.FILE_NAMES.welcomeDoc);
+    const gitignorePath = path.resolve(dotDir, Documints.FILE_NAMES.gitignore);
+    const orderTypesPath = path.resolve(dotDir, Documints.FILE_NAMES.orderTypes);
 
     const configContent = `import { defineDocumintsConfig } from "documints";
 
@@ -309,50 +264,36 @@ or add more \`*.doc.md\` files anywhere under \`.documints/content/\` - their pl
 nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where you put them.
 `;
 
-    const configRes = await tryHandle(writeFileRecursive)(configPath, configContent);
-    if (configRes.success === false) throw configRes.error;
-
-    const welcomeRes = await tryHandle(writeFileRecursive)(welcomeDocPath, welcomeDocContent);
-    if (welcomeRes.success === false) throw welcomeRes.error;
-
-    const gitignoreRes = await tryHandle(writeFileRecursive)(
-      gitignorePath,
-      ".vite-cache\n.server-build\nstatic\n.generated\n"
-    );
-    if (gitignoreRes.success === false) throw gitignoreRes.error;
-
-    const orderTypesRes = await tryHandle(writeFileRecursive)(
-      orderTypesPath,
-      Documints.renderOrderTypesFile("")
-    );
-    if (orderTypesRes.success === false) throw orderTypesRes.error;
+    await writeFileRecursive(configPath, configContent);
+    await writeFileRecursive(welcomeDocPath, welcomeDocContent);
+    await writeFileRecursive(gitignorePath, ".vite-cache\n.server-build\nstatic\n.generated\n");
+    // config.ts may import defineDocumintsOrdering before any doc has ever
+    // been discovered, so there needs to be a real file here from the start.
+    await writeFileRecursive(orderTypesPath, Documints.renderOrderTypesFile(""));
 
     return configPath;
   }
 
   /**
-   * `.generated/` is gitignored (it's rebuilt on every dev/build, see
-   * `writeOrderTypesFile`), so a fresh clone won't have `order.ts` on disk
-   * yet - but `config.ts` may still `import { defineDocumintsOrdering } from
-   * "./.generated/order.js"`, and that has to resolve the moment `loadConfig`
-   * bundles it below, well before a route manifest exists to generate the
-   * real file from. Writing an empty stub first (only if nothing's there
-   * already) guarantees the import always resolves; the real,
-   * literal-typed version overwrites it moments later once `dev()`/`build()`
-   * actually runs.
+   * `.generated/order.ts` is gitignored and only ever written by `dev`/`build`,
+   * so a fresh clone won't have it yet - but `config.ts` might already import
+   * `defineDocumintsOrdering` from it, and that import has to resolve the
+   * moment `loadConfig` bundles the file below, before any doc has been
+   * discovered to generate the real thing from. Writing an empty stub first
+   * (only if nothing's there yet) keeps the import from failing; the real
+   * version overwrites it moments later once `dev()`/`build()` runs.
    */
   private static async ensureOrderTypesStub(dotDirPath: string): Promise<void> {
-    const orderTypesPath = path.resolve(dotDirPath, "./.generated/order.ts");
+    const orderTypesPath = path.resolve(dotDirPath, Documints.FILE_NAMES.orderTypes);
     const res = await tryHandle(access)(orderTypesPath);
     if (res.success) return;
     await writeFileRecursive(orderTypesPath, Documints.renderOrderTypesFile(""));
   }
 
   /**
-   * Locates and loads a `.documints/config.ts`, resolving it (and directories
-   * derived from it) into a `Documints` instance. If no config is found,
-   * offers to bootstrap one (or does so automatically with `autoInit: true`),
-   * mirroring fizmoo-core's own `createFizmoo`.
+   * Finds and loads `.documints/config.ts` into a `Documints` instance. If
+   * none exists, offers to bootstrap one (or does so automatically with
+   * `autoInit: true`).
    */
   static async create(options?: { autoInit?: boolean }): Promise<Documints | null> {
     LOG.debug(`Locating the ${CONFIG_DIRNAME}/config.ts file...`);
@@ -363,14 +304,7 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
       await Documints.ensureOrderTypesStub(found.dirPath);
       const config = await Documints.loadConfig(found.configFile);
       const dirs = Documints.getDirectories(found.dirPath);
-      return new Documints({
-        config,
-        paths: {
-          rootDir: path.dirname(found.dirPath),
-          documintsDir: found.dirPath
-        },
-        dirs
-      });
+      return new Documints({ config, dirs });
     }
 
     LOG.warn(`Unable to locate ${CONFIG_DIRNAME}/config.ts.`);
@@ -405,7 +339,7 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
 
   // ---------------------------------------------------------------------
   // Parsing - static helpers are pure (no instance state needed); instance
-  // methods below them operate on this.#config/#paths/#dirs directly
+  // methods below them operate on this.#config/#dirs directly
   // ---------------------------------------------------------------------
 
   /**
@@ -420,10 +354,6 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
    * ---
    * *\/
    * ```
-   *
-   * Extracting it this way keeps frontmatter parsing pure text, same as
-   * `.doc.md` - no need to transpile or execute the file (and resolve its real
-   * imports) just to discover its route.
    */
   private static extractTsxFrontmatterSource(fileContent: string): string | null {
     const match = fileContent.match(TSX_FRONTMATTER_COMMENT);
@@ -471,10 +401,9 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
   }
 
   /**
-   * Resolves any `{ type: "section", title }` header links against the route
-   * graph into a fully-populated `dropdown` link, whose items are that
-   * section's child pages. The client only ever sees the resolved shape - it
-   * has no notion of doc structure, so `section` never reaches the bundle.
+   * Resolves any `{ type: "section", title }` header link into a `dropdown`
+   * link whose items are that section's child pages. The client only ever
+   * sees the resolved shape.
    */
   private static resolveDocumintsHeader(
     header: DocumintConfigHeader | undefined,
@@ -510,10 +439,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
   }
 
   /**
-   * Takes the route manifest and recursively turns it into a graphical
-   * representation of the routes, nesting each entry by its route-path
-   * segments. Path-agnostic to how those segments were derived - it only
-   * reads `routePath`, never adds or removes manifest properties.
+   * Turns the route manifest into a nested tree, one level per route-path
+   * segment. A segment with no doc of its own (e.g. "introduction" in
+   * "guides/introduction/concepts") still gets a node here, marked
+   * `synthetic: true` - it exists purely to group its children in the nav.
    */
   private static getDocumintRouteGraph(
     routeManifest: DocumintRouteManifest
@@ -529,7 +458,6 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         const i = Number(segmentIndex);
         const segment = manifestEntrySegments[segmentIndex];
         if (!currentGraphObj[segment]) {
-          LOG.debug(`Segment "${segment}" doesn't exist. Creating nested graph.`);
           currentGraphObj[segment] = {
             aliasPath: "",
             fullPath: "",
@@ -553,11 +481,8 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
       }
     }
 
-    const manifestEntries = Object.values(routeManifest);
-    for (const manifestEntry of manifestEntries) {
-      LOG.debug(`Adding "${manifestEntry.routePath}" to the route graph...`);
+    for (const manifestEntry of Object.values(routeManifest)) {
       addRouteGraphNode(manifestEntry);
-      LOG.debug(`Adding "${manifestEntry.routePath}" to the route graph... done.`);
     }
 
     return graphObj;
@@ -565,9 +490,8 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
 
   /**
    * Turns a doc's frontmatter into its route path. Hierarchy comes from the
-   * slash-delimited `title` (Storybook-style), not from where the file lives
-   * on disk. `home: true` always resolves to "/" regardless of `title`, since
-   * the home page sits outside the nav tree.
+   * slash-delimited `title`, not from where the file lives on disk. `home:
+   * true` always resolves to "/", regardless of `title`.
    */
   private getRoutePathFromFrontmatter(frontmatter: DocumintsFrontmatter): string {
     if (frontmatter.home) return "/";
@@ -587,17 +511,15 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
 
   /**
    * Discovers every `.doc.md`/`.doc.mdx`/`.doc.tsx` file matching
-   * `config.docs` (or the default glob), wherever it's nested. A file's
-   * location on disk has no bearing on its route - only its `title`
-   * frontmatter does.
+   * `config.docs`. A file's location on disk has no bearing on its route -
+   * only its `title` frontmatter does.
    */
   private getRouteManifest(): DocumintRouteManifest {
     const routeManifest: DocumintRouteManifest = {};
 
     const pattern = this.#config.docs ?? DEFAULT_DOC_GLOB;
-    LOG.debug(`Discovering docs matching "${pattern}" (from "${this.#dirs.srcDocs.root}")...`);
     const matches = globbySync(pattern, {
-      cwd: this.#dirs.srcDocs.root,
+      cwd: this.#dirs.docsContentDir,
       absolute: true,
       onlyFiles: true,
       ignore: ["**/node_modules/**", "**/.git/**"]
@@ -606,8 +528,7 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
     for (const direntFullPath of matches) {
       // path.relative (not a naive string split) since globby's absolute
       // paths don't necessarily string-match path.resolve()'s output exactly.
-      const aliasPath = `/${path.relative(this.#dirs.srcDocs.root, direntFullPath).split(path.sep).join("/")}`;
-      LOG.debug(`Creating manifest entry for doc: ${aliasPath}`);
+      const aliasPath = `/${path.relative(this.#dirs.docsContentDir, direntFullPath).split(path.sep).join("/")}`;
 
       const frontmatter = Documints.getDocumentConfigFromFrontmatter(aliasPath, direntFullPath);
       const routePath = this.getRoutePathFromFrontmatter(frontmatter);
@@ -617,8 +538,7 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         .filter(Boolean);
       const fileNameFormatted = titleSegments[titleSegments.length - 1] ?? frontmatter.title;
       // The real on-disk filename, not the (possibly `slug`-overridden) URL
-      // segment - this is what `order` matches leaf entries against, since
-      // it's what's actually visible when browsing the docs folder.
+      // segment - this is what `order` matches leaf entries against.
       const fileName = path.basename(direntFullPath).replace(/\.doc\.(md|mdx|tsx)$/, "");
 
       if (routeManifest[routePath]) {
@@ -642,24 +562,17 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
     }
 
     if (!this.#config.order) return routeManifest;
-    LOG.debug("Detected an order to the docs... ordering the manifest.");
-
     return this.orderRouteManifest(routeManifest);
   }
 
   /**
-   * Walks one `order` array (either a top-level section's, or a nested
-   * group's) and inserts the manifest entries it names into
-   * `orderedRouteManifest`, in the given sequence. A string entry names a
-   * leaf directly under `pathPrefix` by its real on-disk filename (not its
-   * URL slug, which may differ via `slug` frontmatter) - filenames are what's
-   * actually visible when browsing the docs folder, so they're the more
-   * discoverable identifier to write in config.ts. An object entry
-   * (`{ [key]: [...] }`) names a nested group by its URL segment instead,
-   * since that's the only identifier a synthetic group (e.g. "introduction",
-   * see `getDocumintRouteGraph`) has - it has no file of its own - and
-   * recurses into its own order array, letting that group's own children be
-   * reordered too.
+   * Walks one `order` array (a section's, or a nested group's) and inserts
+   * the manifest entries it names into `orderedRouteManifest`, in sequence.
+   * A string entry is a leaf, matched by its on-disk filename (more
+   * discoverable than its URL slug, which `slug` frontmatter can change). An
+   * object entry (`{ [key]: [...] }`) is a nested group matched by its URL
+   * segment instead, since a group (like a synthetic "introduction") has no
+   * file of its own - and recurses into its own order array.
    */
   private orderRouteManifestEntries(
     routeManifest: DocumintRouteManifest,
@@ -692,13 +605,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
 
   /**
    * Reads `config.order` and re-inserts entries into a new manifest in the
-   * desired sequence: the home page first, then each configured section's
-   * index page followed by its pages (and any nested groups' pages) in the
-   * order given, then anything left over in whatever order it was
-   * discovered.
+   * given sequence: home page first, then each section's index page and its
+   * ordered children, then anything left over in discovery order.
    */
   private orderRouteManifest(routeManifest: DocumintRouteManifest): DocumintRouteManifest {
-    LOG.debug("Ordering docs...");
     const orderedRouteManifest: DocumintRouteManifest = {};
 
     const homeEntry = routeManifest["/"];
@@ -717,8 +627,6 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         this.#config.order[section] ?? []
       );
     }
-
-    LOG.debug(`Ordering docs... done. Ordered ${Object.keys(orderedRouteManifest).length} routes.`);
 
     // Append anything not explicitly ordered, preserving discovery order.
     for (const [routePath, entry] of Object.entries(routeManifest)) {
@@ -752,7 +660,6 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
       { routeIndex: undefined, routeDocs: {} }
     );
 
-    LOG.debug("Validating index file exists...");
     if (typeof routeIndex === "undefined") {
       throw LOG.fatal(
         new Error(
@@ -760,7 +667,6 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         )
       );
     }
-    LOG.debug("Validating index file exists... done.");
 
     const routes = `;
 export const routeIndex = {
@@ -794,15 +700,11 @@ export const routeDocs = [${Object.values(routeDocs).map(
   }
 
   /**
-   * Builds the literal-type union for one level of `order` entries from its
-   * route-graph node's children. A real, doc-backed child is offerable as a
-   * plain leaf using its on-disk filename (`"getting-started"`, matching
-   * `orderRouteManifestEntries`'s filename-based leaf matching) - a synthetic
-   * group (see `getDocumintRouteGraph`) has no file, so it's never offered as
-   * a plain leaf. Any child with its own children, real or synthetic, is
-   * additionally offerable as `{ "introduction": [...] }` keyed by its URL
-   * segment (the only identifier a synthetic group has), recursing into its
-   * own children so nested groups can have their contents reordered too.
+   * Builds the literal-type union for one level of `order` entries. A real
+   * doc is offerable as a plain leaf, by its filename. A synthetic group has
+   * no file, so it's never a plain leaf - but any node with children (real
+   * or synthetic) is also offerable as `{ "key": [...] }`, recursing into
+   * its own children so nested groups can be reordered too.
    */
   private static renderOrderEntryUnion(children: DocumintRouteManifestGraphObject): string {
     const parts: string[] = [];
@@ -817,14 +719,10 @@ export const routeDocs = [${Object.values(routeDocs).map(
   }
 
   /**
-   * Writes `.documints/.generated/order.ts`: a literal-typed `DocumintsOrder`
-   * interface (one key per top-level section, a recursive union of its full
-   * child tree - leaves and nested groups alike) plus a
-   * `defineDocumintsOrdering` identity function typed against it, so
-   * `config.ts`'s `order` gets autocomplete and a compile error for a
-   * typo'd or stale slug instead of the silent no-op `orderRouteManifest`
-   * gives it otherwise. Regenerated on every route-manifest rebuild, so it's
-   * only ever as stale as the currently-running `dev`/`build`.
+   * Renders `.documints/.generated/order.ts`: a literal-typed `DocumintsOrder`
+   * interface plus a `defineDocumintsOrdering` identity function, so
+   * `config.ts`'s `order` gets autocomplete and a compile error for a typo'd
+   * or stale entry. Regenerated on every route-manifest rebuild.
    */
   private static renderOrderTypesFile(sectionFields: string): string {
     return `// Auto-generated by documints during dev/build - do not edit by hand.
@@ -834,9 +732,7 @@ export const routeDocs = [${Object.values(routeDocs).map(
 export type DocumintsOrderEntry = string | { [groupKey: string]: DocumintsOrderEntry[] };
 
 export interface DocumintsOrder {
-  // Keeps DocumintsOrder assignable to config.ts's
-  // Record<string, DocumintsOrderEntry[]> "order" field - the literal-typed
-  // properties below narrow known sections.
+  // Keeps DocumintsOrder assignable to config.ts's "order" field.
   [section: string]: DocumintsOrderEntry[] | undefined;
 ${sectionFields}
 }
@@ -857,16 +753,17 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
       })
       .join("\n");
 
-    const outputPath = path.resolve(this.#dirs.srcDocs.root, "./.generated/order.ts");
-    await writeFileRecursive(outputPath, Documints.renderOrderTypesFile(sectionFields));
+    await writeFileRecursive(
+      this.#dirs.orderTypesPath,
+      Documints.renderOrderTypesFile(sectionFields)
+    );
   }
 
   /**
    * The static (non-glob) directory prefix of a glob pattern, e.g.
-   * `"../docs/**\/*.doc.{md,mdx,tsx}"` -> `"../docs"`. `config.docs` commonly
-   * points outside `.documints/` entirely (a sibling `docs/` folder, for
-   * instance), so the dev watcher can't assume doc content always lives
-   * under `srcDocs.root` - it needs this to know what to actually watch.
+   * `"../docs/**\/*.doc.{md,mdx,tsx}"` -> `"../docs"`. `config.docs` can
+   * point anywhere, including outside `.documints/`, so the dev watcher
+   * needs this to know what to actually watch.
    */
   private static getGlobStaticBase(pattern: string): string {
     const staticSegments: string[] = [];
@@ -878,23 +775,23 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
   }
 
   /**
-   * A cheap fingerprint of everything that actually shapes the nav/routes:
-   * each route's path, its display label, and its position (`Object.entries`
-   * preserves insertion order, so a re-ordered manifest produces a different
-   * signature). Two manifests with the same signature mean nothing
-   * nav-visible changed - even if a doc's body content did - so there's
-   * nothing for `virtual:routes`/`virtual:data` to actually re-serialize.
+   * A cheap fingerprint of everything that shapes the nav: each route's path
+   * and display label, sorted so it only reflects real changes - not
+   * incidental differences in file-discovery order between two runs. Two
+   * manifests with the same signature mean nothing nav-visible changed, even
+   * if a doc's body content did.
    */
   private static getRouteManifestSignature(routeManifest: DocumintRouteManifest): string {
-    return JSON.stringify(
-      Object.entries(routeManifest).map(([routePath, entry]) => [routePath, entry.fileNameFormatted])
-    );
+    const entries = Object.entries(routeManifest)
+      .map(([routePath, entry]): [string, string] => [routePath, entry.fileNameFormatted])
+      .sort(([a], [b]) => a.localeCompare(b));
+    return JSON.stringify(entries);
   }
 
   private getVirtualModulesPlugin(): VitePlugin {
     let routeManifest = this.getRouteManifest();
     let vModules = this.getVirtualModules(routeManifest);
-    const butteryVirtualModuleIds = Object.keys(vModules);
+    const virtualModuleIds = Object.keys(vModules);
     const resolvedVModulePrefix = "\0";
 
     void this.writeOrderTypesFile(routeManifest).catch((error: unknown) => {
@@ -904,34 +801,32 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
     return {
       name: "vite-plugin-documints-virtual",
       configureServer: (server) => {
-        server.watcher.add(this.#dirs.srcDocs.root);
+        server.watcher.add(this.#dirs.docsContentDir);
         const docsWatchRoot = path.resolve(
-          this.#dirs.srcDocs.root,
+          this.#dirs.docsContentDir,
           Documints.getGlobStaticBase(this.#config.docs ?? DEFAULT_DOC_GLOB)
         );
         server.watcher.add(docsWatchRoot);
-        const configFile = path.resolve(this.#paths.documintsDir, "./config.ts");
+
         server.watcher.on("all", async (_event, watchedPath) => {
           // Only process doc/config changes - not vite's own cache churn,
           // and not our own generated order.ts, or writing it would
           // re-trigger this handler forever.
           const withinWatchedRoot =
-            watchedPath.startsWith(this.#dirs.srcDocs.root) ||
+            watchedPath.startsWith(this.#dirs.docsContentDir) ||
             watchedPath.startsWith(docsWatchRoot);
           if (!withinWatchedRoot) return;
-          if (watchedPath.startsWith(this.#dirs.entry.viteCacheDir)) return;
-          if (watchedPath.startsWith(path.resolve(this.#dirs.srcDocs.root, "./.generated"))) return;
+          if (watchedPath.startsWith(this.#dirs.viteCacheDir)) return;
+          if (watchedPath.startsWith(this.#dirs.generatedDir)) return;
 
-          // config.ts (header, order, docs glob, ...) is only ever loaded
-          // once, in Documints.create() - unlike doc content, nothing else
-          // re-reads it, so a saved edit to it would otherwise silently keep
-          // using whatever was loaded at server startup. Its effects (e.g.
-          // header.logo) aren't all captured by the route-manifest signature
-          // below, so a config.ts edit always counts as structural.
-          const isConfigChange = watchedPath === configFile;
+          // config.ts is only ever loaded once, in create() - unlike doc
+          // content, nothing else re-reads it, so a saved edit would
+          // otherwise keep using whatever was loaded at server startup. Its
+          // effects (e.g. header.logo) aren't all captured by the
+          // route-manifest signature below, so treat it as always structural.
+          const isConfigChange = watchedPath === this.#dirs.configFilePath;
           if (isConfigChange) {
-            LOG.debug("Reloading config.ts");
-            this.#config = await Documints.loadConfig(configFile);
+            this.#config = await Documints.loadConfig(this.#dirs.configFilePath);
           }
 
           const previousSignature = Documints.getRouteManifestSignature(routeManifest);
@@ -941,12 +836,9 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
             Documints.getRouteManifestSignature(routeManifest) !== previousSignature;
 
           if (!structureChanged) {
-            // Nothing nav/route-affecting changed - just a doc's own body
-            // content (text, JSX, styles). Vite's own HMR (React Refresh,
-            // MDX, CSS-in-JS) already handles that in place via its normal
-            // module graph, since this file is already watched; forcing a
-            // full-reload here would only replace that fine-grained update
-            // with a jarring full-page flash for no reason.
+            // Just a doc's own body content (text, JSX, styles) changed.
+            // Vite's own HMR already handles that in place; forcing a
+            // full-reload here would only replace it with a page flash.
             return;
           }
 
@@ -956,49 +848,33 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
             LOG.warn(`Failed to write .documints/.generated/order.ts: ${error}`);
           });
 
-          LOG.checkpointStart("Rebuild Virtual Modules");
-          const viteVirtualModuleEntries = [...server.moduleGraph.idToModuleMap.entries()].filter(
+          const viteVirtualModules = [...server.moduleGraph.idToModuleMap.entries()].filter(
             ([virtualModuleId]) => virtualModuleId.includes("virtual")
           );
 
-          LOG.debug("Attempting to match buttery virtual module Ids with those in vite");
-          for (const butteryVirtualModuleId of butteryVirtualModuleIds) {
-            LOG.debug(`Locating vite virtual module that includes: "${butteryVirtualModuleId}"`);
-            const viteVirtualModuleEntry = viteVirtualModuleEntries.find(([viteModId]) =>
-              viteModId.includes(butteryVirtualModuleId)
+          for (const virtualModuleId of virtualModuleIds) {
+            const viteVirtualModuleEntry = viteVirtualModules.find(([viteModId]) =>
+              viteModId.includes(virtualModuleId)
             );
-
-            if (!viteVirtualModuleEntry) {
-              LOG.debug(
-                `Unable to find vite virtual module match for the buttery virtual module id: ${butteryVirtualModuleId}`
-              );
-              continue;
-            }
+            if (!viteVirtualModuleEntry) continue;
 
             const [viteVirtualModuleId] = viteVirtualModuleEntry;
-            LOG.debug(
-              `Locating vite virtual module that includes: "buttery:${butteryVirtualModuleId} - vite:${viteVirtualModuleId}`
-            );
             const viteVirtualModule = server.moduleGraph.getModuleById(viteVirtualModuleId);
-            if (!viteVirtualModule) {
-              continue;
-            }
+            if (!viteVirtualModule) continue;
 
-            LOG.debug(`Invalidating vModule: ${viteVirtualModuleId}`);
             server.moduleGraph.invalidateModule(viteVirtualModule);
           }
-          LOG.checkpointEnd();
 
           server.ws.send({ type: "full-reload" });
         });
       },
       resolveId(id) {
-        const vModuleId = butteryVirtualModuleIds.find((moduleId) => moduleId === id);
+        const vModuleId = virtualModuleIds.find((moduleId) => moduleId === id);
         if (vModuleId) return resolvedVModulePrefix.concat(vModuleId);
         return null;
       },
       load(id) {
-        const vModuleId = butteryVirtualModuleIds.find(
+        const vModuleId = virtualModuleIds.find(
           (moduleId) => resolvedVModulePrefix.concat(moduleId) === id
         );
         if (vModuleId) {
@@ -1012,22 +888,18 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
   private getViteConfig() {
     let userDefinedPlugins: VitePlugin[] = [];
     if (typeof this.#config.vitePlugins === "function") {
-      LOG.debug("Parsing functional vitePlugins...");
       userDefinedPlugins = this.#config.vitePlugins({
-        rootDir: this.#paths.rootDir
+        rootDir: this.#dirs.projectRootDir
       });
-      LOG.debug("Parsing functional vitePlugins... done.");
     }
     if (Array.isArray(this.#config.vitePlugins)) {
-      LOG.debug("Parsing vitePlugins...");
       userDefinedPlugins = this.#config.vitePlugins;
-      LOG.debug("Parsing vitePlugins... done.");
     }
 
     return defineConfig({
-      root: this.#dirs.entry.root,
-      cacheDir: this.#dirs.entry.viteCacheDir,
-      publicDir: this.#dirs.srcDocs.public,
+      root: this.#dirs.appShellDir,
+      cacheDir: this.#dirs.viteCacheDir,
+      publicDir: this.#dirs.docsPublicDir,
       resolve: {
         preserveSymlinks: true,
         extensions: [".js", ".jsx", ".ts", ".tsx", ".mdx"]
@@ -1088,17 +960,13 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
     const HOSTNAME_AND_PORT = `${HOSTNAME}:${PORT}`;
 
     const app = express();
-    // Vite's HMR websocket needs a real http.Server to attach to - without
-    // handing it one via `server.hmr.server`, it spins up a second,
-    // standalone websocket-only server instead (defaulting to port 24678,
-    // or whatever `hmr.port` is set to), completely disconnected from
-    // whatever port this dev server is actually listening on.
+    // Vite's HMR websocket needs a real http.Server to attach to, or it
+    // spins up its own separate one, disconnected from this dev server's port.
     const server = http.createServer(app);
 
-    LOG.debug("Creating vite server & running in middleware mode.");
     const vite = await createServer({
       ...viteConfig,
-      root: this.#dirs.entry.root,
+      root: this.#dirs.appShellDir,
       appType: "custom",
       clearScreen: false,
       server: {
@@ -1109,18 +977,16 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
 
     app.use(vite.middlewares);
 
-    // No path argument matches every request regardless of path - simpler
-    // and version-proof than a wildcard pattern, since Express 5's router
-    // (path-to-regexp v7) dropped the bare "*" wildcard entirely.
+    // No path argument matches every request, since Express 5 dropped the
+    // bare "*" wildcard.
     app.use(async (req, res) => {
-      LOG.debug(`Loading the server entry file "${this.#dirs.entry.appEntryServer}"`);
-      const ssrEntryModule = await vite.ssrLoadModule(this.#dirs.entry.appEntryServer);
+      const ssrEntryModule = await vite.ssrLoadModule(this.#dirs.appEntryServerPath);
       await handleRequestDev(ssrEntryModule.render, {
         req,
         res,
         dirs: this.#dirs,
         vite,
-        head: this.#dirs.srcDocs.head
+        head: this.#dirs.headHtml
       });
     });
 
@@ -1137,48 +1003,42 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
     const viteConfig = this.getViteConfig();
     const routeManifest = this.getRouteManifest();
     // Explicitly awaited (unlike the dev-watcher's fire-and-forget call) since
-    // build() calls process.exit() right after finishing, which could cut off
-    // an in-flight write from the fire-and-forget call inside getViteConfig().
+    // build() calls process.exit() right after finishing.
     await this.writeOrderTypesFile(routeManifest);
 
     try {
-      LOG.debug("Building client bundle for production...");
       await viteBuild({
         logLevel: "silent",
-        root: this.#dirs.entry.root,
+        root: this.#dirs.appShellDir,
         ...viteConfig,
         build: {
           emptyOutDir: true,
           manifest: true,
-          outDir: this.#dirs.output.root,
+          outDir: this.#dirs.staticOutputDir,
           rollupOptions: {
-            input: this.#dirs.entry.appEntryClient
+            input: this.#dirs.appEntryClientPath
           }
         }
       });
-      LOG.debug("Building client bundle for production... done");
 
-      LOG.debug("Building server bundle for production...");
       await viteBuild({
         logLevel: "silent",
-        root: this.#dirs.entry.root,
+        root: this.#dirs.appShellDir,
         ...viteConfig,
         build: {
           emptyOutDir: true,
-          ssr: this.#dirs.entry.appEntryServer,
-          outDir: this.#dirs.output.serverBundleDir,
+          ssr: this.#dirs.appEntryServerPath,
+          outDir: this.#dirs.serverBundleDir,
           rollupOptions: {
             output: { entryFileNames: "server.js" }
           }
         }
       });
-      LOG.debug("Building server bundle for production... done");
 
-      LOG.debug("Prerendering routes to static HTML...");
-      const viteManifestPath = path.resolve(this.#dirs.output.root, "./.vite/manifest.json");
+      const viteManifestPath = path.resolve(this.#dirs.staticOutputDir, "./.vite/manifest.json");
       const viteManifest = JSON.parse(await readFile(viteManifestPath, "utf8"));
       const { render } = await import(
-        `${path.resolve(this.#dirs.output.serverBundleDir, "./server.js")}?t=${Date.now()}`
+        `${path.resolve(this.#dirs.serverBundleDir, "./server.js")}?t=${Date.now()}`
       );
 
       for (const entry of Object.values(routeManifest)) {
@@ -1186,30 +1046,31 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
           routePath: entry.routePath,
           aliasPath: entry.aliasPath,
           vManifest: viteManifest,
-          contentRoot: this.#dirs.srcDocs.root,
-          viteRoot: this.#dirs.entry.root,
-          head: this.#dirs.srcDocs.head
+          contentRoot: this.#dirs.docsContentDir,
+          viteRoot: this.#dirs.appShellDir,
+          head: this.#dirs.headHtml
         });
-        const outputPath = path.resolve(this.#dirs.output.root, `.${entry.routePath}/index.html`);
-        const res = await tryHandle(writeFileRecursive)(outputPath, html);
-        if (res.success === false) throw res.error;
+        const outputPath = path.resolve(
+          this.#dirs.staticOutputDir,
+          `.${entry.routePath}/index.html`
+        );
+        await writeFileRecursive(outputPath, html);
       }
-      LOG.debug("Prerendering routes to static HTML... done");
 
-      // The SSR bundle was only needed to prerender the routes above -
-      // it's never part of the deployed static output.
-      await rm(this.#dirs.output.serverBundleDir, { recursive: true, force: true });
+      // The SSR bundle was only needed to prerender the routes above - it's
+      // never part of the deployed static output.
+      await rm(this.#dirs.serverBundleDir, { recursive: true, force: true });
 
       LOG.checkpointEnd();
 
-      const filesAndDirs = await readdir(this.#dirs.output.root, {
+      const filesAndDirs = await readdir(this.#dirs.staticOutputDir, {
         recursive: true,
         withFileTypes: true
       });
       const files = filesAndDirs.filter((dirent) => dirent.isFile());
       LOG.success(`Successfully built documentation app!
 
-      Location: ${this.#dirs.output.root}
+      Location: ${this.#dirs.staticOutputDir}
       Total Files: ${files.length}
     `);
     } catch (error) {

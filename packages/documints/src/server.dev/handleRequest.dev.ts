@@ -34,7 +34,7 @@ export async function handleRequestDev(
       // reachable in the module graph on its own - no explicit <link> needed
       // in dev, same as any other css-in-js usage in the app.
       cssLinks: [],
-      jsScripts: [config.dirs.entry.appEntryClient],
+      jsScripts: [config.dirs.appEntryClientPath],
       Meta,
       head: config.head
     });
