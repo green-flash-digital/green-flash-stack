@@ -1,16 +1,16 @@
 ---
-title: Guides/Usage
+title: Guides/Introduction/Usage
 ---
 
 # Usage
 
 The day-to-day loop, once a project is bootstrapped (see
-[Getting Started](/getting-started)):
+[Getting Started](/guides/introduction/getting-started)):
 
 ## Write
 
 Add a `.doc.md`/`.doc.mdx`/`.doc.tsx` file wherever it makes sense - the filesystem
-location is purely organizational (see [Writing Docs](/guides/writing-docs)). Give it a
+location is purely organizational (see [Writing Docs](/guides/writing/writing-docs)). Give it a
 `title`, and it's live.
 
 ## Preview
@@ -45,8 +45,8 @@ hand-written HTML/CSS/JS bundle. There's no server process to configure or keep 
 | -------------------------- | ------------------------------------------------------------ |
 | `.documints/config.ts`     | Your project's configuration - see [Configuration](/guides/configuration) |
 | `.documints/content/`      | Default location for `.doc.*` files (configurable via `docs`) |
-| `.documints/public/`       | Static assets served as-is at the site root - see [Static Assets & Head](/guides/static-assets) |
-| `.documints/head.html`     | Optional raw HTML injected into `<head>` - see [Static Assets & Head](/guides/static-assets) |
+| `.documints/public/`       | Static assets served as-is at the site root - see [Static Assets & Head](/guides/customization/static-assets) |
+| `.documints/head.html`     | Optional raw HTML injected into `<head>` - see [Static Assets & Head](/guides/customization/static-assets) |
 | `.documints/.vite-cache/`  | Vite's dev-server cache - safe to delete, gitignored          |
 | `.documints/.server-build/`| Temporary SSR bundle used only during `documints build` to prerender routes, then deleted |
 | `.documints/static/`       | Build output - the deployable site, gitignored                |

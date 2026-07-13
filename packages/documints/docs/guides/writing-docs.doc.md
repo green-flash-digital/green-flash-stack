@@ -1,5 +1,5 @@
 ---
-title: Guides/Writing Docs
+title: Guides/Writing/Writing Docs
 ---
 
 # Writing Docs
@@ -29,7 +29,7 @@ title: Guides/Writing Docs
 ```
 
 Each segment becomes a nested nav section. The last segment is the page's display title,
-and every segment gets slugified into the URL - this page is `/guides/writing-docs`.
+and every segment gets slugified into the URL - this page is `/guides/writing/writing-docs`.
 
 A file whose `title` is a prefix of others (e.g. `title: Guides` on its own) becomes that
 section's index page, shown when a visitor navigates to `/guides` directly - see this
@@ -76,7 +76,7 @@ syntax, so the same YAML instead lives inside a leading block comment:
 ```tsx
 /**
 ---
-title: Guides/Playground
+title: Guides/Writing/Playground
 ---
 */
 import { useState } from "react";
@@ -95,4 +95,4 @@ export default function Playground() {
 The comment block is parsed as plain text to discover the route, the same way
 `.doc.md`/`.doc.mdx` frontmatter is - documints never has to execute the file (and resolve
 its real imports) just to figure out where it belongs. See the live
-[Playground](/guides/playground) page for the full source.
+[Playground](/guides/writing/playground) page for the full source.

@@ -1,6 +1,6 @@
 /**
 ---
-title: Guides/Playground
+title: Guides/Writing/Playground
 ---
 */
 import { useState } from "react";

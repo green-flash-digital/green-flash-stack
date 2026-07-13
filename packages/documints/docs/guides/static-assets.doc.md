@@ -1,5 +1,5 @@
 ---
-title: Guides/Static Assets & Head
+title: Guides/Customization/Static Assets & Head
 slug: static-assets
 ---
 
@@ -57,7 +57,7 @@ Put the font file in `public/fonts/`, then declare it in `head.html`:
 </style>
 ```
 
-Anything referencing that `font-family` in your own CSS (via [Plugins](/guides/plugins)'
+Anything referencing that `font-family` in your own CSS (via [Plugins](/guides/advanced/plugins)'
 `vitePlugins`, or documints' own design tokens) will pick it up.
 
 ### Anything else

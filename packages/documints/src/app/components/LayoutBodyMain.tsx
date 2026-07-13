@@ -1,14 +1,7 @@
 import type { FC, ReactNode } from "react";
 
+import { makeColor, makeCustom, makeFontWeight, makeRem, makeReset } from "@documints/tokens";
 import { css } from "@linaria/core";
-
-import {
-  makeColor,
-  makeCustom,
-  makeFontWeight,
-  makeRem,
-  makeReset
-} from "@documints/tokens";
 
 const layoutBodyMainStyles = css`
   grid-area: layout-main;
@@ -17,7 +10,8 @@ const layoutBodyMainStyles = css`
   top: ${makeCustom("layout-header-height")};
 
   &:not(pre) {
-    & > code {
+    code {
+      background: ${makeColor("neutral-100")};
     }
   }
 

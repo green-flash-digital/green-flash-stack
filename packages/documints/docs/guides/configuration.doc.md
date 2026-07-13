@@ -62,7 +62,7 @@ types are supported:
 
 - **`section`** - `{ type: "section", title: "Guides" }`. Resolves against your doc
   hierarchy into a dropdown listing that section's pages - see
-  [Routing](/guides/routing) for how the match works. The recommended way to surface a
+  [Routing](/guides/customization/routing) for how the match works. The recommended way to surface a
   section in the header, since it can never drift out of sync with your actual content.
 - **`dropdown`** - a labeled button opening a menu of manually-specified items
   (`text`/`href`, plus optional `subText`/`iconSrc`/`iconAlt`). Use this for links that
@@ -89,7 +89,7 @@ export default defineDocumintsConfig({
 ```
 
 A group - a `title` segment with no doc of its own, like "Introduction" in
-"Guides/Introduction/Getting Started" (see [Routing](/guides/routing)) - has no file, so
+"Guides/Introduction/Getting Started" (see [Routing](/guides/customization/routing)) - has no file, so
 it's ordered by its URL segment instead, by nesting an object instead of a plain string.
 Its own children go back to being ordered by filename:
 
@@ -135,7 +135,7 @@ before the configuration reference in the nav.
 
 documints' dev server and build are both just Vite underneath, and `vitePlugins` is the
 escape hatch into that: real Vite plugins, either your own or from anywhere on npm. See
-[Plugins](/guides/plugins) for a full walkthrough, including documints' own built-in
+[Plugins](/guides/advanced/plugins) for a full walkthrough, including documints' own built-in
 plugins. A plain array works for plugins that need no project-specific paths:
 
 ```ts

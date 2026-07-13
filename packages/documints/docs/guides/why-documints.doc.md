@@ -7,8 +7,8 @@ title: Guides/Introduction/Why Documints?
 Documints is a static site generator built for exactly one thing: technical documentation.
 Point it at Markdown, MDX, or React files, and it turns them into a fast, static site with
 navigation, hierarchy, and a header that stay correct on their own. The mechanics are
-covered elsewhere - [Routing](/guides/routing), [Configuration](/guides/configuration),
-[Writing Docs](/guides/writing-docs). This page is the *why*.
+covered elsewhere - [Routing](/guides/customization/routing), [Configuration](/guides/configuration),
+[Writing Docs](/guides/writing/writing-docs). This page is the *why*.
 
 ## A narrow scope, on purpose
 
@@ -33,7 +33,7 @@ of your attention is left for the doc itself.
 
 ## Docs that live where the code lives
 
-Frontmatter-driven routing (see [Routing](/guides/routing)) means location on disk never
+Frontmatter-driven routing (see [Routing](/guides/customization/routing)) means location on disk never
 decides where a page ends up - a page's `title` does. That has a real consequence: a
 `.doc.mdx` file can sit directly next to the component or module it documents - in the same
 folder, in the same PR - without that location dictating anything about the site's
@@ -62,7 +62,7 @@ longer true, and documints is built around that shift rather than bolting it on 
 - **Serving the raw source is a natural next step, not a new feature to build.** Because the
   source already is Markdown, this architecture sets up something no conversion step is
   required for: serving that raw source directly at a predictable URL alongside the
-  rendered page (`/guides/routing` also reachable as `/guides/routing.md`, a pattern already
+  rendered page (`/guides/customization/routing` also reachable as `/guides/customization/routing.md`, a pattern already
   emerging across the docs-tooling ecosystem). An agent that fetches that URL gets exactly
   the prose, with none of the HTML it would otherwise have to parse back out of. This isn't
   built yet, but the reason it'll be cheap to add later is the same reason the rest of
@@ -75,12 +75,12 @@ documints isn't a Markdown tool with React bolted on for embeds - it's a React a
 that happens to render Markdown as one of its content types. The nav, header, and layout
 are real React components; `.doc.mdx` embeds real React components; and `.doc.tsx` lets a
 page *be* a React component, full stop, with real state and real interactivity (see
-[Writing Docs](/guides/writing-docs)).
+[Writing Docs](/guides/writing/writing-docs)).
 
 The payoff shows up whenever you need to go past what Markdown can express. There's no
 separate shortcode syntax, no custom directive system, no plugin API shaped like anything
 other than React itself to learn - if you can write a component, you can extend documints.
-The [Interactive Preview plugin](/guides/plugins) isn't a special case bolted onto the
+The [Interactive Preview plugin](/guides/advanced/plugins) isn't a special case bolted onto the
 side; it's what "just use React" looks like when you need a live, working example next to
 its source.
 
@@ -98,7 +98,7 @@ Re-theming documints doesn't mean writing against a bespoke theming API - there 
 Every design token compiles to a plain CSS custom property (`--documints-color-primary`,
 `--documints-color-neutral-600`, and so on). Overriding the look of a site is exactly as
 complicated as writing a CSS file, dropping it in `.documints/public/`, and linking it from
-`.documints/head.html` (see [Static Assets & Head](/guides/static-assets)) - the same two
+`.documints/head.html` (see [Static Assets & Head](/guides/customization/static-assets)) - the same two
 conventions that already handle a favicon or a self-hosted font, reused for exactly this.
 No provider component, no theme object schema, no build step of its own.
 
@@ -116,7 +116,7 @@ abandoned in favor of a stale README. Documints treats that as seriously as the 
 - **It's just Vite underneath.** Nothing about the dev server or build is a custom bundler
   wearing a disguise - anything you already know about Vite (plugins, `optimizeDeps`, the
   error overlay, sourcemapped stack traces) transfers directly, and any Vite plugin from npm
-  works unmodified (see [Plugins](/guides/plugins)). Cold starts and rebuilds are fast for
+  works unmodified (see [Plugins](/guides/advanced/plugins)). Cold starts and rebuilds are fast for
   the same reason any modern Vite app's are - it never had to reinvent that.
 - **Typed, end to end.** `.documints/config.ts` is authored through `defineDocumintsConfig`,
   a real TypeScript function - your editor autocompletes `header.links`, catches a
@@ -128,7 +128,7 @@ abandoned in favor of a stale README. Documints treats that as seriously as the 
   real stack trace pointing at your actual file and line - not an opaque error from a
   custom templating DSL three layers removed from the file you actually edited.
 - **One command, not a pipeline to assemble.** `documints dev` and `documints build` are the
-  whole surface (see [Usage](/guides/usage)) - there's no separate step to wire up a
+  whole surface (see [Usage](/guides/introduction/usage)) - there's no separate step to wire up a
   bundler, a markdown processor, and a router together yourself before you can start writing.
 
 ## Fast, because it's static
@@ -144,7 +144,7 @@ A few things end up true almost by accident, as a consequence of the choices abo
 than features built directly:
 
 - **One source of truth for navigation.** The header's `section` links
-  ([Routing](/guides/routing)) resolve against the same route graph that builds the
+  ([Routing](/guides/customization/routing)) resolve against the same route graph that builds the
   sidebar - there's no second list to keep in sync, so they can't drift apart.
 - **No lock-in.** Content is plain `.doc.md`/`.doc.mdx`/`.doc.tsx` files with frontmatter -
   readable, greppable, diffable, and portable even if you stop using documints tomorrow.

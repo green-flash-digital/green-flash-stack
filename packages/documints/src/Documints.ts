@@ -308,16 +308,12 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
     }
 
     LOG.warn(`Unable to locate ${CONFIG_DIRNAME}/config.ts.`);
-    let shouldBootstrap = false;
-
     if (options?.autoInit) {
       LOG.debug("autoInit is enabled. Bootstrapping the required documints directories and files.");
-      shouldBootstrap = true;
-    } else {
-      shouldBootstrap = await confirm({
-        message: "Would you like to bootstrap documints now?"
-      });
     }
+    const shouldBootstrap = options?.autoInit
+      ? true
+      : await confirm({ message: "Would you like to bootstrap documints now?" });
 
     if (!shouldBootstrap) {
       LOG.fatal(

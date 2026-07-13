@@ -54,10 +54,10 @@ same as the Vite cache.
 
 ## Next steps
 
-- [Guides/Usage](/guides/usage) - the day-to-day write/preview/build/deploy loop.
-- [Guides/Writing Docs](/guides/writing-docs) - the frontmatter contract in detail.
-- [Guides/Routing](/guides/routing) - how hierarchy, the nav, and the header connect.
+- [Guides/Introduction/Usage](/guides/introduction/usage) - the day-to-day write/preview/build/deploy loop.
+- [Guides/Writing/Writing Docs](/guides/writing/writing-docs) - the frontmatter contract in detail.
+- [Guides/Customization/Routing](/guides/customization/routing) - how hierarchy, the nav, and the header connect.
 - [Guides/Configuration](/guides/configuration) - `.documints/config.ts` options.
-- [Guides/Plugins](/guides/plugins) - built-in and third-party Vite plugins.
+- [Guides/Advanced/Plugins](/guides/advanced/plugins) - built-in and third-party Vite plugins.
 - [Reference/CLI](/reference/cli) - every command and flag.
 - [Reference/How Documints Works](/reference/how-it-works) - the architecture, end to end.

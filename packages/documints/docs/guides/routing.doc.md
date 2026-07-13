@@ -1,5 +1,5 @@
 ---
-title: Guides/Routing
+title: Guides/Customization/Routing
 ---
 
 # Routing
@@ -25,7 +25,7 @@ segment (`title: Guides`) has no parent - it routes to `/guides` and becomes tha
 index page.
 
 `slug` overrides just the last URL segment without touching the displayed title (see
-[Writing Docs](/guides/writing-docs)), and `home: true` overrides all of this for exactly
+[Writing Docs](/guides/writing/writing-docs)), and `home: true` overrides all of this for exactly
 one page, routing it to `/` and excluding it from the nav tree entirely.
 
 ## Section index pages
@@ -42,7 +42,7 @@ If two pages resolve to the same route (duplicate `title`+`slug` combination, or
 typo), documints doesn't fail the build - it logs a warning naming both files and keeps
 going, with whichever one was discovered last winning:
 
-```
+```txt
 Multiple docs resolve to the route "/guides/deployment":
   - /guides/deploy-notes.doc.md
   - /guides/deployment.doc.md

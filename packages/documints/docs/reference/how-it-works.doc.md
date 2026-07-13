@@ -56,7 +56,7 @@ Given a resolved project, building a route manifest is a straight pipeline:
    discover its route, keeping discovery fast and side-effect-free.
 3. **Derive a route path** from `title` (slash-delimited, slugified per segment;
    `slug` overrides the last segment; `home: true` short-circuits to `/`) - see
-   [Routing](/guides/routing).
+   [Routing](/guides/customization/routing).
 4. **Detect collisions** (same route from two files) and warn, keeping the
    later-discovered entry.
 5. **Apply `order`**, if configured - re-inserting entries in the desired sequence rather
@@ -114,6 +114,6 @@ static output, deployable anywhere.
 The app shell (nav, header, breadcrumbs, TOC) is a real React application living inside
 `documints` itself, styled with design tokens from `@documints/tokens`
 ([chamfer-css](https://github.com/green-flash-digital/green-flash-stack)-generated CSS custom
-properties) - which is what makes [Plugins](/guides/plugins) and future theming both possible
+properties) - which is what makes [Plugins](/guides/advanced/plugins) and future theming both possible
 without touching documints' own source: anything downstream can override a token by
 redeclaring the corresponding `--documints-*` CSS variable.
