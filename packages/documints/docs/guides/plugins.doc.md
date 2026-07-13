@@ -1,5 +1,5 @@
 ---
-title: Guides/Plugins
+title: Guides/Advanced/Plugins
 ---
 
 # Plugins

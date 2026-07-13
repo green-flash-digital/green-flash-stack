@@ -64,9 +64,13 @@ export const LayoutBodyNav: FC<{
           return Object.entries(graphValue.pages).map(([sectionKey, sectionValues]) => {
             return (
               <section key={sectionKey} className={sectionStyles}>
-                <NavLink to={sectionValues.routePath} className={anchorOverlineCSS}>
+                {sectionValues.synthetic ? (
                   <LayoutTextOverline>{sectionValues.fileNameFormatted}</LayoutTextOverline>
-                </NavLink>
+                ) : (
+                  <NavLink to={sectionValues.routePath} className={anchorOverlineCSS}>
+                    <LayoutTextOverline>{sectionValues.fileNameFormatted}</LayoutTextOverline>
+                  </NavLink>
+                )}
                 <LayoutBodyNavItem graph={sectionValues.pages} />
               </section>
             );

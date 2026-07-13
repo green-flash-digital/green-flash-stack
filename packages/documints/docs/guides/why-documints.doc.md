@@ -1,9 +1,8 @@
 ---
-title: Guides/What is Documints?
-slug: concepts
+title: Guides/Introduction/Why Documints?
 ---
 
-# What is Documints?
+# Why Documints?
 
 Documints is a static site generator built for exactly one thing: technical documentation.
 Point it at Markdown, MDX, or React files, and it turns them into a fast, static site with

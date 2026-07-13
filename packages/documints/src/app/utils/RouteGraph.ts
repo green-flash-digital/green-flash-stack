@@ -50,7 +50,7 @@ export class DocumintRouteManifestGraphUtils {
 
   constructBreadcrumbs(pathname: string) {
     const segments = pathname.split("/").filter(Boolean);
-    const links: { href: string; display: string }[] = [];
+    const links: { href: string; display: string; synthetic: boolean }[] = [];
 
     let currentGraph = this.routeManifestGraph;
 
@@ -58,7 +58,8 @@ export class DocumintRouteManifestGraphUtils {
       const graphEntry = currentGraph[segment];
       links.push({
         href: graphEntry.routePath,
-        display: graphEntry.fileNameFormatted
+        display: graphEntry.fileNameFormatted,
+        synthetic: graphEntry.synthetic
       });
       currentGraph = graphEntry.pages;
     }

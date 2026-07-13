@@ -7,13 +7,7 @@ home: true
 import type { ReactNode, SVGProps } from "react";
 import { Link } from "react-router";
 
-import {
-  makeColor,
-  makeCustom,
-  makeFontFamily,
-  makeFontWeight,
-  makeRem
-} from "@documints/tokens";
+import { makeColor, makeCustom, makeFontFamily, makeFontWeight, makeRem } from "@documints/tokens";
 import { css } from "@linaria/core";
 
 function cx(...names: (string | false | undefined)[]): string {

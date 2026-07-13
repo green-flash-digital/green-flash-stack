@@ -1,5 +1,7 @@
 import { defineDocumintsConfig } from "documints";
 
+import { defineDocumintsOrdering } from "./.generated/order.js";
+
 export default defineDocumintsConfig({
   header: {
     title: "documints",
@@ -18,9 +20,9 @@ export default defineDocumintsConfig({
       ]
     ]
   },
-  order: {
+  order: defineDocumintsOrdering({
     guides: [
-      "concepts",
+      { introduction: ["why-documints", "getting-started"] },
       "usage",
       "writing-docs",
       "routing",
@@ -29,6 +31,6 @@ export default defineDocumintsConfig({
       "plugins"
     ],
     reference: ["cli", "how-it-works"]
-  },
+  }),
   docs: "../docs/**/*.doc.{md,mdx,tsx}"
 });

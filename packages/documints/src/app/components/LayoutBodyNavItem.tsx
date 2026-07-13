@@ -66,6 +66,17 @@ const anchorCss = css`
   }
 `;
 
+const groupLabelCss = css`
+  height: ${makeRem(24)};
+  color: ${makeColor("neutral")};
+  padding: ${makeRem(2)} ${makeRem(8)};
+  font-size: ${makeRem(14)};
+  display: flex;
+  align-items: center;
+  margin-bottom: ${makeRem(4)};
+  font-weight: ${makeFontWeight("source-sans-3-semiBold")};
+`;
+
 /**
  * Recursive component designed to create a sidebar tree form
  * nested pages.
@@ -80,9 +91,13 @@ export const LayoutBodyNavItem: FC<NavItemProps> = ({ graph, isNested = false })
       {Object.entries(graph).map(([graphKey, graphValue]) => {
         return (
           <li key={graphKey}>
-            <NavLink to={graphValue.routePath} className={anchorCss} end>
-              {graphValue.fileNameFormatted}
-            </NavLink>
+            {graphValue.synthetic ? (
+              <span className={groupLabelCss}>{graphValue.fileNameFormatted}</span>
+            ) : (
+              <NavLink to={graphValue.routePath} className={anchorCss} end>
+                {graphValue.fileNameFormatted}
+              </NavLink>
+            )}
             {Object.entries(graphValue.pages).length > 0 ? (
               <LayoutBodyNavItem graph={graphValue.pages} isNested />
             ) : null}

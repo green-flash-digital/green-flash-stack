@@ -111,6 +111,20 @@ export type DocumintResolvedHeader = Omit<DocumintConfigHeader, "links"> & {
   links?: DocumintResolvedHeaderLink[][];
 };
 
+/**
+ * One entry in an `order` array: either a leaf slug directly under the
+ * current path, or `{ [groupKey]: DocumintsOrderEntry[] }` naming a nested
+ * group (real doc-backed or synthetic, see `getDocumintRouteGraph`) whose own
+ * children should also be reordered. Recursive since the route graph itself
+ * can nest arbitrarily deep - a doc's `title` can be any number of
+ * slash-delimited segments.
+ */
+export type DocumintsOrderEntry = string | { [groupKey: string]: DocumintsOrderEntry[] };
+
+const DocumintsOrderEntrySchema: z.ZodType<DocumintsOrderEntry> = z.lazy(() =>
+  z.union([z.string(), z.record(z.string(), DocumintsOrderEntrySchema.array())])
+);
+
 export const documintsConfigSchema = z.object({
   /**
    * A glob pattern for finding your `.doc.md`/`.doc.mdx` files, resolved
@@ -120,11 +134,23 @@ export const documintsConfigSchema = z.object({
    * `"../content/**\/*.doc.md"`.
    */
   docs: z.string().optional(),
-  order: z.record(z.string(), z.string().array()).optional(),
+  order: z.record(z.string(), DocumintsOrderEntrySchema.array()).optional(),
   header: DocumintConfigHeaderSchema.optional()
 });
 
-export type DocumintsConfig = z.infer<typeof documintsConfigSchema> & {
+export type DocumintsConfig = Omit<z.infer<typeof documintsConfigSchema>, "order"> & {
+  /**
+   * Keyed by top-level section slug, each an ordered array of that section's
+   * children (see `Documints.ts`'s `orderRouteManifestEntries`). Typed as a
+   * plain index signature rather than `Record<string, DocumintsOrderEntry[]>`
+   * so that the generated, per-project `DocumintsOrder` interface in
+   * `.documints/.generated/order.ts` (built from literal section/child
+   * unions, each an optional property) is directly assignable here -
+   * `Record`'s index signature requires exactly `DocumintsOrderEntry[]`,
+   * which an optional property's `DocumintsOrderEntry[] | undefined` type can
+   * never satisfy.
+   */
+  order?: { [section: string]: DocumintsOrderEntry[] | undefined };
   vitePlugins?:
     | ((params: {
         /**

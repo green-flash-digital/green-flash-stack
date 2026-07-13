@@ -75,9 +75,10 @@ types are supported:
 ## `order`
 
 By default, pages within a section appear in the order they're discovered. `order` lets
-you pin an explicit sequence instead, keyed by section and leaf slug (not by file path -
-consistent with everything else in documints, `order` doesn't care where files live on
-disk):
+you pin an explicit sequence instead, keyed by section and leaf **filename** - the real
+on-disk name, minus `.doc.md`/`.doc.mdx`/`.doc.tsx`, not the URL slug a `title` or `slug`
+override might produce. Filenames are what you actually see browsing the docs folder, so
+they're the more discoverable thing to write here:
 
 ```ts
 export default defineDocumintsConfig({
@@ -86,6 +87,46 @@ export default defineDocumintsConfig({
   },
 });
 ```
+
+A group - a `title` segment with no doc of its own, like "Introduction" in
+"Guides/Introduction/Getting Started" (see [Routing](/guides/routing)) - has no file, so
+it's ordered by its URL segment instead, by nesting an object instead of a plain string.
+Its own children go back to being ordered by filename:
+
+```ts
+export default defineDocumintsConfig({
+  order: {
+    guides: [
+      { introduction: ["getting-started", "why-documints"] },
+      "writing-docs",
+      "configuration",
+    ],
+  },
+});
+```
+
+`defineDocumintsOrdering`, generated into `.documints/.generated/order.ts` alongside every
+`dev`/`build` run, gives autocomplete and a compile error for a typo'd or stale filename -
+import it instead of writing `order` as a plain object:
+
+```ts
+import { defineDocumintsOrdering } from "./.generated/order.js";
+
+export default defineDocumintsConfig({
+  order: defineDocumintsOrdering({
+    guides: [
+      { introduction: ["getting-started", "why-documints"] },
+      "writing-docs",
+      "configuration",
+    ],
+  }),
+});
+```
+
+Since it's generated from whatever docs currently exist, it's only as fresh as the last
+`dev`/`build` run - add a new section, group, or leaf and restart `documints dev` to see it
+show up in the autocomplete. Editing `order` itself in `config.ts` while `dev` is running
+takes effect immediately - no restart needed.
 
 This is exactly what this site's own `.documints/config.ts` uses to keep this guide listed
 before the configuration reference in the nav.

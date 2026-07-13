@@ -31,12 +31,13 @@ import {
   type DocumintConfigHeader,
   type DocumintResolvedHeader,
   type DocumintResolvedHeaderLink,
-  type DocumintsConfig
+  type DocumintsConfig,
+  type DocumintsOrderEntry
 } from "./config/_config.utils.js";
 import { handleRequestDev } from "./server.dev/index.js";
 import { renderRouteToHTML } from "./server.static/index.js";
 import { LOG } from "./utils/util.logger.js";
-import { slugify } from "./utils/util.slugify.js";
+import { slugify, unslugify } from "./utils/util.slugify.js";
 import type {
   DocumintRouteManifest,
   DocumintRouteManifestEntry,
@@ -283,6 +284,13 @@ export class Documints {
     const configPath = path.resolve(dotDir, "./config.ts");
     const welcomeDocPath = path.resolve(dotDir, "./content/welcome.doc.md");
     const gitignorePath = path.resolve(dotDir, "./.gitignore");
+    // config.ts doesn't import defineDocumintsOrdering out of the box, but a
+    // stub has to exist from the start regardless - config.ts gets bundled by
+    // loadConfig() before any Documints instance exists to compute a route
+    // manifest and overwrite this with the real thing, so if a project's
+    // config.ts is hand-edited to import it before the first dev/build run,
+    // there needs to be something on disk to resolve against.
+    const orderTypesPath = path.resolve(dotDir, "./.generated/order.ts");
 
     const configContent = `import { defineDocumintsConfig } from "documints";
 
@@ -309,11 +317,35 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
 
     const gitignoreRes = await tryHandle(writeFileRecursive)(
       gitignorePath,
-      ".vite-cache\n.server-build\nstatic\n"
+      ".vite-cache\n.server-build\nstatic\n.generated\n"
     );
     if (gitignoreRes.success === false) throw gitignoreRes.error;
 
+    const orderTypesRes = await tryHandle(writeFileRecursive)(
+      orderTypesPath,
+      Documints.renderOrderTypesFile("")
+    );
+    if (orderTypesRes.success === false) throw orderTypesRes.error;
+
     return configPath;
+  }
+
+  /**
+   * `.generated/` is gitignored (it's rebuilt on every dev/build, see
+   * `writeOrderTypesFile`), so a fresh clone won't have `order.ts` on disk
+   * yet - but `config.ts` may still `import { defineDocumintsOrdering } from
+   * "./.generated/order.js"`, and that has to resolve the moment `loadConfig`
+   * bundles it below, well before a route manifest exists to generate the
+   * real file from. Writing an empty stub first (only if nothing's there
+   * already) guarantees the import always resolves; the real,
+   * literal-typed version overwrites it moments later once `dev()`/`build()`
+   * actually runs.
+   */
+  private static async ensureOrderTypesStub(dotDirPath: string): Promise<void> {
+    const orderTypesPath = path.resolve(dotDirPath, "./.generated/order.ts");
+    const res = await tryHandle(access)(orderTypesPath);
+    if (res.success) return;
+    await writeFileRecursive(orderTypesPath, Documints.renderOrderTypesFile(""));
   }
 
   /**
@@ -328,6 +360,7 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
 
     if (found) {
       LOG.debug(`Found config: ${found.configFile}`);
+      await Documints.ensureOrderTypesStub(found.dirPath);
       const config = await Documints.loadConfig(found.configFile);
       const dirs = Documints.getDirectories(found.dirPath);
       return new Documints({
@@ -501,9 +534,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
             aliasPath: "",
             fullPath: "",
             fileName: "",
-            fileNameFormatted: "",
+            fileNameFormatted: unslugify(segment),
             root: false,
             routePath: "",
+            synthetic: true,
             pages: {}
           };
         }
@@ -582,8 +616,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         .map((segment) => segment.trim())
         .filter(Boolean);
       const fileNameFormatted = titleSegments[titleSegments.length - 1] ?? frontmatter.title;
-      const routeSegments = routePath.split("/");
-      const fileName = routeSegments[routeSegments.length - 1] || "index";
+      // The real on-disk filename, not the (possibly `slug`-overridden) URL
+      // segment - this is what `order` matches leaf entries against, since
+      // it's what's actually visible when browsing the docs folder.
+      const fileName = path.basename(direntFullPath).replace(/\.doc\.(md|mdx|tsx)$/, "");
 
       if (routeManifest[routePath]) {
         LOG.warn(
@@ -600,7 +636,8 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         fileName,
         fileNameFormatted,
         routePath,
-        root: routePath === "/"
+        root: routePath === "/",
+        synthetic: false
       };
     }
 
@@ -611,10 +648,54 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
   }
 
   /**
+   * Walks one `order` array (either a top-level section's, or a nested
+   * group's) and inserts the manifest entries it names into
+   * `orderedRouteManifest`, in the given sequence. A string entry names a
+   * leaf directly under `pathPrefix` by its real on-disk filename (not its
+   * URL slug, which may differ via `slug` frontmatter) - filenames are what's
+   * actually visible when browsing the docs folder, so they're the more
+   * discoverable identifier to write in config.ts. An object entry
+   * (`{ [key]: [...] }`) names a nested group by its URL segment instead,
+   * since that's the only identifier a synthetic group (e.g. "introduction",
+   * see `getDocumintRouteGraph`) has - it has no file of its own - and
+   * recurses into its own order array, letting that group's own children be
+   * reordered too.
+   */
+  private orderRouteManifestEntries(
+    routeManifest: DocumintRouteManifest,
+    orderedRouteManifest: DocumintRouteManifest,
+    pathPrefix: string,
+    entries: DocumintsOrderEntry[]
+  ): void {
+    for (const entry of entries) {
+      if (typeof entry === "string") {
+        const match = Object.entries(routeManifest).find(([routePath, manifestEntry]) => {
+          const parentPath = routePath.slice(0, routePath.lastIndexOf("/")) || "/";
+          return parentPath === pathPrefix && manifestEntry.fileName === entry;
+        });
+        if (match) {
+          const [routePath, manifestEntry] = match;
+          orderedRouteManifest[routePath] = manifestEntry;
+        }
+        continue;
+      }
+      for (const groupKey in entry) {
+        this.orderRouteManifestEntries(
+          routeManifest,
+          orderedRouteManifest,
+          `${pathPrefix}/${groupKey}`,
+          entry[groupKey]
+        );
+      }
+    }
+  }
+
+  /**
    * Reads `config.order` and re-inserts entries into a new manifest in the
    * desired sequence: the home page first, then each configured section's
-   * index page followed by its pages in the order given, then anything left
-   * over in whatever order it was discovered.
+   * index page followed by its pages (and any nested groups' pages) in the
+   * order given, then anything left over in whatever order it was
+   * discovered.
    */
   private orderRouteManifest(routeManifest: DocumintRouteManifest): DocumintRouteManifest {
     LOG.debug("Ordering docs...");
@@ -629,12 +710,12 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         orderedRouteManifest[sectionIndexPath] = routeManifest[sectionIndexPath];
       }
 
-      for (const leafSlug of this.#config.order[section]) {
-        const leafPath = `/${section}/${leafSlug}`;
-        if (routeManifest[leafPath]) {
-          orderedRouteManifest[leafPath] = routeManifest[leafPath];
-        }
-      }
+      this.orderRouteManifestEntries(
+        routeManifest,
+        orderedRouteManifest,
+        sectionIndexPath,
+        this.#config.order[section] ?? []
+      );
     }
 
     LOG.debug(`Ordering docs... done. Ordered ${Object.keys(orderedRouteManifest).length} routes.`);
@@ -712,27 +793,115 @@ export const routeDocs = [${Object.values(routeDocs).map(
     };
   }
 
+  /**
+   * Builds the literal-type union for one level of `order` entries from its
+   * route-graph node's children. A real, doc-backed child is offerable as a
+   * plain leaf using its on-disk filename (`"getting-started"`, matching
+   * `orderRouteManifestEntries`'s filename-based leaf matching) - a synthetic
+   * group (see `getDocumintRouteGraph`) has no file, so it's never offered as
+   * a plain leaf. Any child with its own children, real or synthetic, is
+   * additionally offerable as `{ "introduction": [...] }` keyed by its URL
+   * segment (the only identifier a synthetic group has), recursing into its
+   * own children so nested groups can have their contents reordered too.
+   */
+  private static renderOrderEntryUnion(children: DocumintRouteManifestGraphObject): string {
+    const parts: string[] = [];
+    for (const [key, node] of Object.entries(children)) {
+      if (!node.synthetic) parts.push(JSON.stringify(node.fileName));
+      if (Object.keys(node.pages).length > 0) {
+        const nestedUnion = Documints.renderOrderEntryUnion(node.pages);
+        parts.push(`{ ${JSON.stringify(key)}: (${nestedUnion})[] }`);
+      }
+    }
+    return parts.join(" | ") || "never";
+  }
+
+  /**
+   * Writes `.documints/.generated/order.ts`: a literal-typed `DocumintsOrder`
+   * interface (one key per top-level section, a recursive union of its full
+   * child tree - leaves and nested groups alike) plus a
+   * `defineDocumintsOrdering` identity function typed against it, so
+   * `config.ts`'s `order` gets autocomplete and a compile error for a
+   * typo'd or stale slug instead of the silent no-op `orderRouteManifest`
+   * gives it otherwise. Regenerated on every route-manifest rebuild, so it's
+   * only ever as stale as the currently-running `dev`/`build`.
+   */
+  private static renderOrderTypesFile(sectionFields: string): string {
+    return `// Auto-generated by documints during dev/build - do not edit by hand.
+// Regenerates whenever your docs change. If you just added a new section,
+// group, or leaf and don't see it here yet, restart \`documints dev\`.
+
+export type DocumintsOrderEntry = string | { [groupKey: string]: DocumintsOrderEntry[] };
+
+export interface DocumintsOrder {
+  // Keeps DocumintsOrder assignable to config.ts's
+  // Record<string, DocumintsOrderEntry[]> "order" field - the literal-typed
+  // properties below narrow known sections.
+  [section: string]: DocumintsOrderEntry[] | undefined;
+${sectionFields}
+}
+
+export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
+  return order;
+}
+`;
+  }
+
+  private async writeOrderTypesFile(routeManifest: DocumintRouteManifest): Promise<void> {
+    const routeGraph = Documints.getDocumintRouteGraph(routeManifest);
+
+    const sectionFields = Object.entries(routeGraph)
+      .map(([section, node]) => {
+        const entryUnion = Documints.renderOrderEntryUnion(node.pages);
+        return `  ${JSON.stringify(section)}?: (${entryUnion})[];`;
+      })
+      .join("\n");
+
+    const outputPath = path.resolve(this.#dirs.srcDocs.root, "./.generated/order.ts");
+    await writeFileRecursive(outputPath, Documints.renderOrderTypesFile(sectionFields));
+  }
+
   private getVirtualModulesPlugin(): VitePlugin {
     let routeManifest = this.getRouteManifest();
     let vModules = this.getVirtualModules(routeManifest);
     const butteryVirtualModuleIds = Object.keys(vModules);
     const resolvedVModulePrefix = "\0";
 
+    void this.writeOrderTypesFile(routeManifest).catch((error: unknown) => {
+      LOG.warn(`Failed to write .documints/.generated/order.ts: ${error}`);
+    });
+
     return {
-      name: "vite-plugin-buttery-docs-virtual",
+      name: "vite-plugin-documints-virtual",
       configureServer: (server) => {
         server.watcher.add(this.#dirs.srcDocs.root);
-        server.watcher.on("all", (_event, watchedPath) => {
+        const configFile = path.resolve(this.#paths.documintsDir, "./config.ts");
+        server.watcher.on("all", async (_event, watchedPath) => {
           // Only process doc changes - not vite's own cache churn, which now
           // lives under the same watched root since it's the .documints/
-          // directory itself, not a fixed "content" subfolder.
+          // directory itself, not a fixed "content" subfolder - and not our
+          // own generated order.ts, or writing it would re-trigger this
+          // handler forever.
           if (!watchedPath.startsWith(this.#dirs.srcDocs.root)) return;
           if (watchedPath.startsWith(this.#dirs.entry.viteCacheDir)) return;
+          if (watchedPath.startsWith(path.resolve(this.#dirs.srcDocs.root, "./.generated"))) return;
           LOG.info("Detected changes in the docs directory. Reloading...");
+
+          // config.ts (header, order, docs glob, ...) is only ever loaded
+          // once, in Documints.create() - unlike doc content, nothing else
+          // re-reads it, so a saved edit to it would otherwise silently keep
+          // using whatever was loaded at server startup.
+          if (watchedPath === configFile) {
+            LOG.debug("Reloading config.ts");
+            this.#config = await Documints.loadConfig(configFile);
+          }
 
           LOG.debug("Rebuilding virtual modules");
           routeManifest = this.getRouteManifest();
           vModules = this.getVirtualModules(routeManifest);
+          void this.writeOrderTypesFile(routeManifest).catch((error: unknown) => {
+            LOG.warn(`Failed to write .documints/.generated/order.ts: ${error}`);
+          });
 
           LOG.checkpointStart("Rebuild Virtual Modules");
           const viteVirtualModuleEntries = [...server.moduleGraph.idToModuleMap.entries()].filter(
@@ -914,6 +1083,10 @@ export const routeDocs = [${Object.values(routeDocs).map(
 
     const viteConfig = this.getViteConfig();
     const routeManifest = this.getRouteManifest();
+    // Explicitly awaited (unlike the dev-watcher's fire-and-forget call) since
+    // build() calls process.exit() right after finishing, which could cut off
+    // an in-flight write from the fire-and-forget call inside getViteConfig().
+    await this.writeOrderTypesFile(routeManifest);
 
     try {
       LOG.debug("Building client bundle for production...");

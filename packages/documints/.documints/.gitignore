@@ -1,3 +1,4 @@
 .vite-cache
 .server-build
 static
+.generated

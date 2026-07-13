@@ -16,6 +16,14 @@ export type DocumintRouteManifestEntry = {
    */
   fullPath: string;
   root: boolean;
+  /**
+   * True when this graph node exists only to hold a title-path segment that
+   * no doc's `title` resolves to exactly (e.g. the "Introduction" in
+   * "Guides/Introduction/What Is Documints" when no doc's title is just
+   * "Guides/Introduction"). Synthetic nodes have no `routePath`/page of their
+   * own - the nav renders them as a plain group label, not a link.
+   */
+  synthetic: boolean;
 };
 export type DocumintRouteManifestEntryDoc = DocumintRouteManifestEntry & {
   importComponent: () => Promise<{

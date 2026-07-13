@@ -81,7 +81,7 @@ function DocsLayout({ routeModuleGraph }: { routeModuleGraph: DocumintRouteManif
       <LayoutBodyBreadcrumb>
         <ul>
           {breadcrumbLinks.map((link, i, origArr) => {
-            if (i !== origArr.length - 1) {
+            if (i !== origArr.length - 1 && !link.synthetic) {
               return (
                 <li key={link.href}>
                   <Link to={link.href}>
@@ -91,8 +91,10 @@ function DocsLayout({ routeModuleGraph }: { routeModuleGraph: DocumintRouteManif
               );
             }
             return (
-              <li key={link.href}>
-                <LayoutBodyBreadcrumbText dxIsActive>{link.display}</LayoutBodyBreadcrumbText>
+              <li key={link.href || i}>
+                <LayoutBodyBreadcrumbText dxIsActive={i === origArr.length - 1}>
+                  {link.display}
+                </LayoutBodyBreadcrumbText>
               </li>
             );
           })}
