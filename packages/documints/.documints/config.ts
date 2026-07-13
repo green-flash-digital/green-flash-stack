@@ -28,7 +28,7 @@ export default defineDocumintsConfig({
       "routing",
       "configuration",
       "static-assets",
-      "plugins"
+      { advanced: ["plugins"] }
     ],
     reference: ["cli", "how-it-works"]
   }),

@@ -449,7 +449,10 @@ export default function Welcome() {
             beautiful static site with nothing to run.
           </p>
           <div className={ctaGroupStyles}>
-            <Link to="/guides/concepts" className={cx(ctaBaseStyles, ctaPrimaryStyles)}>
+            <Link
+              to="/guides/introduction/why-documints"
+              className={cx(ctaBaseStyles, ctaPrimaryStyles)}
+            >
               What is Documints?
             </Link>
             <Link to="/getting-started" className={cx(ctaBaseStyles, ctaSecondaryStyles)}>

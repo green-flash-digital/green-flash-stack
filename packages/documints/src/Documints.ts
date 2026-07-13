@@ -861,6 +861,36 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
     await writeFileRecursive(outputPath, Documints.renderOrderTypesFile(sectionFields));
   }
 
+  /**
+   * The static (non-glob) directory prefix of a glob pattern, e.g.
+   * `"../docs/**\/*.doc.{md,mdx,tsx}"` -> `"../docs"`. `config.docs` commonly
+   * points outside `.documints/` entirely (a sibling `docs/` folder, for
+   * instance), so the dev watcher can't assume doc content always lives
+   * under `srcDocs.root` - it needs this to know what to actually watch.
+   */
+  private static getGlobStaticBase(pattern: string): string {
+    const staticSegments: string[] = [];
+    for (const segment of pattern.split("/")) {
+      if (/[*{}?[\]!()]/.test(segment)) break;
+      staticSegments.push(segment);
+    }
+    return staticSegments.join("/") || ".";
+  }
+
+  /**
+   * A cheap fingerprint of everything that actually shapes the nav/routes:
+   * each route's path, its display label, and its position (`Object.entries`
+   * preserves insertion order, so a re-ordered manifest produces a different
+   * signature). Two manifests with the same signature mean nothing
+   * nav-visible changed - even if a doc's body content did - so there's
+   * nothing for `virtual:routes`/`virtual:data` to actually re-serialize.
+   */
+  private static getRouteManifestSignature(routeManifest: DocumintRouteManifest): string {
+    return JSON.stringify(
+      Object.entries(routeManifest).map(([routePath, entry]) => [routePath, entry.fileNameFormatted])
+    );
+  }
+
   private getVirtualModulesPlugin(): VitePlugin {
     let routeManifest = this.getRouteManifest();
     let vModules = this.getVirtualModules(routeManifest);
@@ -875,29 +905,52 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
       name: "vite-plugin-documints-virtual",
       configureServer: (server) => {
         server.watcher.add(this.#dirs.srcDocs.root);
+        const docsWatchRoot = path.resolve(
+          this.#dirs.srcDocs.root,
+          Documints.getGlobStaticBase(this.#config.docs ?? DEFAULT_DOC_GLOB)
+        );
+        server.watcher.add(docsWatchRoot);
         const configFile = path.resolve(this.#paths.documintsDir, "./config.ts");
         server.watcher.on("all", async (_event, watchedPath) => {
-          // Only process doc changes - not vite's own cache churn, which now
-          // lives under the same watched root since it's the .documints/
-          // directory itself, not a fixed "content" subfolder - and not our
-          // own generated order.ts, or writing it would re-trigger this
-          // handler forever.
-          if (!watchedPath.startsWith(this.#dirs.srcDocs.root)) return;
+          // Only process doc/config changes - not vite's own cache churn,
+          // and not our own generated order.ts, or writing it would
+          // re-trigger this handler forever.
+          const withinWatchedRoot =
+            watchedPath.startsWith(this.#dirs.srcDocs.root) ||
+            watchedPath.startsWith(docsWatchRoot);
+          if (!withinWatchedRoot) return;
           if (watchedPath.startsWith(this.#dirs.entry.viteCacheDir)) return;
           if (watchedPath.startsWith(path.resolve(this.#dirs.srcDocs.root, "./.generated"))) return;
-          LOG.info("Detected changes in the docs directory. Reloading...");
 
           // config.ts (header, order, docs glob, ...) is only ever loaded
           // once, in Documints.create() - unlike doc content, nothing else
           // re-reads it, so a saved edit to it would otherwise silently keep
-          // using whatever was loaded at server startup.
-          if (watchedPath === configFile) {
+          // using whatever was loaded at server startup. Its effects (e.g.
+          // header.logo) aren't all captured by the route-manifest signature
+          // below, so a config.ts edit always counts as structural.
+          const isConfigChange = watchedPath === configFile;
+          if (isConfigChange) {
             LOG.debug("Reloading config.ts");
             this.#config = await Documints.loadConfig(configFile);
           }
 
-          LOG.debug("Rebuilding virtual modules");
+          const previousSignature = Documints.getRouteManifestSignature(routeManifest);
           routeManifest = this.getRouteManifest();
+          const structureChanged =
+            isConfigChange ||
+            Documints.getRouteManifestSignature(routeManifest) !== previousSignature;
+
+          if (!structureChanged) {
+            // Nothing nav/route-affecting changed - just a doc's own body
+            // content (text, JSX, styles). Vite's own HMR (React Refresh,
+            // MDX, CSS-in-JS) already handles that in place via its normal
+            // module graph, since this file is already watched; forcing a
+            // full-reload here would only replace that fine-grained update
+            // with a jarring full-page flash for no reason.
+            return;
+          }
+
+          LOG.info("Detected route/nav-affecting changes in the docs directory. Reloading...");
           vModules = this.getVirtualModules(routeManifest);
           void this.writeOrderTypesFile(routeManifest).catch((error: unknown) => {
             LOG.warn(`Failed to write .documints/.generated/order.ts: ${error}`);
