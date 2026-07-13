@@ -55,6 +55,7 @@ same as the Vite cache.
 ## Next steps
 
 - [Guides/Introduction/Usage](/guides/introduction/usage) - the day-to-day write/preview/build/deploy loop.
+- [Guides/Introduction/Deploy](/guides/introduction/deploy) - the top 5 static hosts, step by step.
 - [Guides/Writing/Writing Docs](/guides/writing/writing-docs) - the frontmatter contract in detail.
 - [Guides/Customization/Routing](/guides/customization/routing) - how hierarchy, the nav, and the header connect.
 - [Guides/Configuration](/guides/configuration) - `.documints/config.ts` options.

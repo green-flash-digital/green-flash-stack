@@ -38,17 +38,24 @@ runtime.
 `.documints/static/` is a plain static site - hand it to any static host (GitHub Pages,
 Netlify, Cloudflare Pages, S3, whatever you already use) exactly like you would a
 hand-written HTML/CSS/JS bundle. There's no server process to configure or keep running.
+See [Deploy](/guides/introduction/deploy) for platform-specific steps.
 
 ## Where things live
 
-| Path                       | What it is                                                  |
-| -------------------------- | ------------------------------------------------------------ |
-| `.documints/config.ts`     | Your project's configuration - see [Configuration](/guides/configuration) |
-| `.documints/content/`      | Default location for `.doc.*` files (configurable via `docs`) |
-| `.documints/public/`       | Static assets served as-is at the site root - see [Static Assets & Head](/guides/customization/static-assets) |
-| `.documints/head.html`     | Optional raw HTML injected into `<head>` - see [Static Assets & Head](/guides/customization/static-assets) |
-| `.documints/.vite-cache/`  | Vite's dev-server cache - safe to delete, gitignored          |
-| `.documints/.server-build/`| Temporary SSR bundle used only during `documints build` to prerender routes, then deleted |
-| `.documints/static/`       | Build output - the deployable site, gitignored                |
+```txt
+.documints/
+├── .vite-cache/     # Vite's dev-server cache - safe to delete, gitignored
+├── .server-build/   # Temporary SSR bundle, only during `documints build`, then deleted
+├── .generated/      # Auto-generated types (e.g. defineDocumintsOrdering), gitignored
+├── static/          # Build output - the deployable site, gitignored
+├── content/         # Default location for .doc.* files (configurable via `docs`)
+├── public/          # Static assets served as-is at the site root
+├── head.html        # Optional raw HTML injected into <head>
+└── config.ts        # Your project's configuration
+```
 
-`documints init` sets up the `.gitignore` for the last three automatically.
+See [Configuration](/guides/configuration) for `config.ts`, and
+[Static Assets & Head](/guides/customization/static-assets) for `public/` and `head.html`.
+`documints init` sets up the `.gitignore` for the generated/build directories automatically.
+
+Fast refresh test line.

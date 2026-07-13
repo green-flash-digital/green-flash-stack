@@ -22,7 +22,7 @@ export default defineDocumintsConfig({
   },
   order: defineDocumintsOrdering({
     guides: [
-      { introduction: ["why-documints", "getting-started", "usage"] },
+      { introduction: ["why-documints", "getting-started", "usage", "deploy"] },
       { writing: ["writing-docs", "playground"] },
       { customization: ["routing", "static-assets"] },
       "configuration",

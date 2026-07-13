@@ -784,6 +784,29 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
     return JSON.stringify(entries);
   }
 
+  /**
+   * Pulls every internal link out of a rendered page's HTML - anything
+   * starting with "/" that isn't a build asset (`/assets/...`) or a static
+   * file (has a dot in its last path segment, e.g. `/favicon.ico`). Works
+   * for any page type (Markdown, MDX, TSX) since it reads the actual
+   * rendered `<a href>`, not the source that produced it.
+   */
+  private static extractInternalRouteLinks(html: string): string[] {
+    const hrefs = [...html.matchAll(/href="([^"]*)"/g)].map((match) => match[1]);
+    return hrefs.filter((href) => {
+      if (!href.startsWith("/") || href.startsWith("/assets/")) return false;
+      const lastSegment = href.split("#")[0].split("?")[0].split("/").pop() ?? "";
+      return !lastSegment.includes(".");
+    });
+  }
+
+  /** Strips a link's query/hash and trailing slash so it can be matched against a route manifest key. */
+  private static normalizeRouteHref(href: string): string {
+    const withoutQueryOrHash = href.split("#")[0].split("?")[0];
+    if (withoutQueryOrHash === "/") return "/";
+    return withoutQueryOrHash.replace(/\/$/, "");
+  }
+
   private getVirtualModulesPlugin(): VitePlugin {
     let routeManifest = this.getRouteManifest();
     let vModules = this.getVirtualModules(routeManifest);
@@ -1037,6 +1060,8 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
         `${path.resolve(this.#dirs.serverBundleDir, "./server.js")}?t=${Date.now()}`
       );
 
+      const brokenLinks: string[] = [];
+
       for (const entry of Object.values(routeManifest)) {
         const html = await renderRouteToHTML(render, {
           routePath: entry.routePath,
@@ -1046,11 +1071,24 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
           viteRoot: this.#dirs.appShellDir,
           head: this.#dirs.headHtml
         });
+
+        for (const href of Documints.extractInternalRouteLinks(html)) {
+          if (!routeManifest[Documints.normalizeRouteHref(href)]) {
+            brokenLinks.push(`${entry.aliasPath} -> ${href}`);
+          }
+        }
+
         const outputPath = path.resolve(
           this.#dirs.staticOutputDir,
           `.${entry.routePath}/index.html`
         );
         await writeFileRecursive(outputPath, html);
+      }
+
+      if (brokenLinks.length > 0) {
+        throw new Error(
+          `Found ${brokenLinks.length} broken internal link(s):${printAsBullets(brokenLinks)}`
+        );
       }
 
       // The SSR bundle was only needed to prerender the routes above - it's

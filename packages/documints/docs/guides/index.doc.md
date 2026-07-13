@@ -11,6 +11,7 @@ Deeper dives into how documints works day to day.
 - [Why Documints?](/guides/introduction/why-documints) - the design decisions behind documints, and why.
 - [Getting Started](/guides/introduction/getting-started) - install, bootstrap, and run your first site.
 - [Usage](/guides/introduction/usage) - the write/preview/build/deploy loop.
+- [Deploy](/guides/introduction/deploy) - the top 5 static hosts, step by step.
 
 ## Writing
 
