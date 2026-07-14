@@ -33,6 +33,20 @@ This is exactly what this site's own `.documints/config.ts` does - its content l
 `docs/` folder at the project root, a sibling of `.documints/`, rather than nested inside
 it.
 
+## `siteUrl`
+
+Your site's canonical, absolute base URL, no trailing slash:
+
+```ts
+export default defineDocumintsConfig({
+  siteUrl: "https://your-docs-site.com",
+});
+```
+
+Only used at build time, to generate `sitemap.xml` and `robots.txt` in the build output -
+skipped entirely (with a warning) if omitted, since a sitemap can't be built without knowing
+the site's real domain.
+
 ## `header`
 
 Controls the site's header: a title, an optional logo, and links.

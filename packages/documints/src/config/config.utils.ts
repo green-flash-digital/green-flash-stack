@@ -135,7 +135,13 @@ export const documintsConfigSchema = z.object({
    */
   docs: z.string().optional(),
   order: z.record(z.string(), DocumintsOrderEntrySchema.array()).optional(),
-  header: DocumintConfigHeaderSchema.optional()
+  header: DocumintConfigHeaderSchema.optional(),
+  /**
+   * The site's canonical, absolute base URL (e.g. "https://documints.dev"),
+   * no trailing slash. Only used to build absolute URLs in `sitemap.xml`/
+   * `robots.txt` at build time - if omitted, neither file is generated.
+   */
+  siteUrl: z.string().optional()
 });
 
 export type DocumintsConfig = Omit<z.infer<typeof documintsConfigSchema>, "order"> & {

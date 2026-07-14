@@ -123,7 +123,9 @@ export class Documints {
     orderTypes: ".generated/order.ts",
     clientEntry: "entry.client.tsx",
     devServerEntry: "entry.server.tsx",
-    staticServerEntry: "entry.server.static.tsx"
+    staticServerEntry: "entry.server.static.tsx",
+    sitemap: "sitemap.xml",
+    robotsTxt: "robots.txt"
   } as const;
 
   #config: DocumintsConfig;
@@ -842,6 +844,27 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
     return withoutQueryOrHash.replace(/\/$/, "");
   }
 
+  /** One `<url>` entry per route, in `sitemap.xml`'s standard schema. */
+  private static renderSitemap(routeManifest: DocumintRouteManifest, siteUrl: string): string {
+    const urls = Object.values(routeManifest)
+      .map((entry) => `  <url><loc>${siteUrl}${entry.routePath}</loc></url>`)
+      .join("\n");
+    return `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${urls}
+</urlset>
+`;
+  }
+
+  /** Points crawlers at the sitemap above - everything else on a docs site is meant to be indexed. */
+  private static renderRobotsTxt(siteUrl: string): string {
+    return `User-agent: *
+Allow: /
+
+Sitemap: ${siteUrl}/sitemap.xml
+`;
+  }
+
   private getVirtualModulesPlugin(): VitePlugin {
     let routeManifest = this.getRouteManifest();
     let vModules = this.getVirtualModules(routeManifest);
@@ -1137,6 +1160,20 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
         throw new Error(
           `Found ${brokenLinks.length} broken internal link(s):${printAsBullets(brokenLinks)}`
         );
+      }
+
+      if (this.#config.siteUrl) {
+        const siteUrl = this.#config.siteUrl.replace(/\/$/, "");
+        await writeFileRecursive(
+          path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.sitemap),
+          Documints.renderSitemap(routeManifest, siteUrl)
+        );
+        await writeFileRecursive(
+          path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.robotsTxt),
+          Documints.renderRobotsTxt(siteUrl)
+        );
+      } else {
+        LOG.warn("config.siteUrl is not set - skipping sitemap.xml/robots.txt generation.");
       }
 
       // The SSR bundle was only needed to prerender the routes above - it's

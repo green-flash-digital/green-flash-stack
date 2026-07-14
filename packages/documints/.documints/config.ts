@@ -3,6 +3,7 @@ import { defineDocumintsConfig } from "documints";
 import { defineDocumintsOrdering } from "./.generated/order.js";
 
 export default defineDocumintsConfig({
+  siteUrl: "https://documints.dev",
   header: {
     title: "documints",
     links: [
