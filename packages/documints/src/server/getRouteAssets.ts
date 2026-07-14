@@ -1,41 +1,11 @@
 import type { Manifest, ManifestChunk } from "vite";
 
-import { getCriticalViteChunks } from "./getCriticalViteChunks.js";
+import { getCriticalViteChunks, getEntryViteChunk } from "./getCriticalViteChunks.js";
 
-/**
- * Provided the reconciled route id from the request, this function
- * will find the vite chunk in the vite manifest that matches the route
- * as well as finds the entry chunk that vite creates for the client.
- *
- * Based upon those two chunks, we can gather the CSS and JS scripts by
- * returning the .css path on the entry chunk and then recursively fetching
- * all of the imports for each nested vite chunk import.
- */
-export function getRouteAssets(
-  routeId: string,
-  vManifest: Manifest,
-  contentRoot: string,
-  viteRoot: string
-) {
-  // match the vite chunks with the documint's route
-  const { viteChunkEntry, viteChunkRoute } = getCriticalViteChunks(
-    routeId,
-    vManifest,
-    contentRoot,
-    viteRoot
-  );
-
-  // The entry chunk's own CSS (design tokens, the self-hosted font, shell
-  // component styles) is always needed - but a route can have its own CSS
-  // too (e.g. index.doc.tsx's own `css` tags land in their own chunk, not
-  // the entry's), which was being silently dropped since only the entry's
-  // css array was ever collected. Walking the route's full import tree -
-  // same as the js collection below - picks that up too.
-  const cssSet = new Set<string>(viteChunkEntry.css ?? []);
-
-  // recursively collect the js scripts (and any css alongside them) by
-  // checking the imports of the file
+function collectChunkAssets(vManifest: Manifest, entryChunk: ManifestChunk) {
+  const cssSet = new Set<string>();
   const scriptsSet = new Set<string>();
+
   function collectAssets(manifestEntry: ManifestChunk) {
     for (const cssFile of manifestEntry.css ?? []) {
       cssSet.add(cssFile);
@@ -45,12 +15,48 @@ export function getRouteAssets(
       collectAssets(vManifest[importScript]);
     }
   }
-  collectAssets(viteChunkRoute);
-  scriptsSet.add(viteChunkRoute.file);
-  const jsAssets = [...scriptsSet.values()];
+  collectAssets(entryChunk);
+  scriptsSet.add(entryChunk.file);
+
+  return { cssAssets: [...cssSet.values()], jsAssets: [...scriptsSet.values()] };
+}
+
+/**
+ * For a route with no doc file backing it (e.g. the 404 page - it's part of
+ * the eager entry bundle, not a lazily `import()`ed doc), there's no
+ * per-route chunk to look up at all. Its assets are already covered
+ * entirely by the entry chunk's own (recursively collected) css/js.
+ */
+export function getEntryOnlyAssets(vManifest: Manifest) {
+  return collectChunkAssets(vManifest, getEntryViteChunk(vManifest));
+}
+
+/**
+ * Provided the reconciled route id from the request, finds the vite chunk
+ * that matches that route plus the app's own entry chunk, and merges the
+ * (recursively collected) css/js of both - a route's own chunk normally
+ * imports the entry chunk anyway (so this is often redundant in practice),
+ * but merging both explicitly means a route's assets are never silently
+ * incomplete if that ever isn't true.
+ */
+export function getRouteAssets(
+  routeId: string,
+  vManifest: Manifest,
+  contentRoot: string,
+  viteRoot: string
+) {
+  const { viteChunkEntry, viteChunkRoute } = getCriticalViteChunks(
+    routeId,
+    vManifest,
+    contentRoot,
+    viteRoot
+  );
+
+  const entryAssets = collectChunkAssets(vManifest, viteChunkEntry);
+  const routeAssets = collectChunkAssets(vManifest, viteChunkRoute);
 
   return {
-    cssAssets: [...cssSet.values()],
-    jsAssets
+    cssAssets: [...new Set([...entryAssets.cssAssets, ...routeAssets.cssAssets])],
+    jsAssets: [...new Set([...entryAssets.jsAssets, ...routeAssets.jsAssets])]
   };
 }

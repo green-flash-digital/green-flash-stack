@@ -6,7 +6,7 @@ import { DocumintsMeta } from "../meta/DocumintsMeta.js";
 import type { createDocumintRenderToPipeableStream } from "../server/createRenderFnPipeableStream.js";
 import type { DocumintServerContext } from "../server/DocumintServer.js";
 import { generateHTMLTemplate } from "../server/generateHTMLTemplate.js";
-import { getRouteAssets } from "../server/getRouteAssets.js";
+import { getEntryOnlyAssets, getRouteAssets } from "../server/getRouteAssets.js";
 
 /**
  * Renders a single route to a complete, standalone HTML string - the core of
@@ -19,19 +19,21 @@ export async function renderRouteToHTML(
   render: ReturnType<typeof createDocumintRenderToPipeableStream>,
   params: {
     routePath: string;
-    aliasPath: string;
+    /**
+     * Omit for a route with no doc file backing it (e.g. the 404 page) -
+     * its assets are already covered by the entry bundle alone, so there's
+     * no per-route chunk to look up.
+     */
+    aliasPath?: string;
     vManifest: ViteManifest;
     contentRoot: string;
     viteRoot: string;
     head?: string;
   }
 ): Promise<string> {
-  const { cssAssets, jsAssets } = getRouteAssets(
-    params.aliasPath,
-    params.vManifest,
-    params.contentRoot,
-    params.viteRoot
-  );
+  const { cssAssets, jsAssets } = params.aliasPath
+    ? getRouteAssets(params.aliasPath, params.vManifest, params.contentRoot, params.viteRoot)
+    : getEntryOnlyAssets(params.vManifest);
 
   const Meta = new DocumintsMeta();
   const request = new Request(`http://localhost${params.routePath}`);

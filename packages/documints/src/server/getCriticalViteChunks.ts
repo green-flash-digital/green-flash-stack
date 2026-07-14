@@ -9,6 +9,21 @@ import type { Manifest, ManifestChunk } from "vite";
  * resolve each key against `viteRoot` and compare against the doc's own
  * resolved absolute path instead of trying to string-match.
  */
+/**
+ * The manifest entry for the app's own eager entry point (`entry.client.tsx`)
+ * - covers the shell (Layout, header, nav) and anything else that isn't
+ * behind a lazy `import()`, e.g. NotFoundPage.
+ */
+export function getEntryViteChunk(vManifest: Manifest): ManifestChunk {
+  const entryKey = Object.entries(vManifest).find(([, entryValue]) => entryValue.isEntry)?.[0];
+
+  if (!entryKey) {
+    throw "Cannot locate an base entry in the manifest. This should not have happened.";
+  }
+
+  return vManifest[entryKey];
+}
+
 export function getCriticalViteChunks(
   routeId: string,
   vManifest: Manifest,
@@ -31,25 +46,8 @@ export function getCriticalViteChunks(
     throw `Could not locate a vite route chunk entry that matches the routeId: ${routeId}`;
   }
 
-  // loop through the viteManifest to get the manifest entry
-  // that is the entry to the app. This allows us to find the CSS
-  // that was bundled to the app.
-  const entryKey = Object.entries(vManifest).reduce<string | undefined>(
-    (accum, [entryKey, entryValue]) => {
-      if (entryValue.isEntry) {
-        return entryKey;
-      }
-      return accum;
-    },
-    undefined
-  );
-
-  if (!entryKey) {
-    throw "Cannot locate an base entry in the manifest. This should not have happened.";
-  }
-
   return {
     viteChunkRoute,
-    viteChunkEntry: vManifest[entryKey]
+    viteChunkEntry: getEntryViteChunk(vManifest)
   };
 }

@@ -18,7 +18,16 @@ import { LayoutBodyMain } from "./components/LayoutBodyMain.js";
 import { LayoutBodyNav } from "./components/LayoutBodyNav.js";
 import { LayoutBodyTOC } from "./components/LayoutBodyTOC.js";
 import { LayoutHeader } from "./components/LayoutHeader.js";
+import { NotFoundPage } from "./components/NotFoundPage.js";
 import { DocumintRouteManifestGraphUtils } from "./utils/RouteGraph.js";
+
+/**
+ * The route path build() prerenders to 404.html - never a real route (see
+ * DEFAULT_DOC_GLOB routes, which are all slugified from `title`), so it
+ * always falls through to the catch-all "*" route below, same as any other
+ * genuinely unmatched path would at runtime.
+ */
+export const NOT_FOUND_ROUTE_PATH = "/__documints_404__";
 
 function createRoute(route: DocumintRouteManifestEntryDoc, options: { isDocs: boolean }) {
   const Component = lazy(async () => {
@@ -132,6 +141,10 @@ export function createDocumintRoutes(props: {
         {
           element: <DocsLayout routeModuleGraph={routeModuleGraph} />,
           children: props.routeDocs.map((route) => createRoute(route, { isDocs: true }))
+        },
+        {
+          path: "*",
+          element: <NotFoundPage />
         }
       ]
     }

@@ -56,6 +56,14 @@ const CONFIG_DIRNAME = ".documints";
 /** Default glob for finding docs, resolved relative to `.documints/`. Override via `config.docs`. */
 const DEFAULT_DOC_GLOB = "./**/*.doc.{md,mdx,tsx}";
 
+/**
+ * Never a real route (every real route is slugified from a doc's `title`),
+ * so SSR-ing this path always falls through to App.tsx's catch-all "*"
+ * route - same as any genuinely unmatched path would at runtime. Must match
+ * the constant of the same name exported from src/app/App.tsx.
+ */
+const NOT_FOUND_ROUTE_PATH = "/__documints_404__";
+
 export type DocumintsDirs = {
   /** The directory one level up from `.documints/` - the consumer's own project root. */
   projectRootDir: string;
@@ -125,7 +133,8 @@ export class Documints {
     devServerEntry: "entry.server.tsx",
     staticServerEntry: "entry.server.static.tsx",
     sitemap: "sitemap.xml",
-    robotsTxt: "robots.txt"
+    robotsTxt: "robots.txt",
+    notFoundPage: "404.html"
   } as const;
 
   #config: DocumintsConfig;
@@ -1155,6 +1164,20 @@ Sitemap: ${siteUrl}/sitemap.xml
         );
         await writeFileRecursive(outputPath, html);
       }
+
+      // Not nested in a route folder - Cloudflare's "404-page" not_found_handling
+      // (see wrangler.jsonc) requires it at the root of the assets directory.
+      const notFoundHtml = await renderRouteToHTML(render, {
+        routePath: NOT_FOUND_ROUTE_PATH,
+        vManifest: viteManifest,
+        contentRoot: this.#dirs.docsContentDir,
+        viteRoot: this.#dirs.appShellDir,
+        head: this.#dirs.headHtml
+      });
+      await writeFileRecursive(
+        path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.notFoundPage),
+        notFoundHtml
+      );
 
       if (brokenLinks.length > 0) {
         throw new Error(
