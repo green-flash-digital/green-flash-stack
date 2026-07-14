@@ -43,9 +43,9 @@ export default defineDocumintsConfig({
 });
 ```
 
-Only used at build time, to generate `sitemap.xml` and `robots.txt` in the build output -
-skipped entirely (with a warning) if omitted, since a sitemap can't be built without knowing
-the site's real domain.
+Only used at build time, to generate `sitemap.xml`, `robots.txt`, and `llms.txt` in the
+build output - skipped entirely (with a warning) if omitted, since none of the three can be
+built without knowing the site's real domain.
 
 ## `editUrl`
 
@@ -61,6 +61,28 @@ export default defineDocumintsConfig({
 Every doc page gets an "Edit this page" link built from this plus its real, on-disk path -
 this site's own `.documints/config.ts` uses its GitHub repo, so every page links straight to
 its source file there. Omit `editUrl` to leave those links out entirely.
+
+## Markdown routes and AI-agent discoverability
+
+None of this needs configuring - it's on by default for every `.doc.md`/`.doc.mdx` page
+(`.doc.tsx` pages have no raw Markdown source, so they're left out of all of it):
+
+- **A raw-Markdown sibling route.** Every page is also served at `<route>.md` - the doc's
+  source, frontmatter stripped, `Content-Type: text/markdown`. Works the same in
+  `documints dev` and in the built output. "View as Markdown" and "Copy as Markdown" buttons
+  on every page (next to "Edit this page") link to and copy this directly.
+- **"Open in ChatGPT" / "Open in Claude" buttons**, next to the two above - open a new chat
+  prefilled with the page's absolute Markdown URL, computed client-side from
+  `window.location.origin` (no `siteUrl` needed, and correct under any preview domain).
+- **`<link rel="alternate" type="text/markdown">`** in every page's `<head>`, pointing at its
+  `.md` sibling - lets a crawler or agent that already fetched the HTML discover the raw
+  source without guessing the URL convention.
+- **`llms.txt`**, at the build output's root - the [llms.txt](https://llmstxt.org)
+  convention: a single Markdown index of every page, linking to each one's raw-Markdown
+  route. Requires `siteUrl` (see above), since the links are absolute.
+- **`llms-full.txt`**, alongside it - every page's raw Markdown source concatenated into one
+  file, so an agent can ingest the entire site in a single request instead of crawling page
+  by page. Doesn't need `siteUrl`.
 
 ## `header`
 

@@ -21,6 +21,7 @@ export async function handleRequestDev(
     dirs: DocumintsDirs;
     vite: ViteDevServer;
     head?: string;
+    markdownHref?: string;
   }
 ) {
   try {
@@ -40,7 +41,8 @@ export async function handleRequestDev(
       cssLinks: config.dirs.plainCssDevHrefs,
       jsScripts: [config.dirs.appEntryClientPath],
       Meta,
-      head: config.head
+      head: config.head,
+      markdownHref: config.markdownHref
     });
     LOG_SERVER_DEV.debug("Generating HTML template... done.");
 

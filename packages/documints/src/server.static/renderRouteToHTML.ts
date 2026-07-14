@@ -29,6 +29,7 @@ export async function renderRouteToHTML(
     contentRoot: string;
     viteRoot: string;
     head?: string;
+    markdownHref?: string;
   }
 ): Promise<string> {
   const { cssAssets, jsAssets } = params.aliasPath
@@ -84,7 +85,8 @@ export async function renderRouteToHTML(
     cssLinks: cssAssets,
     jsScripts: jsAssets,
     Meta,
-    head: params.head
+    head: params.head,
+    markdownHref: params.markdownHref
   });
 
   return `${htmlStart}${body}${htmlEnd}`;

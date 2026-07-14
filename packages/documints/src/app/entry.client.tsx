@@ -7,8 +7,12 @@ import { DocumintsMetaProvider } from "../meta/DocumintsMeta.provider.js";
 
 import { routes } from "./routes.js";
 import { setupCopyCodeButtons } from "./utils/copyCodeButton.js";
+import { setupCopyMarkdownButtons } from "./utils/copyMarkdownButton.js";
+import { setupOpenInAiButtons } from "./utils/openInAiButton.js";
 
 setupCopyCodeButtons();
+setupCopyMarkdownButtons();
+setupOpenInAiButtons();
 
 // A browser router is inherently a page-lifetime singleton tied to
 // window.history - created once here, at module scope, rather than inside a

@@ -3,6 +3,7 @@ import { defineDocumintsConfig } from "documints";
 import { defineDocumintsOrdering } from "./.generated/order.js";
 
 export default defineDocumintsConfig({
+  docs: "../docs/**/*.doc.{md,mdx,tsx}",
   siteUrl: "https://documints.dev",
   editUrl: "https://github.com/green-flash-digital/green-flash-stack/edit/main/packages/documints",
   header: {
@@ -31,6 +32,5 @@ export default defineDocumintsConfig({
       { advanced: ["plugins"] }
     ],
     reference: ["cli", "how-it-works"]
-  }),
-  docs: "../docs/**/*.doc.{md,mdx,tsx}"
+  })
 });

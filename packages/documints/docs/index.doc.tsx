@@ -443,10 +443,10 @@ export default function Welcome() {
       <div className={heroStyles}>
         <div>
           <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
-          <h1>Docs shouldn't be hard.</h1>
+          <h1>Write docs like a human. AI just gets it.</h1>
           <p>
-            Write whatever you want, wherever you want. Documints handles organizing and building a
-            beautiful static site with nothing to run.
+            Write markdown & React wherever you want - <b>documints</b> turns it into a beautiful,
+            fast static site every browser, crawler, and AI agent can read directly.
           </p>
           <div className={ctaGroupStyles}>
             <Link

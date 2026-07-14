@@ -135,7 +135,9 @@ export class Documints {
     staticServerEntry: "entry.server.static.tsx",
     sitemap: "sitemap.xml",
     robotsTxt: "robots.txt",
-    notFoundPage: "404.html"
+    notFoundPage: "404.html",
+    llmsTxt: "llms.txt",
+    llmsFullTxt: "llms-full.txt"
   } as const;
 
   #config: DocumintsConfig;
@@ -565,6 +567,16 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
   }
 
   /**
+   * A `.doc.tsx` page has no raw-Markdown equivalent, so it gets no sibling
+   * `.md` route - only `.doc.md`/`.doc.mdx` files do.
+   */
+  private static getMarkdownHref(routePath: string, fullPath: string): string | undefined {
+    const ext = path.extname(fullPath);
+    if (ext !== ".md" && ext !== ".mdx") return undefined;
+    return routePath === "/" ? "/index.md" : `${routePath}.md`;
+  }
+
+  /**
    * Discovers every `.doc.md`/`.doc.mdx`/`.doc.tsx` file matching
    * `config.docs`. A file's location on disk has no bearing on its route -
    * only its `title` frontmatter does.
@@ -615,7 +627,8 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         synthetic: false,
         editHref: this.#config.editUrl
           ? Documints.getEditHref(this.#config.editUrl, aliasPath)
-          : undefined
+          : undefined,
+        markdownHref: Documints.getMarkdownHref(routePath, direntFullPath)
       };
     }
 
@@ -734,6 +747,7 @@ export const routeIndex = {
   fileNameFormatted: ${JSON.stringify(routeIndex.fileNameFormatted)},
   root: "${routeIndex.root}",
   editHref: ${JSON.stringify(routeIndex.editHref)},
+  markdownHref: ${JSON.stringify(routeIndex.markdownHref)},
   importComponent: async () => await import(${JSON.stringify(routeIndex.fullPath)})
 };
 export const routeGraph = ${JSON.stringify(routeGraph, null, 2)};
@@ -745,6 +759,7 @@ export const routeDocs = [${Object.values(routeDocs).map(
   fileNameFormatted: ${JSON.stringify(routeEntry.fileNameFormatted)},
   root: "${routeEntry.root}",
   editHref: ${JSON.stringify(routeEntry.editHref)},
+  markdownHref: ${JSON.stringify(routeEntry.markdownHref)},
   importComponent: async () => await import(${JSON.stringify(routeEntry.fullPath)})
 }`
     )}];
@@ -881,6 +896,50 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
 ${urls}
 </urlset>
 `;
+  }
+
+  /**
+   * A `.doc.md`/`.doc.mdx` file's raw source, frontmatter block stripped -
+   * served as-is at its sibling `.md` route (see `getMarkdownHref`).
+   */
+  private static renderMarkdownSource(fullPath: string): string {
+    const fileContent = readFileSync(fullPath, { encoding: "utf8" });
+    return matter(fileContent).content.trim() + "\n";
+  }
+
+  /**
+   * The `llms.txt` convention (llmstxt.org) - a single, human-and-agent-readable
+   * index of every page, linking to its raw-Markdown sibling when one exists
+   * (`.doc.tsx` pages have none, so they link to their rendered route instead).
+   */
+  private static renderLlmsTxt(
+    routeManifest: DocumintRouteManifest,
+    siteUrl: string,
+    title?: string
+  ): string {
+    const links = Object.values(routeManifest)
+      .map(
+        (entry) =>
+          `- [${entry.fileNameFormatted}](${siteUrl}${entry.markdownHref ?? entry.routePath})`
+      )
+      .join("\n");
+    return `# ${title ?? "Documentation"}\n\n${links}\n`;
+  }
+
+  /**
+   * Every `.doc.md`/`.doc.mdx` route's raw source concatenated into one file -
+   * lets an agent ingest the whole site's content in a single request instead
+   * of crawling page by page. `.doc.tsx` pages have no raw source, so they're
+   * left out (same rule as `getMarkdownHref`).
+   */
+  private static renderLlmsFullTxt(routeManifest: DocumintRouteManifest): string {
+    return Object.values(routeManifest)
+      .filter((entry) => entry.markdownHref)
+      .map(
+        (entry) =>
+          `# ${entry.fileNameFormatted}\n\n${Documints.renderMarkdownSource(entry.fullPath)}`
+      )
+      .join("\n---\n\n");
   }
 
   /** Points crawlers at the sitemap above - everything else on a docs site is meant to be indexed. */
@@ -1096,16 +1155,33 @@ Sitemap: ${siteUrl}/sitemap.xml
 
     app.use(vite.middlewares);
 
+    // Markdown siblings (see `getMarkdownHref`) are only ever written to disk
+    // during `build()` - in dev nothing's prerendered yet, so serve them
+    // straight from source instead, or "View as Markdown" 404s during dev.
+    app.use((req, res, next) => {
+      if (!req.path.endsWith(".md")) return next();
+      const routeManifest = this.getRouteManifest();
+      const entry = Object.values(routeManifest).find((e) => e.markdownHref === req.path);
+      if (!entry) return next();
+      res.setHeader("Content-Type", "text/markdown; charset=utf-8");
+      res.end(Documints.renderMarkdownSource(entry.fullPath));
+    });
+
     // No path argument matches every request, since Express 5 dropped the
     // bare "*" wildcard.
     app.use(async (req, res) => {
       const ssrEntryModule = await vite.ssrLoadModule(this.#dirs.appEntryServerPath);
+      const routeManifest = this.getRouteManifest();
+      const matchedEntry = Object.values(routeManifest).find(
+        (entry) => entry.routePath === req.path
+      );
       await handleRequestDev(ssrEntryModule.render, {
         req,
         res,
         dirs: this.#dirs,
         vite,
-        head: this.#dirs.headHtml
+        head: this.#dirs.headHtml,
+        markdownHref: matchedEntry?.markdownHref
       });
     });
 
@@ -1169,7 +1245,8 @@ Sitemap: ${siteUrl}/sitemap.xml
           vManifest: viteManifest,
           contentRoot: this.#dirs.docsContentDir,
           viteRoot: this.#dirs.appShellDir,
-          head: this.#dirs.headHtml
+          head: this.#dirs.headHtml,
+          markdownHref: entry.markdownHref
         });
 
         for (const href of Documints.extractInternalRouteLinks(html)) {
@@ -1183,6 +1260,17 @@ Sitemap: ${siteUrl}/sitemap.xml
           `.${entry.routePath}/index.html`
         );
         await writeFileRecursive(outputPath, html);
+
+        if (entry.markdownHref) {
+          const markdownOutputPath = path.resolve(
+            this.#dirs.staticOutputDir,
+            `.${entry.markdownHref}`
+          );
+          await writeFileRecursive(
+            markdownOutputPath,
+            Documints.renderMarkdownSource(entry.fullPath)
+          );
+        }
       }
 
       // Not nested in a route folder - Cloudflare's "404-page" not_found_handling
@@ -1215,9 +1303,20 @@ Sitemap: ${siteUrl}/sitemap.xml
           path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.robotsTxt),
           Documints.renderRobotsTxt(siteUrl)
         );
+        await writeFileRecursive(
+          path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.llmsTxt),
+          Documints.renderLlmsTxt(routeManifest, siteUrl, this.#config.header?.title)
+        );
       } else {
-        LOG.warn("config.siteUrl is not set - skipping sitemap.xml/robots.txt generation.");
+        LOG.warn(
+          "config.siteUrl is not set - skipping sitemap.xml/robots.txt/llms.txt generation."
+        );
       }
+
+      await writeFileRecursive(
+        path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.llmsFullTxt),
+        Documints.renderLlmsFullTxt(routeManifest)
+      );
 
       // The SSR bundle was only needed to prerender the routes above - it's
       // never part of the deployed static output.

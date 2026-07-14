@@ -13,7 +13,8 @@ export function generateHTMLTemplate({
   cssLinks,
   jsScripts,
   Meta,
-  head = ""
+  head = "",
+  markdownHref
 }: {
   cssLinks: string[];
   jsScripts: string[];
@@ -26,6 +27,13 @@ export function generateHTMLTemplate({
    * input, so no escaping is applied.
    */
   head?: string;
+  /**
+   * This route's raw-Markdown sibling (see `Documints.getMarkdownHref`) -
+   * advertised via `<link rel="alternate">` so an agent that already has the
+   * HTML can discover it without guessing the `.md` convention. Omitted for
+   * routes with no Markdown equivalent (`.doc.tsx` pages).
+   */
+  markdownHref?: string;
 }) {
   const htmlStart = `<!DOCTYPE html>
 <html lang="en">
@@ -37,6 +45,7 @@ export function generateHTMLTemplate({
       (accum, href) => accum.concat(`<link rel="stylesheet" href="${href}" />\n`),
       ""
     )}
+    ${markdownHref ? `<link rel="alternate" type="text/markdown" href="${markdownHref}" />` : ""}
     ${Meta.renderNodesToString()}
     <style>
       html, body {

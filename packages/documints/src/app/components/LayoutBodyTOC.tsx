@@ -87,6 +87,26 @@ const editLinkStyles = css`
   }
 `;
 
+const actionButtonStyles = css`
+  ${makeReset("button")};
+  display: block;
+  font-size: ${makeRem(13)};
+  color: ${makeColor("neutral")};
+  font-family: ${makeFontFamily("source-sans-3")};
+  font-weight: ${makeFontWeight("source-sans-3-medium")};
+  margin-top: 0;
+  cursor: pointer;
+
+  &:hover:not(:disabled) {
+    color: ${makeColor("secondary")};
+    text-decoration: underline;
+  }
+
+  &:disabled {
+    cursor: default;
+  }
+`;
+
 const sectionStyles = css`
   border-top: 1px solid ${makeColor("neutral-200")};
   margin-top: ${makeSpace(16)};
@@ -131,9 +151,14 @@ export function ContentsNode({ tableOfContents }: { tableOfContents: TableOfCont
 export type LayoutBodyTOCProps = {
   tableOfContents: TableOfContents | null;
   editHref?: string;
+  markdownHref?: string;
 };
 
-export const LayoutBodyTOC: FC<LayoutBodyTOCProps> = ({ tableOfContents, editHref }) => {
+export const LayoutBodyTOC: FC<LayoutBodyTOCProps> = ({
+  tableOfContents,
+  editHref,
+  markdownHref
+}) => {
   return (
     <article className={layoutBodyStyles}>
       <div>
@@ -147,6 +172,40 @@ export const LayoutBodyTOC: FC<LayoutBodyTOCProps> = ({ tableOfContents, editHre
           <ContentsNode tableOfContents={tableOfContents?.[0]?.children ?? []} />
         </ul>
         <div className={sectionStyles}>
+          {markdownHref && (
+            <a href={markdownHref} className={editLinkStyles} target="_blank" rel="noreferrer">
+              View as Markdown
+            </a>
+          )}
+          {markdownHref && (
+            <button
+              type="button"
+              className={actionButtonStyles}
+              data-copy-markdown-href={markdownHref}
+            >
+              Copy as Markdown
+            </button>
+          )}
+          {markdownHref && (
+            <button
+              type="button"
+              className={actionButtonStyles}
+              data-open-in-ai="chatgpt"
+              data-markdown-href={markdownHref}
+            >
+              Open in ChatGPT
+            </button>
+          )}
+          {markdownHref && (
+            <button
+              type="button"
+              className={actionButtonStyles}
+              data-open-in-ai="claude"
+              data-markdown-href={markdownHref}
+            >
+              Open in Claude
+            </button>
+          )}
           {editHref && (
             <a href={editHref} className={editLinkStyles} target="_blank" rel="noreferrer">
               Edit this page

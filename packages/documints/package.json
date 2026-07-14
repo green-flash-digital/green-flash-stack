@@ -30,7 +30,7 @@
   "scripts": {
     "dev:cli": "yarn fizmoo dev",
     "dev:docs": "yarn build:cli && yarn documints dev",
-    "build": "yarn build:lib && yarn build:cli && yarn build:docs",
+    "build": "yarn typechecks && yarn build:lib && yarn build:cli && yarn build:docs",
     "build:lib": "tsc --project tsconfig.build.json",
     "build:cli": "yarn fizmoo build",
     "build:docs": "yarn documints build",

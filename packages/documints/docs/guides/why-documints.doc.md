@@ -59,15 +59,23 @@ longer true, and documints is built around that shift rather than bolting it on 
   the actual prose. That cuts both ways: an AI agent reading your docs to answer a question
   is reading the real thing, and an AI agent asked to write or restructure a doc is writing
   in a format it already handles well, not translating into some other tool's dialect first.
-- **Serving the raw source is a natural next step, not a new feature to build.** Because the
-  source already is Markdown, this architecture sets up something no conversion step is
-  required for: serving that raw source directly at a predictable URL alongside the
-  rendered page (`/guides/customization/routing` also reachable as `/guides/customization/routing.md`, a pattern already
-  emerging across the docs-tooling ecosystem). An agent that fetches that URL gets exactly
-  the prose, with none of the HTML it would otherwise have to parse back out of. This isn't
-  built yet, but the reason it'll be cheap to add later is the same reason the rest of
-  documints is simple: nothing about the content ever depended on being HTML in the first
-  place.
+- **The raw source is served directly, not just rendered.** Because the source already is
+  Markdown, every `.doc.md`/`.doc.mdx` page is also reachable at a predictable sibling URL -
+  this very page, also as [plain Markdown](/guides/introduction/why-documints.md) - alongside
+  the rendered HTML, no conversion step involved. A "View as Markdown" link on every page
+  makes it discoverable, but the URL itself is stable enough for an agent to construct
+  directly. An agent that fetches that URL gets exactly the prose, with none of the HTML it
+  would otherwise have to parse back out of. A `<link rel="alternate" type="text/markdown">`
+  in every page's `<head>` says the same thing to anything crawling the HTML first.
+- **The whole site, not just one page, is one request away.** Alongside the per-page routes,
+  every build writes an [`llms.txt`](https://llmstxt.org) - a single Markdown index of every
+  page - and an `llms-full.txt` concatenating every page's raw source into one file. An agent
+  doesn't have to crawl a docs site page by page to understand it; it can ingest the whole
+  thing in one fetch, the same way a human might skim a table of contents before diving in.
+- **Handing a page to an AI is a click, not a copy-paste.** Every page also has "Copy as
+  Markdown" and "Open in ChatGPT"/"Open in Claude" buttons right next to "View as Markdown" -
+  for the person reading, not just the agent crawling. Pasting docs into a chat to ask a
+  question about them shouldn't mean fighting rendered HTML for the actual prose first.
 
 ## React, all the way down
 
@@ -102,7 +110,7 @@ complicated as writing a CSS file, dropping it in `.documints/public/`, and link
 conventions that already handle a favicon or a self-hosted font, reused for exactly this.
 No provider component, no theme object schema, no build step of its own.
 
-## Developer experience is not an afterthought
+## DX is not an afterthought
 
 A docs tool that's pleasant to work in gets kept up to date; one that fights you gets
 abandoned in favor of a stale README. Documints treats that as seriously as the output.

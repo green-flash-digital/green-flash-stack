@@ -30,6 +30,11 @@ export type DocumintRouteManifestEntry = {
    * configured, or for a synthetic node with no doc backing it.
    */
   editHref?: string;
+  /**
+   * This route's raw source, served as plain Markdown at `<routePath>.md` -
+   * `undefined` for a `.doc.tsx` page, which has no raw-Markdown equivalent.
+   */
+  markdownHref?: string;
 };
 export type DocumintRouteManifestEntryDoc = DocumintRouteManifestEntry & {
   importComponent: () => Promise<{

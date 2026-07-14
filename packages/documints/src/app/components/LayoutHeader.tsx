@@ -14,7 +14,7 @@ const layoutHeaderStyles = css`
   display: flex;
   align-items: center;
   padding: 0 ${makeSpace(32)};
-  border-bottom: 1px solid ${makeColor("neutral-100", { opacity: 0.2 })};
+  border-bottom: 1px solid ${makeColor("neutral-100")};
   background: ${makeColor("background")};
   z-index: 10;
 
