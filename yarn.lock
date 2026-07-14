@@ -8806,7 +8806,7 @@ __metadata:
     "@changesets/cli": "npm:2.31.0"
     oxfmt: "npm:0.58.0"
     oxlint: "npm:1.73.0"
-    turbo: "npm:2.10.4"
+    turbo: "npm:^2.10.4"
     typescript: "npm:6.0.3"
   languageName: unknown
   linkType: soft
@@ -13191,7 +13191,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"turbo@npm:2.10.4":
+"turbo@npm:^2.10.4":
   version: 2.10.4
   resolution: "turbo@npm:2.10.4"
   dependencies:
