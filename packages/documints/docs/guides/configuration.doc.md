@@ -84,6 +84,18 @@ None of this needs configuring - it's on by default for every `.doc.md`/`.doc.md
   file, so an agent can ingest the entire site in a single request instead of crawling page
   by page. Doesn't need `siteUrl`.
 
+## Search
+
+Also on by default, no configuration needed. Every `build()` indexes the prerendered HTML
+with [Pagefind](https://pagefind.app) - a fully static search library, no external service,
+account, or API key - and writes the resulting index to `pagefind/` in the build output.
+A "Search" button in the header (`Cmd+K`/`Ctrl+K` also opens it) shows Pagefind's own default
+search UI in a modal.
+
+Because Pagefind indexes the *built* HTML, there's nothing to search against in
+`documints dev` - the button still opens the same modal there (useful for checking styling),
+it just won't return real results until you build the site.
+
 ## `header`
 
 Controls the site's header: a title, an optional logo, and links.

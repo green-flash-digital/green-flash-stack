@@ -20,3 +20,18 @@ declare module "*.css" {
   const content: string;
   export default content;
 }
+
+// No official types ship with this package - only the surface documints
+// actually uses is declared here, not the full options object.
+declare module "@pagefind/default-ui" {
+  export class PagefindUI {
+    constructor(options: {
+      element: string | HTMLElement;
+      showSubResults?: boolean;
+      showImages?: boolean;
+      resetStyles?: boolean;
+      autofocus?: boolean;
+    });
+    destroy(): void;
+  }
+}

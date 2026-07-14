@@ -20,6 +20,7 @@ import matter from "gray-matter";
 import { produce } from "immer";
 import { printAsBullets } from "logarhythm";
 import open from "open";
+import * as pagefind from "pagefind";
 import rehypeAutolinkHeadings from "rehype-autolink-headings";
 import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
@@ -137,7 +138,8 @@ export class Documints {
     robotsTxt: "robots.txt",
     notFoundPage: "404.html",
     llmsTxt: "llms.txt",
-    llmsFullTxt: "llms-full.txt"
+    llmsFullTxt: "llms-full.txt",
+    pagefindDir: "pagefind"
   } as const;
 
   #config: DocumintsConfig;
@@ -1191,6 +1193,36 @@ Sitemap: ${siteUrl}/sitemap.xml
     });
   }
 
+  /**
+   * Indexes the already-prerendered HTML in `staticOutputDir` with Pagefind
+   * (must run after every route has been written to disk, not before) and
+   * writes the resulting index to `staticOutputDir/pagefind` - a self-hosted
+   * search index, no external service or API key involved. Failures are
+   * logged, not thrown - a docs site should still ship without search rather
+   * than fail the whole build over it.
+   */
+  private async writeSearchIndex(): Promise<void> {
+    const { index, errors: createErrors } = await pagefind.createIndex();
+    if (createErrors.length > 0 || !index) {
+      LOG.warn(`Pagefind failed to start - skipping search index:${printAsBullets(createErrors)}`);
+      return;
+    }
+
+    const { errors: addErrors } = await index.addDirectory({ path: this.#dirs.staticOutputDir });
+    if (addErrors.length > 0) {
+      LOG.warn(`Pagefind reported errors while indexing:${printAsBullets(addErrors)}`);
+    }
+
+    const { errors: writeErrors } = await index.writeFiles({
+      outputPath: path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.pagefindDir)
+    });
+    if (writeErrors.length > 0) {
+      LOG.warn(`Pagefind reported errors while writing the search index:${printAsBullets(writeErrors)}`);
+    }
+
+    await pagefind.close();
+  }
+
   async build() {
     process.env.NODE_ENV = "production";
     LOG.checkpointStart("Building documints");
@@ -1317,6 +1349,10 @@ Sitemap: ${siteUrl}/sitemap.xml
         path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.llmsFullTxt),
         Documints.renderLlmsFullTxt(routeManifest)
       );
+
+      // Every route's HTML must already be on disk - Pagefind indexes the
+      // built output directly, not the route manifest.
+      await this.writeSearchIndex();
 
       // The SSR bundle was only needed to prerender the routes above - it's
       // never part of the deployed static output.

@@ -6,6 +6,7 @@ import { css } from "@linaria/core";
 
 import type { DocumintResolvedHeader } from "../../config/config.utils.js";
 import { LayoutHeaderLinks } from "./LayoutHeaderLinks.js";
+import { LayoutHeaderSearch } from "./LayoutHeaderSearch.js";
 
 const layoutHeaderStyles = css`
   grid-area: layout-header;
@@ -28,6 +29,13 @@ const layoutHeaderStyles = css`
     max-width: ${makeCustom("layout-max-width")};
     margin: 0 auto;
   }
+`;
+
+const rightGroupStyles = css`
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: ${makeRem(16)};
 `;
 
 const anchorCSS = css`
@@ -72,7 +80,10 @@ export const LayoutHeader: FC<LayoutHeaderProps> = ({ header }) => {
             {header?.title && <div className={divStyles}>{header.title}</div>}
           </NavLink>
         )}
-        <LayoutHeaderLinks links={header?.links} />
+        <div className={rightGroupStyles}>
+          <LayoutHeaderSearch />
+          <LayoutHeaderLinks links={header?.links} />
+        </div>
       </div>
     </header>
   );
