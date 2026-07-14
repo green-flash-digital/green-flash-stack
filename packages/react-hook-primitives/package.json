@@ -69,7 +69,7 @@
     "@wyw-in-js/vite": "2.1.4",
     "playwright": "1.61.1",
     "storybook": "10.5.0",
-    "typescript": "6.0.3",
+    "typescript": "7.0.2",
     "vite": "8.1.4",
     "vitest": "4.1.10",
     "wrangler": "4.110.0"
