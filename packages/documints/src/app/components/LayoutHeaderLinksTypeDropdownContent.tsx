@@ -1,21 +1,21 @@
 import { NavLink } from "react-router";
 
-import { useMenuContext } from "@stratum-ui/react/menu";
-
 import type { DocumintConfigHeaderLinkTypeDropdown } from "../../config/config.utils.js";
 
-export type LayoutHeaderLinksTypeDropdownState = {
+export type LayoutHeaderLinksTypeDropdownContentProps = {
   items: DocumintConfigHeaderLinkTypeDropdown["items"];
+  getItemRef: (index: number) => (node: HTMLAnchorElement | null) => void;
 };
 
-export default function LayoutHeaderLinksTypeDropdownContent() {
-  const { state } = useMenuContext<LayoutHeaderLinksTypeDropdownState>();
-
+export default function LayoutHeaderLinksTypeDropdownContent({
+  items,
+  getItemRef
+}: LayoutHeaderLinksTypeDropdownContentProps) {
   return (
     <ul>
-      {state.items.map((item) => (
+      {items.map((item, i) => (
         <li key={item.href}>
-          <NavLink to={item.href}>
+          <NavLink to={item.href} ref={getItemRef(i)}>
             {item.iconSrc && <img src={item.iconSrc} alt={item.iconAlt} />}
             <div>
               <div className="title">{item.text}</div>

@@ -24,6 +24,22 @@ export type PopoverEngineType = "auto" | "hint" | "manual";
 
 type EngineBaseState = {
   isOpen: boolean;
+  /**
+   * True from the instant a close begins (explicit call, Escape, click-outside —
+   * every dismiss path) until its CSS exit transition actually finishes. The
+   * popover container itself is expected to stay persistently mounted for its
+   * whole lifetime (that's what lets a CSS `transition` + `allow-discrete` +
+   * `@starting-style` animate the close for *every* dismiss path, not just
+   * programmatic ones — `beforetoggle` isn't cancelable when closing, so there's
+   * no way to intercept a native dismiss the way `ModalEngine` intercepts a
+   * dialog's `cancel` event).
+   *
+   * Content that should stop rendering once closed — but not before its exit
+   * animation plays — should key off `isOpen || isClosing`, not `isOpen` alone.
+   * Content that should unmount/reset immediately on close can key off `isOpen`
+   * directly; that's a legitimate choice too, just a different one.
+   */
+  isClosing: boolean;
   offset: number;
   position: PopoverEnginePosition;
 };
@@ -31,7 +47,7 @@ type EngineState<S extends PopoverEngineState | undefined> = S extends undefined
   ? EngineBaseState
   : S & EngineBaseState;
 
-export type PopoverEngineOptions = Partial<Omit<EngineBaseState, "isOpen">> & {
+export type PopoverEngineOptions = Partial<Omit<EngineBaseState, "isOpen" | "isClosing">> & {
   /**
    * Specifies how the popover's open/closed state is controlled.
    *
@@ -49,17 +65,38 @@ export type PopoverEngineOptions = Partial<Omit<EngineBaseState, "isOpen">> & {
   type?: PopoverEngineType;
 };
 
+/**
+ * Core state and lifecycle engine backing every popover/menu/dropdown.
+ *
+ * Wraps the native Popover API (`popover` attribute, `showPopover`/`hidePopover`)
+ * and CSS Anchor Positioning (`anchor()`, `position-area`) rather than reimplementing
+ * positioning or light-dismiss in JS — the browser's own top-layer rendering is what
+ * lets a popover escape a clipping/`overflow: hidden` ancestor for free, and its native
+ * "auto" light-dismiss (outside click, Escape) is more battle-tested than a hand-rolled
+ * document click-listener. All open/close bookkeeping is driven by the element's own
+ * `toggle` event, which fires for every dismiss path uniformly (explicit `closePopover()`
+ * call, native light-dismiss, or `.hidePopover()` called directly) — there's no separate
+ * code path per trigger source to keep in sync.
+ */
 export class PopoverEngine<S extends PopoverEngineState | undefined> extends TransactionStore<
   EngineState<S>
 > {
   #popoverTarget: HTMLElement | undefined = undefined;
   #popoverNode: HTMLElement | undefined = undefined;
   #type: PopoverEngineType;
+  #closingSettled: Promise<void> | undefined;
 
   constructor({ type = "auto", ...options }: PopoverEngineOptions) {
     super({
       isOpen: false,
+      isClosing: false,
       offset: options.offset ?? 0,
+      // `setPopoverStyles()` no-ops entirely when `position` is unset, silently
+      // leaving the popover with no positioning at all (falls back to wherever
+      // the UA default top-layer placement happens to be) — a default here means
+      // that's a deliberate override, not a trap for anyone who didn't think to
+      // pass one.
+      position: options.position ?? "bottom",
       ...options
     } as EngineState<S>);
 
@@ -68,11 +105,86 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
     this.openPopover = this.openPopover.bind(this);
     this.togglePopover = this.togglePopover.bind(this);
     this.closePopover = this.closePopover.bind(this);
+    this.onMount = this.onMount.bind(this);
+    this.destroy = this.destroy.bind(this);
   }
 
-  setPopoverNode(node: HTMLElement) {
+  #onToggle = (e: Event) => {
+    const { newState } = e as ToggleEvent;
+
+    if (newState === "open") {
+      this.enqueue({
+        mutate: (draft) => {
+          draft.isOpen = true;
+          draft.isClosing = false;
+        }
+      });
+      return;
+    }
+
+    this.enqueue({
+      mutate: (draft) => {
+        draft.isOpen = false;
+        draft.isClosing = true;
+      }
+    });
+    this.#restoreFocus();
+    this.#closingSettled = this.#waitForExitTransition();
+  };
+
+  /**
+   * Waits for the popover's own exit transition to finish (mirrors how
+   * `ModalEngine.closeModal()` waits on `getAnimations()`), then clears
+   * `isClosing`. Runs regardless of what triggered the close.
+   */
+  async #waitForExitTransition() {
+    const node = this.#popoverNode;
+    if (!node) return;
+    const animations = node.getAnimations().map((animation) => animation.finished.catch(() => undefined));
+    await Promise.allSettled(animations);
+    this.enqueue({
+      mutate: (draft) => {
+        draft.isClosing = false;
+      }
+    });
+  }
+
+  /**
+   * Returns focus to the element that opened the popover, but only if focus is
+   * currently inside the popover — if the user already moved focus elsewhere
+   * (tabbed away, clicked another control) before the popover finished closing,
+   * yanking focus back to the trigger would be disorienting rather than helpful.
+   */
+  #restoreFocus() {
+    const node = this.#popoverNode;
+    const target = this.#popoverTarget;
+    if (!node || !target) return;
+    const active = document.activeElement;
+    if (active && (active === node || node.contains(active))) {
+      target.focus();
+    }
+  }
+
+  #detachListeners() {
+    this.#popoverNode?.removeEventListener("toggle", this.#onToggle);
+  }
+
+  /**
+   * Registers the persistently-mounted popover node and attaches the `toggle`
+   * listener that drives all open/close bookkeeping. Unlike `ModalEngine`, the
+   * popover container is expected to stay mounted for its whole lifetime — see
+   * {@link EngineBaseState.isClosing} for why. The consuming adapter (e.g. React)
+   * calls this with `null` on unmount for cleanup.
+   */
+  onMount(node: HTMLElement | null) {
+    if (!node) {
+      this.#detachListeners();
+      this.#popoverNode = undefined;
+      return;
+    }
     this.#popoverNode = node;
-    this.#popoverNode.popover = this.#type;
+    node.popover = this.#type;
+    node.addEventListener("toggle", this.#onToggle);
   }
 
   getPopoverTarget() {
@@ -133,14 +245,18 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
   }
 
   /**
-   * Helper to create anchor() function call with offset.
-   * The anchor() function accepts an optional second parameter for offset.
+   * Builds an `anchor()` inset value, adding a real gap via `calc()` when an offset
+   * is given. `anchor()`'s own second argument is NOT an offset — per spec it's a
+   * fallback used only when the anchor reference fails to resolve, so a previous
+   * version of this method that passed the offset there had no visible effect in
+   * normal operation (the anchor almost always resolves fine).
    */
-  #anchorWithOffset(side: string, offset: number): string {
-    if (offset === 0) {
+  #anchorWithOffset(side: string, offsetPx: number): string {
+    if (offsetPx === 0) {
       return `anchor(${side})`;
     }
-    return `anchor(${side}, ${offset}px)`;
+    const sign = offsetPx > 0 ? "+" : "-";
+    return `calc(anchor(${side}) ${sign} ${Math.abs(offsetPx)}px)`;
   }
 
   /**
@@ -282,7 +398,6 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
       const positionArea = this.#getPositionArea(position);
       popover.style.positionArea = positionArea;
     }
-    // Note: Offset is now included directly in the anchor() function calls above
   }
 
   /**
@@ -301,56 +416,60 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
     if (!e.currentTarget) {
       throw new Error("Cannot determine the target that attempted to launch the popover.");
     }
-    this.#popoverTarget = e.currentTarget as HTMLElement;
+    this.#prepareTarget(e.currentTarget as HTMLElement);
 
-    this.enqueue({
-      mutate: (draft) => {
-        draft.isOpen = true;
-        if (state !== undefined) {
+    if (state !== undefined) {
+      this.enqueue({
+        mutate: (draft) => {
           Object.assign(draft, state);
         }
-      }
-    });
+      });
+    }
 
-    // Let the ay adapter decide when to call popover.showPopover()
+    this.getPopoverNode().showPopover({ source: this.#popoverTarget });
   }
 
-  togglePopover() {
-    const popover = this.getPopoverNode();
-    popover.togglePopover();
-  }
-
-  async closePopover() {
-    const popover = this.getPopoverNode();
-    popover.classList.add("close");
-
-    const animations = popover
-      .getAnimations({ subtree: true })
-      .filter((animation) => animation instanceof CSSAnimation)
-      .map((animation) => animation.finished);
-    await Promise.all(animations);
-
-    popover.hidePopover();
-    popover.classList.remove("close");
-    this.enqueue({
-      mutate: (draft) => {
-        draft.isOpen = false;
-      }
-    });
+  #prepareTarget(target: HTMLElement) {
+    this.#popoverTarget = target;
+    this.setPopoverStyles();
   }
 
   /**
-   * Shows the popover programmatically with the source anchor element.
-   * This should be called after setting the popover node and target.
+   * Toggles the popover. Unlike `openPopover()`, this is safe to wire up to a
+   * trigger's click handler unconditionally regardless of current state —
+   * `showPopover()` (which `openPopover()` calls) throws if the popover is
+   * already open, so a click-to-toggle trigger (the natural shape for a menu
+   * button) needs this instead. Accepts the triggering event so the target can
+   * still be tracked for anchor positioning and focus-return-on-close, exactly
+   * like `openPopover()`.
    */
-  showPopover() {
+  togglePopover<T extends Event>(e?: T) {
+    if (e?.currentTarget) {
+      this.#prepareTarget(e.currentTarget as HTMLElement);
+    }
     const popover = this.getPopoverNode();
-    const target = this.getPopoverTarget();
-    this.setPopoverStyles();
-    // TypeScript's type definitions for HTMLElement#showPopover may not be up to date.
-    // According to MDN, showPopover can accept an options object with { source: HTMLElement }
-    // This is super important for accessibility and CSS functionality using :anchor
-    // https://developer.mozilla.org/en-US/docs/Web/API/HTMLElement/showPopover#source
-    popover.showPopover({ source: target });
+    if (this.#popoverTarget) {
+      popover.togglePopover({ source: this.#popoverTarget });
+      return;
+    }
+    popover.togglePopover();
+  }
+
+  /**
+   * Closes the popover. The actual open/closed bookkeeping and exit-transition
+   * tracking happens uniformly in the `toggle` listener regardless of what closes
+   * it — this just triggers that native close and, if the caller wants to know
+   * when the exit animation has actually finished, awaits it.
+   */
+  async closePopover() {
+    this.getPopoverNode().hidePopover();
+    await this.#closingSettled;
+  }
+
+  destroy() {
+    this.#detachListeners();
+    this.#popoverNode = undefined;
+    this.#popoverTarget = undefined;
+    super.destroy();
   }
 }

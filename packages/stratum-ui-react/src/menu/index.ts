@@ -1,2 +1,1 @@
-export * from "./MenuController.js";
-export * from "./menu.useMenuContext.js";
+export * from "./useMenu.js";

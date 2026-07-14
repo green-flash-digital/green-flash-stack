@@ -1,9 +1,9 @@
 import type { Meta } from "@storybook/react-vite";
 
-import { MenuDemoBasic } from "./basic/index.js";
-import { MenuWithCustomPopoverComponent } from "./withCustomPopoverComponent/index.js";
-import { MenuWithPositioning } from "./withPositioning/index.js";
-import { MenuWithStyle } from "./withStyle/index.js";
+import { BasicMenu } from "./BasicMenu.js";
+import { PositionedMenu } from "./PositionedMenu.js";
+import { ManyRowMenus } from "./RowActionsMenu.js";
+import { ScrollContainerMenu } from "./ScrollContainerMenu.js";
 
 const meta: Meta = {
   title: "Popover / Menu",
@@ -14,53 +14,17 @@ const meta: Meta = {
 export default meta;
 
 export function Basic() {
-  return (
-    <>
-      <MenuDemoBasic.Render />
-      <button type="button" {...MenuDemoBasic.preloadHandlers} onClick={MenuDemoBasic.openPopover}>
-        Show
-      </button>
-    </>
-  );
+  return <BasicMenu />;
 }
 
-export function WithPositioning() {
-  return (
-    <>
-      <MenuWithPositioning.Render />
-      <button
-        type="button"
-        {...MenuWithPositioning.preloadHandlers}
-        onClick={MenuWithPositioning.openPopover}
-      >
-        Show
-      </button>
-    </>
-  );
+export function Positioning() {
+  return <PositionedMenu />;
 }
 
-export function WithStyles() {
-  return (
-    <>
-      <MenuWithStyle.Render />
-      <button type="button" {...MenuWithStyle.preloadHandlers} onClick={MenuWithStyle.openPopover}>
-        Show
-      </button>
-    </>
-  );
+export function ManyInstances() {
+  return <ManyRowMenus />;
 }
 
-export function WithCustomPopoverComponent() {
-  return (
-    <>
-      <MenuWithCustomPopoverComponent.Render />
-      <button
-        type="button"
-        {...MenuWithCustomPopoverComponent.preloadHandlers}
-        onClick={MenuWithCustomPopoverComponent.openPopover}
-      >
-        Show
-      </button>
-    </>
-  );
+export function InScrollContainer() {
+  return <ScrollContainerMenu />;
 }
