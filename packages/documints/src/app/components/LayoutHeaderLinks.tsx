@@ -1,11 +1,11 @@
 import type { FC } from "react";
 import { NavLink } from "react-router";
 
-import type { DocumintResolvedHeaderLink } from "../../config/_config.utils.js";
+import { makeColor, makeFontWeight, makeRem, makeReset } from "@documints/tokens";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 
-import { makeColor, makeFontWeight, makeRem, makeReset } from "@documints/tokens";
+import type { DocumintResolvedHeaderLink } from "../../config/config.utils.js";
 import { IconComponent } from "./icons/IconComponent.js";
 import { LayoutHeaderLinksTypeDropdown } from "./LayoutHeaderLinksTypeDropdown.js";
 

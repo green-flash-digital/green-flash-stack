@@ -30,10 +30,14 @@ export async function handleRequestDev(
     // Insert the assets into the HTML template start and end
     LOG_SERVER_DEV.debug("Generating HTML template...");
     const { htmlDev } = generateHTMLTemplate({
-      // Vite's dev-server client runtime injects styles for anything
-      // reachable in the module graph on its own - no explicit <link> needed
-      // in dev, same as any other css-in-js usage in the app.
-      cssLinks: [],
+      // @wyw-in-js/vite's ssrDevCss option (see Documints.ts's getViteConfig)
+      // auto-injects its own versioned <link> to /_wyw-in-js/ssr.css via
+      // transformIndexHtml below, covering every css-in-js component style.
+      // The plain CSS imports (design tokens, the self-hosted font) need
+      // their own real <link>s here for the same reason - both avoid the
+      // gap between first paint and Vite's normal JS-side-effect style
+      // injection in dev.
+      cssLinks: config.dirs.plainCssDevHrefs,
       jsScripts: [config.dirs.appEntryClientPath],
       Meta,
       head: config.head
@@ -89,11 +93,6 @@ export async function handleRequestDev(
 
     // Split the HTML into two parts
     const [htmlStart, htmlEnd] = htmlTemplate.split("<!--ssr-outlet-->");
-
-    // inject critical css (Hydration issues at the moment)
-    // const docsUiCssContent = readFileSync(someCssAssetPath, "utf8");
-    // const { critical } = collect(htmlTemplate, docsUiCssContent);
-    // htmlStart = htmlTemplate.replace("<!--ssr-critical-->", critical);
 
     // Start writing the first part with the headers
     config.res.write(htmlStart);

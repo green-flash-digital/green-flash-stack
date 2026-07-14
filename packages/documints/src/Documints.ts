@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs";
 import { readFile, readdir, rm, access } from "node:fs/promises";
 import http from "node:http";
 import path from "node:path";
+import { fileURLToPath } from "node:url";
 
 import { tryHandle } from "@green-flash/ts-utils/isomorphic";
 import { writeFileRecursive } from "@green-flash/ts-utils/node";
@@ -24,7 +25,13 @@ import rehypeSlug from "rehype-slug";
 import remarkFrontmatter from "remark-frontmatter";
 import remarkGfm from "remark-gfm";
 import remarkMdxFrontmatter from "remark-mdx-frontmatter";
-import { type Plugin as VitePlugin, build as viteBuild, createServer, defineConfig } from "vite";
+import {
+  type Plugin as VitePlugin,
+  type ViteDevServer,
+  build as viteBuild,
+  createServer,
+  defineConfig
+} from "vite";
 
 import {
   documintsConfigSchema,
@@ -33,7 +40,7 @@ import {
   type DocumintResolvedHeaderLink,
   type DocumintsConfig,
   type DocumintsOrderEntry
-} from "./config/_config.utils.js";
+} from "./config/config.utils.js";
 import { handleRequestDev } from "./server.dev/index.js";
 import { renderRouteToHTML } from "./server.static/index.js";
 import { LOG } from "./utils/util.logger.js";
@@ -73,6 +80,11 @@ export type DocumintsDirs = {
   staticOutputDir: string;
   /** Temporary SSR bundle used to prerender routes. Deleted once the build finishes. */
   serverBundleDir: string;
+  /**
+   * Dev-only: real, direct `<link>` hrefs for the plain CSS files App.tsx
+   * imports (design tokens, the self-hosted font) - see getPlainCssDevHrefs.
+   */
+  plainCssDevHrefs: string[];
 };
 
 type DocumintsInstanceArgs = {
@@ -162,6 +174,28 @@ export class Documints {
   }
 
   /**
+   * `/@fs/<absolute path>?direct` is how Vite's dev server serves a real
+   * file by absolute path - `?direct` matters, since without it Vite
+   * returns its usual JS-wrapped CSS module (meant for `import`, not a
+   * `<link>`) instead of the plain CSS text a `<link>` needs.
+   */
+  private static toDevCssHref(absolutePath: string): string {
+    return `/@fs/${absolutePath}?direct`;
+  }
+
+  /**
+   * App.tsx imports both of these as plain CSS files, not `css` tags, so
+   * they're outside wyw-in-js's `ssrDevCss` handling - without a real
+   * `<link>` for each, they'd flash unstyled on a hard reload, same as the
+   * component styles did before that fix.
+   */
+  private static getPlainCssDevHrefs(appShellDir: string): string[] {
+    const tokensRootCssPath = fileURLToPath(import.meta.resolve("@documints/tokens/root.css"));
+    const fontCssPath = path.resolve(appShellDir, "./fonts/source-sans-3.css");
+    return [tokensRootCssPath, fontCssPath].map(Documints.toDevCssHref);
+  }
+
+  /**
    * Resolves every path a documints project needs, given the `.documints/`
    * directory found in the consuming project.
    */
@@ -185,7 +219,8 @@ export class Documints {
       appEntryClientPath: path.resolve(appShellDir, Documints.FILE_NAMES.clientEntry),
       appEntryServerPath: path.resolve(appShellDir, serverEntryFile),
       staticOutputDir: path.resolve(docsContentDir, Documints.FILE_NAMES.staticOutputDir),
-      serverBundleDir: path.resolve(docsContentDir, Documints.FILE_NAMES.serverBundleDir)
+      serverBundleDir: path.resolve(docsContentDir, Documints.FILE_NAMES.serverBundleDir),
+      plainCssDevHrefs: Documints.getPlainCssDevHrefs(appShellDir)
     };
   }
 
@@ -812,80 +847,88 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
     let vModules = this.getVirtualModules(routeManifest);
     const virtualModuleIds = Object.keys(vModules);
     const resolvedVModulePrefix = "\0";
+    const docsWatchRoot = path.resolve(
+      this.#dirs.docsContentDir,
+      Documints.getGlobStaticBase(this.#config.docs ?? DEFAULT_DOC_GLOB)
+    );
 
     void this.writeOrderTypesFile(routeManifest).catch((error: unknown) => {
       LOG.warn(`Failed to write .documints/.generated/order.ts: ${error}`);
     });
 
+    const invalidateVirtualModules = (server: ViteDevServer, idsToInvalidate: string[]) => {
+      const viteVirtualModules = [...server.moduleGraph.idToModuleMap.entries()].filter(
+        ([virtualModuleId]) => virtualModuleId.includes("virtual")
+      );
+      for (const virtualModuleId of idsToInvalidate) {
+        const viteVirtualModuleEntry = viteVirtualModules.find(([viteModId]) =>
+          viteModId.includes(virtualModuleId)
+        );
+        if (!viteVirtualModuleEntry) continue;
+
+        const [viteVirtualModuleId] = viteVirtualModuleEntry;
+        const viteVirtualModule = server.moduleGraph.getModuleById(viteVirtualModuleId);
+        if (!viteVirtualModule) continue;
+
+        server.moduleGraph.invalidateModule(viteVirtualModule);
+      }
+    };
+
     return {
       name: "vite-plugin-documints-virtual",
       configureServer: (server) => {
         server.watcher.add(this.#dirs.docsContentDir);
-        const docsWatchRoot = path.resolve(
-          this.#dirs.docsContentDir,
-          Documints.getGlobStaticBase(this.#config.docs ?? DEFAULT_DOC_GLOB)
-        );
         server.watcher.add(docsWatchRoot);
+      },
+      handleHotUpdate: async (ctx) => {
+        const { file, server } = ctx;
 
-        server.watcher.on("all", async (_event, watchedPath) => {
-          // Only process doc/config changes - not vite's own cache churn,
-          // and not our own generated order.ts, or writing it would
-          // re-trigger this handler forever.
-          const withinWatchedRoot =
-            watchedPath.startsWith(this.#dirs.docsContentDir) ||
-            watchedPath.startsWith(docsWatchRoot);
-          if (!withinWatchedRoot) return;
-          if (watchedPath.startsWith(this.#dirs.viteCacheDir)) return;
-          if (watchedPath.startsWith(this.#dirs.generatedDir)) return;
+        // Only process doc/config changes - not vite's own cache churn, and
+        // not our own generated order.ts, or writing it would re-trigger
+        // this handler forever. Returning nothing lets Vite fall back to its
+        // own default handling for anything outside our concern.
+        const withinWatchedRoot =
+          file.startsWith(this.#dirs.docsContentDir) || file.startsWith(docsWatchRoot);
+        if (!withinWatchedRoot) return;
+        if (file.startsWith(this.#dirs.viteCacheDir)) return;
+        if (file.startsWith(this.#dirs.generatedDir)) return;
 
-          // config.ts is only ever loaded once, in create() - unlike doc
-          // content, nothing else re-reads it, so a saved edit would
-          // otherwise keep using whatever was loaded at server startup. Its
-          // effects (e.g. header.logo) aren't all captured by the
-          // route-manifest signature below, so treat it as always structural.
-          const isConfigChange = watchedPath === this.#dirs.configFilePath;
-          if (isConfigChange) {
-            this.#config = await Documints.loadConfig(this.#dirs.configFilePath);
-          }
+        // config.ts is only ever loaded once, in create() - unlike doc
+        // content, nothing else re-reads it, so a saved edit would
+        // otherwise keep using whatever was loaded at server startup. Its
+        // effects (e.g. header.logo) aren't all captured by the
+        // route-manifest signature below, so treat it as always structural.
+        const isConfigChange = file === this.#dirs.configFilePath;
+        if (isConfigChange) {
+          this.#config = await Documints.loadConfig(this.#dirs.configFilePath);
+        }
 
-          const previousSignature = Documints.getRouteManifestSignature(routeManifest);
-          routeManifest = this.getRouteManifest();
-          const structureChanged =
-            isConfigChange ||
-            Documints.getRouteManifestSignature(routeManifest) !== previousSignature;
+        const previousSignature = Documints.getRouteManifestSignature(routeManifest);
+        routeManifest = this.getRouteManifest();
+        const structureChanged =
+          isConfigChange ||
+          Documints.getRouteManifestSignature(routeManifest) !== previousSignature;
 
-          if (!structureChanged) {
-            // Just a doc's own body content (text, JSX, styles) changed.
-            // Vite's own HMR already handles that in place; forcing a
-            // full-reload here would only replace it with a page flash.
-            return;
-          }
+        if (!structureChanged) {
+          // Just a doc's own body content changed, not the nav/route
+          // structure. A Tier 1 attempt at a soft in-place remount here
+          // (instead of Vite's default full-reload) turned out worse than
+          // doing nothing: the remount itself still visibly flashed, and
+          // without a safe way to cache-bust the page's own module (see
+          // the git history on this line), it showed stale content anyway.
+          // Falling through to Vite's default full-reload, at least, is
+          // slow but correct.
+          return;
+        }
 
-          LOG.info("Detected route/nav-affecting changes in the docs directory. Reloading...");
-          vModules = this.getVirtualModules(routeManifest);
-          void this.writeOrderTypesFile(routeManifest).catch((error: unknown) => {
-            LOG.warn(`Failed to write .documints/.generated/order.ts: ${error}`);
-          });
-
-          const viteVirtualModules = [...server.moduleGraph.idToModuleMap.entries()].filter(
-            ([virtualModuleId]) => virtualModuleId.includes("virtual")
-          );
-
-          for (const virtualModuleId of virtualModuleIds) {
-            const viteVirtualModuleEntry = viteVirtualModules.find(([viteModId]) =>
-              viteModId.includes(virtualModuleId)
-            );
-            if (!viteVirtualModuleEntry) continue;
-
-            const [viteVirtualModuleId] = viteVirtualModuleEntry;
-            const viteVirtualModule = server.moduleGraph.getModuleById(viteVirtualModuleId);
-            if (!viteVirtualModule) continue;
-
-            server.moduleGraph.invalidateModule(viteVirtualModule);
-          }
-
-          server.ws.send({ type: "full-reload" });
+        LOG.info("Detected route/nav-affecting changes in the docs directory. Reloading...");
+        vModules = this.getVirtualModules(routeManifest);
+        void this.writeOrderTypesFile(routeManifest).catch((error: unknown) => {
+          LOG.warn(`Failed to write .documints/.generated/order.ts: ${error}`);
         });
+        invalidateVirtualModules(server, virtualModuleIds);
+        server.ws.send({ type: "full-reload" });
+        return [];
       },
       resolveId(id) {
         const vModuleId = virtualModuleIds.find((moduleId) => moduleId === id);
@@ -957,7 +1000,12 @@ export function defineDocumintsOrdering(order: DocumintsOrder): DocumintsOrder {
           include: ["**/*.{ts,tsx}"],
           babelOptions: {
             presets: ["@babel/preset-typescript", "@babel/preset-react"]
-          }
+          },
+          // Serves every css-in-js style collected so far at /_wyw-in-js/ssr.css
+          // (see handleRequestDev.ts) - a real, blocking <link> in dev instead
+          // of Vite's normal JS-side-effect style injection, which otherwise
+          // leaves a visible flash of unstyled content on every full reload.
+          ssrDevCss: true
         }),
         this.getVirtualModulesPlugin(),
         ...userDefinedPlugins

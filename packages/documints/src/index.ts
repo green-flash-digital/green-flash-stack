@@ -11,4 +11,4 @@ export {
   type DocumintConfigHeaderLinkTypeSection,
   type DocumintResolvedHeader,
   type DocumintResolvedHeaderLink
-} from "./config/_config.utils.js";
+} from "./config/config.utils.js";

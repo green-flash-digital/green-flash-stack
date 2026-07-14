@@ -2,12 +2,13 @@ import { Suspense, lazy, useMemo } from "react";
 import { Link, Outlet, type RouteObject, useLocation } from "react-router";
 
 import "@documints/tokens/root.css";
+import "./fonts/source-sans-3.css";
+
+import type { DocumintResolvedHeader } from "../config/config.utils.js";
 import type {
   DocumintRouteManifestEntryDoc,
   DocumintRouteManifestGraphObject
 } from "../utils/util.types.js";
-import type { DocumintResolvedHeader } from "../config/_config.utils.js";
-
 import { DocumintsMetaComponent } from "./components/DocumintsMetaComponent.js";
 import { Layout } from "./components/Layout.js";
 import { LayoutBody } from "./components/LayoutBody.js";

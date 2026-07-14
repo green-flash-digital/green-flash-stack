@@ -1,3 +1,5 @@
+/// <reference types="vite/client" />
+
 declare module "virtual:routes" {
   import type {
     DocumintRouteManifestGraphObject,

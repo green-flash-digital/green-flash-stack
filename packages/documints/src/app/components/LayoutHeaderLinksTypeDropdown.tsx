@@ -1,16 +1,10 @@
 import { useState } from "react";
 
-import type { DocumintConfigHeaderLinkTypeDropdown } from "../../config/_config.utils.js";
+import { makeColor, makeFontFamily, makeFontWeight, makeRem, makeReset } from "@documints/tokens";
 import { css } from "@linaria/core";
 import { MenuController } from "@stratum-ui/react/menu";
 
-import {
-  makeColor,
-  makeFontFamily,
-  makeFontWeight,
-  makeRem,
-  makeReset
-} from "@documints/tokens";
+import type { DocumintConfigHeaderLinkTypeDropdown } from "../../config/config.utils.js";
 import { IconComponent } from "./icons/IconComponent.js";
 import type { LayoutHeaderLinksTypeDropdownState } from "./LayoutHeaderLinksTypeDropdownContent.js";
 

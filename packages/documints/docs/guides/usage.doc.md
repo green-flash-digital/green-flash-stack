@@ -57,5 +57,3 @@ See [Deploy](/guides/introduction/deploy) for platform-specific steps.
 See [Configuration](/guides/configuration) for `config.ts`, and
 [Static Assets & Head](/guides/customization/static-assets) for `public/` and `head.html`.
 `documints init` sets up the `.gitignore` for the generated/build directories automatically.
-
-Fast refresh test line.

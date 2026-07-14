@@ -1,10 +1,10 @@
 import type { FC } from "react";
 import { NavLink } from "react-router";
 
-import { makeColor, makeCustom, makeFontWeight, makeRem } from "@documints/tokens";
+import { makeColor, makeCustom, makeFontWeight, makeRem, makeSpace } from "@documints/tokens";
 import { css } from "@linaria/core";
 
-import type { DocumintResolvedHeader } from "../../config/_config.utils.js";
+import type { DocumintResolvedHeader } from "../../config/config.utils.js";
 import { LayoutHeaderLinks } from "./LayoutHeaderLinks.js";
 
 const layoutHeaderStyles = css`
@@ -13,8 +13,8 @@ const layoutHeaderStyles = css`
   top: 0;
   display: flex;
   align-items: center;
-  padding: 0 ${makeRem(32)};
-  border-bottom: 1px solid ${makeColor("neutral", { opacity: 0.2 })};
+  padding: 0 ${makeSpace(32)};
+  border-bottom: 1px solid ${makeColor("neutral-100", { opacity: 0.2 })};
   background: ${makeColor("background")};
   z-index: 10;
 

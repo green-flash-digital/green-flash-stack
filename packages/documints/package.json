@@ -34,7 +34,7 @@
     "build:lib": "tsc --project tsconfig.build.json",
     "build:cli": "yarn fizmoo build",
     "build:docs": "yarn documints build",
-    "deploy:docs": "wrangler deploy",
+    "deploy": "wrangler deploy",
     "typechecks": "tsc --project tsconfig.typechecks.json",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
