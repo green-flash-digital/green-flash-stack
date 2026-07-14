@@ -1,7 +1,6 @@
 import type { JSX, ReactNode } from "react";
 import { forwardRef } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeCustom,
@@ -9,6 +8,7 @@ import {
   makeFontWeight,
   makeRem
 } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 export type LayoutHeaderLogoPropsNative = JSX.IntrinsicElements["div"];

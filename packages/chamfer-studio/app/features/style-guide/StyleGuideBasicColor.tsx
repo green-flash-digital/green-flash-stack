@@ -1,6 +1,5 @@
 import { useRef } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { ColorAccessibilityChecker, getAccessibleTextColor } from "@chamfer-css/core/utils";
 import {
   makeSpace,
@@ -9,6 +8,7 @@ import {
   makeFontWeight,
   makeRem
 } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 import { Fragment } from "react/jsx-runtime";
 

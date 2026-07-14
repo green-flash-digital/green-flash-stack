@@ -2,8 +2,8 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { useDropdownMenu } from "react-hook-primitives";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makeRem, makeReset } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { IconArrowDown } from "~/icons/IconArrowDown";

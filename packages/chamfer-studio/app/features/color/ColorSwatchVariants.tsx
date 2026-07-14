@@ -1,13 +1,13 @@
 import type { ChangeEventHandler, JSX } from "react";
 import { useMemo, forwardRef } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import type {
   ChamferColorVariant,
   ChamferColorVariantBase,
   ColorVariantTypes
 } from "@chamfer-css/core/schemas";
 import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 import { match } from "ts-pattern";
 

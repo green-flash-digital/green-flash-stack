@@ -1,5 +1,10 @@
 {
-  "cSpell.words": ["Fizmoo", "irida"],
+  "cSpell.words": [
+    "Documint",
+    "documints",
+    "Fizmoo",
+    "irida"
+  ],
   "eslint.enable": false,
   "editor.formatOnSave": false,
   "editor.formatOnSaveMode": "file",

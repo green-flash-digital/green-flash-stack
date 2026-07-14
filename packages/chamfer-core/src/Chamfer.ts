@@ -209,9 +209,7 @@ export class Chamfer {
 
     // No tokens.json found — bootstrap if autoInit, otherwise throw
     if (!this._configAutoInit) {
-      throw new Error(
-        'Could not locate ".chamfer/tokens.json". Run `chamfer init` to create one.'
-      );
+      throw new Error('Could not locate ".chamfer/tokens.json". Run `chamfer init` to create one.');
     }
 
     this._log.warn("Unable to locate .chamfer/tokens.json — bootstrapping a new project");
@@ -396,10 +394,7 @@ export class Chamfer {
       // tracked; only the derived output is ignored here.
       this._log.debug("Generating .gitignore...");
       const gitignoreContent = ["_generated/", "index.ts"].join("\n") + "\n";
-      await writeFileRecursive(
-        path.resolve(config.meta.dirPath, "./.gitignore"),
-        gitignoreContent
-      );
+      await writeFileRecursive(path.resolve(config.meta.dirPath, "./.gitignore"), gitignoreContent);
       this._log.debug("Generating .gitignore... done.");
 
       await this._formatGeneratedFiles();

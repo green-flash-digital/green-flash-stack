@@ -1,7 +1,7 @@
 import type { z } from "zod";
 
-import { ConfigSchema, type ChamferConfig } from "./schemas/schema.js";
 import type { TokensConfig } from "./Chamfer.js";
+import { ConfigSchema, type ChamferConfig } from "./schemas/schema.js";
 
 export type ChamferConfigInput = z.input<typeof ConfigSchema>;
 

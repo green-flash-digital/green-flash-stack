@@ -34,14 +34,14 @@
     "@green-flash/reactor": "workspace:",
     "@green-flash/ts-utils": "workspace:",
     "@tanstack/virtual-core": "3.17.3",
-    "immer": "11.1.9",
+    "immer": "11.1.11",
     "logarhythm": "workspace:"
   },
   "devDependencies": {
     "@green-flash/tsconfig": "workspace:*",
-    "@types/node": "26.1.0",
-    "@vitest/coverage-v8": "4.1.9",
+    "@types/node": "26.1.1",
+    "@vitest/coverage-v8": "4.1.10",
     "typescript": "6.0.3",
-    "vitest": "4.1.9"
+    "vitest": "4.1.10"
   }
 }

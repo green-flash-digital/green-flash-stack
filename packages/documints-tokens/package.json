@@ -1,0 +1,38 @@
+{
+  "name": "@documints/tokens",
+  "version": "0.1.0",
+  "description": "Design tokens for documints, built with chamfer-css.",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drewdecarme@gmail.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/documints-tokens"
+  },
+  "files": [
+    "dist"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js",
+    "./root.css": "./dist/root.css"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "build": "chamfer build && tsc --project tsconfig.tokens.json && cp .chamfer/_generated/root.css dist/root.css",
+    "dev": "chamfer dev"
+  },
+  "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
+    "@types/node": "26.1.1",
+    "chamfer": "workspace:*",
+    "typescript": "6.0.3"
+  }
+}

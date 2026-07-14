@@ -2,8 +2,8 @@ import type { JSX } from "react";
 import { forwardRef } from "react";
 import { useDropdownTooltip } from "react-hook-primitives";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeColor, makeFontFamily, makeRem } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 import "react-hook-primitives/styles";
 

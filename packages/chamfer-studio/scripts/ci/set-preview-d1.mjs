@@ -22,7 +22,9 @@ if (!configPath || !databaseName || !databaseId) {
 
 const original = readFileSync(configPath, "utf8");
 
-const d1Databases = [{ binding: "chamfer_studio", database_name: databaseName, database_id: databaseId }];
+const d1Databases = [
+  { binding: "chamfer_studio", database_name: databaseName, database_id: databaseId }
+];
 const edits = modify(original, ["env", "preview", "d1_databases"], d1Databases, {
   formattingOptions: { insertSpaces: true, tabSize: 2 }
 });

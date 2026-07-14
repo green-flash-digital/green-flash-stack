@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeColor, makeRem } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 export type LayoutNavProps = JSX.IntrinsicElements["aside"];

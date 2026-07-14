@@ -1,0 +1,97 @@
+{
+  "name": "documints",
+  "version": "0.1.0",
+  "description": "TODO",
+  "homepage": "https://github.com/green-flash-digital/green-flash-stack#readme",
+  "bugs": {
+    "url": "https://github.com/green-flash-digital/green-flash-stack/issues"
+  },
+  "license": "MIT",
+  "author": "Drew DeCarme (drewdecarme@gmail.com)",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/green-flash-digital/green-flash-stack.git",
+    "directory": "packages/documints"
+  },
+  "bin": "./bin/index.js",
+  "files": [
+    "dist",
+    "bin"
+  ],
+  "type": "module",
+  "sideEffects": false,
+  "exports": {
+    ".": "./dist/index.js",
+    "./plugins/interactive-preview": "./dist/plugins/interactive-preview/vite/index.js"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "scripts": {
+    "dev:cli": "yarn fizmoo dev",
+    "dev:docs": "yarn build:cli && yarn documints dev",
+    "build": "yarn typechecks && yarn build:lib && yarn build:cli && yarn build:docs",
+    "build:lib": "tsc --project tsconfig.build.json",
+    "build:cli": "yarn fizmoo build",
+    "build:docs": "yarn documints build",
+    "deploy": "wrangler deploy",
+    "typechecks": "tsc --project tsconfig.typechecks.json",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
+  },
+  "dependencies": {
+    "@babel/core": "8.0.1",
+    "@babel/preset-react": "8.0.1",
+    "@babel/preset-typescript": "8.0.1",
+    "@documints/tokens": "workspace:*",
+    "@green-flash/ts-utils": "workspace:*",
+    "@inquirer/prompts": "8.5.2",
+    "@linaria/core": "8.0.0",
+    "@linaria/react": "8.0.0",
+    "@linaria/server": "8.0.0",
+    "@mdx-js/rollup": "3.1.1",
+    "@pagefind/default-ui": "1.5.2",
+    "@shikijs/rehype": "4.3.1",
+    "@stefanprobst/rehype-extract-toc": "3.0.0",
+    "@stratum-ui/react": "workspace:*",
+    "@vitejs/plugin-react": "6.0.3",
+    "@wyw-in-js/vite": "2.1.4",
+    "esbuild": "0.28.1",
+    "express": "5.2.1",
+    "fizmoo": "workspace:*",
+    "globby": "16.2.1",
+    "gray-matter": "4.0.3",
+    "hast-util-to-string": "3.0.1",
+    "immer": "11.1.11",
+    "logarhythm": "workspace:*",
+    "open": "11.0.0",
+    "pagefind": "1.5.2",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
+    "react-hook-primitives": "workspace:*",
+    "react-router": "8.2.0",
+    "rehype-autolink-headings": "7.1.0",
+    "rehype-slug": "6.0.0",
+    "remark-frontmatter": "5.0.0",
+    "remark-gfm": "4.0.1",
+    "remark-mdx-frontmatter": "5.2.0",
+    "rollup": "4.62.2",
+    "ts-pattern": "5.9.0",
+    "unist-util-visit": "5.1.0",
+    "vite": "8.1.4",
+    "zod": "3.25.76"
+  },
+  "devDependencies": {
+    "@green-flash/tsconfig": "workspace:*",
+    "@storybook/react": "10.5.0",
+    "@types/babel__core": "7.20.5",
+    "@types/express": "5.0.6",
+    "@types/hast": "3.0.4",
+    "@types/node": "26.1.1",
+    "@types/react": "19.2.17",
+    "@types/react-dom": "19.2.3",
+    "storybook": "10.5.0",
+    "typescript": "6.0.3",
+    "wrangler": "4.110.0"
+  }
+}

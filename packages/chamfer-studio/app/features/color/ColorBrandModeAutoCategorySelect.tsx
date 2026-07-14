@@ -1,6 +1,5 @@
 import { useCallback } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import {
   makeSpace,
   makeColor,
@@ -8,6 +7,7 @@ import {
   makeRem,
   makeReset
 } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { InputDropdownSelect } from "~/components/InputDropdownSelect";

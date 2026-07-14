@@ -1,0 +1,35 @@
+/**
+ * For more details on how to configure Wrangler, refer to:
+ * https://developers.cloudflare.com/workers/wrangler/configuration/
+ */
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "documints",
+  "compatibility_date": "2026-07-07",
+  "observability": {
+    "enabled": true
+  },
+  "upload_source_maps": true,
+  // Keeps a *.workers.dev preview URL available alongside the custom domain
+  // below - needed for `wrangler versions upload --preview-alias` (see
+  // .github/workflows/documints-preview.yml) to produce a reachable PR
+  // preview link, separate from the documints.dev production traffic.
+  "workers_dev": true,
+  /**
+   * Custom Domains
+   * Binds this Worker to a domain/subdomain on a zone already in this Cloudflare account.
+   * Cloudflare provisions the DNS record + TLS cert automatically.
+   * https://developers.cloudflare.com/workers/configuration/routing/custom-domains/
+   */
+  "routes": [{ "pattern": "documints.dev", "custom_domain": true }],
+  /**
+   * Static Assets
+   * https://developers.cloudflare.com/workers/static-assets/binding/
+   */
+  "assets": {
+    "directory": "./.documints/static",
+    // Serves /404.html (real, prerendered, on-brand) for any unmatched
+    // route, instead of Cloudflare's own generic default.
+    "not_found_handling": "404-page"
+  }
+}

@@ -1,0 +1,10 @@
+{
+  "extends": "@green-flash/tsconfig/library",
+  "compilerOptions": {
+    "noEmit": false,
+    "rootDir": "./src",
+    "outDir": "./dist",
+    "declaration": true
+  },
+  "include": ["src/index.ts", "src/config", "src/plugins/interactive-preview/vite"]
+}

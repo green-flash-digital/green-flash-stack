@@ -1,8 +1,8 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { makeSpace, makeCustom, makeReset, makeFontWeight } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { InformationCircleIcon } from "~/icons/IconInformationCircle";

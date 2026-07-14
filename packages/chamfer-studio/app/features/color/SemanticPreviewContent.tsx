@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { classes } from "@green-flash/ts-utils/isomorphic";
 import { ColorAccessibilityChecker, getAccessibleTextColor } from "@chamfer-css/core/utils";
 import {
   makeColor,
@@ -9,6 +8,7 @@ import {
   makeRem,
   makeSpace
 } from "@chamfer-css/studio-tokens";
+import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
 import { useConfigurationContext } from "~/features/Config.context";

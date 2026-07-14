@@ -1,0 +1,4 @@
+{
+  "extends": "@green-flash/tsconfig/library",
+  "include": ["src", ".fizmoo/**/*.ts"]
+}

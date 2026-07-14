@@ -29,10 +29,16 @@ export class StudioServer {
     process.env.STUDIO_VERSIONS_DIR = this.#options.versionsDir;
     process.env.STUDIO_IS_LOCAL = "true";
 
-    const buildDir = path.resolve(import.meta.dirname, "./build-local");
+    // react-router.config.ts's `buildDirectory: "build-local"` is resolved
+    // relative to the package root, not this file's own directory.
+    const buildDir = path.resolve(import.meta.dirname, "../build-local");
 
     const studioClientAssets = path.resolve(buildDir, "./client");
-    this.#app.use(express.static(studioClientAssets));
+    // `dotfiles: "ignore"` (Express's default) silently refuses to serve any
+    // asset whose filename starts with "." - Vite names chunks after the
+    // source module's basename, and a project's own `.chamfer/` tokens
+    // produce exactly that (e.g. `.chamfer-[hash].js`).
+    this.#app.use(express.static(studioClientAssets, { dotfiles: "allow" }));
 
     // SSE endpoint — must be registered before the React Router catch-all
     this.#app.get("/api/tokens-watch", (req, res) => {

@@ -1,6 +1,12 @@
 import { useCallback, useState } from "react";
 
-import { makeSpace, makeColor, makeFontWeight, makeRem, makeReset } from "@chamfer-css/studio-tokens";
+import {
+  makeSpace,
+  makeColor,
+  makeFontWeight,
+  makeRem,
+  makeReset
+} from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
 
 import { ButtonIcon } from "~/components/ButtonIcon";
