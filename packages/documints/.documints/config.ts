@@ -8,6 +8,10 @@ export default defineDocumintsConfig({
   editUrl: "https://github.com/green-flash-digital/green-flash-stack/edit/main/packages/documints",
   header: {
     title: "documints",
+    logo: {
+      src: "/documints-mint-leaves.png",
+      alt: "logo"
+    },
     links: [
       [
         { type: "section", title: "Guides" },

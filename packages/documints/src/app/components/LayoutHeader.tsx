@@ -74,10 +74,11 @@ export const LayoutHeader: FC<LayoutHeaderProps> = ({ header }) => {
       <div>
         {header && (
           <NavLink to="/" className={anchorCSS}>
-            {header?.logo && (
+            {header.logo ? (
               <img className={imgStyles} src={header.logo.src} alt={header.logo.alt} />
+            ) : (
+              header.title && <div className={divStyles}>{header.title}</div>
             )}
-            {header?.title && <div className={divStyles}>{header.title}</div>}
           </NavLink>
         )}
         <div className={rightGroupStyles}>

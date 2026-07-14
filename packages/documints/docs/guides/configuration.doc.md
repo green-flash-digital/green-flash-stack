@@ -120,6 +120,12 @@ export default defineDocumintsConfig({
 });
 ```
 
+`logo`, if set, takes the place of `title` in the header's top-left corner - point `src` at
+an image in `.documints/public/` (see [Static Assets & Head](/guides/customization/static-assets)),
+or any other reachable URL. `title` is still worth setting even then: it's used as the heading
+in `llms.txt` (see [Markdown routes and AI-agent discoverability](/guides/configuration#markdown-routes-and-ai-agent-discoverability)
+above) regardless of whether `logo` is set. Omit `logo` to show `title` as plain text instead.
+
 Links are grouped into sections (an array of arrays) and rendered left to right. Five link
 types are supported:
 
