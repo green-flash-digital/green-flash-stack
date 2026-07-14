@@ -10,6 +10,11 @@
     "enabled": true
   },
   "upload_source_maps": true,
+  // Keeps a *.workers.dev preview URL available alongside the custom domain
+  // below - needed for `wrangler versions upload --preview-alias` (see
+  // .github/workflows/documints-preview.yml) to produce a reachable PR
+  // preview link, separate from the documints.dev production traffic.
+  "workers_dev": true,
   /**
    * Custom Domains
    * Binds this Worker to a domain/subdomain on a zone already in this Cloudflare account.
