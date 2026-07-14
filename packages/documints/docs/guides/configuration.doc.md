@@ -47,6 +47,21 @@ Only used at build time, to generate `sitemap.xml` and `robots.txt` in the build
 skipped entirely (with a warning) if omitted, since a sitemap can't be built without knowing
 the site's real domain.
 
+## `editUrl`
+
+A base URL for editing a doc's source at its host, pointed at the directory containing
+`.documints/` - for a GitHub repo, that's the `/edit/<branch>/<path-to-package>` form:
+
+```ts
+export default defineDocumintsConfig({
+  editUrl: "https://github.com/your-org/your-repo/edit/main/packages/your-docs",
+});
+```
+
+Every doc page gets an "Edit this page" link built from this plus its real, on-disk path -
+this site's own `.documints/config.ts` uses its GitHub repo, so every page links straight to
+its source file there. Omit `editUrl` to leave those links out entirely.
+
 ## `header`
 
 Controls the site's header: a title, an optional logo, and links.

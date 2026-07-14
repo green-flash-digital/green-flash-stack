@@ -1,15 +1,17 @@
 import { type FC, type MouseEventHandler, useCallback, useMemo } from "react";
 
-import { css } from "@linaria/core";
-import type { Toc as TableOfContents } from "@stefanprobst/rehype-extract-toc";
-
 import {
   makeColor,
   makeCustom,
+  makeFontFamily,
   makeFontWeight,
   makeRem,
-  makeReset
+  makeReset,
+  makeSpace
 } from "@documints/tokens";
+import { css } from "@linaria/core";
+import type { Toc as TableOfContents } from "@stefanprobst/rehype-extract-toc";
+
 import { LayoutTextOverline } from "./LayoutTextOverline.js";
 
 const layoutBodyStyles = css`
@@ -70,6 +72,27 @@ const overlineStyles = css`
   margin-bottom: ${makeRem(16)};
 `;
 
+const editLinkStyles = css`
+  ${makeReset("anchor")};
+  display: block;
+  font-size: ${makeRem(13)};
+  color: ${makeColor("neutral")};
+  font-family: ${makeFontFamily("source-sans-3")};
+  font-weight: ${makeFontWeight("source-sans-3-medium")};
+  margin-top: 0;
+
+  &:hover {
+    color: ${makeColor("secondary")};
+    text-decoration: underline;
+  }
+`;
+
+const sectionStyles = css`
+  border-top: 1px solid ${makeColor("neutral-200")};
+  margin-top: ${makeSpace(16)};
+  padding: ${makeSpace(16)} 0;
+`;
+
 export function ContentsNode({ tableOfContents }: { tableOfContents: TableOfContents }) {
   const handleClick = useCallback<MouseEventHandler<HTMLAnchorElement>>((e) => {
     e.preventDefault();
@@ -107,9 +130,10 @@ export function ContentsNode({ tableOfContents }: { tableOfContents: TableOfCont
 
 export type LayoutBodyTOCProps = {
   tableOfContents: TableOfContents | null;
+  editHref?: string;
 };
 
-export const LayoutBodyTOC: FC<LayoutBodyTOCProps> = ({ tableOfContents }) => {
+export const LayoutBodyTOC: FC<LayoutBodyTOCProps> = ({ tableOfContents, editHref }) => {
   return (
     <article className={layoutBodyStyles}>
       <div>
@@ -122,6 +146,13 @@ export const LayoutBodyTOC: FC<LayoutBodyTOCProps> = ({ tableOfContents }) => {
         <ul className={ulStyles}>
           <ContentsNode tableOfContents={tableOfContents?.[0]?.children ?? []} />
         </ul>
+        <div className={sectionStyles}>
+          {editHref && (
+            <a href={editHref} className={editLinkStyles} target="_blank" rel="noreferrer">
+              Edit this page
+            </a>
+          )}
+        </div>
       </div>
     </article>
   );

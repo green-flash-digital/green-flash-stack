@@ -53,7 +53,7 @@ function createRoute(route: DocumintRouteManifestEntryDoc, options: { isDocs: bo
             <LayoutBodyMain>
               <DocumentComponent />
             </LayoutBodyMain>
-            <LayoutBodyTOC tableOfContents={tableOfContents} />
+            <LayoutBodyTOC tableOfContents={tableOfContents} editHref={route.editHref} />
           </>
         );
       }

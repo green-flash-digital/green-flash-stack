@@ -24,6 +24,12 @@ export type DocumintRouteManifestEntry = {
    * own - the nav renders them as a plain group label, not a link.
    */
   synthetic: boolean;
+  /**
+   * A direct link to edit this doc's source at its host (e.g. GitHub),
+   * precomputed from `config.editUrl` - `undefined` if that's not
+   * configured, or for a synthetic node with no doc backing it.
+   */
+  editHref?: string;
 };
 export type DocumintRouteManifestEntryDoc = DocumintRouteManifestEntry & {
   importComponent: () => Promise<{

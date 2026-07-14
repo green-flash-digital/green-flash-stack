@@ -4,6 +4,7 @@ import { defineDocumintsOrdering } from "./.generated/order.js";
 
 export default defineDocumintsConfig({
   siteUrl: "https://documints.dev",
+  editUrl: "https://github.com/green-flash-digital/green-flash-stack/edit/main/packages/documints",
   header: {
     title: "documints",
     links: [

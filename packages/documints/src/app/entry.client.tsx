@@ -6,6 +6,9 @@ import ReactDOMClient from "react-dom/client";
 import { DocumintsMetaProvider } from "../meta/DocumintsMeta.provider.js";
 
 import { routes } from "./routes.js";
+import { setupCopyCodeButtons } from "./utils/copyCodeButton.js";
+
+setupCopyCodeButtons();
 
 // A browser router is inherently a page-lifetime singleton tied to
 // window.history - created once here, at module scope, rather than inside a

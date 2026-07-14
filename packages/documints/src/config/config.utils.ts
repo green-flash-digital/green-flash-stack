@@ -141,7 +141,15 @@ export const documintsConfigSchema = z.object({
    * no trailing slash. Only used to build absolute URLs in `sitemap.xml`/
    * `robots.txt` at build time - if omitted, neither file is generated.
    */
-  siteUrl: z.string().optional()
+  siteUrl: z.string().optional(),
+  /**
+   * A base URL for editing a doc's source at its host, pointed at the
+   * directory containing `.documints/` (e.g.
+   * "https://github.com/your-org/your-repo/edit/main"). Each doc gets an
+   * "Edit this page" link built from this plus its real path - omit to
+   * leave those links out entirely.
+   */
+  editUrl: z.string().optional()
 });
 
 export type DocumintsConfig = Omit<z.infer<typeof documintsConfigSchema>, "order"> & {

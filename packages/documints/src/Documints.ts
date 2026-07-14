@@ -41,6 +41,7 @@ import {
   type DocumintsConfig,
   type DocumintsOrderEntry
 } from "./config/config.utils.js";
+import { rehypeCopyCode } from "./plugins/rehype-copy-code.js";
 import { handleRequestDev } from "./server.dev/index.js";
 import { renderRouteToHTML } from "./server.static/index.js";
 import { LOG } from "./utils/util.logger.js";
@@ -552,6 +553,18 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
   }
 
   /**
+   * `aliasPath` is relative to `.documints/` (and often escapes it via a
+   * literal `../`, e.g. `/../docs/guides/usage.doc.md` for a sibling `docs/`
+   * folder) - joining it back onto a literal `.documints` segment and
+   * normalizing resolves those `..`s, giving the doc's real path relative to
+   * the project root `editUrl` is expected to point at.
+   */
+  private static getEditHref(editUrl: string, aliasPath: string): string {
+    const relativeToProjectRoot = path.posix.normalize(path.posix.join(".documints", aliasPath));
+    return `${editUrl.replace(/\/$/, "")}/${relativeToProjectRoot}`;
+  }
+
+  /**
    * Discovers every `.doc.md`/`.doc.mdx`/`.doc.tsx` file matching
    * `config.docs`. A file's location on disk has no bearing on its route -
    * only its `title` frontmatter does.
@@ -599,7 +612,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         fileNameFormatted,
         routePath,
         root: routePath === "/",
-        synthetic: false
+        synthetic: false,
+        editHref: this.#config.editUrl
+          ? Documints.getEditHref(this.#config.editUrl, aliasPath)
+          : undefined
       };
     }
 
@@ -717,6 +733,7 @@ export const routeIndex = {
   fileName: ${JSON.stringify(routeIndex.fileName)},
   fileNameFormatted: ${JSON.stringify(routeIndex.fileNameFormatted)},
   root: "${routeIndex.root}",
+  editHref: ${JSON.stringify(routeIndex.editHref)},
   importComponent: async () => await import(${JSON.stringify(routeIndex.fullPath)})
 };
 export const routeGraph = ${JSON.stringify(routeGraph, null, 2)};
@@ -727,6 +744,7 @@ export const routeDocs = [${Object.values(routeDocs).map(
   fileName: ${JSON.stringify(routeEntry.fileName)},
   fileNameFormatted: ${JSON.stringify(routeEntry.fileNameFormatted)},
   root: "${routeEntry.root}",
+  editHref: ${JSON.stringify(routeEntry.editHref)},
   importComponent: async () => await import(${JSON.stringify(routeEntry.fullPath)})
 }`
     )}];
@@ -1022,7 +1040,9 @@ Sitemap: ${siteUrl}/sitemap.xml
               {
                 theme: "dark-plus"
               }
-            ]
+            ],
+            // Must run after rehypeShiki - it wraps the <pre> Shiki produces.
+            rehypeCopyCode
           ]
         }),
         react(),

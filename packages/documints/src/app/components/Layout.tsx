@@ -30,6 +30,36 @@ export const bodyStyles = css`
       line-height: 1.5;
     }
   }
+
+  .code-block {
+    position: relative;
+  }
+
+  .copy-code-button {
+    position: absolute;
+    top: ${makeRem(8)};
+    right: ${makeRem(8)};
+    padding: ${makeRem(4)} ${makeRem(8)};
+    font-size: ${makeRem(12)};
+    border-radius: ${makeRem(4)};
+    border: ${makeRem(1)} solid ${makeColor("neutral-50", { opacity: 0.3 })};
+    background: ${makeColor("background")};
+    color: ${makeColor("neutral")};
+    cursor: pointer;
+    opacity: 0;
+    transition: opacity 0.15s ease-in-out;
+
+    &:hover {
+      color: ${makeColor("primary")};
+      border-color: ${makeColor("primary")};
+    }
+  }
+
+  .code-block:hover .copy-code-button,
+  .copy-code-button:focus-visible {
+    opacity: 1;
+  }
+
   background: ${makeColor("neutral-50", { opacity: 0.12 })};
 `;
 
