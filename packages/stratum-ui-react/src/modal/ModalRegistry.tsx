@@ -2,12 +2,16 @@ import { useSyncExternalStore } from "react";
 
 import { TransactionStore } from "@green-flash/reactor";
 import type { ModalState } from "@stratum-ui/core";
+import { castDraft } from "immer";
+import { Logarhythm } from "logarhythm";
 
 import type { ModalController } from "./ModalController.js";
 
 type ModalRegistryState = {
   controllers: ModalController<ModalState | undefined>[];
 };
+
+const log = new Logarhythm({ name: "ModalRegistry", pillColor: "#8b5cf6" });
 
 /**
  * Central registry that ties multiple `ModalController` instances together.
@@ -29,8 +33,10 @@ export class ModalRegistry extends TransactionStore<ModalRegistryState> {
     this.enqueue({
       notify: true, // re-renders the `ModalRegistryRoot` when new modals are registered
       mutate: (draft) => {
-        if (draft.controllers.includes(controller)) return; // avoid duplicates
-        draft.controllers.push(controller);
+        if (draft.controllers.includes(castDraft(controller))) return; // avoid duplicates
+
+        draft.controllers.push(castDraft(controller));
+        log.debug("Registered modal controller", { name: controller.name, id: controller.id });
       }
     });
 
@@ -49,7 +55,5 @@ function ModalRegistryRoot({ registry }: { registry: ModalRegistry }) {
     registry.getState
   );
 
-  return controllers.map((controller, i) => {
-    return <controller.Component key={i} />;
-  });
+  return controllers.map((controller) => <controller.Component key={controller.id} />);
 }

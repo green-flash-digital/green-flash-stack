@@ -38,6 +38,7 @@
     "@green-flash/reactor": "workspace:",
     "@green-flash/ts-utils": "workspace:",
     "@stratum-ui/core": "workspace:",
+    "immer": "11.1.11",
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },

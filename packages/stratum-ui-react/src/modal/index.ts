@@ -1,4 +1,3 @@
-export * from "./Modal.js";
 export * from "./ModalController.js";
 export * from "./ModalRegistry.js";
 export * from "./modal.utils.js";

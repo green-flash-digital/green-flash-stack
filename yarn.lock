@@ -5178,18 +5178,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@stratum-tokens/root@workspace:packages/stratum-tokens":
-  version: 0.0.0-use.local
-  resolution: "@stratum-tokens/root@workspace:packages/stratum-tokens"
-  dependencies:
-    "@green-flash/tsconfig": "workspace:*"
-    "@types/node": "npm:26.1.1"
-    "@vitest/coverage-v8": "npm:4.1.10"
-    typescript: "npm:7.0.2"
-    vitest: "npm:4.1.10"
-  languageName: unknown
-  linkType: soft
-
 "@stratum-ui/core@workspace:, @stratum-ui/core@workspace:packages/stratum-ui":
   version: 0.0.0-use.local
   resolution: "@stratum-ui/core@workspace:packages/stratum-ui"
@@ -5200,6 +5188,7 @@ __metadata:
     "@types/node": "npm:26.1.1"
     "@vitest/coverage-v8": "npm:4.1.10"
     csstype: "npm:3.2.3"
+    logarhythm: "workspace:*"
     typescript: "npm:7.0.2"
     vitest: "npm:4.1.10"
   languageName: unknown
@@ -5225,6 +5214,7 @@ __metadata:
     "@types/react-dom": "npm:19.2.3"
     "@vitest/coverage-v8": "npm:4.1.10"
     "@wyw-in-js/vite": "npm:2.1.4"
+    immer: "npm:11.1.11"
     react: "npm:19.2.7"
     react-dom: "npm:19.2.7"
     storybook: "npm:10.5.0"
