@@ -88,6 +88,16 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
   #type: PopoverEngineType;
   #closingSettled: Promise<void> | undefined;
   /**
+   * Overrides which element gets focus back on close, decoupled from
+   * `#popoverTarget` (the anchor-positioning reference) — the two are usually
+   * the same element (a normal trigger button both anchors the popover and
+   * should get focus back), but not always: a context menu anchors to an
+   * invisible point at the cursor, which isn't focusable and shouldn't be
+   * treated as "where focus goes back to." Cleared after every close, so it
+   * only ever applies to the open it was set for.
+   */
+  #focusReturnTarget: HTMLElement | undefined = undefined;
+  /**
    * A unique `anchor-name` for this engine's whole lifetime, explicitly tethered
    * to the popover via `position-anchor` and to the target via `anchor-name`.
    * `showPopover({ source })` alone establishes only an *implicit* anchor
@@ -142,6 +152,7 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
       }
     });
     this.#restoreFocus();
+    this.#focusReturnTarget = undefined;
     this.#closingSettled = this.#waitForExitTransition();
   };
 
@@ -170,12 +181,23 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
    */
   #restoreFocus() {
     const node = this.#popoverNode;
-    const target = this.#popoverTarget;
+    const target = this.#focusReturnTarget ?? this.#popoverTarget;
     if (!node || !target) return;
     const active = document.activeElement;
     if (active && (active === node || node.contains(active))) {
       target.focus();
     }
+  }
+
+  /**
+   * Overrides which element receives focus back when the popover closes,
+   * decoupled from the anchor-positioning target — call just before
+   * `openPopover()`/`togglePopover()`. Only applies to the very next close;
+   * cleared automatically afterward, so omitting this call (the common case)
+   * just falls back to whatever element was used for positioning.
+   */
+  setFocusReturnTarget(node: HTMLElement | undefined) {
+    this.#focusReturnTarget = node;
   }
 
   #detachListeners() {
@@ -564,9 +586,17 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
    * tracking happens uniformly in the `toggle` listener regardless of what closes
    * it — this just triggers that native close and, if the caller wants to know
    * when the exit animation has actually finished, awaits it.
+   *
+   * Safe to call regardless of current state: `hidePopover()` throws if the
+   * popover is already hidden/hiding, so this only calls it while `isOpen` is
+   * still true — if a close is already underway (e.g. native light-dismiss
+   * already fired), it just awaits that same in-flight close instead of
+   * trying to hide an already-hidden popover a second time.
    */
   async closePopover() {
-    this.getPopoverNode().hidePopover();
+    if (this.getState().isOpen) {
+      this.getPopoverNode().hidePopover();
+    }
     await this.#closingSettled;
   }
 
