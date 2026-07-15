@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { useToggle } from "react-hook-primitives";
+import { useToggle } from "@stratum-ui/react/toggle";
 
 import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";

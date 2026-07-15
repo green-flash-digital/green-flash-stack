@@ -1,6 +1,5 @@
 import type { ChangeEventHandler, JSX } from "react";
 import { forwardRef, useCallback, useEffect, useRef, useState } from "react";
-import { useForwardedRef } from "react-hook-primitives";
 
 import {
   makeSpace,
@@ -194,7 +193,6 @@ export const InputRange = forwardRef<HTMLInputElement, InputRangeProps>(function
   },
   forwardedRef
 ) {
-  const inputRangeRef = useForwardedRef(forwardedRef);
   const inputNumberRef = useRef<HTMLInputElement | null>(null);
   const [localValue, setLocalValue] = useState(value ?? 0);
 
@@ -235,7 +233,7 @@ export const InputRange = forwardRef<HTMLInputElement, InputRangeProps>(function
           "--percentage": calculatePercentage(localValue, min, max).percent
         }}
         onChange={handleOnChange}
-        ref={inputRangeRef}
+        ref={forwardedRef}
       />
       {dxDisplayMax && <span className="range-label">{max}</span>}
       {dxDisplayInput && (

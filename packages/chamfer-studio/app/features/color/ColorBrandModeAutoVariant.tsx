@@ -1,6 +1,6 @@
 import { useCallback } from "react";
 import type { ChangeEventHandler, MouseEventHandler } from "react";
-import { useToggle } from "react-hook-primitives";
+import { useToggle } from "@stratum-ui/react/toggle";
 
 import type { ColorVariantTypes } from "@chamfer-css/core/schemas";
 import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";

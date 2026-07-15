@@ -1,6 +1,6 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
-import { useDropdownMenu } from "react-hook-primitives";
+import { useMenu } from "@stratum-ui/react/menu";
 
 import { makeSpace, makeColor, makeRem, makeReset } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";
@@ -117,24 +117,18 @@ export const ButtonDropdown = forwardRef<HTMLButtonElement, ButtonDropdownProps>
     },
     ref
   ) {
-    const { closeMenu, setTargetRef, setDropdownRef, alignmentRef } = useDropdownMenu<
-      HTMLDivElement,
-      HTMLDivElement
-    >({
-      dxOffset: 4,
-      dxPosition: "bottom-right"
-    });
+    const { close, triggerRef, menuRef } = useMenu();
 
     return (
-      <div className={classes(buttonDropdownClassName, styles)} ref={alignmentRef}>
+      <div className={classes(buttonDropdownClassName, styles)}>
         <Button ref={ref} dxColor={dxColor} dxSize={dxSize} dxVariant={dxVariant} {...restProps}>
           {dxLabel}
         </Button>
-        <Button ref={setTargetRef} dxColor={dxColor} dxSize={dxSize} dxVariant={dxVariant}>
+        <Button ref={triggerRef} dxColor={dxColor} dxSize={dxSize} dxVariant={dxVariant}>
           <IconArrowDown dxSize={dxSize === "dense" ? 12 : 14} />
         </Button>
-        <div ref={setDropdownRef} className={classes(dropdownStyles, "btn-dropdown")}>
-          <ButtonDropdownProvider closeDropdown={closeMenu}>{children}</ButtonDropdownProvider>
+        <div ref={menuRef} className={classes(dropdownStyles, "btn-dropdown")}>
+          <ButtonDropdownProvider closeDropdown={close}>{children}</ButtonDropdownProvider>
         </div>
       </div>
     );

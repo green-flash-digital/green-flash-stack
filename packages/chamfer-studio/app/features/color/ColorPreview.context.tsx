@@ -7,7 +7,7 @@ import {
   useEffect
 } from "react";
 import React, { useState } from "react";
-import { useToggle } from "react-hook-primitives";
+import { useToggle } from "@stratum-ui/react/toggle";
 
 import type { Updater } from "use-immer";
 import { useImmer } from "use-immer";

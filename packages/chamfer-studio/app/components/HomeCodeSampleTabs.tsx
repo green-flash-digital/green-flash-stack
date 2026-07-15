@@ -1,6 +1,6 @@
 import { useCallback, useRef, useState } from "react";
-import type { UseTrackingNodeCallback } from "react-hook-primitives";
-import { useTrackingNode } from "react-hook-primitives";
+import type { UseTrackingNodeCallback } from "@stratum-ui/react/tracking-node";
+import { useTrackingNode } from "@stratum-ui/react/tracking-node";
 
 import { makeSpace, makeColor, makeFontWeight, makeRem, makePx } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";

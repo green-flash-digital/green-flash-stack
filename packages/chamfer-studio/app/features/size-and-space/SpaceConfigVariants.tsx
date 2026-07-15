@@ -1,6 +1,6 @@
 import type { ChangeEventHandler, FormEventHandler, RefCallback } from "react";
 import { useCallback, useMemo, useRef } from "react";
-import { useToggle } from "react-hook-primitives";
+import { useToggle } from "@stratum-ui/react/toggle";
 
 import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
 import { debounce } from "@green-flash/ts-utils/browser";

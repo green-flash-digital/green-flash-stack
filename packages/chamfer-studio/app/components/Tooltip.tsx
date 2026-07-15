@@ -1,11 +1,9 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
-import { useDropdownTooltip } from "react-hook-primitives";
 
 import { makeSpace, makeColor, makeFontFamily, makeRem } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
-import "react-hook-primitives/styles";
 
 export type TooltipVariant = "light" | "dark";
 export type TooltipPropsNative = JSX.IntrinsicElements["div"];
@@ -95,4 +93,4 @@ export const Tooltip = forwardRef<HTMLDivElement, TooltipProps>(function Tooltip
   );
 });
 
-export const useTooltip = useDropdownTooltip;
+export { useTooltip } from "@stratum-ui/react/tooltip";

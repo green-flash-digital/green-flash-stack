@@ -1,6 +1,5 @@
 import type { JSX, RefCallback } from "react";
 import { forwardRef, useCallback, useId } from "react";
-import { useForwardedRef } from "react-hook-primitives";
 
 import { makeSpace, makeColor, makeRem, makeReset } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";

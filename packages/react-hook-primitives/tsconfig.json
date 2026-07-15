@@ -1,8 +1,0 @@
-{
-  "extends": "@green-flash/tsconfig/library",
-  "compilerOptions": {
-    "paths": {
-      "#/*": ["./src/*"]
-    }
-  }
-}

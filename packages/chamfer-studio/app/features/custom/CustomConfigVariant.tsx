@@ -1,5 +1,5 @@
 import { useCallback } from "react";
-import { useToggle } from "react-hook-primitives";
+import { useToggle } from "@stratum-ui/react/toggle";
 
 import { CustomVariantSchema } from "@chamfer-css/core/schemas";
 import { makeSpace, makeRem } from "@chamfer-css/studio-tokens";

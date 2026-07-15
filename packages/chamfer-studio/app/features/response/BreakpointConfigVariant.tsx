@@ -1,6 +1,7 @@
 import type { FormEventHandler } from "react";
 import { useCallback } from "react";
-import { useDropdownMenu, useToggle } from "react-hook-primitives";
+import { useMenu } from "@stratum-ui/react/menu";
+import { useToggle } from "@stratum-ui/react/toggle";
 
 import { makeSpace, makeColor, makePx, makeRem, makeReset } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
@@ -81,15 +82,7 @@ export function BreakpointConfigVariant({
     onAction({ action: "deleteBreakpoint", id: breakpointId });
   }, [breakpointId, onAction]);
 
-  const { setDropdownRef, setTargetRef, closeMenu } = useDropdownMenu<
-    HTMLDivElement,
-    HTMLDivElement
-  >({
-    dxArrow: {
-      size: 16,
-      color: "inherit"
-    }
-  });
+  const { menuRef, triggerRef, close: closeMenu } = useMenu();
 
   const addVariantAbove = useCallback(() => {
     onAction({
@@ -138,8 +131,8 @@ export function BreakpointConfigVariant({
           dxOnEdit={toggle}
         >
           <div>
-            <Button ref={setTargetRef} dxVariant="icon" DXIcon={IconInsertRow} dxSize="dense" />
-            <Dropdown ref={setDropdownRef} className={dropdownStyles}>
+            <Button ref={triggerRef} dxVariant="icon" DXIcon={IconInsertRow} dxSize="dense" />
+            <Dropdown ref={menuRef} className={dropdownStyles}>
               <ul>
                 <li>
                   <Button

@@ -1,7 +1,7 @@
 import type { JSX } from "react";
-import { forwardRef, useCallback } from "react";
-import type { UseTrackingNodeCallback } from "react-hook-primitives";
-import { useForwardedRef, useTrackingNode } from "react-hook-primitives";
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import type { UseTrackingNodeCallback } from "@stratum-ui/react/tracking-node";
+import { useTrackingNode } from "@stratum-ui/react/tracking-node";
 
 import { makeSpace, makeColor, makePx, makeRem } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";
@@ -31,7 +31,8 @@ const styles = css`
 
 export const InputRadioTabs = forwardRef<HTMLDivElement, InputRadioTabsProps>(
   function InputRadioTabs({ children, className, ...restProps }, forwardedRef) {
-    const ref = useForwardedRef(forwardedRef);
+    const ref = useRef<HTMLDivElement | null>(null);
+    useImperativeHandle(forwardedRef, () => ref.current as HTMLDivElement);
 
     const moveNode = useCallback<UseTrackingNodeCallback<HTMLDivElement, HTMLInputElement>>(
       (anchor, div) => {

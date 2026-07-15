@@ -68,7 +68,6 @@
     "pagefind": "1.5.2",
     "react": "19.2.7",
     "react-dom": "19.2.7",
-    "react-hook-primitives": "workspace:*",
     "react-router": "8.2.0",
     "rehype-autolink-headings": "7.1.0",
     "rehype-slug": "6.0.0",

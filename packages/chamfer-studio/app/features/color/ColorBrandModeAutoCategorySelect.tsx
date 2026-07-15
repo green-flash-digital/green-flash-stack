@@ -159,7 +159,6 @@ export function ColorBrandModeAutoCategorySelect<T extends string>(
       dxOnSelect={handleSelect}
       id={props.id}
       defaultValue={props.selectedType}
-      dxOffset={4}
     >
       <ul className={styles}>
         {Object.entries(colorCategories).map(([categoryName, categoryDef]) => {

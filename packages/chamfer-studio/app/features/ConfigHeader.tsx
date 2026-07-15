@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { useDropdownMenu } from "react-hook-primitives";
+import { useMenu } from "@stratum-ui/react/menu";
 
 import { makeSpace, makeColor, makeFontWeight, makeRem } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";
@@ -9,13 +9,7 @@ import { Button } from "~/components/Button";
 import { ButtonIcon } from "~/components/ButtonIcon";
 import { DropdownMenu } from "~/components/DropdownMenu";
 import { DropdownMenuItem } from "~/components/DropdownMenuItem";
-import { Modal } from "~/components/Modal";
-import { useModal } from "~/components/Modal.useModal";
-import { ModalBody } from "~/components/ModalBody";
-import { ModalFooter } from "~/components/ModalFooter";
-import { ModalHeader } from "~/components/ModalHeader";
 import { createDropdownStyles } from "~/components/shared-styles";
-import { SettingsConfig } from "~/features/settings/SettingsConfig";
 import { IconArrowDown } from "~/icons/IconArrowDown";
 import { IconFloppyDisk } from "~/icons/IconFloppyDisk";
 import { IconInspectCode } from "~/icons/IconInspectCode";
@@ -24,7 +18,8 @@ import { IconSettings05 } from "~/icons/IconSettings05";
 
 import { useConfigurationContext } from "./Config.context";
 import { useSaveConfig } from "./config.useSave";
-import { ConfigSaveDiff } from "./ConfigSaveDiff";
+import { configDiffModalController } from "./ConfigDiffModal.controller";
+import { configSettingsModalController } from "./ConfigSettingsModal.controller";
 
 const styles = css`
   padding: ${makeSpace(12)};
@@ -76,25 +71,11 @@ const menuStyles = createDropdownStyles(css`
   border: ${makeRem(1)} solid ${makeColor("neutral", { opacity: 0.12 })};
 `);
 
-const diffModalBodyStyles = css`
-  display: grid;
-  grid-template-rows: auto 1fr;
-  height: 100%;
-`;
-
 export function ConfigHeader() {
   const { state } = useConfigurationContext();
   const { saveConfig } = useSaveConfig();
-  const diffModal = useModal();
-  const settingsModal = useModal();
 
-  const { closeMenu, setTargetRef, setDropdownRef, alignmentRef } = useDropdownMenu<
-    HTMLDivElement,
-    HTMLDivElement
-  >({
-    dxOffset: 4,
-    dxPosition: "bottom-right"
-  });
+  const { close: closeMenu, triggerRef, menuRef } = useMenu();
 
   const [lastSavedAt, setLastSavedAt] = useState<Date | null>(null);
   const [isDirty, setIsDirty] = useState(false);
@@ -116,12 +97,12 @@ export function ConfigHeader() {
 
   function handleOpenDiff() {
     closeMenu();
-    diffModal.open();
+    configDiffModalController.launch();
   }
 
   function handleOpenSettings() {
     closeMenu();
-    settingsModal.open();
+    configSettingsModalController.launch();
   }
 
   const statusText = isDirty
@@ -148,15 +129,15 @@ export function ConfigHeader() {
             >
               Save
             </Button>
-            <div ref={alignmentRef}>
+            <div>
               <ButtonIcon
-                ref={setTargetRef}
+                ref={triggerRef}
                 dxVariant="icon"
                 dxSize="dense"
                 DXIcon={IconMoreHorizontal}
                 dxHelp="More actions"
               />
-              <div ref={setDropdownRef} className={menuStyles}>
+              <div ref={menuRef} className={menuStyles}>
                 <DropdownMenu>
                   <li>
                     <DropdownMenuItem
@@ -180,38 +161,8 @@ export function ConfigHeader() {
         <div className={classes("status", { dirty: isDirty })}>{statusText}</div>
       </div>
 
-      <Modal dxEngine={diffModal} ref={diffModal.onMount} dxType="default" dxSize="full">
-        <ModalHeader dxSubtitle="Compare your modified config to the original before saving.">
-          View Diff
-        </ModalHeader>
-        <ModalBody className={diffModalBodyStyles}>
-          <ConfigSaveDiff />
-        </ModalBody>
-        <ModalFooter>
-          <Button dxColor="primary" dxSize="big" dxVariant="contained" onClick={diffModal.close}>
-            Close
-          </Button>
-        </ModalFooter>
-      </Modal>
-
-      <Modal dxEngine={settingsModal} ref={settingsModal.onMount} dxType="default" dxSize="md">
-        <ModalHeader dxSubtitle="Configure the name and runtime behavior of this token set.">
-          System Settings
-        </ModalHeader>
-        <ModalBody>
-          <SettingsConfig />
-        </ModalBody>
-        <ModalFooter>
-          <Button
-            dxColor="primary"
-            dxSize="big"
-            dxVariant="contained"
-            onClick={settingsModal.close}
-          >
-            Done
-          </Button>
-        </ModalFooter>
-      </Modal>
+      <configDiffModalController.Component />
+      <configSettingsModalController.Component />
     </>
   );
 }

@@ -1,7 +1,7 @@
 import type { JSX } from "react";
-import { forwardRef, useCallback } from "react";
-import type { UseTrackingNodeCallback } from "react-hook-primitives";
-import { useForwardedRef, useTrackingNode } from "react-hook-primitives";
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import type { UseTrackingNodeCallback } from "@stratum-ui/react/tracking-node";
+import { useTrackingNode } from "@stratum-ui/react/tracking-node";
 
 import {
   makeSpace,
@@ -110,7 +110,8 @@ export const NavTabs = forwardRef<HTMLElement, NavTabsProps>(function NavTabs(
   { children, className, dxInitActiveTab, dxSize = "regular", dxColor = "primary", ...restProps },
   forwardedRef
 ) {
-  const navRef = useForwardedRef(forwardedRef);
+  const navRef = useRef<HTMLElement | null>(null);
+  useImperativeHandle(forwardedRef, () => navRef.current as HTMLElement);
 
   const moveNode = useCallback<UseTrackingNodeCallback<HTMLDivElement, HTMLAnchorElement>>(
     (anchor, div) => {

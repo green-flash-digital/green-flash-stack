@@ -22,20 +22,8 @@ const styles = css`
 
 export function ColorPreviewControlsAccessibility() {
   const { showWCAG, wcagValues, setWcagValues } = useColorPreviewContext();
-  const fontSizeTooltip = useTooltip({
-    dxType: "tooltip",
-    dxPosition: "top-center",
-    dxArrow: {
-      size: 16
-    }
-  });
-  const colorTooltip = useTooltip({
-    dxType: "tooltip",
-    dxPosition: "top-right",
-    dxArrow: {
-      size: 16
-    }
-  });
+  const fontSizeTooltip = useTooltip();
+  const colorTooltip = useTooltip();
 
   if (!showWCAG) return;
 
@@ -43,7 +31,7 @@ export function ColorPreviewControlsAccessibility() {
     <div className={styles}>
       <div>
         <InputRange
-          ref={fontSizeTooltip.setTargetRef}
+          ref={fontSizeTooltip.triggerRef}
           dxDisplayInput
           dxVariant="normal"
           dxDisplayMax
@@ -57,7 +45,7 @@ export function ColorPreviewControlsAccessibility() {
           }
           value={wcagValues.fontSize}
         />
-        <Tooltip ref={fontSizeTooltip.setTooltipRef}>
+        <Tooltip ref={fontSizeTooltip.tooltipRef}>
           Adjust the font-size to view contrast ratios & thresholds based upon a smaller or bigger
           font
         </Tooltip>
@@ -65,7 +53,7 @@ export function ColorPreviewControlsAccessibility() {
 
       <div>
         <InputColor
-          ref={colorTooltip.setTargetRef}
+          ref={colorTooltip.triggerRef}
           dxSize="dense"
           className="color"
           onChange={({ currentTarget: { value } }) =>
@@ -75,7 +63,7 @@ export function ColorPreviewControlsAccessibility() {
           }
           value={wcagValues.bgColor}
         />
-        <Tooltip ref={colorTooltip.setTooltipRef}>
+        <Tooltip ref={colorTooltip.tooltipRef}>
           Adjust the background to view accessibility metrics for colors on different backgrounds.
         </Tooltip>
       </div>

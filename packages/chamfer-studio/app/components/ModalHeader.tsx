@@ -12,10 +12,9 @@ import {
 } from "@chamfer-css/studio-tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
+import { useModalContext } from "@stratum-ui/react/modal";
 
 import { IconCancel } from "~/icons/IconCancel";
-
-import { useModalContext } from "./Modal.provider";
 
 export type ModalHeaderPropsNative = Omit<JSX.IntrinsicElements["header"], "children">;
 export type ModalHeaderPropsCustom = {
@@ -66,7 +65,7 @@ export const ModalHeader = forwardRef<HTMLElement, ModalHeaderProps>(function Mo
   { children, className, dxHideClose = false, dxSubtitle, ...restProps },
   ref
 ) {
-  const { close } = useModalContext();
+  const { closeModal } = useModalContext();
   return (
     <header {...restProps} className={classes(styles, className)} ref={ref}>
       <div>
@@ -74,7 +73,7 @@ export const ModalHeader = forwardRef<HTMLElement, ModalHeaderProps>(function Mo
         {dxSubtitle && <div className="subtitle">{dxSubtitle}</div>}
       </div>
       {!dxHideClose && (
-        <button onClick={close} autoFocus>
+        <button onClick={closeModal} autoFocus>
           <IconCancel dxSize={24} />
         </button>
       )}

@@ -1,11 +1,7 @@
-import type { JSX } from "react";
-import { forwardRef, useCallback } from "react";
-import {
-  classes,
-  type DropdownOptions,
-  useDropdownInput,
-  useForwardedRef
-} from "react-hook-primitives";
+import type { FocusEventHandler, JSX } from "react";
+import { forwardRef, useCallback, useImperativeHandle, useRef } from "react";
+import { classes } from "@stratum-ui/core";
+import { usePopover } from "@stratum-ui/react/popover";
 
 import { makeSpace, makeColor, makeRem } from "@chamfer-css/studio-tokens";
 import { css } from "@linaria/core";
@@ -17,8 +13,9 @@ import type { InputTextPropsCustom } from "./InputText";
 import { InputText } from "./InputText";
 
 export type InputDropdownSelectPropsNative = JSX.IntrinsicElements["input"];
-export type InputDropdownSelectPropsCustom = DropdownOptions &
-  InputTextPropsCustom & { dxOnSelect: (value: string) => void };
+export type InputDropdownSelectPropsCustom = InputTextPropsCustom & {
+  dxOnSelect: (value: string) => void;
+};
 export type InputDropdownSelectProps = InputDropdownSelectPropsNative &
   InputDropdownSelectPropsCustom;
 
@@ -99,37 +96,42 @@ const textContainerStyles = css`
 
 export const InputDropdownSelect = forwardRef<HTMLInputElement, InputDropdownSelectProps>(
   function InputDropdown(
-    { children, className, dxArrow, dxOffset, dxPosition, dxSize, dxOnSelect, ...restProps },
-    ref
+    { children, className, dxSize, dxOnSelect, onFocus, ...restProps },
+    forwardedRef
   ) {
-    const forwardedRef = useForwardedRef(ref);
+    const targetRef = useRef<HTMLInputElement | null>(null);
+    useImperativeHandle(forwardedRef, () => targetRef.current as HTMLInputElement);
 
-    const { isOpen, containerRef, setInputMenuRef, setTargetRef, targetRef, closeInputMenu } =
-      useDropdownInput({
-        dxArrow,
-        dxOffset,
-        dxPosition,
-        forwardedRef
-      });
+    const { engine, state, popoverRef, close } = usePopover();
+
+    const handleFocus = useCallback<FocusEventHandler<HTMLInputElement>>(
+      (e) => {
+        onFocus?.(e);
+        if (state.isOpen) return;
+        engine.openPopover({ currentTarget: targetRef.current } as unknown as Event);
+      },
+      [engine, onFocus, state.isOpen]
+    );
 
     const handleSelect = useCallback<(value: string) => void>(
       (value) => {
         if (!targetRef.current) return;
         targetRef.current.value = value;
         if (dxOnSelect) dxOnSelect(value);
-        closeInputMenu();
+        close();
       },
-      [closeInputMenu, dxOnSelect, targetRef]
+      [close, dxOnSelect]
     );
 
     return (
-      <div ref={containerRef}>
+      <div>
         <div className={textContainerStyles}>
           <InputText
             {...restProps}
             dxSize={dxSize}
-            ref={setTargetRef}
+            ref={targetRef}
             readOnly
+            onFocus={handleFocus}
             className={classes(className)}
           />
           <div className="icon">
@@ -137,11 +139,9 @@ export const InputDropdownSelect = forwardRef<HTMLInputElement, InputDropdownSel
           </div>
         </div>
         <InputDropdownSelectProvider onSelect={handleSelect}>
-          {isOpen && (
-            <div ref={setInputMenuRef} className={styles}>
-              {children}
-            </div>
-          )}
+          <div ref={popoverRef} className={classes(styles, { open: state.isOpen, close: state.isClosing })}>
+            {children}
+          </div>
         </InputDropdownSelectProvider>
       </div>
     );
