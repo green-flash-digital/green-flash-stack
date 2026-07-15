@@ -38,7 +38,9 @@
     "@green-flash/reactor": "workspace:",
     "@green-flash/ts-utils": "workspace:",
     "@stratum-ui/core": "workspace:",
-    "immer": "11.1.11",
+    "immer": "11.1.11"
+  },
+  "peerDependencies": {
     "react": "19.2.7",
     "react-dom": "19.2.7"
   },
@@ -56,6 +58,8 @@
     "@types/react-dom": "19.2.3",
     "@vitest/coverage-v8": "4.1.10",
     "@wyw-in-js/vite": "2.1.4",
+    "react": "19.2.7",
+    "react-dom": "19.2.7",
     "storybook": "10.5.0",
     "typescript": "7.0.2",
     "vite": "8.1.4",

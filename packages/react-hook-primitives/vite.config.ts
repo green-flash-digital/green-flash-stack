@@ -20,10 +20,9 @@ export default defineConfig({
       output: {
         preserveModules: true
       },
-      external: Object.keys(packageJson.dependencies).concat(
-        "react/jsx-runtime",
-        "@green-flash/ts-utils/isomorphic"
-      )
+      external: Object.keys(packageJson.dependencies)
+        .concat(Object.keys(packageJson.peerDependencies ?? {}))
+        .concat("react/jsx-runtime", "@green-flash/ts-utils/isomorphic")
     }
   },
   resolve: {

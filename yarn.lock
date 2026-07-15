@@ -5214,13 +5214,15 @@ __metadata:
     "@types/react-dom": "npm:19.2.3"
     "@vitest/coverage-v8": "npm:4.1.10"
     "@wyw-in-js/vite": "npm:2.1.4"
-    immer: "npm:11.1.11"
     react: "npm:19.2.7"
     react-dom: "npm:19.2.7"
     storybook: "npm:10.5.0"
     typescript: "npm:7.0.2"
     vite: "npm:8.1.4"
     vitest: "npm:4.1.10"
+  peerDependencies:
+    react: 19.2.7
+    react-dom: 19.2.7
   languageName: unknown
   linkType: soft
 
@@ -5388,6 +5390,8 @@ __metadata:
     tabulo: "workspace:"
     typescript: "npm:7.0.2"
     vitest: "npm:4.1.10"
+  peerDependencies:
+    react: 19.2.7
   languageName: unknown
   linkType: soft
 
@@ -11639,6 +11643,9 @@ __metadata:
     vite: "npm:8.1.4"
     vitest: "npm:4.1.10"
     wrangler: "npm:4.110.0"
+  peerDependencies:
+    react: 19.2.7
+    react-dom: 19.2.7
   languageName: unknown
   linkType: soft
 

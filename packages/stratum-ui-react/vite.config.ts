@@ -8,7 +8,7 @@ async function getDependencyKeys() {
   const packageJsonPath = path.resolve(import.meta.dirname, "./package.json");
   const packageJson = await fs.readFile(packageJsonPath, { encoding: "utf8" });
   const json = JSON.parse(packageJson);
-  return Object.keys(json.dependencies);
+  return Object.keys(json.dependencies).concat(Object.keys(json.peerDependencies ?? {}));
 }
 
 async function getSrcEntryPoints() {
