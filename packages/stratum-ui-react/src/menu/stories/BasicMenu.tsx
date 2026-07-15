@@ -1,8 +1,13 @@
 import { useMenu } from "../useMenu.js";
-import { menuChromeStyles, menuItemStyles, menuListStyles, triggerStyles } from "./menu.shared-styles.js";
+import {
+  menuChromeStyles,
+  menuItemStyles,
+  menuListStyles,
+  triggerStyles
+} from "./menu.shared-styles.js";
 
 export function BasicMenu() {
-  const menu = useMenu();
+  const menu = useMenu({ offset: 8, position: "bottom-right" });
 
   return (
     <>

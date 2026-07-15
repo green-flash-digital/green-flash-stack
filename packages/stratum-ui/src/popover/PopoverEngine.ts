@@ -81,10 +81,23 @@ export type PopoverEngineOptions = Partial<Omit<EngineBaseState, "isOpen" | "isC
 export class PopoverEngine<S extends PopoverEngineState | undefined> extends TransactionStore<
   EngineState<S>
 > {
+  static #nextAnchorId = 0;
+
   #popoverTarget: HTMLElement | undefined = undefined;
   #popoverNode: HTMLElement | undefined = undefined;
   #type: PopoverEngineType;
   #closingSettled: Promise<void> | undefined;
+  /**
+   * A unique `anchor-name` for this engine's whole lifetime, explicitly tethered
+   * to the popover via `position-anchor` and to the target via `anchor-name`.
+   * `showPopover({ source })` alone establishes only an *implicit* anchor
+   * reference — every anchor-positioning example in MDN's docs, including the
+   * fallback/flip mechanism specifically, is demonstrated with this explicit
+   * pairing instead, and nothing documents the implicit one as equivalent for
+   * `position-try-fallbacks` purposes. `source` is still passed for its other,
+   * documented benefit (keyboard focus order), so both are set.
+   */
+  #anchorName = `--stratum-popover-anchor-${PopoverEngine.#nextAnchorId++}`;
 
   constructor({ type = "auto", ...options }: PopoverEngineOptions) {
     super({
@@ -245,6 +258,18 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
   }
 
   /**
+   * Which grid side (per `position-area`'s 3x3 model) a position primarily
+   * belongs to — used to know which single inset property to nudge for the
+   * configured offset, and to compute the anchor-relative fallback math.
+   */
+  #primarySide(position: PopoverEnginePosition): "top" | "bottom" | "left" | "right" {
+    if (position.startsWith("top")) return "top";
+    if (position.startsWith("bottom")) return "bottom";
+    if (position.startsWith("left")) return "left";
+    return "right";
+  }
+
+  /**
    * Builds an `anchor()` inset value, adding a real gap via `calc()` when an offset
    * is given. `anchor()`'s own second argument is NOT an offset — per spec it's a
    * fallback used only when the anchor reference fails to resolve, so a previous
@@ -260,109 +285,117 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
   }
 
   /**
-   * Gets CSS styles using anchor() function for positioning.
-   * When showPopover({ source: target }) is called, the anchor relationship is automatically established.
+   * Fallback positioning for browsers without `position-area` support — computes
+   * the equivalent placement manually via the `anchor()` function. Kept
+   * deliberately consistent with what `position-area` itself means (verified
+   * against the spec): a two-keyword corner (`"bottom-left"`) is a *diagonal*
+   * placement with no overlap of the anchor, while a `span-*` variant
+   * (`"bottom-span-left"`) is edge-aligned *with* overlap — the usual "dropdown
+   * hangs below, left-aligned" shape. `top`/`bottom`/`left`/`right` alone center
+   * on the anchor via `anchor(center)` + a transform, not by setting both
+   * opposing insets (which would force the box's size to match the anchor's).
    */
   #getPopoverPositioning(
     position: PopoverEnginePosition,
     offset: number
   ): Partial<CSSStyleDeclaration> {
     const styles: Partial<CSSStyleDeclaration> = {
-      position: "absolute",
-      inset: "auto",
-      margin: "0",
-      positionTryFallbacks: "flip-block, flip-inline"
+      // `fixed`, not `absolute` — the popover is promoted to the top layer, and
+      // `absolute`'s containing block is the nearest *positioned ancestor*, not
+      // the viewport, which breaks `position-try-fallbacks`'s viewport-overflow
+      // detection. `fixed`'s containing block is the viewport, which is what
+      // every anchor-positioning example (and the popover's own UA stylesheet
+      // default) actually uses.
+      position: "fixed",
+      margin: "0"
     };
 
     switch (position) {
+      // Centered, full-span
       case "bottom": {
-        // Position below anchor, add offset downward
         styles.top = this.#anchorWithOffset("bottom", offset);
-        styles.left = "anchor(left)";
-        styles.right = "anchor(right)";
+        styles.left = "anchor(center)";
         styles.transform = "translateX(-50%)";
         break;
       }
+      case "top": {
+        styles.bottom = this.#anchorWithOffset("top", -offset);
+        styles.left = "anchor(center)";
+        styles.transform = "translateX(-50%)";
+        break;
+      }
+      case "left": {
+        styles.right = this.#anchorWithOffset("left", -offset);
+        styles.top = "anchor(center)";
+        styles.transform = "translateY(-50%)";
+        break;
+      }
+      case "right": {
+        styles.left = this.#anchorWithOffset("right", offset);
+        styles.top = "anchor(center)";
+        styles.transform = "translateY(-50%)";
+        break;
+      }
+
+      // Diagonal corners — no overlap with the anchor
       case "bottom-left": {
         styles.top = this.#anchorWithOffset("bottom", offset);
-        styles.right = "anchor(right)";
+        styles.right = "anchor(left)";
         break;
       }
       case "bottom-right": {
         styles.top = this.#anchorWithOffset("bottom", offset);
-        styles.left = "anchor(left)";
-        break;
-      }
-      case "bottom-span-left": {
-        styles.top = this.#anchorWithOffset("bottom", offset);
-        styles.right = "anchor(right)";
-        break;
-      }
-      case "bottom-span-right": {
-        styles.top = this.#anchorWithOffset("bottom", offset);
-        styles.left = "anchor(left)";
-        break;
-      }
-      case "top": {
-        // Position above anchor, subtract offset upward (negative offset)
-        styles.bottom = this.#anchorWithOffset("top", -offset);
-        styles.left = "anchor(left)";
-        styles.right = "anchor(right)";
-        styles.transform = "translateX(-50%)";
+        styles.left = "anchor(right)";
         break;
       }
       case "top-left": {
         styles.bottom = this.#anchorWithOffset("top", -offset);
-        styles.right = "anchor(right)";
+        styles.right = "anchor(left)";
         break;
       }
       case "top-right": {
         styles.bottom = this.#anchorWithOffset("top", -offset);
+        styles.left = "anchor(right)";
+        break;
+      }
+
+      // Edge-aligned, overlapping the anchor's near half
+      case "bottom-span-left": {
+        styles.top = this.#anchorWithOffset("bottom", offset);
         styles.left = "anchor(left)";
+        break;
+      }
+      case "bottom-span-right": {
+        styles.top = this.#anchorWithOffset("bottom", offset);
+        styles.right = "anchor(right)";
         break;
       }
       case "top-span-left": {
         styles.bottom = this.#anchorWithOffset("top", -offset);
-        styles.right = "anchor(right)";
+        styles.left = "anchor(left)";
         break;
       }
       case "top-span-right": {
         styles.bottom = this.#anchorWithOffset("top", -offset);
-        styles.left = "anchor(left)";
-        break;
-      }
-      case "left": {
-        // Position to left of anchor, subtract offset leftward (negative offset)
-        styles.right = this.#anchorWithOffset("left", -offset);
-        styles.top = "anchor(top)";
-        styles.bottom = "anchor(bottom)";
-        styles.transform = "translateY(-50%)";
-        break;
-      }
-      case "left-span-bottom": {
-        styles.right = this.#anchorWithOffset("left", -offset);
-        styles.top = "anchor(top)";
+        styles.right = "anchor(right)";
         break;
       }
       case "left-span-top": {
         styles.right = this.#anchorWithOffset("left", -offset);
-        styles.bottom = "anchor(bottom)";
+        styles.top = "anchor(top)";
         break;
       }
-      case "right": {
-        // Position to right of anchor, add offset rightward
-        styles.left = this.#anchorWithOffset("right", offset);
-        styles.top = "anchor(top)";
+      case "left-span-bottom": {
+        styles.right = this.#anchorWithOffset("left", -offset);
         styles.bottom = "anchor(bottom)";
-        styles.transform = "translateY(-50%)";
-        break;
-      }
-      case "right-span-bottom": {
-        styles.left = this.#anchorWithOffset("right", offset);
-        styles.top = "anchor(top)";
         break;
       }
       case "right-span-top": {
+        styles.left = this.#anchorWithOffset("right", offset);
+        styles.top = "anchor(top)";
+        break;
+      }
+      case "right-span-bottom": {
         styles.left = this.#anchorWithOffset("right", offset);
         styles.bottom = "anchor(bottom)";
         break;
@@ -375,28 +408,98 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
   }
 
   /**
-   * Sets popover styles using CSS anchor positioning with anchor() function.
-   * This approach provides automatic collision detection and anchor fallbacks
-   * without requiring manual position calculations.
+   * Sets popover styles, preferring `position-area` (which handles all
+   * anchor-relative alignment/spanning itself) over the manual `anchor()`
+   * fallback. The two are never combined: per spec, once `position-area` is
+   * set, inset properties are reinterpreted as offsets *from the
+   * position-area box*, not from the anchor, so an `anchor()`-resolved pixel
+   * value lands somewhere close to arbitrary rather than nudging anything.
+   * The one inset property set in the `position-area` branch is a plain pixel
+   * offset — exactly what "offset from the position-area" expects — nudging
+   * the edge nearest the anchor further away by `offset`.
+   *
+   * Always resets all four insets and the transform first: `setPosition()`
+   * can switch which single inset property is meaningful (e.g. `top` for
+   * `"bottom"` vs `right` for `"left"`), and a stale value from a previous
+   * position would otherwise linger.
+   *
+   * Accepts optional overrides so `setPosition()`/`setOffset()` can restyle an
+   * already-mounted popover immediately — `enqueue()` applies its mutation on
+   * the next microtask, so `getState()` wouldn't yet reflect a value changed
+   * in the same synchronous call.
    */
-  setPopoverStyles() {
-    const position = this.getState().position;
+  setPopoverStyles(overrides?: { position?: PopoverEnginePosition; offset?: number }) {
+    const position = overrides?.position ?? this.getState().position;
     if (!position) return;
 
     const popover = this.getPopoverNode();
-    const offset = this.getState().offset;
+    const offset = overrides?.offset ?? this.getState().offset;
 
-    // Get styles using anchor() function
-    const popoverStyles = this.#getPopoverPositioning(position, offset);
+    popover.style.positionAnchor = this.#anchorName;
+    popover.style.top = "auto";
+    popover.style.right = "auto";
+    popover.style.bottom = "auto";
+    popover.style.left = "auto";
+    popover.style.transform = "none";
 
-    // Apply anchor() function styles
-    Object.assign(popover.style, popoverStyles);
-
-    // Use position-area for collision detection and fallbacks
-    // This works with showPopover({ source: target }) which establishes the anchor relationship
     if (CSS.supports("position-area")) {
-      const positionArea = this.#getPositionArea(position);
-      popover.style.positionArea = positionArea;
+      const side = this.#primarySide(position);
+      // `margin`, not an inset property, for the offset gap: exactly how a given
+      // inset property behaves once `position-area` is set turned out to be
+      // inconsistent across the near vs. far edge of the area (offset silently
+      // had no effect for every `top`-side position specifically) — margin
+      // sidesteps that entirely, since it adds real visual space around the box
+      // the same way it always does, independent of how `position-area`
+      // reinterprets `top`/`right`/`bottom`/`left`.
+      const marginProp =
+        side === "top"
+          ? "marginBottom"
+          : side === "bottom"
+            ? "marginTop"
+            : side === "left"
+              ? "marginRight"
+              : "marginLeft";
+      Object.assign(popover.style, {
+        // See the comment in `#getPopoverPositioning` — `fixed`, not `absolute`,
+        // so the viewport (not the nearest positioned ancestor) is the
+        // containing block `position-try-fallbacks` checks for overflow.
+        position: "fixed",
+        margin: "0",
+        positionArea: this.#getPositionArea(position),
+        positionTryFallbacks: "flip-block, flip-inline",
+        [marginProp]: `${offset}px`
+      });
+      return;
+    }
+
+    Object.assign(popover.style, this.#getPopoverPositioning(position, offset));
+  }
+
+  /**
+   * Updates the popover's position, restyling immediately if it's currently
+   * mounted (open or not) — the new value also takes effect for the next
+   * `openPopover()`/`togglePopover()` call regardless.
+   */
+  setPosition(position: PopoverEnginePosition) {
+    this.enqueue({
+      mutate: (draft) => {
+        draft.position = position;
+      }
+    });
+    if (this.#popoverNode) {
+      this.setPopoverStyles({ position });
+    }
+  }
+
+  /** Updates the popover's offset — same immediate-restyle behavior as `setPosition()`. */
+  setOffset(offset: number) {
+    this.enqueue({
+      mutate: (draft) => {
+        draft.offset = offset;
+      }
+    });
+    if (this.#popoverNode) {
+      this.setPopoverStyles({ offset });
     }
   }
 
@@ -431,6 +534,7 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
 
   #prepareTarget(target: HTMLElement) {
     this.#popoverTarget = target;
+    target.style.anchorName = this.#anchorName;
     this.setPopoverStyles();
   }
 
@@ -468,6 +572,7 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
 
   destroy() {
     this.#detachListeners();
+    this.#popoverTarget?.style.removeProperty("anchor-name");
     this.#popoverNode = undefined;
     this.#popoverTarget = undefined;
     super.destroy();

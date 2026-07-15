@@ -9,7 +9,7 @@ import { menuChromeStyles, menuItemStyles, menuListStyles, triggerStyles } from 
  * gives that for free here; there's no registry involved.
  */
 function RowActionsMenu({ row }: { row: { id: number; name: string } }) {
-  const menu = useMenu();
+  const menu = useMenu({ offset: 8 });
 
   return (
     <>
