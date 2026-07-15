@@ -75,6 +75,31 @@ Extract and generalize from `chamfer-studio`'s existing `InputText.tsx`/`InputCh
 **Tier 2 — do last, and only after a prerequisite refactor:**
 Modal, Popover, Tooltip, Toggletip, Menu, Toast. `chamfer-studio` currently has its *own* hand-rolled versions of these (`Modal.useModal.ts`, `Popover.usePopover.ts`, `DialogEngine.ts`) that do **not** yet consume `@stratum-ui/react` — duplicated logic sitting right next to the package meant to replace it. Migrate `chamfer-studio`'s own components onto `@stratum-ui/react` first (dogfoods the abstraction against real usage, deletes the duplication, and leaves one clean, battle-tested source to extract from) before designing the thin bootstrapped wrappers for `chamfer-components`.
 
+## Removing `react-hook-primitives`
+
+Related cleanup, discovered while scoping the Tier 2 migration above: `packages/react-hook-primitives` (unscoped package name `react-hook-primitives`) is chamfer-studio's pre-`stratum-ui` hook library — dropdowns, modal, toast, and assorted DOM utilities. Confirmed via a repo-wide audit that its dropdown/modal/toast surface is now largely duplicated by `@stratum-ui/react`. Goal: delete the package entirely, migrating every live consumer onto `@stratum-ui/react` and porting only what's still used and has no stratum-ui-react equivalent yet.
+
+**Consumers (confirmed by grep across every `package.json` and source file in the repo):**
+- `chamfer-studio` — the only real consumer, 15 files.
+- `documints` — declares the dependency in `package.json` but has zero actual imports anywhere. Stale; just delete the line.
+
+**Migration mapping for chamfer-studio's real usages:**
+- `useDropdownMenu` → stratum-ui-react's `useMenu` (`menu/useMenu.ts`)
+- `useDropdownTooltip` → stratum-ui-react's `useTooltip` (or `useToggletip` for click-revealed call sites)
+- `useDropdownInput` → stratum-ui-react's `useTypeahead`
+- `classes` util → import directly from `@stratum-ui/core` (stratum-ui-react's own components already do this rather than re-exporting it)
+- `react-hook-primitives/styles` CSS import in `Tooltip.tsx` → drop once `Tooltip.tsx` moves onto stratum's `useTooltip`; bring over only whatever minimal styling is actually still needed, directly in the component
+
+**Used, but no stratum-ui-react equivalent exists yet — port these into `stratum-ui-react` as first-class exports before chamfer-studio can drop the dependency:**
+- `useToggle` — boolean toggle hook
+- `useForwardedRef` — merges an internal ref with a forwarded ref
+- `useTrackingNode` (+ `UseTrackingNodeCallback` type) — MutationObserver-based hook for tracking a moving/changing child node (drives the animated tab indicator in `NavTabs.tsx`/`InputRadioTabs.tsx`/`HomeCodeSampleTabs.tsx`)
+
+**Zero-consumer exports today — case-by-case, not a blanket port-all or drop-all:**
+- **Port into stratum-ui-react anyway** (generically useful, cheap, no dependency on the old dropdown/modal architecture): `useCarousel`, `useIntersectionObserver`
+- **Drop — superseded by stratum-ui-react's own architecture**: standalone `Modal`/`ModalDrawer` components (replaced by `ModalController`/`ModalProvider`/`ModalRegistry`), standalone `Toast` component (replaced by `Toaster`), `useDropdownNav` (its underlying dropdown/popover foundation is itself superseded by stratum's `usePopover`), `usePortal`/`useDynamicNode` (stratum-ui-react's own components use `createPortal` directly, no portal-node hook needed)
+- **Drop — unused and trivial enough to reinline in minutes if ever needed again**: `useWindowEventListener`, `useIntervalState`, `hasAttributesInChildren`
+
 ## Sequencing — concrete next steps, in order
 
 1. Add `makeRadius` to `@chamfer-css/core`'s template set — the one concrete token-layer prerequisite for Tier 0.
@@ -83,10 +108,11 @@ Modal, Popover, Tooltip, Toggletip, Menu, Toast. `chamfer-studio` currently has 
 4. Build the `chamfer components` fizmoo command family: `components.ts` parent, `components/add.ts` (interactive not-yet-installed picker via `@inquirer/prompts`, monorepo-package-scaffolding/detection logic, copy-source mechanics — copying the *full* reference component, every variant included), `components/upgrade.ts` (name reserved, implementation deferred — see below). Target Tier 0 first since it's the simplest end-to-end path to prove out.
 5. Fast-follow, right after step 4 proves the pipeline works: add the variant-picker prompt to `components/add.ts` — filters each component's centralized variant-config object down to the selected keys before writing the file, and records the selected variants in the manifest.
 6. Extract Tier 1 (form inputs) from `chamfer-studio`.
-7. Independent track, needs to land before step 8 but not necessarily before steps 1–6: refactor `chamfer-studio`'s `Modal`/`Popover`/`Tooltip` to consume `@stratum-ui/react` instead of their own hand-rolled engines (dogfoods the abstraction, deletes the duplication, leaves one clean source to extract from).
-8. Design and extract Tier 2 as thin `@stratum-ui/react`-backed wrappers — read each of `stratum-ui`'s Modal/Popover/Toast/Menu engines individually first to settle the shadow/z-index question per-component rather than assuming a shared token is needed.
-9. Later, not blocking: the pre-compiled/publishable distribution path for Next.js/non-Linaria consumers.
-10. Later, explicitly deferred by the user: the `chamfer components upgrade` diff/merge implementation for already-bootstrapped, user-customized files.
+7. Independent track, needs to land before step 9 but not necessarily before steps 1–6: refactor `chamfer-studio`'s `Modal`/`Popover`/`Tooltip` to consume `@stratum-ui/react` instead of their own hand-rolled engines (dogfoods the abstraction, deletes the duplication, leaves one clean source to extract from). Fold in `chamfer-studio`'s remaining `react-hook-primitives` usages here too: `useDropdownMenu` → `useMenu`, `useDropdownTooltip` → `useTooltip`/`useToggletip`, `useDropdownInput` → `useTypeahead`, `classes` → import from `@stratum-ui/core`.
+8. Port `useToggle`, `useForwardedRef`, `useTrackingNode` (chamfer-studio still needs these, no stratum-ui-react equivalent) plus the case-by-case keepers `useCarousel`/`useIntersectionObserver` into `stratum-ui-react`. Then delete `packages/react-hook-primitives` entirely and remove the stale dependency line from `packages/documints/package.json`.
+9. Design and extract Tier 2 as thin `@stratum-ui/react`-backed wrappers — read each of `stratum-ui`'s Modal/Popover/Toast/Menu engines individually first to settle the shadow/z-index question per-component rather than assuming a shared token is needed.
+10. Later, not blocking: the pre-compiled/publishable distribution path for Next.js/non-Linaria consumers.
+11. Later, explicitly deferred by the user: the `chamfer components upgrade` diff/merge implementation for already-bootstrapped, user-customized files.
 
 ## Verification
 
@@ -95,3 +121,4 @@ Modal, Popover, Tooltip, Toggletip, Menu, Toast. `chamfer-studio` currently has 
 - Running it again shows Button excluded from the picker (manifest correctly tracks what's installed), and a second component's styling (radius, etc.) is visually consistent with the first.
 - Once the variant-picker fast-follow (step 5) lands: selecting only `primary`/`secondary` for Button produces a file with no trace of `warning` anywhere (type, styles, or otherwise) — not a hidden/disabled option, genuinely absent — and the manifest records exactly which variants were selected.
 - `chamfer-studio` itself, after step 7's stratum-ui migration, has zero remaining hand-rolled Modal/Popover/Tooltip logic duplicating `@stratum-ui/react`.
+- After step 8: `packages/react-hook-primitives` no longer exists in the repo, and `grep -r "react-hook-primitives"` across every `package.json` and source file returns nothing. `chamfer-studio` typechecks and builds clean using only `@stratum-ui/react` (and its own newly-ported hooks) for menu, tooltip, typeahead, toggle, forwarded-ref, and tab-tracking behavior.
