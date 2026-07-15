@@ -10,7 +10,19 @@ export type ToastInputBase = {
 };
 
 export type ToastState<T extends ToastProps = ToastProps> = ToastInputBase &
-  T & { variant: ToastVariant; id: string };
+  T & {
+    variant: ToastVariant;
+    id: string;
+    /**
+     * The auto-dismiss duration in seconds this toast was created with, or
+     * `undefined` if it doesn't auto-dismiss (e.g. `error`/`critical`, or no
+     * `toastDuration` configured). Exposed so an adapter's toast component can
+     * render a countdown/progress affordance — it's static (the original
+     * configured value), not a live countdown; `pause()`/`resume()` affect the
+     * actual dismiss timer, not this value.
+     */
+    duration: number | undefined;
+  };
 
 export type ToastInput<T extends ToastProps = ToastProps> = ToastInputBase & T;
 
@@ -19,6 +31,13 @@ export type ToastOptions = {
    * The length of time in seconds that a toast is visible.
    */
   toastDuration?: number;
+};
+
+type TimerEntry = {
+  /** `null` while paused — no timer is currently running for this toast. */
+  timeoutId: ReturnType<typeof setTimeout> | null;
+  remainingMs: number;
+  startedAt: number;
 };
 
 /**
@@ -33,6 +52,7 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
   ToastState<T>[]
 > {
   #duration: number | undefined;
+  #timers = new Map<string, TimerEntry>();
 
   static regionIds = {
     polite: "__STRATUM_TOAST_REGION_POLITE__",
@@ -68,6 +88,22 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
    * These attributes are used by an adapter to build its own accessible live
    * regions for screen readers — this class doesn't render anything itself.
    *
+   * The adapter rendering these must keep the region elements themselves
+   * persistently mounted (present, even empty) from the start — assistive
+   * tech only reliably announces content added to an *already-present* live
+   * region in a separate step, not a region and its content appearing
+   * together. It also must never hide/detach the region element itself while
+   * adding content to it (e.g. for unrelated z-index/stacking purposes) —
+   * that risks the announcement being missed the same way.
+   *
+   * `aria-atomic` is deliberately `"false"`: with `"true"`, every new toast
+   * would re-announce the full region, including any older toasts still
+   * present and already announced. `role="alert"` intentionally omits an
+   * explicit `aria-live="assertive"` — the role already implies it, and
+   * setting both is a documented cause of double-speaking in VoiceOver on
+   * iOS. `role="status"` keeps its redundant `aria-live="polite"`, which MDN
+   * recommends for that role specifically, for compatibility.
+   *
    * @param options - Optional configuration.
    * @param options.toKebabCase - If true, converts attribute keys to kebab-case (e.g., "ariaLive" becomes "aria-live").
    * @returns An object containing polite and assertive region attributes.
@@ -78,16 +114,15 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
       id: ToastEngine.regionIds.polite,
       role: "status",
       ariaLive: "polite",
-      ariaAtomic: "true",
-      ariaRelevant: "additions text"
+      ariaAtomic: "false",
+      ariaRelevant: "additions"
     };
 
     const assertive = {
       id: ToastEngine.regionIds.assertive,
       role: "alert",
-      ariaLive: "assertive",
-      ariaAtomic: "true",
-      ariaRelevant: "additions text"
+      ariaAtomic: "false",
+      ariaRelevant: "additions"
     };
 
     if (!toKebabCase) return { polite, assertive };
@@ -170,26 +205,70 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
   #add(toast: ToastInput<T>, options?: { autoDismiss?: boolean }): void {
     const autoDismiss = options?.autoDismiss ?? true;
     const id = window.crypto.randomUUID();
+    const duration = autoDismiss ? this.#duration : undefined;
     this.enqueue({
       mutate: (draft) => {
-        draft.push({ id, ...toast } as (typeof draft)[number]);
+        draft.push({ id, duration, ...toast } as (typeof draft)[number]);
       },
       notify: true
     });
 
-    if (!this.#duration || !autoDismiss) return;
-    setTimeout(() => {
+    if (!duration) return;
+    this.#startTimer(id, duration * 1_000);
+  }
+
+  #startTimer(id: string, remainingMs: number) {
+    const startedAt = Date.now();
+    const timeoutId = setTimeout(() => {
+      this.#timers.delete(id);
       this.remove(id);
-    }, this.#duration * 1_000);
+    }, remainingMs);
+    this.#timers.set(id, { timeoutId, remainingMs, startedAt });
+  }
+
+  #clearTimer(id: string) {
+    const timer = this.#timers.get(id);
+    if (timer?.timeoutId) clearTimeout(timer.timeoutId);
+    this.#timers.delete(id);
   }
 
   /**
-   * Removes a toast by index.
+   * Pauses a toast's auto-dismiss timer — e.g. call on `onMouseEnter`, so a
+   * toast doesn't disappear out from under someone still reading it. No-op if
+   * the toast doesn't auto-dismiss, or is already paused.
+   */
+  pause(id: string) {
+    const timer = this.#timers.get(id);
+    if (!timer?.timeoutId) return;
+    clearTimeout(timer.timeoutId);
+    const elapsed = Date.now() - timer.startedAt;
+    this.#timers.set(id, {
+      timeoutId: null,
+      remainingMs: Math.max(0, timer.remainingMs - elapsed),
+      startedAt: timer.startedAt
+    });
+  }
+
+  /**
+   * Resumes a paused toast's auto-dismiss timer for whatever time was
+   * remaining when it was paused — e.g. call on `onMouseLeave`. No-op if the
+   * toast isn't currently paused.
+   */
+  resume(id: string) {
+    const timer = this.#timers.get(id);
+    if (!timer || timer.timeoutId) return;
+    this.#startTimer(id, timer.remainingMs);
+  }
+
+  /**
+   * Removes a toast by id.
    */
   remove(id: string): void {
+    this.#clearTimer(id);
     this.enqueue({
       mutate: (draft) => {
         const index = draft.findIndex((toast) => toast.id === id);
+        if (index === -1) return;
         draft.splice(index, 1);
       }
     });
@@ -199,6 +278,7 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
    * Removes all toasts.
    */
   clear(): void {
+    for (const id of [...this.#timers.keys()]) this.#clearTimer(id);
     this.enqueue({
       mutate: (draft) => {
         draft.length = 0;

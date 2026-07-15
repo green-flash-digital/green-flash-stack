@@ -7,8 +7,24 @@ import type { JSX } from "react/jsx-runtime";
 
 export type ToastContainerProps = Omit<JSX.IntrinsicElements["div"], "ref">;
 
+/**
+ * What a `ToastComponent` actually receives: the stored toast state (message,
+ * variant, id, duration, any custom props) plus three bound callbacks —
+ * `close`/`pause`/`resume` are per-toast closures created at render time, not
+ * part of the engine's stored state itself (functions don't belong in
+ * `TransactionStore`'s Immer-managed state).
+ */
+export type ToastComponentProps<T extends ToastProps = ToastProps> = ToastState<T> & {
+  /** Dismisses this toast immediately — wire to a close (×) button. */
+  close: () => void;
+  /** Pauses this toast's auto-dismiss timer — wire to `onMouseEnter`/`onFocus`. */
+  pause: () => void;
+  /** Resumes this toast's auto-dismiss timer for whatever time was left — wire to `onMouseLeave`/`onBlur`. */
+  resume: () => void;
+};
+
 export type ToasterOptions<T extends ToastProps> = ToastOptions & {
-  ToastComponent: (props: ToastState<T>) => ReactNode;
+  ToastComponent: (props: ToastComponentProps<T>) => ReactNode;
   containerProps?: ToastContainerProps;
 };
 
@@ -39,7 +55,7 @@ export type ToasterOptions<T extends ToastProps> = ToastOptions & {
  *   ```
  */
 export class Toaster<T extends ToastProps> extends ToastEngine<T> {
-  #ToastComponent: (props: ToastState<T>) => ReactNode;
+  #ToastComponent: (props: ToastComponentProps<T>) => ReactNode;
   #containerProps: ToastContainerProps;
 
   constructor(options: ToasterOptions<T>) {
@@ -63,7 +79,7 @@ function ToastRenderer<T extends ToastProps>({
   ...containerProps
 }: {
   engine: Toaster<T>;
-  ToastComponent: (props: ToastState<T>) => ReactNode;
+  ToastComponent: (props: ToastComponentProps<T>) => ReactNode;
 } & ToasterOptions<T>["containerProps"]) {
   const toasts = useSyncExternalStore(engine.subscribe, engine.getState, engine.getState);
   const hostRef = useRef<HTMLDivElement | null>(null);
@@ -121,11 +137,13 @@ function ToastRenderer<T extends ToastProps>({
   }, [engine]);
 
   return (
-    // `popover="manual"` alone promotes this to the top layer — rendering
-    // above any clipping/z-index ancestor regardless of where it sits in the
-    // tree, so there's no need to additionally portal it to document.body.
-    <div {...containerProps} ref={hostRef} popover="manual" tabIndex={-1} role="presentation">
-      {/* Live regions: ONLY place text/announcements here */}
+    <>
+      {/* Live regions: deliberately NOT inside the popover-bumped container
+          below. That container gets hidden+shown to re-order it in the
+          top-layer stack at the exact moment a new toast arrives — hiding a
+          live region's own element while adding the content it's meant to
+          announce risks the announcement being missed. These stay mounted,
+          visible-to-AT, and untouched by that stacking mechanism. */}
       <div {...regionProps.polite} style={srOnly}>
         {toasts
           .filter((t) => engine.getToastType(t) === "polite")
@@ -141,12 +159,24 @@ function ToastRenderer<T extends ToastProps>({
           ))}
       </div>
 
-      {/* Visual stack should NOT be a live region */}
-      <div aria-hidden="true" style={{ display: "contents" }}>
-        {toasts.map((toast) => (
-          <ToastComponent key={toast.id} {...toast} />
-        ))}
+      {/* Visual stack only. `popover="manual"` alone promotes this to the top
+          layer — rendering above any clipping/z-index ancestor regardless of
+          where it sits in the tree, so there's no need to additionally portal
+          it to document.body. Safe to hide/show freely for stacking purposes
+          since everything inside is aria-hidden. */}
+      <div {...containerProps} ref={hostRef} popover="manual" tabIndex={-1} role="presentation">
+        <div aria-hidden="true" style={{ display: "contents" }}>
+          {toasts.map((toast) => (
+            <ToastComponent
+              key={toast.id}
+              {...toast}
+              close={() => engine.remove(toast.id)}
+              pause={() => engine.pause(toast.id)}
+              resume={() => engine.resume(toast.id)}
+            />
+          ))}
+        </div>
       </div>
-    </div>
+    </>
   );
 }
