@@ -1,6 +1,5 @@
 import type { CSSProperties, ReactNode } from "react";
 import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
-import { createPortal } from "react-dom";
 
 import type { ToastOptions, ToastProps, ToastState } from "@stratum-ui/core";
 import { ToastEngine } from "@stratum-ui/core";
@@ -20,25 +19,20 @@ export type ToasterOptions<T extends ToastProps> = ToastOptions & {
  *   - Accepts a React component (`ToastComponent`) for rendering each individual toast notification.
  *   - Handles container-level props and customization for the toast region in the DOM via `containerProps`.
  *   - Provides a ready-to-use `.Render()` method for React components, which handles the creation of the toast container and the orchestration of rendering toast list updates.
- *   - Inherits all toast lifecycle and state management functionality from `ToastEngine` (including accessibility and ARIA live-region features).
+ *   - Inherits all toast lifecycle and state management functionality from `ToastEngine` (including accessibility and ARIA live-region attributes).
  *
- * **Usage:**
- *   - Typically, you create an instance of `Toaster` and invoke its `.Render()` method in your component tree to enable toast rendering.
- *   - To present a toast, use methods like `.success(props)`, `.error(props)`, etc., inherited from `ToastEngine`.
- *
- * **Example:**
+ * **Usage:** instantiate once — typically named `Toast` — and call it from anywhere:
  *   ```tsx
- *   const toaster = new Toaster({
+ *   export const Toast = new Toaster({
  *     ToastComponent: ({ message }) => <div>{message}</div>,
- *     toastDuration: 5,
- *     containerProps: { className: "my-toast-container" }
+ *     toastDuration: 5
  *   });
  *
  *   function App() {
  *     return (
  *       <>
- *         <toaster.Render />
- *         <button onClick={() => toaster.success({ message: "Success!" })}>Notify</button>
+ *         <Toast.Render />
+ *         <button onClick={() => Toast.success({ message: "Success!" })}>Notify</button>
  *       </>
  *     );
  *   }
@@ -73,6 +67,7 @@ function ToastRenderer<T extends ToastProps>({
 } & ToasterOptions<T>["containerProps"]) {
   const toasts = useSyncExternalStore(engine.subscribe, engine.getState, engine.getState);
   const hostRef = useRef<HTMLDivElement | null>(null);
+  const previousLengthRef = useRef(0);
   const regionProps = useMemo(() => engine.getRegionAttributes({ toKebabCase: true }), [engine]);
   const srOnly = useMemo<CSSProperties>(
     () => ({
@@ -91,25 +86,33 @@ function ToastRenderer<T extends ToastProps>({
   );
 
   /**
-   * Ensures the toast container appears above all other UI elements (such as dialogs and modals)
-   * by programmatically hiding and re-showing the popover whenever the number of active toasts changes.
-   *
-   * This effectively bumps the container to the highest position in the popover/top-layer stacking context,
-   * resolving issues where toasts might otherwise be visually obscured by overlays or other system dialogs.
-   * If there are no active toasts, the popover is hidden so it does not interfere with screen readers or keyboard navigation.
-   * This effect is triggered on every change to the length of the toasts array.
+   * Ensures the toast container appears above all other UI elements (such as
+   * dialogs and modals) by re-bumping it to the top of the top-layer stacking
+   * order whenever a *new* toast is added while it's already open (hide+show
+   * is the reliable bump across implementations). Only bumps on growth — not
+   * on every length change — since re-bumping when a toast is *removed* (e.g.
+   * an auto-dismiss timer firing while others are still visible) would
+   * needlessly hide and re-show the whole stack, flickering toasts that
+   * aren't even changing.
    */
   useEffect(() => {
     const host = hostRef.current;
     if (!host) return;
-    // If already open, "bump" it to be last in top-layer order.
-    // (hide+show is the reliable bump across implementations)
-    if (host.matches(":popover-open")) host.hidePopover();
+    const previousLength = previousLengthRef.current;
+    previousLengthRef.current = toasts.length;
+
     if (toasts.length === 0) {
-      return host.hidePopover();
+      if (host.matches(":popover-open")) host.hidePopover();
+      return;
     }
-    host.showPopover();
-  }, [toasts.length]); // or a toast revision counter if you have one
+
+    if (toasts.length > previousLength && host.matches(":popover-open")) {
+      host.hidePopover();
+    }
+    if (!host.matches(":popover-open")) {
+      host.showPopover();
+    }
+  }, [toasts.length]);
 
   useEffect(() => {
     return () => {
@@ -117,7 +120,10 @@ function ToastRenderer<T extends ToastProps>({
     };
   }, [engine]);
 
-  return createPortal(
+  return (
+    // `popover="manual"` alone promotes this to the top layer — rendering
+    // above any clipping/z-index ancestor regardless of where it sits in the
+    // tree, so there's no need to additionally portal it to document.body.
     <div {...containerProps} ref={hostRef} popover="manual" tabIndex={-1} role="presentation">
       {/* Live regions: ONLY place text/announcements here */}
       <div {...regionProps.polite} style={srOnly}>
@@ -141,7 +147,6 @@ function ToastRenderer<T extends ToastProps>({
           <ToastComponent key={toast.id} {...toast} />
         ))}
       </div>
-    </div>,
-    document.body
+    </div>
   );
 }

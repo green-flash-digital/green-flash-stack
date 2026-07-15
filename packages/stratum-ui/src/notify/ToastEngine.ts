@@ -24,17 +24,14 @@ export type ToastOptions = {
 /**
  * Manages toast state and provides utility methods for toast presentation.
  *
- * This class encapsulates toast state management, toast lifecycle, and region attributes
- * for accessibility (like ARIA live regions) but does not directly perform any DOM rendering.
- * Intended to be used by framework-specific adapters (e.g., React Toaster) to render and manage toasts
- * in the UI.
+ * This class encapsulates toast state and lifecycle, plus the ARIA attributes an
+ * adapter needs to build its own accessible live regions — it does not render or
+ * touch the DOM itself. Intended to be used by framework-specific adapters (e.g.
+ * the React `Toaster`) that render the live regions and toast list declaratively.
  */
 export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionStore<
   ToastState<T>[]
 > {
-  #container: HTMLElement | undefined;
-  #regionPolite: HTMLElement | undefined;
-  #regionAssertive: HTMLElement | undefined;
   #duration: number | undefined;
 
   static regionIds = {
@@ -54,19 +51,6 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
   }
 
   /**
-   * Gets the container element where toast regions will be appended.
-   * If no container is set, defaults to document.body.
-   *
-   * @returns The container HTMLElement.
-   */
-  #getContainer() {
-    if (!this.#container) {
-      this.#container = document.body;
-    }
-    return this.#container;
-  }
-
-  /**
    * Converts a camelCase string to kebab-case.
    *
    * @param str - The camelCase string to convert.
@@ -81,7 +65,8 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
 
   /**
    * Gets the ARIA region attributes for polite and assertive toast regions.
-   * These attributes are used to create accessible live regions for screen readers.
+   * These attributes are used by an adapter to build its own accessible live
+   * regions for screen readers — this class doesn't render anything itself.
    *
    * @param options - Optional configuration.
    * @param options.toKebabCase - If true, converts attribute keys to kebab-case (e.g., "ariaLive" becomes "aria-live").
@@ -120,64 +105,6 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
   }
 
   /**
-   * Ensures the polite ARIA live region exists in the DOM.
-   * If it doesn't exist, creates and appends it to the container.
-   * Optionally adds a CSS class to the region.
-   *
-   * @param className - Optional CSS class name to add to the region element.
-   * @returns The polite region HTMLElement.
-   */
-  ensureRegionPolite(className?: string) {
-    if (!this.#regionPolite) {
-      this.#regionPolite = document.getElementById(ToastEngine.regionIds.polite) ?? undefined;
-    }
-    if (!this.#regionPolite) {
-      const el = document.createElement("div");
-      const attributes = this.getRegionAttributes().polite;
-      for (const [key, value] of Object.entries(attributes)) {
-        el.setAttribute(key, value);
-      }
-      this.#regionPolite = el;
-
-      const container = this.#getContainer();
-      container.appendChild(this.#regionPolite);
-    }
-    if (className && !this.#regionPolite.classList.contains(className)) {
-      this.#regionPolite.classList.add(className);
-    }
-    return this.#regionPolite;
-  }
-
-  /**
-   * Ensures the assertive ARIA live region exists in the DOM.
-   * If it doesn't exist, creates and appends it to the container.
-   * Optionally adds a CSS class to the region.
-   *
-   * @param className - Optional CSS class name to add to the region element.
-   * @returns The assertive region HTMLElement.
-   */
-  ensureRegionAssertive(className?: string) {
-    if (!this.#regionAssertive) {
-      this.#regionAssertive = document.getElementById(ToastEngine.regionIds.assertive) ?? undefined;
-    }
-    if (!this.#regionAssertive) {
-      const el = document.createElement("div");
-      const attributes = this.getRegionAttributes().assertive;
-      for (const [key, value] of Object.entries(attributes)) {
-        el.setAttribute(key, value);
-      }
-      this.#regionAssertive = el;
-
-      const container = this.#getContainer();
-      container.appendChild(this.#regionAssertive);
-    }
-    if (className && !this.#regionAssertive.classList.contains(className)) {
-      this.#regionAssertive.classList.add(className);
-    }
-    return this.#regionAssertive;
-  }
-
-  /**
    * Determines the ARIA live region type (polite or assertive) based on the toast variant.
    * Critical and error toasts use assertive regions, while info, warning, and success toasts use polite regions.
    */
@@ -202,7 +129,6 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
    * Info toasts use the polite ARIA live region and will auto-dismiss if a duration is configured.
    */
   info(state: ToastInput<T>) {
-    this.ensureRegionPolite();
     this.#add({ variant: "info", ...state });
   }
 
@@ -211,7 +137,6 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
    * Success toasts use the polite ARIA live region and will auto-dismiss if a duration is configured.
    */
   success(state: ToastInput<T>) {
-    this.ensureRegionPolite();
     this.#add({ variant: "success", ...state });
   }
 
@@ -220,7 +145,6 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
    * Warning toasts use the polite ARIA live region and will auto-dismiss if a duration is configured.
    */
   warning(state: ToastInput<T>) {
-    this.ensureRegionPolite();
     this.#add({ variant: "warning", ...state });
   }
 
@@ -229,7 +153,6 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
    * Error toasts use the assertive ARIA live region and do not auto-dismiss.
    */
   error(state: ToastInput<T>) {
-    this.ensureRegionAssertive();
     this.#add({ variant: "error", ...state }, { autoDismiss: false });
   }
 
@@ -238,7 +161,6 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
    * Critical toasts use the assertive ARIA live region and do not auto-dismiss.
    */
   critical(state: ToastInput<T>) {
-    this.ensureRegionAssertive();
     this.#add({ variant: "critical", ...state }, { autoDismiss: false });
   }
 
@@ -282,17 +204,5 @@ export class ToastEngine<T extends ToastProps = ToastProps> extends TransactionS
         draft.length = 0;
       }
     });
-  }
-
-  /**
-   * Destroys the toast instance and removes the region from the DOM.
-   */
-  destroy(): void {
-    if (this.#regionPolite?.parentNode) {
-      this.#regionPolite.parentNode.removeChild(this.#regionPolite);
-    }
-    if (this.#regionAssertive?.parentNode) {
-      this.#regionAssertive.parentNode.removeChild(this.#regionAssertive);
-    }
   }
 }
