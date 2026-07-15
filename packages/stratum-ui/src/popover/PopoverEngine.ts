@@ -41,6 +41,10 @@ type EngineBaseState = {
    */
   isClosing: boolean;
   offset: number;
+  /**
+   * The position of the menu
+   * @default
+   */
   position: PopoverEnginePosition;
 };
 type EngineState<S extends PopoverEngineState | undefined> = S extends undefined
@@ -164,7 +168,9 @@ export class PopoverEngine<S extends PopoverEngineState | undefined> extends Tra
   async #waitForExitTransition() {
     const node = this.#popoverNode;
     if (!node) return;
-    const animations = node.getAnimations().map((animation) => animation.finished.catch(() => undefined));
+    const animations = node
+      .getAnimations()
+      .map((animation) => animation.finished.catch(() => undefined));
     await Promise.allSettled(animations);
     this.enqueue({
       mutate: (draft) => {
