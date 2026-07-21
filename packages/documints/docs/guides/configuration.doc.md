@@ -149,20 +149,89 @@ above) regardless of whether `logo` is set. Omit `logo` to show `title` as plain
 footer (a copyright line plus the same social icons) - there's no separate footer
 configuration to keep in sync with the header.
 
-Links are grouped into sections (an array of arrays) and rendered left to right. Five link
-types are supported:
+Links are grouped into sections (an array of arrays) and rendered left to right - each inner
+array becomes one visually-separated group, like the doc-links/social split in the example
+above. Five link types are supported.
 
-- **`section`** - `{ type: "section", title: "Guides" }`. Resolves against your doc
-  hierarchy into a dropdown listing that section's pages - see
-  [Routing](/guides/customization/routing) for how the match works. The recommended way to surface a
-  section in the header, since it can never drift out of sync with your actual content.
-- **`dropdown`** - a labeled button opening a menu of manually-specified items
-  (`text`/`href`, plus optional `subText`/`iconSrc`/`iconAlt`). Use this for links that
-  *aren't* part of your doc hierarchy - external resources, product links, etc.
-- **`social`** - an icon-only link for `github` or `discord`. `label` is required for
-  accessibility even though only the icon renders.
-- **`internal`** - a plain text link to another route within the site.
-- **`text`** - a plain text link to anywhere, internal or external.
+### `section`
+
+Resolves against your doc hierarchy into a dropdown listing that section's pages, matched by
+slugifying `title` against your top-level route segments:
+
+```ts
+{ type: "section", title: "Guides" }
+```
+
+The recommended way to surface a section in the header - the dropdown is generated from
+whatever pages actually exist, so it can never drift out of sync with your content. Nested
+groups (see [Routing](/guides/customization/routing) and `order`, below) are flattened
+automatically: a group like "Introduction" that exists only to organize the sidebar has no
+page of its own, so its real pages appear directly in the dropdown rather than the group
+itself showing up as a dead link.
+
+### `dropdown`
+
+A labeled button opening a menu of manually-specified items - use this for links that
+*aren't* part of your doc hierarchy: external resources, product links, a changelog, etc.
+
+```ts
+{
+  type: "dropdown",
+  text: "Resources",
+  items: [
+    { text: "Blog", href: "https://example.com/blog" },
+    {
+      text: "Changelog",
+      href: "https://example.com/changelog",
+      subText: "See what's new",
+      iconSrc: "/icons/changelog.svg",
+      iconAlt: "",
+    },
+  ],
+}
+```
+
+Every item needs `text`/`href`; `subText`, `iconSrc`, and `iconAlt` are optional extras for a
+richer-looking menu item.
+
+### `social`
+
+An icon-only link for `github` or `discord`:
+
+```ts
+{
+  type: "social",
+  provider: "github",
+  href: "https://github.com/your-org/your-repo",
+  label: "GitHub",
+}
+```
+
+`label` is required even though only the icon renders - it's the accessible name a screen
+reader announces. `social` links also surface a second time, automatically, in the site's
+footer (see above) - no separate footer configuration to keep in sync.
+
+### `internal`
+
+A plain-text link to another route within the site, navigated client-side (no full page
+reload) and aware of when it's the active route:
+
+```ts
+{ type: "internal", href: "/guides/introduction/getting-started", text: "Get Started" }
+```
+
+### `text`
+
+A plain-text link to anywhere, internal or external - a bare `<a>` tag, without `internal`'s
+client-side navigation or active-route awareness:
+
+```ts
+{ type: "text", href: "https://example.com", text: "External Site" }
+```
+
+Prefer `internal` for routes within your own site - it gets client-side navigation for free.
+Reach for `text` only when `internal` doesn't fit, e.g. a link to something that isn't a real
+route in this site at all.
 
 ## `order`
 

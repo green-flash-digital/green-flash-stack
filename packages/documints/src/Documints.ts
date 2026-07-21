@@ -494,7 +494,11 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         return {
           type: "dropdown",
           text: link.title,
-          items: Object.values(sectionNode.pages).map((page) => ({
+          // Synthetic grouping segments (e.g. "Introduction") have no route
+          // of their own - collectRealDescendants skips straight past them
+          // to the real pages underneath, so a nested section never produces
+          // a dropdown item with an empty href.
+          items: Documints.collectRealDescendants(sectionNode.pages).map((page) => ({
             href: page.routePath,
             text: page.fileNameFormatted
           }))
@@ -1051,28 +1055,38 @@ Sitemap: ${siteUrl}/sitemap.xml
   }
 
   /**
+   * Collects the nearest real-document descendants of a route graph node,
+   * skipping straight past any synthetic grouping segments (a `title` path
+   * segment with no doc of its own, e.g. "Introduction") rather than
+   * returning them - a synthetic node has no route/page of its own, so
+   * nothing should ever have to treat one as a real link target. Shared by
+   * `resolveDocGraphRelations` (docs-manifest.json's children) and
+   * `resolveDocumintsHeader` (a `section` header link's dropdown items).
+   */
+  private static collectRealDescendants(
+    node: DocumintRouteManifestGraphObject
+  ): DocumintRouteManifestEntry[] {
+    const descendants: DocumintRouteManifestEntry[] = [];
+    for (const child of Object.values(node)) {
+      if (child.synthetic) {
+        descendants.push(...Documints.collectRealDescendants(child.pages));
+      } else {
+        descendants.push(child);
+      }
+    }
+    return descendants;
+  }
+
+  /**
    * Walks the route graph once, resolving each real document's nearest
    * real-document `parent` and `children` - skipping past synthetic grouping
-   * segments (a `title` path segment with no doc of its own, e.g.
-   * "Introduction") in both directions, so a consumer of `docs-manifest.json`
-   * never gets a path back that has no real page behind it.
+   * segments in both directions, so a consumer of `docs-manifest.json` never
+   * gets a path back that has no real page behind it.
    */
   private static resolveDocGraphRelations(
     routeGraph: DocumintRouteManifestGraphObject
   ): Map<string, { parent?: string; children: string[] }> {
     const relations = new Map<string, { parent?: string; children: string[] }>();
-
-    function collectRealChildren(node: DocumintRouteManifestGraphObject): string[] {
-      const children: string[] = [];
-      for (const child of Object.values(node)) {
-        if (child.synthetic) {
-          children.push(...collectRealChildren(child.pages));
-        } else {
-          children.push(child.routePath);
-        }
-      }
-      return children;
-    }
 
     function walk(node: DocumintRouteManifestGraphObject, nearestRealParent: string | undefined) {
       for (const entry of Object.values(node)) {
@@ -1082,7 +1096,7 @@ Sitemap: ${siteUrl}/sitemap.xml
         }
         relations.set(entry.routePath, {
           parent: nearestRealParent,
-          children: collectRealChildren(entry.pages)
+          children: Documints.collectRealDescendants(entry.pages).map((page) => page.routePath)
         });
         walk(entry.pages, entry.routePath);
       }

@@ -14,8 +14,8 @@ export default defineDocumintsConfig({
     },
     links: [
       [
-        { type: "section", title: "Guides" },
-        { type: "section", title: "Reference" }
+        { type: "internal", href: "/guides", text: "Guides" },
+        { type: "internal", href: "/reference", text: "Reference" }
       ],
       [
         {

@@ -104,7 +104,7 @@ const dropdownStyles = css`
 
 export function LayoutHeaderLinksTypeDropdown(props: DocumintConfigHeaderLinkTypeDropdown) {
   const menu = useMenu({
-    position: "bottom-right",
+    position: "bottom-span-left",
     offset: 16,
     load: () => import("./LayoutHeaderLinksTypeDropdownContent.js")
   });
