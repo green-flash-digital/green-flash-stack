@@ -147,58 +147,58 @@ const features: {
   Icon: (props: SVGProps<SVGSVGElement>) => ReactNode;
 }[] = [
   {
-    title: "AI-Native Content",
+    title: "Human Pages. AI-Ready Source.",
     description:
-      "Plain frontmatter and Markdown - no build config to explain. Any AI tool can read, write, and restructure your docs directly.",
+      "Every document becomes a polished web page and clean, directly readable Markdown for agents, crawlers, and developer tools.",
     color: "primary",
     Icon: IconSparkle
   },
   {
-    title: "Write Anywhere",
+    title: "Write Docs Anywhere",
     description:
-      "Tag any file .doc.md, .doc.mdx, or .doc.tsx and it's a page. Location on disk never affects your site's structure.",
+      "Add .doc.md, .doc.mdx, or .doc.tsx to any package or folder. Documints discovers it without forcing your content into a separate docs directory.",
     color: "secondary",
     Icon: IconFilePlus
   },
   {
-    title: "Real React Pages",
+    title: "Full React Pages",
     description:
-      "Author a page as genuine React, top to bottom, with .doc.tsx - full interactivity, not just embedded components.",
+      "Build entire documentation pages with .doc.tsx using real React, state, components, and interactions—not a restricted docs-specific abstraction.",
     color: "warning",
     Icon: IconAtom
   },
   {
-    title: "Lightning-Fast Static Output",
+    title: "Static by Default",
     description:
-      "Every route prerenders to real HTML. No server, no runtime dependency - just fast static files.",
+      "Every route prerenders to complete HTML. Deploy fast, durable files anywhere with no production server or framework runtime.",
     color: "danger",
     Icon: IconBolt
   },
   {
-    title: "Frontmatter-Driven Routing",
+    title: "Content-Driven Routing",
     description:
-      "Hierarchy comes from a slash-delimited title, not folders or filenames. Move files freely - routes never change.",
+      "Define hierarchy with document metadata instead of folder structure. Reorganize source files without changing public URLs.",
     color: "primary",
     Icon: IconTree
   },
   {
-    title: "Real Vite Plugins",
+    title: "The Vite Ecosystem",
     description:
-      "Bring any Vite plugin from npm, or use documints' own built-in plugins - no custom plugin API to learn.",
+      "Use standard Vite plugins from npm alongside Documints plugins. No proprietary plugin system or parallel toolchain to learn.",
     color: "secondary",
     Icon: IconPlug
   },
   {
-    title: "Header Stays in Sync",
+    title: "Colocated by Design",
     description:
-      "Reference a doc section in the header, and it resolves against your real content - no separate nav list to maintain.",
+      "Keep documentation beside the code it describes. Documints uses configurable globs to discover documents across your entire repository.",
     color: "warning",
     Icon: IconLink
   },
   {
-    title: "MDX Support",
+    title: "Markdown When You Want It",
     description:
-      "Embed live React components directly inside Markdown when prose alone isn't enough.",
+      "Write focused prose in Markdown, add live React with MDX, or use TSX for fully interactive pages—all inside one documentation corpus.",
     color: "danger",
     Icon: IconLayers
   }
@@ -211,14 +211,11 @@ const pageStyles = css`
 `;
 
 const heroStyles = css`
-  display: grid;
-  grid-template-columns: 1fr 1fr;
+  display: flex;
+  flex-direction: column;
   align-items: center;
-  gap: ${makeRem(48)};
-  margin-bottom: ${makeRem(80)};
-  max-width: ${makeRem(1152)};
-  margin-left: auto;
-  margin-right: auto;
+  text-align: center;
+  margin-bottom: ${makeRem(64)};
 
   img.wordmark {
     height: ${makeRem(100)};
@@ -228,9 +225,10 @@ const heroStyles = css`
   h1 {
     font-family: ${makeFontFamily("source-sans-3")};
     font-weight: ${makeFontWeight("source-sans-3-bold")};
-    font-size: ${makeRem(42)};
+    font-size: ${makeRem(48)};
     line-height: 1.15;
     margin: 0 0 ${makeRem(16)};
+    max-width: ${makeRem(800)};
   }
 
   p {
@@ -239,6 +237,12 @@ const heroStyles = css`
     line-height: 1.6;
     color: ${makeColor("neutral-600")};
     margin: 0 0 ${makeRem(32)};
+    max-width: ${makeRem(800)};
+
+    & + p {
+      color: ${makeColor("neutral-900")};
+      font-size: ${makeRem(24)};
+    }
 
     code {
       color: ${makeColor("primary")};
@@ -249,8 +253,14 @@ const heroStyles = css`
   }
 `;
 
+const heroVideoWrapperStyles = css`
+  max-width: ${makeRem(1152)};
+  margin: 0 auto ${makeRem(80)};
+`;
+
 const ctaGroupStyles = css`
   display: flex;
+  justify-content: center;
   gap: ${makeRem(12)};
 `;
 
@@ -288,48 +298,33 @@ const ctaSecondaryStyles = css`
   }
 `;
 
-const snippetCardStyles = css`
+const heroVideoStyles = css`
+  display: block;
+  width: 100%;
+  height: auto;
   border-radius: ${makeRem(12)};
-  border: 1px solid ${makeColor("neutral-200")};
-  background: ${makeColor("neutral-900")};
   box-shadow: 0 20px 40px ${makeColor("neutral", { opacity: 0.15 })};
-  overflow: hidden;
+`;
 
-  .titlebar {
-    display: flex;
-    gap: ${makeRem(6)};
-    padding: ${makeRem(12)} ${makeRem(16)};
-    border-bottom: 1px solid ${makeColor("neutral-800")};
+const sectionIntroStyles = css`
+  max-width: ${makeRem(720)};
+  margin: 0 auto ${makeRem(48)};
+  text-align: center;
 
-    span {
-      width: ${makeRem(10)};
-      height: ${makeRem(10)};
-      border-radius: 50%;
-      background: ${makeColor("neutral-700")};
-    }
-  }
-
-  pre {
-    margin: 0;
-    padding: ${makeRem(24)};
-    font-family: ui-monospace, "SF Mono", Menlo, monospace;
-    font-size: ${makeRem(14)};
-    line-height: 1.7;
-    color: ${makeColor("neutral-300")};
-    overflow-x: auto;
+  h2 {
+    font-family: ${makeFontFamily("source-sans-3")};
+    font-weight: ${makeFontWeight("source-sans-3-bold")};
+    font-size: ${makeRem(32)};
+    line-height: 1.2;
+    margin: 0 0 ${makeRem(12)};
   }
 
-  .frontmatter {
-    color: ${makeColor("secondary-500")};
-  }
-  .key {
-    color: ${makeColor("primary-400")};
-  }
-  .value {
-    color: ${makeColor("neutral-100")};
-  }
-  .comment {
+  p {
+    font-family: ${makeFontFamily("source-sans-3")};
+    font-size: ${makeRem(18)};
+    line-height: 1.6;
     color: ${makeColor("neutral-600")};
+    margin: 0;
   }
 `;
 
@@ -441,56 +436,50 @@ export default function Welcome() {
   return (
     <div className={pageStyles}>
       <div className={heroStyles}>
-        <div>
-          <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
-          <h1>Write docs like a human. AI just gets it.</h1>
-          <p>
-            Write markdown & React wherever you want - <b>documints</b> turns it into a beautiful,
-            fast static site every browser, crawler, and AI agent can read directly.
-          </p>
-          <div className={ctaGroupStyles}>
-            <Link
-              to="/guides/introduction/why-documints"
-              className={cx(ctaBaseStyles, ctaPrimaryStyles)}
-            >
-              Why Documints?
-            </Link>
-            <Link
-              to="/guides/introduction/getting-started"
-              className={cx(ctaBaseStyles, ctaSecondaryStyles)}
-            >
-              Get Started
-            </Link>
-            <a
-              href="https://github.com/green-flash-digital/green-flash-stack"
-              target="_blank"
-              rel="noreferrer"
-              className={cx(ctaBaseStyles, ctaSecondaryStyles)}
-            >
-              View on GitHub
-            </a>
-          </div>
+        <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
+        <h1>Build a documentation corpus, not just a website.</h1>
+        <p>
+          Documints turns one canonical source into polished pages for humans and structured
+          knowledge for machines. Write naturally in Markdown and React. Documints generates the
+          website, clean Markdown, search, and agent-ready context automatically.
+        </p>
+        <p>
+          <strong>Human-readable by design. Machine-readable by default.</strong>
+        </p>
+        <div className={ctaGroupStyles}>
+          <Link
+            to="/guides/introduction/why-documints"
+            className={cx(ctaBaseStyles, ctaPrimaryStyles)}
+          >
+            Why Documints?
+          </Link>
+          <Link
+            to="/guides/introduction/getting-started"
+            className={cx(ctaBaseStyles, ctaSecondaryStyles)}
+          >
+            Get Started
+          </Link>
+          <a
+            href="https://github.com/green-flash-digital/green-flash-stack"
+            target="_blank"
+            rel="noreferrer"
+            className={cx(ctaBaseStyles, ctaSecondaryStyles)}
+          >
+            View on GitHub
+          </a>
         </div>
+      </div>
 
-        <div className={snippetCardStyles}>
-          <div className="titlebar">
-            <span />
-            <span />
-            <span />
-          </div>
-          <pre>
-            <span className="frontmatter">---</span>
-            {"\n"}
-            <span className="key">title</span>
-            <span className="value">: Guides/Deployment</span>
-            {"\n"}
-            <span className="frontmatter">---</span>
-            {"\n\n"}
-            <span className="comment"># Deployment</span>
-            {"\n\n"}
-            <span className="value">...</span>
-          </pre>
-        </div>
+      <div className={heroVideoWrapperStyles}>
+        <video className={heroVideoStyles} src="/animation.mp4" autoPlay loop muted playsInline />
+      </div>
+
+      <div className={sectionIntroStyles}>
+        <h2>Documentation without the usual constraints</h2>
+        <p>
+          Keep docs close to the code they explain, choose the right format for every page, and
+          publish one fast, flexible corpus for humans and AI.
+        </p>
       </div>
 
       <div className={gridStyles}>
