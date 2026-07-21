@@ -121,6 +121,14 @@ type DocumintsFrontmatter = {
   home?: boolean;
   /** Optional one-line summary - feeds `llms.txt`, `docs-manifest.json`, and this route's own `.json`. */
   description?: string;
+  /**
+   * Route paths of other, non-hierarchically-related docs worth reading
+   * alongside this one - anything the route graph can't already derive
+   * (parent/child nesting is automatic; this is for real cross-links).
+   */
+  related?: string[];
+  /** Route paths a reader should understand before this one. */
+  prerequisites?: string[];
 };
 
 const TSX_FRONTMATTER_COMMENT = /^\s*\/\*\*\s*\r?\n---\r?\n([\s\S]*?)\r?\n---\s*\r?\n\*\/\s*/;
@@ -448,7 +456,9 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         title: data.title,
         slug: data.slug,
         home: data.home ?? false,
-        description: data.description
+        description: data.description,
+        related: data.related,
+        prerequisites: data.prerequisites
       };
     } catch (error) {
       throw LOG.fatal(
@@ -664,7 +674,9 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         markdownHref: Documints.getMarkdownHref(routePath, sourceType),
         jsonHref: Documints.getJsonHref(routePath),
         sourceType,
-        description: frontmatter.description
+        description: frontmatter.description,
+        related: frontmatter.related,
+        prerequisites: frontmatter.prerequisites
       };
     }
 
@@ -960,10 +972,10 @@ ${urls}
     title?: string
   ): string {
     const links = Object.values(routeManifest)
-      .map(
-        (entry) =>
-          `- [${entry.fileNameFormatted}](${siteUrl}${entry.markdownHref ?? entry.routePath})`
-      )
+      .map((entry) => {
+        const link = `[${entry.fileNameFormatted}](${siteUrl}${entry.markdownHref ?? entry.routePath})`;
+        return entry.description ? `- ${link}: ${entry.description}` : `- ${link}`;
+      })
       .join("\n");
     return `# ${title ?? "Documentation"}\n\n${links}\n`;
   }
@@ -1026,6 +1038,8 @@ Sitemap: ${siteUrl}/sitemap.xml
       sourceType: entry.sourceType,
       markdown: entry.markdownHref,
       description: entry.description,
+      related: entry.related,
+      prerequisites: entry.prerequisites,
       headings: Documints.flattenToc(tableOfContents)
     };
     return JSON.stringify(document, null, 2);
@@ -1097,7 +1111,9 @@ Sitemap: ${siteUrl}/sitemap.xml
         description: entry.description,
         section: entry.root ? undefined : entry.routePath.split("/").filter(Boolean)[0],
         parent: relation?.parent,
-        children: relation?.children.length ? relation.children : undefined
+        children: relation?.children.length ? relation.children : undefined,
+        related: entry.related,
+        prerequisites: entry.prerequisites
       };
     });
 
@@ -1481,6 +1497,15 @@ Sitemap: ${siteUrl}/sitemap.xml
         for (const href of Documints.extractInternalRouteLinks(html)) {
           if (!routeManifest[Documints.normalizeRouteHref(href)]) {
             brokenLinks.push(`${entry.aliasPath} -> ${href}`);
+          }
+        }
+
+        // "related"/"prerequisites" are structured references, not rendered
+        // links, so they'd never show up in extractInternalRouteLinks above -
+        // validated here instead, same rule (must resolve to a real route).
+        for (const relatedPath of [...(entry.related ?? []), ...(entry.prerequisites ?? [])]) {
+          if (!routeManifest[Documints.normalizeRouteHref(relatedPath)]) {
+            brokenLinks.push(`${entry.aliasPath} -> ${relatedPath} (related/prerequisites)`);
           }
         }
 

@@ -1,5 +1,8 @@
 ---
 title: Guides/Introduction/Getting Started
+description: Install, bootstrap, and run your first documints site.
+related:
+  - /guides/introduction/deploy
 ---
 
 # Getting Started

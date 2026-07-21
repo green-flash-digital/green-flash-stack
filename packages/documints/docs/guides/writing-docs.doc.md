@@ -79,6 +79,33 @@ page's own `.json` sibling (see
 so an agent or external tool can tell what a page is about without fetching it first. One
 field, no separate "AI description" to keep in sync.
 
+## `related` / `prerequisites` - optional
+
+Route paths of other docs worth knowing about, for anything the route graph can't already
+derive on its own:
+
+```md
+---
+title: Guides/Introduction/Deploy
+prerequisites:
+  - /guides/introduction/getting-started
+---
+```
+
+```md
+---
+title: Guides/Introduction/Getting Started
+related:
+  - /guides/introduction/deploy
+---
+```
+
+Both are validated at build time the same way internal links in your content are - a path
+that doesn't resolve to a real route fails the build with the same "broken internal link"
+error, not a silent typo. There's no `parent`/`previous`/`next` frontmatter to set alongside
+these - that hierarchy already comes for free from your route graph and `order` (see below),
+so only add `related`/`prerequisites` for connections that genuinely aren't structural.
+
 ## MDX
 
 Anything that needs interactivity beyond Markdown can use `.doc.mdx` instead - it supports

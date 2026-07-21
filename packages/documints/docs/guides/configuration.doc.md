@@ -80,23 +80,25 @@ frontmatter and route manifest - not a second, separate pipeline:
   `.md` sibling - lets a crawler or agent that already fetched the HTML discover the raw
   source without guessing the URL convention.
 - **A structured `<route>.json` sibling for every route**, `.doc.tsx` included - `title`,
-  `path`, `sourceType`, `description` (see [Writing Docs](/guides/writing/writing-docs)), the
-  `.md` URL when one exists, and `headings` (the same table of contents the page itself
-  renders, with the same `id`s as the rendered anchors). A `.doc.tsx` page still gets one,
-  just with an empty `headings` array and no `markdown` field - it's honest about not having
-  a raw-Markdown equivalent rather than skipping the file entirely.
+  `path`, `sourceType`, `description`, `related`/`prerequisites` (see
+  [Writing Docs](/guides/writing/writing-docs)), the `.md` URL when one exists, and `headings`
+  (the same table of contents the page itself renders, with the same `id`s as the rendered
+  anchors). A `.doc.tsx` page still gets one, just with an empty `headings` array and no
+  `markdown` field - it's honest about not having a raw-Markdown equivalent rather than
+  skipping the file entirely.
 - **`docs-manifest.json`**, at the build output's root - every route's `title`, `path`,
-  `sourceType`, `description`, and its place in the hierarchy (`section`/`parent`/`children`,
-  skipping past synthetic nav groupings like "Introduction" straight to the nearest real
-  page). Lets an agent understand the whole site's structure in one request, without
-  crawling nav HTML or parsing `llms.txt`.
+  `sourceType`, `description`, `related`/`prerequisites`, and its place in the hierarchy
+  (`section`/`parent`/`children`, skipping past synthetic nav groupings like "Introduction"
+  straight to the nearest real page). Lets an agent understand the whole site's structure in
+  one request, without crawling nav HTML or parsing `llms.txt`.
 - **`/.well-known/documints.json`** - a small, self-describing discovery document (points at
   `docs-manifest.json`, `llms.txt`/`llms-full.txt` when configured, and the URL conventions
   above) so an agent landing on an unfamiliar documints site knows where to look, without
   guessing.
 - **`llms.txt`**, at the build output's root - the [llms.txt](https://llmstxt.org)
   convention: a single Markdown index of every page, linking to each one's raw-Markdown
-  route. Requires `siteUrl` (see above), since the links are absolute.
+  route, with its `description` appended when one is set. Requires `siteUrl` (see above),
+  since the links are absolute.
 - **`llms-full.txt`**, alongside it - every page's raw Markdown source concatenated into one
   file, so an agent can ingest the entire site in a single request instead of crawling page
   by page. Doesn't need `siteUrl`.

@@ -48,6 +48,13 @@ export type DocumintRouteManifestEntry = {
    * synthetic node, or a doc that didn't set one.
    */
   description?: string;
+  /**
+   * Route paths of other docs worth reading alongside this one, from
+   * frontmatter - anything the route graph can't already derive on its own.
+   */
+  related?: string[];
+  /** Route paths a reader should understand before this one, from frontmatter. */
+  prerequisites?: string[];
 };
 
 /** A flattened table-of-contents entry - see `DocumintsMeta.setTableOfContents`. */
@@ -80,6 +87,10 @@ export type DocumintsManifestDocument = {
    * grandchildren instead, never a path with no real page behind it.
    */
   children?: string[];
+  /** Route paths of other docs worth reading alongside this one - see `DocumintsFrontmatter.related`. */
+  related?: string[];
+  /** Route paths a reader should understand before this one. */
+  prerequisites?: string[];
 };
 
 export type DocumintsManifest = {
@@ -97,6 +108,8 @@ export type DocumintsDocumentJson = {
   /** URL of this route's `.md` sibling - `undefined` for a `.doc.tsx` page. */
   markdown?: string;
   description?: string;
+  related?: string[];
+  prerequisites?: string[];
   headings: DocumintHeading[];
 };
 export type DocumintRouteManifestEntryDoc = DocumintRouteManifestEntry & {
