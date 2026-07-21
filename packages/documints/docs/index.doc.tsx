@@ -10,6 +10,8 @@ import { Link } from "react-router";
 import { makeColor, makeCustom, makeFontFamily, makeFontWeight, makeRem } from "@documints/tokens";
 import { css } from "@linaria/core";
 
+import { ComparisonGrid } from "../components/ComparisonGrid";
+
 function cx(...names: (string | false | undefined)[]): string {
   return names.filter(Boolean).join(" ");
 }
@@ -204,10 +206,10 @@ const features: {
   }
 ];
 
-const pageStyles = css`
+const sectionStyles = css`
   max-width: ${makeCustom("layout-max-width")};
   margin: 0 auto;
-  padding: ${makeRem(64)} ${makeRem(24)} ${makeRem(96)};
+  padding: 0 ${makeRem(24)};
 `;
 
 const heroStyles = css`
@@ -216,6 +218,7 @@ const heroStyles = css`
   align-items: center;
   text-align: center;
   margin-bottom: ${makeRem(64)};
+  margin-top: ${makeRem(64)};
 
   img.wordmark {
     height: ${makeRem(100)};
@@ -312,7 +315,7 @@ const heroVideoStyles = css`
 
 const sectionIntroStyles = css`
   max-width: ${makeRem(720)};
-  margin: 0 auto ${makeRem(48)};
+  margin: ${makeRem(100)} auto ${makeRem(48)};
   text-align: center;
 
   h2 {
@@ -436,67 +439,115 @@ const cardStyles = css`
   }
 `;
 
+const comparisonGridStyles = css`
+  max-width: 100%;
+  padding-left: ${makeRem(36)};
+  padding-right: ${makeRem(36)};
+  background: #0a0c0d;
+  margin-top: ${makeRem(100)};
+
+  h2,
+  p {
+    color: #fff;
+  }
+`;
+
 export default function Welcome() {
   return (
-    <div className={pageStyles}>
-      <div className={heroStyles}>
-        <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
-        <h1>Build a documentation corpus, not just a website.</h1>
-        <p>
-          Documints turns one canonical source into polished pages for humans and structured
-          knowledge for machines. Write naturally in Markdown and React. Documints generates the
-          website, clean Markdown, search, and agent-ready context automatically.
-        </p>
-        <p>
-          <strong>Human-readable by design. Machine-readable by default.</strong>
-        </p>
-        <div className={ctaGroupStyles}>
-          <Link
-            to="/guides/introduction/why-documints"
-            className={cx(ctaBaseStyles, ctaPrimaryStyles)}
-          >
-            Why Documints?
-          </Link>
-          <Link
-            to="/guides/introduction/getting-started"
-            className={cx(ctaBaseStyles, ctaSecondaryStyles)}
-          >
-            Get Started
-          </Link>
-          <a
-            href="https://github.com/green-flash-digital/green-flash-stack"
-            target="_blank"
-            rel="noreferrer"
-            className={cx(ctaBaseStyles, ctaSecondaryStyles)}
-          >
-            View on GitHub
-          </a>
-        </div>
-      </div>
-
-      <div className={heroVideoWrapperStyles}>
-        <video className={heroVideoStyles} src="/animation.mp4" autoPlay loop muted playsInline />
-      </div>
-
-      <div className={sectionIntroStyles}>
-        <h2>Documentation without the usual constraints</h2>
-        <p>
-          Keep docs close to the code they explain, choose the right format for every page, and
-          publish one fast, flexible corpus for humans and AI.
-        </p>
-      </div>
-
-      <div className={gridStyles}>
-        {features.map((feature) => (
-          <div key={feature.title} className={cx(cardStyles, `c-${feature.color}`)}>
-            <div className="icon">
-              <feature.Icon />
-            </div>
-            <div className="title">{feature.title}</div>
-            <div className="description">{feature.description}</div>
+    <>
+      <section className={sectionStyles}>
+        <div className={heroStyles}>
+          <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
+          <h1>Build a documentation corpus, not just a website.</h1>
+          <p>
+            Documints turns one canonical source into polished pages for humans and structured
+            knowledge for machines. Write naturally in Markdown and React. Documints generates the
+            website, clean Markdown, search, and agent-ready context automatically.
+          </p>
+          <p>
+            <strong>Human-readable by design. Machine-readable by default.</strong>
+          </p>
+          <div className={ctaGroupStyles}>
+            <Link
+              to="/guides/introduction/why-documints"
+              className={cx(ctaBaseStyles, ctaPrimaryStyles)}
+            >
+              Why Documints?
+            </Link>
+            <Link
+              to="/guides/introduction/getting-started"
+              className={cx(ctaBaseStyles, ctaSecondaryStyles)}
+            >
+              Get Started
+            </Link>
+            <a
+              href="https://github.com/green-flash-digital/green-flash-stack"
+              target="_blank"
+              rel="noreferrer"
+              className={cx(ctaBaseStyles, ctaSecondaryStyles)}
+            >
+              View on GitHub
+            </a>
           </div>
-        ))}
-      </div>
-    </div>
+        </div>
+
+        <div className={heroVideoWrapperStyles}>
+          <video className={heroVideoStyles} src="/animation.mp4" autoPlay loop muted playsInline />
+        </div>
+      </section>
+
+      <section className={sectionStyles}>
+        <div className={sectionIntroStyles}>
+          <h2>Documentation without the usual constraints</h2>
+          <p>
+            Keep docs close to the code they explain, choose the right format for every page, and
+            publish one fast, flexible corpus for humans and AI.
+          </p>
+        </div>
+
+        <div className={gridStyles}>
+          {features.map((feature) => (
+            <div key={feature.title} className={cx(cardStyles, `c-${feature.color}`)}>
+              <div className="icon">
+                <feature.Icon />
+              </div>
+              <div className="title">{feature.title}</div>
+              <div className="description">{feature.description}</div>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      {/* Comparison Grid */}
+      <section className={comparisonGridStyles}>
+        <div className={sectionIntroStyles}>
+          <h2>Different tools. Different foundations.</h2>
+          <p>Feature lists may look similar. The architecture underneath them is not.</p>
+          <p>
+            Most tools build documentation{" "}
+            <em
+              style={{
+                fontStyle: "normal",
+                color: makeColor("neutral-500"),
+                fontWeight: makeFontWeight("source-sans-3-bold")
+              }}
+            >
+              websites
+            </em>
+            . Documints builds a documentation{" "}
+            <strong
+              style={{
+                color: makeColor("primary-400"),
+                fontWeight: makeFontWeight("source-sans-3-bold")
+              }}
+            >
+              corpus
+            </strong>
+            .
+          </p>
+        </div>
+        <ComparisonGrid />
+      </section>
+    </>
   );
 }
