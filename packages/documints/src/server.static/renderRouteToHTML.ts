@@ -1,5 +1,6 @@
 import { Writable } from "node:stream";
 
+import type { Toc } from "@stefanprobst/rehype-extract-toc";
 import type { Manifest as ViteManifest } from "vite";
 
 import { DocumintsMeta } from "../meta/DocumintsMeta.js";
@@ -31,7 +32,7 @@ export async function renderRouteToHTML(
     head?: string;
     markdownHref?: string;
   }
-): Promise<string> {
+): Promise<{ html: string; tableOfContents: Toc | null }> {
   const { cssAssets, jsAssets } = params.aliasPath
     ? getRouteAssets(params.aliasPath, params.vManifest, params.contentRoot, params.viteRoot)
     : getEntryOnlyAssets(params.vManifest);
@@ -89,5 +90,5 @@ export async function renderRouteToHTML(
     markdownHref: params.markdownHref
   });
 
-  return `${htmlStart}${body}${htmlEnd}`;
+  return { html: `${htmlStart}${body}${htmlEnd}`, tableOfContents: Meta.tableOfContents };
 }

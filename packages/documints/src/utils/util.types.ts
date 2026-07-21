@@ -35,6 +35,69 @@ export type DocumintRouteManifestEntry = {
    * `undefined` for a `.doc.tsx` page, which has no raw-Markdown equivalent.
    */
   markdownHref?: string;
+  /**
+   * This route's structured metadata, always served at `<routePath>.json` -
+   * unlike `markdownHref`, every route has one (including `.doc.tsx` pages).
+   */
+  jsonHref: string;
+  /** The real, on-disk file type this route was authored as - drives `markdownHref`/`jsonHref` content. */
+  sourceType: "md" | "mdx" | "tsx";
+  /**
+   * Optional one-line summary from frontmatter - feeds `llms.txt`,
+   * `docs-manifest.json`, and each route's own `.json`. `undefined` for a
+   * synthetic node, or a doc that didn't set one.
+   */
+  description?: string;
+};
+
+/** A flattened table-of-contents entry - see `DocumintsMeta.setTableOfContents`. */
+export type DocumintHeading = {
+  id: string;
+  text: string;
+  level: number;
+};
+
+export const DOCUMINTS_MANIFEST_SCHEMA_VERSION = "1";
+
+export type DocumintsManifestDocument = {
+  title: string;
+  path: string;
+  sourceType: "md" | "mdx" | "tsx";
+  /** URL of this route's `.md` sibling - `undefined` for a `.doc.tsx` page. */
+  markdown?: string;
+  description?: string;
+  /** First path segment (e.g. "guides") - `undefined` for the home page. */
+  section?: string;
+  /**
+   * The nearest real-document ancestor's path, skipping past synthetic
+   * grouping segments (e.g. "Introduction") that have no page of their own -
+   * `undefined` for the home page and top-level section index pages.
+   */
+  parent?: string;
+  /**
+   * The nearest real-document descendants' paths, same synthetic-skipping
+   * rule as `parent` - a doc with only synthetic children reports its
+   * grandchildren instead, never a path with no real page behind it.
+   */
+  children?: string[];
+};
+
+export type DocumintsManifest = {
+  schemaVersion: typeof DOCUMINTS_MANIFEST_SCHEMA_VERSION;
+  title?: string;
+  siteUrl?: string;
+  documents: DocumintsManifestDocument[];
+};
+
+export type DocumintsDocumentJson = {
+  schemaVersion: typeof DOCUMINTS_MANIFEST_SCHEMA_VERSION;
+  title: string;
+  path: string;
+  sourceType: "md" | "mdx" | "tsx";
+  /** URL of this route's `.md` sibling - `undefined` for a `.doc.tsx` page. */
+  markdown?: string;
+  description?: string;
+  headings: DocumintHeading[];
 };
 export type DocumintRouteManifestEntryDoc = DocumintRouteManifestEntry & {
   importComponent: () => Promise<{

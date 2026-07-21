@@ -64,11 +64,13 @@ its source file there. Omit `editUrl` to leave those links out entirely.
 
 ## Markdown routes and AI-agent discoverability
 
-None of this needs configuring - it's on by default for every `.doc.md`/`.doc.mdx` page
-(`.doc.tsx` pages have no raw Markdown source, so they're left out of all of it):
+None of this needs configuring - it's on by default. Every `.doc.md`/`.doc.mdx`/`.doc.tsx`
+page is simultaneously a website and a machine-readable document, generated from the same
+frontmatter and route manifest - not a second, separate pipeline:
 
-- **A raw-Markdown sibling route.** Every page is also served at `<route>.md` - the doc's
-  source, frontmatter stripped, `Content-Type: text/markdown`. Works the same in
+- **A raw-Markdown sibling route.** Every `.doc.md`/`.doc.mdx` page is also served at
+  `<route>.md` - the doc's source, frontmatter stripped, `Content-Type: text/markdown`.
+  `.doc.tsx` pages have no raw Markdown source, so they don't get one. Works the same in
   `documints dev` and in the built output. "View as Markdown" and "Copy as Markdown" buttons
   on every page (next to "Edit this page") link to and copy this directly.
 - **"Open in ChatGPT" / "Open in Claude" buttons**, next to the two above - open a new chat
@@ -77,6 +79,21 @@ None of this needs configuring - it's on by default for every `.doc.md`/`.doc.md
 - **`<link rel="alternate" type="text/markdown">`** in every page's `<head>`, pointing at its
   `.md` sibling - lets a crawler or agent that already fetched the HTML discover the raw
   source without guessing the URL convention.
+- **A structured `<route>.json` sibling for every route**, `.doc.tsx` included - `title`,
+  `path`, `sourceType`, `description` (see [Writing Docs](/guides/writing/writing-docs)), the
+  `.md` URL when one exists, and `headings` (the same table of contents the page itself
+  renders, with the same `id`s as the rendered anchors). A `.doc.tsx` page still gets one,
+  just with an empty `headings` array and no `markdown` field - it's honest about not having
+  a raw-Markdown equivalent rather than skipping the file entirely.
+- **`docs-manifest.json`**, at the build output's root - every route's `title`, `path`,
+  `sourceType`, `description`, and its place in the hierarchy (`section`/`parent`/`children`,
+  skipping past synthetic nav groupings like "Introduction" straight to the nearest real
+  page). Lets an agent understand the whole site's structure in one request, without
+  crawling nav HTML or parsing `llms.txt`.
+- **`/.well-known/documints.json`** - a small, self-describing discovery document (points at
+  `docs-manifest.json`, `llms.txt`/`llms-full.txt` when configured, and the URL conventions
+  above) so an agent landing on an unfamiliar documints site knows where to look, without
+  guessing.
 - **`llms.txt`**, at the build output's root - the [llms.txt](https://llmstxt.org)
   convention: a single Markdown index of every page, linking to each one's raw-Markdown
   route. Requires `siteUrl` (see above), since the links are absolute.

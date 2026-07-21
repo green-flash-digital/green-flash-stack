@@ -62,6 +62,23 @@ home: true
 There should be exactly one of these per site. It's excluded from the nav tree, matching
 how most docs sites treat their landing page as separate from the sidebar.
 
+## `description` - optional
+
+A one-line summary of the page:
+
+```md
+---
+title: Guides/Introduction/Deploy
+description: Build and deploy a static documints site to Cloudflare, Netlify, Vercel, GitHub Pages, or AWS.
+---
+```
+
+Not required, and nothing breaks without it - it's surfaced in `docs-manifest.json` and the
+page's own `.json` sibling (see
+[Markdown routes and AI-agent discoverability](/guides/configuration#markdown-routes-and-ai-agent-discoverability)),
+so an agent or external tool can tell what a page is about without fetching it first. One
+field, no separate "AI description" to keep in sync.
+
 ## MDX
 
 Anything that needs interactivity beyond Markdown can use `.doc.mdx` instead - it supports

@@ -9,7 +9,7 @@ import { writeFileRecursive } from "@green-flash/ts-utils/node";
 import { confirm } from "@inquirer/prompts";
 import mdx from "@mdx-js/rollup";
 import rehypeShiki from "@shikijs/rehype";
-import rehypeTOC from "@stefanprobst/rehype-extract-toc";
+import rehypeTOC, { type Toc } from "@stefanprobst/rehype-extract-toc";
 import rehypeTOCExport from "@stefanprobst/rehype-extract-toc/mdx";
 import react from "@vitejs/plugin-react";
 import wyw from "@wyw-in-js/vite";
@@ -47,10 +47,15 @@ import { handleRequestDev } from "./server.dev/index.js";
 import { renderRouteToHTML } from "./server.static/index.js";
 import { LOG } from "./utils/util.logger.js";
 import { slugify, unslugify } from "./utils/util.slugify.js";
-import type {
-  DocumintRouteManifest,
-  DocumintRouteManifestEntry,
-  DocumintRouteManifestGraphObject
+import {
+  DOCUMINTS_MANIFEST_SCHEMA_VERSION,
+  type DocumintHeading,
+  type DocumintRouteManifest,
+  type DocumintRouteManifestEntry,
+  type DocumintRouteManifestGraphObject,
+  type DocumintsDocumentJson,
+  type DocumintsManifest,
+  type DocumintsManifestDocument
 } from "./utils/util.types.js";
 
 const CONFIG_DIRNAME = ".documints";
@@ -114,6 +119,8 @@ type DocumintsFrontmatter = {
   slug?: string;
   /** Marks this doc as the home page, served at "/" and left out of the nav tree. */
   home?: boolean;
+  /** Optional one-line summary - feeds `llms.txt`, `docs-manifest.json`, and this route's own `.json`. */
+  description?: string;
 };
 
 const TSX_FRONTMATTER_COMMENT = /^\s*\/\*\*\s*\r?\n---\r?\n([\s\S]*?)\r?\n---\s*\r?\n\*\/\s*/;
@@ -139,7 +146,9 @@ export class Documints {
     notFoundPage: "404.html",
     llmsTxt: "llms.txt",
     llmsFullTxt: "llms-full.txt",
-    pagefindDir: "pagefind"
+    pagefindDir: "pagefind",
+    docsManifest: "docs-manifest.json",
+    wellKnownDocumints: ".well-known/documints.json"
   } as const;
 
   #config: DocumintsConfig;
@@ -438,7 +447,8 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
       return {
         title: data.title,
         slug: data.slug,
-        home: data.home ?? false
+        home: data.home ?? false,
+        description: data.description
       };
     } catch (error) {
       throw LOG.fatal(
@@ -513,6 +523,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
             root: false,
             routePath: "",
             synthetic: true,
+            // Never a real document - these placeholders are never read for
+            // manifest/JSON generation, which skips synthetic nodes entirely.
+            jsonHref: "",
+            sourceType: "md",
             pages: {}
           };
         }
@@ -568,14 +582,29 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
     return `${editUrl.replace(/\/$/, "")}/${relativeToProjectRoot}`;
   }
 
+  /** The real, on-disk file type a doc was authored as - drives `markdownHref`/`.json` content. */
+  private static getSourceType(fullPath: string): "md" | "mdx" | "tsx" {
+    const ext = path.extname(fullPath);
+    if (ext === ".mdx") return "mdx";
+    if (ext === ".tsx") return "tsx";
+    return "md";
+  }
+
   /**
    * A `.doc.tsx` page has no raw-Markdown equivalent, so it gets no sibling
    * `.md` route - only `.doc.md`/`.doc.mdx` files do.
    */
-  private static getMarkdownHref(routePath: string, fullPath: string): string | undefined {
-    const ext = path.extname(fullPath);
-    if (ext !== ".md" && ext !== ".mdx") return undefined;
+  private static getMarkdownHref(
+    routePath: string,
+    sourceType: "md" | "mdx" | "tsx"
+  ): string | undefined {
+    if (sourceType === "tsx") return undefined;
     return routePath === "/" ? "/index.md" : `${routePath}.md`;
+  }
+
+  /** Unlike `markdownHref`, every route gets a `.json` sibling - including `.doc.tsx` pages. */
+  private static getJsonHref(routePath: string): string {
+    return routePath === "/" ? "/index.json" : `${routePath}.json`;
   }
 
   /**
@@ -619,6 +648,8 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         );
       }
 
+      const sourceType = Documints.getSourceType(direntFullPath);
+
       routeManifest[routePath] = {
         aliasPath,
         fullPath: direntFullPath,
@@ -630,7 +661,10 @@ nav comes from their \`title\` frontmatter (e.g. "Guides/Deployment"), not where
         editHref: this.#config.editUrl
           ? Documints.getEditHref(this.#config.editUrl, aliasPath)
           : undefined,
-        markdownHref: Documints.getMarkdownHref(routePath, direntFullPath)
+        markdownHref: Documints.getMarkdownHref(routePath, sourceType),
+        jsonHref: Documints.getJsonHref(routePath),
+        sourceType,
+        description: frontmatter.description
       };
     }
 
@@ -750,6 +784,9 @@ export const routeIndex = {
   root: "${routeIndex.root}",
   editHref: ${JSON.stringify(routeIndex.editHref)},
   markdownHref: ${JSON.stringify(routeIndex.markdownHref)},
+  jsonHref: ${JSON.stringify(routeIndex.jsonHref)},
+  sourceType: ${JSON.stringify(routeIndex.sourceType)},
+  description: ${JSON.stringify(routeIndex.description)},
   importComponent: async () => await import(${JSON.stringify(routeIndex.fullPath)})
 };
 export const routeGraph = ${JSON.stringify(routeGraph, null, 2)};
@@ -762,6 +799,9 @@ export const routeDocs = [${Object.values(routeDocs).map(
   root: "${routeEntry.root}",
   editHref: ${JSON.stringify(routeEntry.editHref)},
   markdownHref: ${JSON.stringify(routeEntry.markdownHref)},
+  jsonHref: ${JSON.stringify(routeEntry.jsonHref)},
+  sourceType: ${JSON.stringify(routeEntry.sourceType)},
+  description: ${JSON.stringify(routeEntry.description)},
   importComponent: async () => await import(${JSON.stringify(routeEntry.fullPath)})
 }`
     )}];
@@ -951,6 +991,163 @@ Allow: /
 
 Sitemap: ${siteUrl}/sitemap.xml
 `;
+  }
+
+  /**
+   * Flattens the nested `Toc` tree (as produced by `rehype-extract-toc`,
+   * IDs already assigned by `rehype-slug` earlier in the same pipeline - see
+   * `getViteConfig`'s `rehypePlugins` order) into the flat shape a route's
+   * `.json` sibling exposes. No new heading parse - this is the exact same
+   * table of contents `LayoutBodyTOC` already renders, captured off `Meta`
+   * during the render pass `build()` already does (see `DocumintsMeta`).
+   */
+  private static flattenToc(toc: Toc | null): DocumintHeading[] {
+    if (!toc) return [];
+    const headings: DocumintHeading[] = [];
+    const visit = (entries: Toc) => {
+      for (const entry of entries) {
+        headings.push({ id: entry.id ?? "", text: entry.value, level: entry.depth });
+        if (entry.children) visit(entry.children);
+      }
+    };
+    visit(toc);
+    return headings;
+  }
+
+  /** A single route's structured metadata, served at `<routePath>.json` (see `getJsonHref`). */
+  private static renderDocumentJson(
+    entry: DocumintRouteManifestEntry,
+    tableOfContents: Toc | null
+  ): string {
+    const document: DocumintsDocumentJson = {
+      schemaVersion: DOCUMINTS_MANIFEST_SCHEMA_VERSION,
+      title: entry.fileNameFormatted,
+      path: entry.routePath,
+      sourceType: entry.sourceType,
+      markdown: entry.markdownHref,
+      description: entry.description,
+      headings: Documints.flattenToc(tableOfContents)
+    };
+    return JSON.stringify(document, null, 2);
+  }
+
+  /**
+   * Walks the route graph once, resolving each real document's nearest
+   * real-document `parent` and `children` - skipping past synthetic grouping
+   * segments (a `title` path segment with no doc of its own, e.g.
+   * "Introduction") in both directions, so a consumer of `docs-manifest.json`
+   * never gets a path back that has no real page behind it.
+   */
+  private static resolveDocGraphRelations(
+    routeGraph: DocumintRouteManifestGraphObject
+  ): Map<string, { parent?: string; children: string[] }> {
+    const relations = new Map<string, { parent?: string; children: string[] }>();
+
+    function collectRealChildren(node: DocumintRouteManifestGraphObject): string[] {
+      const children: string[] = [];
+      for (const child of Object.values(node)) {
+        if (child.synthetic) {
+          children.push(...collectRealChildren(child.pages));
+        } else {
+          children.push(child.routePath);
+        }
+      }
+      return children;
+    }
+
+    function walk(node: DocumintRouteManifestGraphObject, nearestRealParent: string | undefined) {
+      for (const entry of Object.values(node)) {
+        if (entry.synthetic) {
+          walk(entry.pages, nearestRealParent);
+          continue;
+        }
+        relations.set(entry.routePath, {
+          parent: nearestRealParent,
+          children: collectRealChildren(entry.pages)
+        });
+        walk(entry.pages, entry.routePath);
+      }
+    }
+
+    walk(routeGraph, undefined);
+    return relations;
+  }
+
+  /**
+   * A site-wide index of every document, for agents/tooling that want to
+   * understand the whole corpus without scraping nav HTML or parsing
+   * `llms.txt`. Built entirely from data `getRouteManifest()`/
+   * `getDocumintRouteGraph()` already compute - no render pass required
+   * (unlike per-document `.json`, which needs `headings`).
+   */
+  private static renderDocsManifest(
+    routeManifest: DocumintRouteManifest,
+    routeGraph: DocumintRouteManifestGraphObject,
+    options: { title?: string; siteUrl?: string }
+  ): string {
+    const relations = Documints.resolveDocGraphRelations(routeGraph);
+
+    const documents: DocumintsManifestDocument[] = Object.values(routeManifest).map((entry) => {
+      const relation = relations.get(entry.routePath);
+      return {
+        title: entry.fileNameFormatted,
+        path: entry.routePath,
+        sourceType: entry.sourceType,
+        markdown: entry.markdownHref,
+        description: entry.description,
+        section: entry.root ? undefined : entry.routePath.split("/").filter(Boolean)[0],
+        parent: relation?.parent,
+        children: relation?.children.length ? relation.children : undefined
+      };
+    });
+
+    const manifest: DocumintsManifest = {
+      schemaVersion: DOCUMINTS_MANIFEST_SCHEMA_VERSION,
+      title: options.title,
+      siteUrl: options.siteUrl,
+      documents
+    };
+    return JSON.stringify(manifest, null, 2);
+  }
+
+  /** This installed documints package's own `version` - advertised in `.well-known/documints.json`. */
+  private static getPackageVersion(): string {
+    const packageJson = JSON.parse(
+      readFileSync(path.resolve(Documints.getPackageRoot(), "./package.json"), "utf8")
+    );
+    return packageJson.version ?? "0.0.0";
+  }
+
+  /**
+   * A minimal, self-describing discovery document (the `.well-known`
+   * convention - RFC 8615) telling an agent what this documints site
+   * exposes and where, without it having to guess or scrape for it. Only
+   * ever advertises capabilities that actually exist in this build - `llms`/
+   * `llmsFull` are omitted entirely when `siteUrl` isn't configured, since
+   * neither file is generated in that case (see `renderLlmsTxt`).
+   */
+  private static renderWellKnownDocumints(siteUrl?: string): string {
+    return JSON.stringify(
+      {
+        schemaVersion: DOCUMINTS_MANIFEST_SCHEMA_VERSION,
+        generator: "documints",
+        version: Documints.getPackageVersion(),
+        manifest: `/${Documints.FILE_NAMES.docsManifest}`,
+        ...(siteUrl
+          ? {
+              llms: `/${Documints.FILE_NAMES.llmsTxt}`,
+              llmsFull: `/${Documints.FILE_NAMES.llmsFullTxt}`
+            }
+          : {}),
+        formats: {
+          html: "{path}",
+          markdown: "{path}.md",
+          json: "{path}.json"
+        }
+      },
+      null,
+      2
+    );
   }
 
   private getVirtualModulesPlugin(): VitePlugin {
@@ -1271,7 +1468,7 @@ Sitemap: ${siteUrl}/sitemap.xml
       const brokenLinks: string[] = [];
 
       for (const entry of Object.values(routeManifest)) {
-        const html = await renderRouteToHTML(render, {
+        const { html, tableOfContents } = await renderRouteToHTML(render, {
           routePath: entry.routePath,
           aliasPath: entry.aliasPath,
           vManifest: viteManifest,
@@ -1303,11 +1500,16 @@ Sitemap: ${siteUrl}/sitemap.xml
             Documints.renderMarkdownSource(entry.fullPath)
           );
         }
+
+        await writeFileRecursive(
+          path.resolve(this.#dirs.staticOutputDir, `.${entry.jsonHref}`),
+          Documints.renderDocumentJson(entry, tableOfContents)
+        );
       }
 
       // Not nested in a route folder - Cloudflare's "404-page" not_found_handling
       // (see wrangler.jsonc) requires it at the root of the assets directory.
-      const notFoundHtml = await renderRouteToHTML(render, {
+      const { html: notFoundHtml } = await renderRouteToHTML(render, {
         routePath: NOT_FOUND_ROUTE_PATH,
         vManifest: viteManifest,
         contentRoot: this.#dirs.docsContentDir,
@@ -1348,6 +1550,20 @@ Sitemap: ${siteUrl}/sitemap.xml
       await writeFileRecursive(
         path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.llmsFullTxt),
         Documints.renderLlmsFullTxt(routeManifest)
+      );
+
+      // Unlike llms.txt/sitemap, these two don't need siteUrl - every URL
+      // they reference is site-relative.
+      await writeFileRecursive(
+        path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.docsManifest),
+        Documints.renderDocsManifest(routeManifest, Documints.getDocumintRouteGraph(routeManifest), {
+          title: this.#config.header?.title,
+          siteUrl: this.#config.siteUrl
+        })
+      );
+      await writeFileRecursive(
+        path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.wellKnownDocumints),
+        Documints.renderWellKnownDocumints(this.#config.siteUrl)
       );
 
       // Every route's HTML must already be on disk - Pagefind indexes the

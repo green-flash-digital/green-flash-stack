@@ -49,7 +49,10 @@ function createRoute(route: DocumintRouteManifestEntryDoc, options: { isDocs: bo
       default: () => {
         return (
           <>
-            <DocumintsMetaComponent title={route.fileNameFormatted} />
+            <DocumintsMetaComponent
+              title={route.fileNameFormatted}
+              tableOfContents={tableOfContents}
+            />
             <LayoutBodyMain>
               <DocumentComponent />
             </LayoutBodyMain>
