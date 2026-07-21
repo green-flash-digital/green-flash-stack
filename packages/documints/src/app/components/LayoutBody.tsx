@@ -1,7 +1,7 @@
 import type { JSX } from "react";
 import { forwardRef } from "react";
 
-import { makeCustom, makeRem } from "@documints/tokens";
+import { makeRem } from "@documints/tokens";
 import { classes } from "@green-flash/ts-utils/isomorphic";
 import { css } from "@linaria/core";
 
@@ -21,7 +21,6 @@ const layoutBodyStyles = css`
   grid-template-areas:
     "layout-sidebar layout-breadcrumb layout-toc"
     "layout-sidebar layout-main layout-toc";
-  max-width: ${makeCustom("layout-max-width")};
   margin: 0 auto;
   width: 100%;
 `;

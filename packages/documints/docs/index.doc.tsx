@@ -345,6 +345,7 @@ const gridStyles = css`
   grid-template-columns: repeat(4, 1fr);
   gap: ${makeRem(16)};
   max-width: ${makeRem(1152)};
+  margin: 0 auto;
 `;
 
 const cardStyles = css`
@@ -445,7 +446,7 @@ const cardStyles = css`
 `;
 
 const comparisonGridStyles = css`
-  max-width: 100%;
+  max-width: 100% !important;
   padding-top: ${makeRem(64)};
   padding-left: ${makeRem(36)};
   padding-right: ${makeRem(36)};
