@@ -11,9 +11,8 @@ Every documints site is simultaneously a website and a machine-readable document
 corpus, generated from the same document graph - not a website with an "AI mode" bolted on
 afterward. This page is the reference for the second half of that: what's available, in what
 shape, and in what order an agent should reach for it. See
-[Configuration](/guides/configuration#markdown-routes-and-ai-agent-discoverability) for where
-each of these is implemented, and [Writing Docs](/guides/writing/writing-docs) for the
-frontmatter (`description`, `related`, `prerequisites`) that feeds them.
+[Writing Docs](/guides/writing/writing-docs) for the frontmatter (`description`, `related`,
+`prerequisites`) that feeds all of it.
 
 ## Fetching a single page
 
@@ -45,6 +44,12 @@ renders, with the same `id`s as its heading anchors):
 
 A `.doc.tsx` page (no raw Markdown source) still has a `.json` - just with an empty
 `headings` array and no `markdown` field, rather than no file at all.
+
+These URLs are discoverable without already knowing the convention, too: every page's
+`<head>` includes `<link rel="alternate" type="text/markdown">` pointing at its `.md`
+sibling, for a crawler or agent that fetched the HTML first. And it's not only for a
+background agent - "View as Markdown," "Copy as Markdown," "Open in ChatGPT," and "Open in
+Claude" buttons on every page put the same URLs one click away for a person reading it.
 
 ## Discovering a whole site
 
@@ -87,6 +92,20 @@ The [llms.txt](https://llmstxt.org) convention. Use `llms-full.txt` when ingesti
 site in one request is appropriate for the task at hand - a small-to-medium docs site fits
 comfortably in a single fetch this way. For anything larger, or when only part of the site is
 relevant, prefer the manifest plus targeted `.md` fetches instead.
+
+## Search
+
+The one representation in this whole system that isn't a plain static file an agent can
+fetch directly: every build indexes the prerendered HTML with
+[Pagefind](https://pagefind.app) - a fully static search library, no external service,
+account, or API key - and writes the result to `pagefind/` in the build output. It's built
+primarily for a person (a "Search" button in the header, `Cmd+K`/`Ctrl+K` also opens it,
+showing Pagefind's own default UI in a modal), not for an agent to query over HTTP - for
+machine consumption, `docs-manifest.json` and `llms.txt`/`llms-full.txt` are the better fit.
+
+Because Pagefind indexes the *built* HTML, there's nothing to search against in
+`documints dev` - the button still opens the same modal there (useful for checking styling),
+it just won't return real results until the site is built.
 
 ## Recommended workflow
 

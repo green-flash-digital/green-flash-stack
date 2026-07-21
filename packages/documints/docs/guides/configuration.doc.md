@@ -62,59 +62,6 @@ Every doc page gets an "Edit this page" link built from this plus its real, on-d
 this site's own `.documints/config.ts` uses its GitHub repo, so every page links straight to
 its source file there. Omit `editUrl` to leave those links out entirely.
 
-## Markdown routes and AI-agent discoverability
-
-None of this needs configuring - it's on by default. Every `.doc.md`/`.doc.mdx`/`.doc.tsx`
-page is simultaneously a website and a machine-readable document, generated from the same
-frontmatter and route manifest - not a second, separate pipeline:
-
-- **A raw-Markdown sibling route.** Every `.doc.md`/`.doc.mdx` page is also served at
-  `<route>.md` - the doc's source, frontmatter stripped, `Content-Type: text/markdown`.
-  `.doc.tsx` pages have no raw Markdown source, so they don't get one. Works the same in
-  `documints dev` and in the built output. "View as Markdown" and "Copy as Markdown" buttons
-  on every page (next to "Edit this page") link to and copy this directly.
-- **"Open in ChatGPT" / "Open in Claude" buttons**, next to the two above - open a new chat
-  prefilled with the page's absolute Markdown URL, computed client-side from
-  `window.location.origin` (no `siteUrl` needed, and correct under any preview domain).
-- **`<link rel="alternate" type="text/markdown">`** in every page's `<head>`, pointing at its
-  `.md` sibling - lets a crawler or agent that already fetched the HTML discover the raw
-  source without guessing the URL convention.
-- **A structured `<route>.json` sibling for every route**, `.doc.tsx` included - `title`,
-  `path`, `sourceType`, `description`, `related`/`prerequisites` (see
-  [Writing Docs](/guides/writing/writing-docs)), the `.md` URL when one exists, and `headings`
-  (the same table of contents the page itself renders, with the same `id`s as the rendered
-  anchors). A `.doc.tsx` page still gets one, just with an empty `headings` array and no
-  `markdown` field - it's honest about not having a raw-Markdown equivalent rather than
-  skipping the file entirely.
-- **`docs-manifest.json`**, at the build output's root - every route's `title`, `path`,
-  `sourceType`, `description`, `related`/`prerequisites`, and its place in the hierarchy
-  (`section`/`parent`/`children`, skipping past synthetic nav groupings like "Introduction"
-  straight to the nearest real page). Lets an agent understand the whole site's structure in
-  one request, without crawling nav HTML or parsing `llms.txt`.
-- **`/.well-known/documints.json`** - a small, self-describing discovery document (points at
-  `docs-manifest.json`, `llms.txt`/`llms-full.txt` when configured, and the URL conventions
-  above) so an agent landing on an unfamiliar documints site knows where to look, without
-  guessing.
-- **`llms.txt`**, at the build output's root - the [llms.txt](https://llmstxt.org)
-  convention: a single Markdown index of every page, linking to each one's raw-Markdown
-  route, with its `description` appended when one is set. Requires `siteUrl` (see above),
-  since the links are absolute.
-- **`llms-full.txt`**, alongside it - every page's raw Markdown source concatenated into one
-  file, so an agent can ingest the entire site in a single request instead of crawling page
-  by page. Doesn't need `siteUrl`.
-
-## Search
-
-Also on by default, no configuration needed. Every `build()` indexes the prerendered HTML
-with [Pagefind](https://pagefind.app) - a fully static search library, no external service,
-account, or API key - and writes the resulting index to `pagefind/` in the build output.
-A "Search" button in the header (`Cmd+K`/`Ctrl+K` also opens it) shows Pagefind's own default
-search UI in a modal.
-
-Because Pagefind indexes the *built* HTML, there's nothing to search against in
-`documints dev` - the button still opens the same modal there (useful for checking styling),
-it just won't return real results until you build the site.
-
 ## `header`
 
 Controls the site's header: a title, an optional logo, and links.
@@ -142,8 +89,8 @@ export default defineDocumintsConfig({
 `logo`, if set, takes the place of `title` in the header's top-left corner - point `src` at
 an image in `.documints/public/` (see [Static Assets & Head](/guides/customization/static-assets)),
 or any other reachable URL. `title` is still worth setting even then: it's used as the heading
-in `llms.txt` (see [Markdown routes and AI-agent discoverability](/guides/configuration#markdown-routes-and-ai-agent-discoverability)
-above) regardless of whether `logo` is set. Omit `logo` to show `title` as plain text instead.
+in `llms.txt` (see [Using Documints with AI](/guides/advanced/using-documints-with-ai))
+regardless of whether `logo` is set. Omit `logo` to show `title` as plain text instead.
 
 `title` and any `social` links also surface a second time, automatically, in the site's
 footer (a copyright line plus the same social icons) - there's no separate footer

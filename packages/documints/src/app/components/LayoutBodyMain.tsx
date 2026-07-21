@@ -5,6 +5,7 @@ import { css } from "@linaria/core";
 
 const layoutBodyMainStyles = css`
   grid-area: layout-main;
+  min-width: 0;
   background: ${makeColor("background")};
   position: sticky;
   top: ${makeCustom("layout-header-height")};

@@ -14,8 +14,8 @@ export default defineDocumintsConfig({
     },
     links: [
       [
-        { type: "internal", href: "/guides", text: "Guides" },
-        { type: "internal", href: "/reference", text: "Reference" }
+        { type: "internal", text: "Guides", href: "/guides/introduction/why-documints" },
+        { type: "internal", text: "Reference", href: "/reference" }
       ],
       [
         {

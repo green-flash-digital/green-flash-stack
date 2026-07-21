@@ -74,8 +74,7 @@ description: Build and deploy a static documints site to Cloudflare, Netlify, Ve
 ```
 
 Not required, and nothing breaks without it - it's surfaced in `docs-manifest.json` and the
-page's own `.json` sibling (see
-[Markdown routes and AI-agent discoverability](/guides/configuration#markdown-routes-and-ai-agent-discoverability)),
+page's own `.json` sibling (see [Using Documints with AI](/guides/advanced/using-documints-with-ai)),
 so an agent or external tool can tell what a page is about without fetching it first. One
 field, no separate "AI description" to keep in sync.
 
