@@ -236,7 +236,7 @@ const heroStyles = css`
     font-size: ${makeRem(20)};
     line-height: 1.6;
     color: ${makeColor("neutral-600")};
-    margin: 0 0 ${makeRem(32)};
+    margin: 0 0 ${makeRem(32)} 0;
     max-width: ${makeRem(800)};
 
     & + p {
@@ -303,7 +303,11 @@ const heroVideoStyles = css`
   width: 100%;
   height: auto;
   border-radius: ${makeRem(12)};
-  box-shadow: 0 20px 40px ${makeColor("neutral", { opacity: 0.15 })};
+  box-shadow:
+    0 0 50px ${makeColor("primary", { opacity: 0.4 })},
+    0 0 120px ${makeColor("primary", { opacity: 0.3 })},
+    0 0 220px ${makeColor("secondary", { opacity: 0.2 })},
+    0 0 360px ${makeColor("neutral", { opacity: 0.12 })};
 `;
 
 const sectionIntroStyles = css`
