@@ -14,7 +14,12 @@ export const bodyStyles = css`
   min-height: 100vh;
   margin: 0 auto;
   // desktop
-  grid-template-rows: ${makeCustom("layout-header-height")} auto auto;
+  // The body row is 1fr (not auto) so it absorbs whatever space is left
+  // after the header/footer are subtracted from the 100vh min-height above -
+  // that's what keeps the footer pinned to the bottom of the viewport on a
+  // short page, instead of leaving a dead gap between short content and a
+  // footer that only appears after a full extra viewport of scrolling.
+  grid-template-rows: ${makeCustom("layout-header-height")} 1fr auto;
   grid-template-columns: 1fr;
   grid-template-areas:
     "layout-header"

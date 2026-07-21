@@ -206,6 +206,11 @@ const features: {
   }
 ];
 
+const pageWrapperStyles = css`
+  grid-area: layout-body;
+  min-width: 0;
+`;
+
 const sectionStyles = css`
   max-width: ${makeCustom("layout-max-width")};
   margin: 0 auto;
@@ -441,6 +446,7 @@ const cardStyles = css`
 
 const comparisonGridStyles = css`
   max-width: 100%;
+  padding-top: ${makeRem(64)};
   padding-left: ${makeRem(36)};
   padding-right: ${makeRem(36)};
   background: #0a0c0d;
@@ -454,7 +460,7 @@ const comparisonGridStyles = css`
 
 export default function Welcome() {
   return (
-    <>
+    <div className={pageWrapperStyles}>
       <section className={sectionStyles}>
         <div className={heroStyles}>
           <img className="wordmark" src="/documints-wordmark.png" alt="documints" />
@@ -548,6 +554,6 @@ export default function Welcome() {
         </div>
         <ComparisonGrid />
       </section>
-    </>
+    </div>
   );
 }
