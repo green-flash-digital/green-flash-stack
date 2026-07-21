@@ -820,7 +820,12 @@ export const routeDocs = [${Object.values(routeDocs).map(
   `;
 
     const resolvedHeader = Documints.resolveDocumintsHeader(this.#config.header, routeGraph);
-    const data = `export const header = ${JSON.stringify(resolvedHeader)}`;
+    // Computed once here (build time, or dev-server start) rather than via
+    // `new Date()` inside a component - that would run again at hydration
+    // and could disagree with the server-rendered year across a New Year's
+    // boundary on a site that goes a while between rebuilds.
+    const data = `export const header = ${JSON.stringify(resolvedHeader)}
+export const buildYear = ${new Date().getFullYear()}`;
 
     return {
       "virtual:routes": routes,

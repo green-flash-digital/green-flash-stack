@@ -17,6 +17,7 @@ import { LayoutBodyBreadcrumbText } from "./components/LayoutBodyBreadcrumbText.
 import { LayoutBodyMain } from "./components/LayoutBodyMain.js";
 import { LayoutBodyNav } from "./components/LayoutBodyNav.js";
 import { LayoutBodyTOC } from "./components/LayoutBodyTOC.js";
+import { LayoutFooter } from "./components/LayoutFooter.js";
 import { LayoutHeader } from "./components/LayoutHeader.js";
 import { NotFoundPage } from "./components/NotFoundPage.js";
 import { DocumintRouteManifestGraphUtils } from "./utils/RouteGraph.js";
@@ -125,6 +126,7 @@ function DocsLayout({ routeModuleGraph }: { routeModuleGraph: DocumintRouteManif
 export function createDocumintRoutes(props: {
   routeGraph: DocumintRouteManifestGraphObject;
   header: DocumintResolvedHeader | undefined;
+  buildYear: number;
   routeDocs: DocumintRouteManifestEntryDoc[];
   routeIndex: DocumintRouteManifestEntryDoc;
 }): RouteObject[] {
@@ -137,6 +139,7 @@ export function createDocumintRoutes(props: {
         <Layout>
           <LayoutHeader header={props.header} />
           <Outlet />
+          <LayoutFooter header={props.header} buildYear={props.buildYear} />
         </Layout>
       ),
       children: [

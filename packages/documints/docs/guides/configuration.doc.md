@@ -145,6 +145,10 @@ or any other reachable URL. `title` is still worth setting even then: it's used 
 in `llms.txt` (see [Markdown routes and AI-agent discoverability](/guides/configuration#markdown-routes-and-ai-agent-discoverability)
 above) regardless of whether `logo` is set. Omit `logo` to show `title` as plain text instead.
 
+`title` and any `social` links also surface a second time, automatically, in the site's
+footer (a copyright line plus the same social icons) - there's no separate footer
+configuration to keep in sync with the header.
+
 Links are grouped into sections (an array of arrays) and rendered left to right. Five link
 types are supported:
 

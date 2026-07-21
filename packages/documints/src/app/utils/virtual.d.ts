@@ -12,8 +12,9 @@ declare module "virtual:routes" {
 }
 
 declare module "virtual:data" {
-  import type { DocumintResolvedHeader } from "../../config/_config.utils.js";
+  import type { DocumintResolvedHeader } from "../../config/config.utils.js";
   export const header: DocumintResolvedHeader | undefined;
+  export const buildYear: number;
 }
 
 declare module "*.css" {

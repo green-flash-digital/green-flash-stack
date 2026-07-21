@@ -14,11 +14,12 @@ export const bodyStyles = css`
   min-height: 100vh;
   margin: 0 auto;
   // desktop
-  grid-template-rows: ${makeCustom("layout-header-height")} auto;
+  grid-template-rows: ${makeCustom("layout-header-height")} auto auto;
   grid-template-columns: 1fr;
   grid-template-areas:
     "layout-header"
-    "layout-body";
+    "layout-body"
+    "layout-footer";
 
   pre {
     padding: ${makeRem(20)};
