@@ -4,183 +4,192 @@ title: Guides/Introduction/Why Documints?
 
 # Why Documints?
 
-Documints is a static site generator built for exactly one thing: technical documentation.
-Point it at Markdown, MDX, or React files, and it turns them into a fast, static site with
-navigation, hierarchy, and a header that stay correct on their own. Almost everything else on
-this page is really in service of two things: it should be **easy to write**, and once
-written, it should be **consumable by a person and an AI agent alike** - not as two separate
-modes to maintain, but as the same document, generated once. The mechanics are covered
-elsewhere - [Routing](/guides/customization/routing), [Configuration](/guides/configuration),
-[Writing Docs](/guides/writing/writing-docs). This page is the *why*.
+## Build a documentation corpus, not just a website.
 
-## A narrow scope, on purpose
+Documints turns one canonical source into polished pages for humans and structured knowledge for machines.
 
-documints is built for exactly one thing: technical documentation. Not marketing pages,
-not blogs, not general-purpose sites. That narrowness isn't a limitation to work around -
-it's the reason the API is small.
+Write naturally in Markdown, MDX, or React. Keep documentation beside the code it explains or collect it in a dedicated docs directory. Documints discovers it, organizes it, and publishes it as fast static HTML, clean Markdown, structured metadata, full-text search, and agent-ready context.
 
-Once you stop trying to be everything, whole categories of configuration disappear.
-Navigation, routing, and hierarchy don't need a config surface at all, because there's only
-one sensible way they should work for documentation: a page's `title` decides where it
-lives, and the nav builds itself from that. A marketing site builder has to expose knobs
-for all of this because it doesn't know what you're building. documints already knows -
-so it just does it, out of the box, and the config that's left (`docs`, `order`, `header`,
-`vitePlugins`) is what's actually specific to your project, not busywork.
+**Human-readable by design. Machine-readable by default.**
 
-That reduction compounds where it matters most: for the person actually writing the docs.
-Minimal settings means minimal configuration, and minimal configuration means minimal
-cognitive load - opening a new `.doc.md` file means writing a `title`, then writing content.
-There's no per-page settings block to fill in, no sidebar-registration step to remember, no
-"which config file controls this again?" The fewer decisions the tool asks of you, the more
-of your attention is left for the doc itself.
+Documints is intentionally built for one thing: technical documentation. That focus allows it to remove much of the configuration, duplication, and maintenance that general-purpose site frameworks leave to you.
 
-## Docs that live where the code lives
+This page explains the principles behind Documints. For implementation details, see [Routing](/guides/customization/routing), [Configuration](/guides/configuration), and [Writing Docs](/guides/writing/writing-docs).
 
-Frontmatter-driven routing (see [Routing](/guides/customization/routing)) means location on disk never
-decides where a page ends up - a page's `title` does. That has a real consequence: a
-`.doc.mdx` file can sit directly next to the component or module it documents - in the same
-folder, in the same PR - without that location dictating anything about the site's
-structure or degrading the result into a flat, unstyled dump. The nav, hierarchy, and design
-are exactly as polished whether your docs live in one tidy `docs/` folder or scattered
-across a real codebase next to what they describe. Docs that are easy to find *while
-writing code* are docs that actually stay up to date, and you can reorganize freely later -
-moving a file never breaks a route or a link.
+## Focused on documentation
 
-## One corpus, consumable by humans and AI alike
+Documints is not a general-purpose site builder that happens to support Markdown. It is built specifically for technical documentation.
 
-Documentation used to have exactly one audience: a person, reading in a browser. That's no
-longer true, and documints treats it as one document generated once - not a website with a
-second, AI-flavored copy maintained alongside it:
+That focus keeps the API small. Routing, hierarchy, navigation, search, static generation, and machine-readable outputs are part of the system rather than separate pieces you must assemble.
+
+The remaining configuration describes what is genuinely specific to your project: where documents can be found, how major sections are ordered, what appears in the header, and which Vite plugins you want to use.
+
+Less framework configuration means more attention stays on the documentation itself.
+
+## Documentation without the usual constraints
+
+Most documentation frameworks begin by deciding where your docs must live, how your folders map to URLs, how navigation must be configured, and which proprietary extension system you need to learn.
+
+Documints starts with the document.
+
+Keep docs beside the code they explain, inside individual packages, or in a traditional documentation directory. Define the files Documints should discover with a glob, and use document metadata to control where each page appears publicly.
+
+Your repository structure and documentation structure remain independent:
+
+- source files can live wherever they are most useful
+- moving a source file does not have to change its public URL
+- navigation is derived from the documents that actually exist
+- hierarchy lives in content rather than folder names
+
+The result is documentation that can remain close to the work without forcing your website to mirror your codebase.
+
+See [Routing](/guides/customization/routing) for how document metadata controls hierarchy and public URLs.
+
+## One corpus for humans and machines
+
+Documentation no longer has a single audience.
+
+A person wants typography, navigation, search, syntax highlighting, and interactive examples. An AI agent wants direct access to clean content and predictable structure. A crawler wants complete HTML without executing an application first.
+
+Documints serves all of them from the same canonical corpus.
 
 ```text
                  .doc.md · .doc.mdx · .doc.tsx
                             │
                             ▼
-                  one document model
-            (frontmatter + route graph)
+                   document graph
                             │
-     ┌───────────┬──────────┼──────────┬────────────────────┐
-     ▼           ▼          ▼          ▼                    ▼
-   HTML         .md       .json    Pagefind      docs-manifest.json
- (rendered)  (raw source) (structured)  (search)   (site-wide index)
-                 │                                          │
-                 ▼                                          ▼
-      llms.txt · llms-full.txt                 .well-known/documints.json
-    (whole-corpus ingestion)                      (self-description)
+       ┌────────────┬───────┼────────┬──────────────┐
+       ▼            ▼       ▼        ▼              ▼
+     HTML           .md    .json   Search     Site manifest
+       │            │       │                       │
+       ▼            ▼       ▼                       ▼
+    Humans       Agents   Tools              Corpus discovery
 ```
 
-Five first-class representations, one source. Nothing on the right is a second pipeline
-bolted onto the first - every one of them is derived from the same frontmatter and route
-manifest that already builds the page you're reading:
+The website is not the only product. It is one first-class representation of the same documentation.
 
-- **HTML.** Every route prerenders to real, static HTML - no JavaScript execution required
-  to see the content. A crawler, a search indexer, or an AI agent gets the actual page on the
-  first request, the same as a browser does. There's no separate "SEO mode" to remember;
-  it's just what building the site produces.
-- **`.md`.** The doc's own raw source, frontmatter stripped, served at a predictable sibling
-  URL - this very page, also as [plain Markdown](/guides/introduction/why-documints.md) -
-  with a matching `<link rel="alternate" type="text/markdown">` in the `<head>` for anything
-  crawling the HTML first. "View as Markdown" and "Copy as Markdown" buttons make it
-  discoverable for a person; the URL alone is stable enough for an agent to construct
-  directly.
-- **`.json`.** Structured metadata for every route, `.doc.tsx` included: `description`,
-  `related`/`prerequisites`, and `headings` (the exact table of contents the page itself
-  renders, same anchor IDs). See
-  [Using Documints with AI](/guides/advanced/using-documints-with-ai) for the full protocol.
-- **Pagefind.** Full-text search, indexed at build time, no external service - the same
-  "Search"/`Cmd+K` a person reaches for.
-- **`docs-manifest.json`.** Every document's title, description, and place in the hierarchy,
-  in one file - an agent can understand the whole site's structure in a single request,
-  without crawling nav HTML.
-- **`llms.txt` / `llms-full.txt`.** The [llms.txt](https://llmstxt.org) convention: a
-  Markdown index of every page, and every page's raw source concatenated into one file, for
-  ingesting the whole corpus in a single request instead of crawling page by page.
-- **`.well-known/documints.json`.** A small, self-describing discovery document telling an
-  agent what a given documints site exposes and where, without it having to guess.
+### A representation for every reader
 
-And it's not only for the agent crawling in the background - "Open in ChatGPT" and
-"Open in Claude" buttons sit right next to "Copy as Markdown" on every page, for the person
-who wants to hand a page to an AI without fighting rendered HTML for the actual prose first.
+- **HTML for humans and crawlers.** Every route prerenders to complete static HTML, so the content is present on the first request.
+- **Markdown for agents.** Markdown and MDX documents are available through predictable `.md` sibling URLs, without requiring an agent to extract prose from rendered HTML.
+- **JSON for structured consumers.** Each route exposes metadata, headings, relationships, and other document structure in a predictable format.
+- **Search for readers and tools.** Pagefind creates a static full-text index without requiring a hosted search service.
+- **A manifest for the entire corpus.** `docs-manifest.json` lets a tool understand the site's documents and hierarchy in one request.
+- **LLM-oriented corpus outputs.** `llms.txt` and `llms-full.txt` provide lightweight discovery and whole-corpus ingestion.
+- **Self-description.** `/.well-known/documints.json` tells machines which representations a site provides and where to find them.
 
-## React, all the way down
+Every Markdown and MDX page can also advertise its direct Markdown representation with:
 
-documints isn't a Markdown tool with React bolted on for embeds - it's a React application
-that happens to render Markdown as one of its content types. The nav, header, and layout
-are real React components; `.doc.mdx` embeds real React components; and `.doc.tsx` lets a
-page *be* a React component, full stop, with real state and real interactivity (see
-[Writing Docs](/guides/writing/writing-docs)).
+```html
+<link rel="alternate" type="text/markdown">
+```
 
-The payoff shows up whenever you need to go past what Markdown can express. There's no
-separate shortcode syntax, no custom directive system, no plugin API shaped like anything
-other than React itself to learn - if you can write a component, you can extend documints.
-The [Interactive Preview plugin](/guides/advanced/plugins) isn't a special case bolted onto the
-side; it's what "just use React" looks like when you need a live, working example next to
-its source.
+“View as Markdown,” “Copy as Markdown,” “Open in ChatGPT,” and “Open in Claude” make those representations visible to people as well as machines.
 
-And it's not limited to enhancing Markdown - a page doesn't have to be Markdown at all.
-Write a `.doc.tsx` file instead of `.doc.md`/`.doc.mdx` and the page *is* a full React
-component, with nothing standing between you and the DOM. That's the escape hatch for
-whatever doesn't fit nicely into prose: a landing page like this site's own home page, an
-interactive playground, a live demo with real state - anything that needs to be an
-application rather than a document. Same routing, same nav, same build; just a different
-file extension for when Markdown would be the wrong tool.
+See [Using Documints with AI](/guides/advanced/using-documints-with-ai) for the full discovery and consumption model.
 
-## Theming is just CSS
+**One corpus. Multiple first-class representations. No scraping required.**
 
-Re-theming documints doesn't mean writing against a bespoke theming API - there isn't one.
-Every design token compiles to a plain CSS custom property (`--documints-color-primary`,
-`--documints-color-neutral-600`, and so on). Overriding the look of a site is exactly as
-complicated as writing a CSS file, dropping it in `.documints/public/`, and linking it from
-`.documints/head.html` (see [Static Assets & Head](/guides/customization/static-assets)) - the same two
-conventions that already handle a favicon or a self-hosted font, reused for exactly this.
-No provider component, no theme object schema, no build step of its own.
+## Markdown when you want it. React when you need it.
 
-## DX is not an afterthought
+Documentation is mostly prose—until it is not.
 
-A docs tool that's pleasant to work in gets kept up to date; one that fights you gets
-abandoned in favor of a stale README. Documints treats that as seriously as the output.
+Use `.doc.md` for focused writing. Use `.doc.mdx` when prose needs live components. Use `.doc.tsx` when the page itself should be a complete React experience.
 
-- **Real hot reloading, not a full-page refresh in disguise.** Edit a `.doc.md`, `.doc.mdx`,
-  or `.doc.tsx` file with `documints dev` running and the change shows up where you're
-  looking, immediately - no losing your scroll position, no re-triggering a playground's
-  state, no manual reload. Because documints is a real Vite app rather than a bespoke
-  file-watcher-plus-rebuild loop, this is Vite's actual HMR pipeline doing what it already
-  does well, not a documints-specific approximation of it.
-- **It's just Vite underneath.** Nothing about the dev server or build is a custom bundler
-  wearing a disguise - anything you already know about Vite (plugins, `optimizeDeps`, the
-  error overlay, sourcemapped stack traces) transfers directly, and any Vite plugin from npm
-  works unmodified (see [Plugins](/guides/advanced/plugins)). Cold starts and rebuilds are fast for
-  the same reason any modern Vite app's are - it never had to reinvent that.
-- **Typed, end to end.** `.documints/config.ts` is authored through `defineDocumintsConfig`,
-  a real TypeScript function - your editor autocompletes `header.links`, catches a
-  misspelled header link `type` at compile time, and tells you immediately, rather than the
-  config silently doing nothing and you finding out at runtime (or not at all). The same
-  goes for a `.doc.tsx` page: it's a typed React component, checked by `tsc` like any other
-  file in the project, not a string template evaluated at build time.
-- **Failures look like normal TypeScript/React errors.** Get something wrong and you see a
-  real stack trace pointing at your actual file and line - not an opaque error from a
-  custom templating DSL three layers removed from the file you actually edited.
-- **One command, not a pipeline to assemble.** `documints dev` and `documints build` are the
-  whole surface (see [Usage](/guides/introduction/usage)) - there's no separate step to wire up a
-  bundler, a markdown processor, and a router together yourself before you can start writing.
+A TSX document is not a restricted template or a component embedded inside someone else's page model. It is a React page with access to state, interactions, components, and the DOM.
 
-## Fast, because it's static
+That makes room for documentation experiences that do not fit neatly inside prose:
 
-Every route prerenders to real, static HTML - no server, no runtime dependency, just files.
-First paint never waits on JavaScript to execute; hydration happens after, to make the page
-interactive, not to make it visible. Performance is the starting point, not a tuning pass
-that happens later.
+- interactive examples
+- component playgrounds
+- visualizations
+- live demos
+- custom landing pages
+- workflow-driven tools
 
-## What falls out of all this
+Every format participates in the same routing, navigation, build, and static-generation system. Choose the right authoring mode for the page without changing frameworks.
 
-A few things end up true almost by accident, as a consequence of the choices above rather
-than features built directly:
+The [Interactive Preview plugin](/guides/advanced/plugins) is one example of this principle: a live, working interface can sit directly beside the source it explains without introducing a separate shortcode language or custom rendering system.
 
-- **One source of truth for navigation.** The header's `section` links
-  ([Routing](/guides/customization/routing)) resolve against the same route graph that builds the
-  sidebar - there's no second list to keep in sync, so they can't drift apart.
-- **No lock-in.** Content is plain `.doc.md`/`.doc.mdx`/`.doc.tsx` files with frontmatter -
-  readable, greppable, diffable, and portable even if you stop using documints tomorrow.
-- **Escape hatches, not APIs.** `vitePlugins`, `head.html`, and CSS variables are all
-  "you already know how to do this" mechanisms - documints adds surface area only where a
-  documentation site genuinely needs an opinion, and gets out of the way everywhere else.
+See [Writing Docs](/guides/writing/writing-docs) for the differences between Markdown, MDX, and TSX documents.
+
+## Built on tools you already know
+
+Documints avoids introducing proprietary abstractions where the web platform and its ecosystem already provide good answers.
+
+- **Vite plugins are Vite plugins.** Install them from npm and use them directly rather than adapting them to a Documints-specific plugin system.
+- **React is React.** Interactive documentation uses normal components, state, TypeScript, and development tools.
+- **Theming is CSS.** Design tokens are exposed as CSS custom properties instead of a bespoke theme-object API.
+- **Configuration is TypeScript.** `defineDocumintsConfig` provides editor autocomplete and compile-time feedback.
+- **Errors remain familiar.** Failures point back to the React, TypeScript, or content file that caused them.
+
+The development server uses Vite's HMR pipeline, so edits appear without turning documentation authoring into a custom rebuild workflow. Update a `.doc.md`, `.doc.mdx`, or `.doc.tsx` file and see the change immediately without losing your place or resetting an interactive example.
+
+Anything you already know about Vite—plugins, `optimizeDeps`, the error overlay, source maps, and development tooling—continues to apply.
+
+Documints adds opinions where documentation benefits from them and gets out of the way everywhere else.
+
+### Theming stays close to the platform
+
+Re-theming Documints does not require a provider component or a theme-object schema.
+
+Design tokens compile to CSS custom properties such as:
+
+```css
+--documints-color-primary
+--documints-color-neutral-600
+```
+
+Override them in a CSS file, place the file in `.documints/public/`, and link it from `.documints/head.html`. The same conventions also handle favicons, self-hosted fonts, analytics scripts, and other static additions.
+
+See [Static Assets & Head](/guides/customization/static-assets) for details.
+
+### A small command surface
+
+The primary workflow is intentionally compact:
+
+```bash
+documints dev
+documints build
+```
+
+There is no separate bundler, router, Markdown processor, and static-generation pipeline for you to connect before writing the first page.
+
+See [Usage](/guides/introduction/usage) and [Plugins](/guides/advanced/plugins) for the full configuration surface.
+
+## Static by default
+
+Every route builds to complete HTML and deployable static assets.
+
+There is no production server to operate and no client-side runtime required to make the content visible. JavaScript enhances interactive pages after the document is already present; it does not stand between the reader and the documentation.
+
+That means:
+
+- fast first paint
+- durable, cacheable output
+- straightforward deployment
+- strong crawlability
+- fewer production dependencies
+- no platform lock-in
+
+Deploy the generated files to any static host. The output is not tied to a proprietary hosting platform or a server runtime.
+
+Performance is not an optimization mode. It is the default output.
+
+## One system, fewer sources of truth
+
+The principles above produce a few important consequences:
+
+- **Navigation cannot silently drift from the content.** It is generated from the same document graph that builds the site.
+- **Repository layout does not dictate information architecture.** Keep source documents where they are useful while metadata controls where readers find them.
+- **Docs remain portable.** Markdown, MDX, React, frontmatter, CSS, and Vite are standard, inspectable technologies.
+- **Human and machine outputs remain aligned.** They come from the same documents and metadata rather than separate publishing pipelines.
+- **Extension points stay familiar.** React, Vite plugins, CSS, static assets, and HTML provide the escape hatches.
+- **Content remains useful without Documints.** Documents stay readable, greppable, diffable, and editable with ordinary development tools.
+
+Documints is designed around a simple idea:
+
+> Documentation should be easy to write, beautiful to read, and directly understandable by machines—without maintaining separate versions of it.
+
+**Build a documentation corpus. The website comes with it.**
