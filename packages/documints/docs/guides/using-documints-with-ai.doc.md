@@ -45,11 +45,30 @@ renders, with the same `id`s as its heading anchors):
 A `.doc.tsx` page (no raw Markdown source) still has a `.json` - just with an empty
 `headings` array and no `markdown` field, rather than no file at all.
 
-These URLs are discoverable without already knowing the convention, too: every page's
-`<head>` includes `<link rel="alternate" type="text/markdown">` pointing at its `.md`
-sibling, for a crawler or agent that fetched the HTML first. And it's not only for a
-background agent - "View as Markdown," "Copy as Markdown," "Open in ChatGPT," and "Open in
-Claude" buttons on every page put the same URLs one click away for a person reading it.
+These URLs are discoverable without already knowing the convention, too - every page's
+`<head>` carries the full set:
+
+```html
+<link rel="alternate" type="text/markdown" href="/guides/deploy.md" />
+<link rel="alternate" type="application/json" href="/guides/deploy.json" />
+<link rel="index" href="/docs-manifest.json" />
+<link rel="llms.txt" href="/llms.txt" />
+<!-- This is a documints site - documentation generated once, published as HTML for
+     people and structured data for agents. this page's raw Markdown source is at ...
+     (etc. - every href above, restated in one plain-language sentence) -->
+```
+
+The `<link>` tags are for anything that recognizes a `rel` value (the same convention a blog
+uses to advertise its RSS feed from every page, not just the homepage). The comment is the
+belt-and-suspenders version, for an LLM-based agent reading raw HTML as text rather than
+parsing it as a DOM - it doesn't need to recognize `rel="llms.txt"` as meaningful to notice
+a plain-English sentence saying where everything is. Either way, an agent that lands on one
+arbitrary page - via a search result, a link from elsewhere, anything that isn't the
+homepage - never has to already know these conventions exist to find them.
+
+And it's not only for a background agent - "View as Markdown," "Copy as Markdown," "Open in
+ChatGPT," and "Open in Claude" buttons on every page put the same URLs one click away for a
+person reading it.
 
 ## Discovering a whole site
 

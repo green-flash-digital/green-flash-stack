@@ -986,7 +986,17 @@ ${urls}
         return entry.description ? `- ${link}: ${entry.description}` : `- ${link}`;
       })
       .join("\n");
-    return `# ${title ?? "Documentation"}\n\n${links}\n`;
+    return `# ${title ?? "Documentation"}\n\n${Documints.renderLlmsPreamble(siteUrl)}\n${links}\n`;
+  }
+
+  /**
+   * A one-line pointer to the other machine-readable formats this site
+   * publishes, repeated in both `llms.txt` and `llms-full.txt` - each is
+   * fetched independently, so neither can assume an agent already saw the
+   * other, or already found `/.well-known/documints.json`.
+   */
+  private static renderLlmsPreamble(siteUrl: string): string {
+    return `This site also publishes a site-wide document index at ${siteUrl}/${Documints.FILE_NAMES.docsManifest} and a machine-discovery endpoint at ${siteUrl}/${Documints.FILE_NAMES.wellKnownDocumints}.\n`;
   }
 
   /**
@@ -995,14 +1005,15 @@ ${urls}
    * of crawling page by page. `.doc.tsx` pages have no raw source, so they're
    * left out (same rule as `getMarkdownHref`).
    */
-  private static renderLlmsFullTxt(routeManifest: DocumintRouteManifest): string {
-    return Object.values(routeManifest)
+  private static renderLlmsFullTxt(routeManifest: DocumintRouteManifest, siteUrl: string): string {
+    const pages = Object.values(routeManifest)
       .filter((entry) => entry.markdownHref)
       .map(
         (entry) =>
           `# ${entry.fileNameFormatted}\n\n${Documints.renderMarkdownSource(entry.fullPath)}`
       )
       .join("\n---\n\n");
+    return `${Documints.renderLlmsPreamble(siteUrl)}\n---\n\n${pages}`;
   }
 
   /** Points crawlers at the sitemap above - everything else on a docs site is meant to be indexed. */
@@ -1415,7 +1426,16 @@ Sitemap: ${siteUrl}/sitemap.xml
         dirs: this.#dirs,
         vite,
         head: this.#dirs.headHtml,
-        markdownHref: matchedEntry?.markdownHref
+        markdownHref: matchedEntry?.markdownHref,
+        jsonHref: matchedEntry?.jsonHref,
+        // Rendered here for markup parity with a real build - the files
+        // themselves are build-only (see writeSearchIndex/build()'s note on
+        // Pagefind for the same "consistent markup, degraded until built"
+        // pattern) and won't resolve until `documints build` actually runs.
+        manifestHref: `/${Documints.FILE_NAMES.docsManifest}`,
+        wellKnownHref: `/${Documints.FILE_NAMES.wellKnownDocumints}`,
+        llmsTxtHref: this.#config.siteUrl ? `/${Documints.FILE_NAMES.llmsTxt}` : undefined,
+        llmsFullTxtHref: this.#config.siteUrl ? `/${Documints.FILE_NAMES.llmsFullTxt}` : undefined
       });
     });
 
@@ -1449,7 +1469,9 @@ Sitemap: ${siteUrl}/sitemap.xml
       outputPath: path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.pagefindDir)
     });
     if (writeErrors.length > 0) {
-      LOG.warn(`Pagefind reported errors while writing the search index:${printAsBullets(writeErrors)}`);
+      LOG.warn(
+        `Pagefind reported errors while writing the search index:${printAsBullets(writeErrors)}`
+      );
     }
 
     await pagefind.close();
@@ -1502,6 +1524,17 @@ Sitemap: ${siteUrl}/sitemap.xml
 
       const brokenLinks: string[] = [];
 
+      // Fixed regardless of siteUrl - docs-manifest.json and the well-known
+      // endpoint are always generated (see below). llms.txt/llms-full.txt
+      // only exist when siteUrl is configured, so their hrefs stay undefined
+      // otherwise - generateHTMLTemplate skips a tag/note it has no href for.
+      const manifestHref = `/${Documints.FILE_NAMES.docsManifest}`;
+      const wellKnownHref = `/${Documints.FILE_NAMES.wellKnownDocumints}`;
+      const llmsTxtHref = this.#config.siteUrl ? `/${Documints.FILE_NAMES.llmsTxt}` : undefined;
+      const llmsFullTxtHref = this.#config.siteUrl
+        ? `/${Documints.FILE_NAMES.llmsFullTxt}`
+        : undefined;
+
       for (const entry of Object.values(routeManifest)) {
         const { html, tableOfContents } = await renderRouteToHTML(render, {
           routePath: entry.routePath,
@@ -1510,7 +1543,12 @@ Sitemap: ${siteUrl}/sitemap.xml
           contentRoot: this.#dirs.docsContentDir,
           viteRoot: this.#dirs.appShellDir,
           head: this.#dirs.headHtml,
-          markdownHref: entry.markdownHref
+          markdownHref: entry.markdownHref,
+          jsonHref: entry.jsonHref,
+          manifestHref,
+          wellKnownHref,
+          llmsTxtHref,
+          llmsFullTxtHref
         });
 
         for (const href of Documints.extractInternalRouteLinks(html)) {
@@ -1558,7 +1596,11 @@ Sitemap: ${siteUrl}/sitemap.xml
         vManifest: viteManifest,
         contentRoot: this.#dirs.docsContentDir,
         viteRoot: this.#dirs.appShellDir,
-        head: this.#dirs.headHtml
+        head: this.#dirs.headHtml,
+        manifestHref,
+        wellKnownHref,
+        llmsTxtHref,
+        llmsFullTxtHref
       });
       await writeFileRecursive(
         path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.notFoundPage),
@@ -1585,25 +1627,28 @@ Sitemap: ${siteUrl}/sitemap.xml
           path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.llmsTxt),
           Documints.renderLlmsTxt(routeManifest, siteUrl, this.#config.header?.title)
         );
+        await writeFileRecursive(
+          path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.llmsFullTxt),
+          Documints.renderLlmsFullTxt(routeManifest, siteUrl)
+        );
       } else {
         LOG.warn(
-          "config.siteUrl is not set - skipping sitemap.xml/robots.txt/llms.txt generation."
+          "config.siteUrl is not set - skipping sitemap.xml/robots.txt/llms.txt/llms-full.txt generation."
         );
       }
 
-      await writeFileRecursive(
-        path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.llmsFullTxt),
-        Documints.renderLlmsFullTxt(routeManifest)
-      );
-
-      // Unlike llms.txt/sitemap, these two don't need siteUrl - every URL
-      // they reference is site-relative.
+      // Unlike llms.txt/sitemap, this one doesn't need siteUrl - every URL
+      // it references is site-relative.
       await writeFileRecursive(
         path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.docsManifest),
-        Documints.renderDocsManifest(routeManifest, Documints.getDocumintRouteGraph(routeManifest), {
-          title: this.#config.header?.title,
-          siteUrl: this.#config.siteUrl
-        })
+        Documints.renderDocsManifest(
+          routeManifest,
+          Documints.getDocumintRouteGraph(routeManifest),
+          {
+            title: this.#config.header?.title,
+            siteUrl: this.#config.siteUrl
+          }
+        )
       );
       await writeFileRecursive(
         path.resolve(this.#dirs.staticOutputDir, Documints.FILE_NAMES.wellKnownDocumints),

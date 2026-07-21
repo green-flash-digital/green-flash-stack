@@ -22,6 +22,11 @@ export async function handleRequestDev(
     vite: ViteDevServer;
     head?: string;
     markdownHref?: string;
+    jsonHref?: string;
+    manifestHref?: string;
+    wellKnownHref?: string;
+    llmsTxtHref?: string;
+    llmsFullTxtHref?: string;
   }
 ) {
   try {
@@ -42,7 +47,12 @@ export async function handleRequestDev(
       jsScripts: [config.dirs.appEntryClientPath],
       Meta,
       head: config.head,
-      markdownHref: config.markdownHref
+      markdownHref: config.markdownHref,
+      jsonHref: config.jsonHref,
+      manifestHref: config.manifestHref,
+      wellKnownHref: config.wellKnownHref,
+      llmsTxtHref: config.llmsTxtHref,
+      llmsFullTxtHref: config.llmsFullTxtHref
     });
     LOG_SERVER_DEV.debug("Generating HTML template... done.");
 

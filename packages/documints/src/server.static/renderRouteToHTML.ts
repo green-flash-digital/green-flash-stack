@@ -31,6 +31,11 @@ export async function renderRouteToHTML(
     viteRoot: string;
     head?: string;
     markdownHref?: string;
+    jsonHref?: string;
+    manifestHref?: string;
+    wellKnownHref?: string;
+    llmsTxtHref?: string;
+    llmsFullTxtHref?: string;
   }
 ): Promise<{ html: string; tableOfContents: Toc | null }> {
   const { cssAssets, jsAssets } = params.aliasPath
@@ -87,7 +92,12 @@ export async function renderRouteToHTML(
     jsScripts: jsAssets,
     Meta,
     head: params.head,
-    markdownHref: params.markdownHref
+    markdownHref: params.markdownHref,
+    jsonHref: params.jsonHref,
+    manifestHref: params.manifestHref,
+    wellKnownHref: params.wellKnownHref,
+    llmsTxtHref: params.llmsTxtHref,
+    llmsFullTxtHref: params.llmsFullTxtHref
   });
 
   return { html: `${htmlStart}${body}${htmlEnd}`, tableOfContents: Meta.tableOfContents };
