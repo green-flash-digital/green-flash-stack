@@ -304,10 +304,10 @@ const heroVideoStyles = css`
   height: auto;
   border-radius: ${makeRem(12)};
   box-shadow:
-    0 0 50px ${makeColor("primary", { opacity: 0.4 })},
-    0 0 120px ${makeColor("primary", { opacity: 0.3 })},
-    0 0 220px ${makeColor("secondary", { opacity: 0.2 })},
-    0 0 360px ${makeColor("neutral", { opacity: 0.12 })};
+    0 0 40px ${makeColor("primary", { opacity: 0.2 })},
+    0 0 100px ${makeColor("neutral-900", { opacity: 0.3 })},
+    0 0 200px ${makeColor("neutral-900", { opacity: 0.18 })},
+    0 0 340px ${makeColor("neutral", { opacity: 0.1 })};
 `;
 
 const sectionIntroStyles = css`
