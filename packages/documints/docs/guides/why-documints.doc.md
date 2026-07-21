@@ -6,8 +6,11 @@ title: Guides/Introduction/Why Documints?
 
 Documints is a static site generator built for exactly one thing: technical documentation.
 Point it at Markdown, MDX, or React files, and it turns them into a fast, static site with
-navigation, hierarchy, and a header that stay correct on their own. The mechanics are
-covered elsewhere - [Routing](/guides/customization/routing), [Configuration](/guides/configuration),
+navigation, hierarchy, and a header that stay correct on their own. Almost everything else on
+this page is really in service of two things: it should be **easy to write**, and once
+written, it should be **consumable by a person and an AI agent alike** - not as two separate
+modes to maintain, but as the same document, generated once. The mechanics are covered
+elsewhere - [Routing](/guides/customization/routing), [Configuration](/guides/configuration),
 [Writing Docs](/guides/writing/writing-docs). This page is the *why*.
 
 ## A narrow scope, on purpose
@@ -43,39 +46,61 @@ across a real codebase next to what they describe. Docs that are easy to find *w
 writing code* are docs that actually stay up to date, and you can reorganize freely later -
 moving a file never breaks a route or a link.
 
-## Built AI-first
+## One corpus, consumable by humans and AI alike
 
 Documentation used to have exactly one audience: a person, reading in a browser. That's no
-longer true, and documints is built around that shift rather than bolting it on afterward.
+longer true, and documints treats it as one document generated once - not a website with a
+second, AI-flavored copy maintained alongside it:
 
-- **Crawlable by default, not by opting in.** Every route prerenders to real, static HTML -
-  no JavaScript execution required to see the content. A crawler, a search indexer, or an
-  AI agent gets the actual page on the first request, the same as a browser does. There's
-  no separate "SEO mode" or prerender flag to remember; it's just what building the site
-  produces.
-- **The source was never anything other than what an LLM already reads and writes best.**
-  A `.doc.md`/`.doc.mdx` file's content *is* plain Markdown - the same format most language
-  models are already fluent in, with no proprietary CMS schema standing between an agent and
-  the actual prose. That cuts both ways: an AI agent reading your docs to answer a question
-  is reading the real thing, and an AI agent asked to write or restructure a doc is writing
-  in a format it already handles well, not translating into some other tool's dialect first.
-- **The raw source is served directly, not just rendered.** Because the source already is
-  Markdown, every `.doc.md`/`.doc.mdx` page is also reachable at a predictable sibling URL -
-  this very page, also as [plain Markdown](/guides/introduction/why-documints.md) - alongside
-  the rendered HTML, no conversion step involved. A "View as Markdown" link on every page
-  makes it discoverable, but the URL itself is stable enough for an agent to construct
-  directly. An agent that fetches that URL gets exactly the prose, with none of the HTML it
-  would otherwise have to parse back out of. A `<link rel="alternate" type="text/markdown">`
-  in every page's `<head>` says the same thing to anything crawling the HTML first.
-- **The whole site, not just one page, is one request away.** Alongside the per-page routes,
-  every build writes an [`llms.txt`](https://llmstxt.org) - a single Markdown index of every
-  page - and an `llms-full.txt` concatenating every page's raw source into one file. An agent
-  doesn't have to crawl a docs site page by page to understand it; it can ingest the whole
-  thing in one fetch, the same way a human might skim a table of contents before diving in.
-- **Handing a page to an AI is a click, not a copy-paste.** Every page also has "Copy as
-  Markdown" and "Open in ChatGPT"/"Open in Claude" buttons right next to "View as Markdown" -
-  for the person reading, not just the agent crawling. Pasting docs into a chat to ask a
-  question about them shouldn't mean fighting rendered HTML for the actual prose first.
+```text
+                 .doc.md · .doc.mdx · .doc.tsx
+                            │
+                            ▼
+                  one document model
+            (frontmatter + route graph)
+                            │
+     ┌───────────┬──────────┼──────────┬────────────────────┐
+     ▼           ▼          ▼          ▼                    ▼
+   HTML         .md       .json    Pagefind      docs-manifest.json
+ (rendered)  (raw source) (structured)  (search)   (site-wide index)
+                 │                                          │
+                 ▼                                          ▼
+      llms.txt · llms-full.txt                 .well-known/documints.json
+    (whole-corpus ingestion)                      (self-description)
+```
+
+Five first-class representations, one source. Nothing on the right is a second pipeline
+bolted onto the first - every one of them is derived from the same frontmatter and route
+manifest that already builds the page you're reading:
+
+- **HTML.** Every route prerenders to real, static HTML - no JavaScript execution required
+  to see the content. A crawler, a search indexer, or an AI agent gets the actual page on the
+  first request, the same as a browser does. There's no separate "SEO mode" to remember;
+  it's just what building the site produces.
+- **`.md`.** The doc's own raw source, frontmatter stripped, served at a predictable sibling
+  URL - this very page, also as [plain Markdown](/guides/introduction/why-documints.md) -
+  with a matching `<link rel="alternate" type="text/markdown">` in the `<head>` for anything
+  crawling the HTML first. "View as Markdown" and "Copy as Markdown" buttons make it
+  discoverable for a person; the URL alone is stable enough for an agent to construct
+  directly.
+- **`.json`.** Structured metadata for every route, `.doc.tsx` included: `description`,
+  `related`/`prerequisites`, and `headings` (the exact table of contents the page itself
+  renders, same anchor IDs). See
+  [Using Documints with AI](/guides/advanced/using-documints-with-ai) for the full protocol.
+- **Pagefind.** Full-text search, indexed at build time, no external service - the same
+  "Search"/`Cmd+K` a person reaches for.
+- **`docs-manifest.json`.** Every document's title, description, and place in the hierarchy,
+  in one file - an agent can understand the whole site's structure in a single request,
+  without crawling nav HTML.
+- **`llms.txt` / `llms-full.txt`.** The [llms.txt](https://llmstxt.org) convention: a
+  Markdown index of every page, and every page's raw source concatenated into one file, for
+  ingesting the whole corpus in a single request instead of crawling page by page.
+- **`.well-known/documints.json`.** A small, self-describing discovery document telling an
+  agent what a given documints site exposes and where, without it having to guess.
+
+And it's not only for the agent crawling in the background - "Open in ChatGPT" and
+"Open in Claude" buttons sit right next to "Copy as Markdown" on every page, for the person
+who wants to hand a page to an AI without fighting rendered HTML for the actual prose first.
 
 ## React, all the way down
 

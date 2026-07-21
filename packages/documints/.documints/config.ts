@@ -33,7 +33,7 @@ export default defineDocumintsConfig({
       { writing: ["writing-docs", "playground"] },
       { customization: ["routing", "static-assets"] },
       "configuration",
-      { advanced: ["plugins"] }
+      { advanced: ["plugins", "using-documints-with-ai"] }
     ],
     reference: ["cli", "how-it-works"]
   })
